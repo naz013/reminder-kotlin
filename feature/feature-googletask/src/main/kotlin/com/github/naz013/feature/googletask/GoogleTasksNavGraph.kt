@@ -34,6 +34,20 @@ import com.github.naz013.ui.googletask.rememberGoogleTasksLogin
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Distinct from the default `sceneKey` (shared by every two-pane flow that reuses Home's
+ * ReminderPreview/BirthdaysPreview/BuildReminder screens - Home, Agenda, Groups, Birthdays,
+ * RemindersArchive, Tags) so navigating here from an unrelated flow's own two-pane detail screen
+ * can't let the scene strategy's backstack scan reach past this flow's own list root and
+ * incorrectly pair with whatever unrelated list/detail entries sit further down the backstack.
+ * Safe here specifically because List/TaskList/TaskEdit are only ever pushed onto GoogleTasks' own
+ * List (or as an initial `[List, TaskEdit]` pair from a deep link/shortcut) - TaskPreview is the
+ * one GoogleTasks entry reused elsewhere (Tags' own preview links), but it's intentionally left
+ * untagged below, so it doesn't participate in this pairing either way. See the matching comment
+ * on `SettingsPaneSceneKey` in `feature-settings`'s `SettingsNavGraph.kt`.
+ */
+private const val GoogleTasksPaneSceneKey: String = "com.github.naz013.feature.googletask.GoogleTasksPane"
+
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.googleTasksEntries(
   backStack: MutableList<NavKey>,
@@ -42,6 +56,7 @@ fun EntryProviderScope<NavKey>.googleTasksEntries(
 ) {
   entry<GoogleTasksNavKey.List>(
     metadata = ListDetailSceneStrategy.listPane(
+      sceneKey = GoogleTasksPaneSceneKey,
       detailPlaceholder = {
         DetailPanePlaceholder(
           text = stringResource(R.string.select_google_task_list_to_see_details),
@@ -50,7 +65,9 @@ fun EntryProviderScope<NavKey>.googleTasksEntries(
       },
     ),
   ) { GoogleTasksListEntry(backStack) }
-  entry<GoogleTasksNavKey.TaskList>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<GoogleTasksNavKey.TaskList>(
+    metadata = ListDetailSceneStrategy.detailPane(sceneKey = GoogleTasksPaneSceneKey),
+  ) { key ->
     // Fixed at first composition, not re-read on every recomposition - see the matching comment
     // in ReminderPreviewNavGraph.kt.
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }

@@ -41,5 +41,12 @@ fun SettingsScaffold(
   )
 }
 
-fun settingsNavigationIcon(screenTitle: String?): Int =
-  if (screenTitle == null) R.drawable.ic_builder_arrow_left else R.drawable.ic_builder_clear
+/**
+ * Picks the leading icon for a settings screen: a close (X) icon when there's nothing meaningful
+ * to "go back" to within the screen itself - either because it was opened directly with a
+ * caller-supplied [screenTitle] (bypassing the Hub), or because it's rendered as a two-pane
+ * detail pane alongside the Hub's list pane ([renderAsDetailPane]) - and a normal back arrow
+ * otherwise. [onBackClick] pops the entry either way.
+ */
+fun settingsNavigationIcon(screenTitle: String? = null, renderAsDetailPane: Boolean = false): Int =
+  if (screenTitle != null || renderAsDetailPane) R.drawable.ic_builder_clear else R.drawable.ic_builder_arrow_left

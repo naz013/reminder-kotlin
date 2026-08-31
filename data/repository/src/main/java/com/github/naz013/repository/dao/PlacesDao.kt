@@ -5,12 +5,16 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.github.naz013.repository.entity.PlaceEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 internal interface PlacesDao {
 
   @Query("SELECT * FROM Place")
   fun getAll(): List<PlaceEntity>
+
+  @Query("SELECT * FROM Place")
+  fun observeAll(): Flow<List<PlaceEntity>>
 
   @Query("SELECT * FROM Place WHERE LOWER(name) LIKE '%' || :query || '%'")
   fun searchByName(query: String): List<PlaceEntity>

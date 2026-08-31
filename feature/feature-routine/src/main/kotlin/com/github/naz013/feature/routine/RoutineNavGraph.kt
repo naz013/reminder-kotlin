@@ -30,6 +30,18 @@ import com.github.naz013.ui.common.livedata.ObserveEvent
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Distinct from the default `sceneKey` (shared by every two-pane flow that reuses Home's
+ * ReminderPreview/BirthdaysPreview/BuildReminder screens - Home, Agenda, Groups, Birthdays,
+ * RemindersArchive, Tags) so that navigating here from an unrelated flow's own two-pane detail
+ * screen (e.g. Settings > Reminders > ... or a Routine's own "Manage Tags" link elsewhere) can't
+ * let the scene strategy's backstack scan reach past this flow's own list root and incorrectly
+ * pair with whatever unrelated list/detail entries sit further down the backstack. Safe here
+ * specifically because RoutineNavKey.Edit/Preview are never pushed onto any other feature's list -
+ * see the matching comment on `SettingsPaneSceneKey` in `feature-settings`'s `SettingsNavGraph.kt`.
+ */
+private const val RoutinePaneSceneKey: String = "com.github.naz013.feature.routine.RoutinePane"
+
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.routineEntries(
   backStack: MutableList<NavKey>,
@@ -39,6 +51,7 @@ fun EntryProviderScope<NavKey>.routineEntries(
 ) {
   entry<RoutineNavKey.List>(
     metadata = ListDetailSceneStrategy.listPane(
+      sceneKey = RoutinePaneSceneKey,
       detailPlaceholder = {
         DetailPanePlaceholder(
           text = stringResource(R.string.select_routine_to_see_details),
@@ -47,13 +60,17 @@ fun EntryProviderScope<NavKey>.routineEntries(
       },
     ),
   ) { RoutinesListEntry(backStack) }
-  entry<RoutineNavKey.Edit>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<RoutineNavKey.Edit>(
+    metadata = ListDetailSceneStrategy.detailPane(sceneKey = RoutinePaneSceneKey),
+  ) { key ->
     // Fixed at first composition, not re-read on every recomposition - see the matching comment
     // in ReminderPreviewNavGraph.kt.
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
     RoutineEditEntry(key, backStack, renderAsDetailPane, onManageTagsClick)
   }
-  entry<RoutineNavKey.Preview>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<RoutineNavKey.Preview>(
+    metadata = ListDetailSceneStrategy.detailPane(sceneKey = RoutinePaneSceneKey),
+  ) { key ->
     // Fixed at first composition, not re-read on every recomposition - see the matching comment
     // in ReminderPreviewNavGraph.kt.
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }

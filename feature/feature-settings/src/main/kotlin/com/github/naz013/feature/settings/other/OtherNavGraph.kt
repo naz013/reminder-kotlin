@@ -6,19 +6,23 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.feature.settings.SettingsDetailPane
 import com.github.naz013.feature.settings.SettingsScaffold
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewScreen
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewState
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewViewModel
 import com.github.naz013.feature.settings.proversion.rememberGooglePlayMarketLauncher
+import com.github.naz013.feature.settings.settingsNavigationIcon
 import com.github.naz013.ui.common.compose.foundation.intent.rememberSendIntentResolver
 import com.github.naz013.ui.common.compose.foundation.telephony.rememberUrlLauncher
 import com.github.naz013.reviews.rememberReviewsFormLauncher
@@ -29,23 +33,29 @@ import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.otherEntries(
   backStack: MutableList<NavKey>,
+  isRenderedAsDetailPane: (NavKey) -> Boolean,
   onOpenTroubleshooting: () -> Unit,
   onOpenProVersion: () -> Unit,
 ) {
-  entry<OtherNavKey.Other> { OtherEntry(backStack, onOpenTroubleshooting, onOpenProVersion) }
-  entry<OtherNavKey.Permissions> { PermissionsEntry(backStack) }
-  entry<OtherNavKey.Oss> { OssEntry(backStack) }
-  entry<OtherNavKey.PrivacyPolicy> { PrivacyPolicyEntry(backStack) }
-  entry<OtherNavKey.Terms> { TermsEntry(backStack) }
-  entry<OtherNavKey.WhatsNew> { WhatsNewEntry(backStack) }
-  entry<OtherNavKey.GeminiFunctions> { GeminiFunctionsEntry(backStack) }
+  entry<OtherNavKey.Other>(metadata = SettingsDetailPane) {
+    val renderAsDetailPane = remember { isRenderedAsDetailPane(OtherNavKey.Other) }
+    OtherEntry(backStack, renderAsDetailPane, onOpenTroubleshooting, onOpenProVersion)
+  }
+  entry<OtherNavKey.Permissions>(metadata = SettingsDetailPane) { PermissionsEntry(backStack) }
+  entry<OtherNavKey.Oss>(metadata = SettingsDetailPane) { OssEntry(backStack) }
+  entry<OtherNavKey.PrivacyPolicy>(metadata = SettingsDetailPane) { PrivacyPolicyEntry(backStack) }
+  entry<OtherNavKey.Terms>(metadata = SettingsDetailPane) { TermsEntry(backStack) }
+  entry<OtherNavKey.WhatsNew>(metadata = SettingsDetailPane) { WhatsNewEntry(backStack) }
+  entry<OtherNavKey.GeminiFunctions>(metadata = SettingsDetailPane) { GeminiFunctionsEntry(backStack) }
 }
 
 @Composable
 private fun OtherEntry(
   backStack: MutableList<NavKey>,
+  renderAsDetailPane: Boolean,
   onOpenTroubleshooting: () -> Unit,
   onOpenProVersion: () -> Unit,
 ) {
@@ -101,6 +111,7 @@ private fun OtherEntry(
 
   SettingsScaffold(
     title = stringResource(R.string.other),
+    navigationIcon = settingsNavigationIcon(renderAsDetailPane = renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     OtherSettingsScreen(

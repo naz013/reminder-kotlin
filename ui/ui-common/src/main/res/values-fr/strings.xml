@@ -1270,4 +1270,6 @@
     <string name="select_workflow_template_to_configure">Sélectionnez un modèle à appliquer, ou créez votre propre règle</string>
     <string name="builder_quick_start_leaving_place">Quitter un lieu</string>
     <string name="builder_quick_start_leaving_place_delayed">Quitter un lieu (démarrage différé)</string>
+    <string name="select_settings_category_to_see_details">Sélectionnez une catégorie pour voir ses paramètres</string>
+    <string name="select_place_to_see_details">Sélectionnez un lieu pour voir les détails</string>
 </resources>

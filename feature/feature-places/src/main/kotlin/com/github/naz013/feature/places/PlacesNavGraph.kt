@@ -1,6 +1,8 @@
 package com.github.naz013.feature.places
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -8,9 +10,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.feature.places.create.EditPlaceScreen
 import com.github.naz013.feature.places.create.EditPlaceState
@@ -27,12 +32,40 @@ import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDisp
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
+/**
+ * Distinct from the default `sceneKey` (shared by every other two-pane flow in the app) for the
+ * same reason as `WorkflowPaneSceneKey` in `feature-workflow`'s `WorkflowNavGraph.kt` - Places is
+ * reached from within Settings' own two-pane detail chain (Reminders > Location > Places), so it
+ * needs its own key to avoid the scene strategy pairing it with an unrelated list further down the
+ * backstack.
+ */
+private const val PlacesPaneSceneKey: String = "com.github.naz013.feature.places.PlacesPane"
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.placesEntries(
   backStack: MutableList<NavKey>,
+  isRenderedAsDetailPane: (NavKey) -> Boolean,
   adsContent: @Composable () -> Unit,
 ) {
-  entry<PlacesNavKey.List> { PlacesListEntry(backStack) }
-  entry<PlacesNavKey.Edit> { key -> PlaceEditEntry(key, backStack, adsContent) }
+  entry<PlacesNavKey.List>(
+    metadata = ListDetailSceneStrategy.listPane(
+      sceneKey = PlacesPaneSceneKey,
+      detailPlaceholder = {
+        DetailPanePlaceholder(
+          text = stringResource(R.string.select_place_to_see_details),
+          icon = AppIcons.Fluent.Place,
+        )
+      },
+    ),
+  ) { PlacesListEntry(backStack) }
+  entry<PlacesNavKey.Edit>(
+    metadata = ListDetailSceneStrategy.detailPane(sceneKey = PlacesPaneSceneKey),
+  ) { key ->
+    // Fixed at first composition, not re-read on every recomposition - see the matching comment
+    // in ReminderPreviewNavGraph.kt.
+    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
+    PlaceEditEntry(key, backStack, renderAsDetailPane, adsContent)
+  }
 }
 
 @Composable
@@ -45,7 +78,9 @@ private fun PlacesListEntry(backStack: MutableList<NavKey>) {
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      is PlacesViewModel.NavigationEvent.OpenEditPlace -> backStack.add(PlacesNavKey.Edit(event.id))
+      is PlacesViewModel.NavigationEvent.OpenEditPlace -> {
+        backStack.navigateToDetailPane(PlacesNavKey.Edit(event.id))
+      }
 
       is PlacesViewModel.NavigationEvent.ShareFile -> {
         sendIntentResolver.resolve(event.intent, event.name)
@@ -85,6 +120,7 @@ private fun PlacesListEntry(backStack: MutableList<NavKey>) {
 private fun PlaceEditEntry(
   key: PlacesNavKey.Edit,
   backStack: MutableList<NavKey>,
+  renderAsDetailPane: Boolean,
   adsContent: @Composable () -> Unit,
 ) {
   val viewModel = koinViewModel<EditPlaceViewModel> { parametersOf(key) }
@@ -151,5 +187,18 @@ private fun PlaceEditEntry(
       )
     },
     adsContent = adsContent,
+    renderAsDetailPane = renderAsDetailPane,
   )
+}
+
+/**
+ * Navigation for the places two-pane list's detail pane: if the current top entry is itself an
+ * edit form, replace it instead of stacking another one on top. Mirrors `GroupsNavGraph.kt`'s
+ * identically-purposed private helper.
+ */
+private fun MutableList<NavKey>.navigateToDetailPane(key: NavKey) {
+  if (lastOrNull() is PlacesNavKey.Edit) {
+    removeLastOrNull()
+  }
+  add(key)
 }

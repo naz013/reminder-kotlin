@@ -1270,4 +1270,6 @@
     <string name="select_workflow_template_to_configure">Vyberte šablonu k použití nebo vytvořte vlastní pravidlo</string>
     <string name="builder_quick_start_leaving_place">Opuštění místa</string>
     <string name="builder_quick_start_leaving_place_delayed">Opuštění místa (opožděný start)</string>
+    <string name="select_settings_category_to_see_details">Vyberte kategorii a zobrazte její nastavení</string>
+    <string name="select_place_to_see_details">Vyberte místo a zobrazte podrobnosti</string>
 </resources>

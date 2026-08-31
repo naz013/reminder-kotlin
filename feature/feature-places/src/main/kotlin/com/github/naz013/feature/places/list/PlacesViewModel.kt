@@ -19,20 +19,16 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.PlaceRepository
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-@OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+@OptIn(FlowPreview::class)
 internal class PlacesViewModel(
   private val backupTool: BackupTool,
   private val dispatcherProvider: DispatcherProvider,
@@ -46,21 +42,17 @@ internal class PlacesViewModel(
 
   private val _screenState = MutableStateFlow(PlacesScreenState())
   val screenState = _screenState.stateInWhileSubscribed(PlacesScreenState())
-    .onStart { refresh() }
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   private val searchQuery = MutableStateFlow("")
-  private val refreshSignal = MutableStateFlow(0)
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
       combine(
+        placeRepository.observeAll(),
         searchQuery.debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS },
-        refreshSignal,
-      ) { query, _ -> query }
-        .flatMapLatest { query ->
-          flow { emit(loadMerged(query)) }
-        }.collect { applyList(it) }
+      ) { places, query -> mergeForQuery(places, query) }
+        .collect { applyList(it) }
     }
   }
 
@@ -95,12 +87,7 @@ internal class PlacesViewModel(
   fun deletePlace(id: String) {
     viewModelScope.launch(dispatcherProvider.default()) {
       deletePlaceUseCase(id)
-      refresh()
     }
-  }
-
-  private fun refresh() {
-    refreshSignal.update { it + 1 }
   }
 
   private fun applyList(mergedPlaces: MergedPlaces) {
@@ -166,8 +153,7 @@ internal class PlacesViewModel(
     )
   }
 
-  private suspend fun loadMerged(query: String): MergedPlaces {
-    val all = placeRepository.getAll()
+  private fun mergeForQuery(all: List<Place>, query: String): MergedPlaces {
     return MergedPlaces(
       places = all.filter {
         it.name.contains(query, ignoreCase = true) ||

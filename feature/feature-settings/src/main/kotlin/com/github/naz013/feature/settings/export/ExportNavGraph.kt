@@ -1,6 +1,7 @@
 package com.github.naz013.feature.settings.export
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -13,6 +14,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.common.Permissions
+import com.github.naz013.feature.settings.SettingsDetailPane
 import com.github.naz013.feature.settings.SettingsScaffold
 import com.github.naz013.feature.settings.export.services.CloudServicesScreen
 import com.github.naz013.feature.settings.export.services.CloudServicesState
@@ -25,9 +27,10 @@ import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationa
 import com.github.naz013.ui.googletask.rememberGoogleTasksLogin
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 fun EntryProviderScope<NavKey>.exportEntries(backStack: MutableList<NavKey>) {
-  entry<ExportNavKey.CloudBackup> { CloudBackupEntry(backStack) }
-  entry<ExportNavKey.CloudServices> { CloudServicesEntry(backStack) }
+  entry<ExportNavKey.CloudBackup>(metadata = SettingsDetailPane) { CloudBackupEntry(backStack) }
+  entry<ExportNavKey.CloudServices>(metadata = SettingsDetailPane) { CloudServicesEntry(backStack) }
 }
 
 @Composable

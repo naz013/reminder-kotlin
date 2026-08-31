@@ -1270,4 +1270,6 @@
     <string name="select_workflow_template_to_configure">適用するテンプレートを選択するか、独自のルールを作成してください</string>
     <string name="builder_quick_start_leaving_place">場所を出発</string>
     <string name="builder_quick_start_leaving_place_delayed">場所を出発(遅延開始)</string>
+    <string name="select_settings_category_to_see_details">設定を表示するには、カテゴリーを選択してください</string>
+    <string name="select_place_to_see_details">詳細を表示するには、場所を選択してください</string>
 </resources>

@@ -1270,4 +1270,6 @@
     <string name="select_workflow_template_to_configure">Selecciona una plantilla para aplicar, o crea tu propia regla</string>
     <string name="builder_quick_start_leaving_place">Salir de un lugar</string>
     <string name="builder_quick_start_leaving_place_delayed">Salir de un lugar (inicio retrasado)</string>
+    <string name="select_settings_category_to_see_details">Selecciona una categoría para ver su configuración</string>
+    <string name="select_place_to_see_details">Selecciona un lugar para ver los detalles</string>
 </resources>

@@ -40,6 +40,7 @@ internal fun EditPlaceScreen(
   onDeleteClick: () -> Unit,
   mapContent: @Composable () -> Unit,
   adsContent: @Composable () -> Unit,
+  renderAsDetailPane: Boolean = false,
 ) {
   Scaffold(
     modifier = modifier,
@@ -48,8 +49,8 @@ internal fun EditPlaceScreen(
         title = { Text(stringResource(state.screenTitle)) },
         navigationIcon = {
           MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
+            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
             onClick = onBackClick,
           )
         },

@@ -1271,4 +1271,6 @@
     <string name="select_workflow_template_to_configure">Виберіть шаблон для застосування або створіть власне правило</string>
     <string name="builder_quick_start_leaving_place">Залишення місця</string>
     <string name="builder_quick_start_leaving_place_delayed">Залишення місця (відкладений старт)</string>
+    <string name="select_settings_category_to_see_details">Виберіть категорію, щоб побачити її налаштування</string>
+    <string name="select_place_to_see_details">Виберіть місце, щоб побачити деталі</string>
 </resources>
