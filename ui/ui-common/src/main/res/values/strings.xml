@@ -1282,4 +1282,9 @@
     <string name="tag_selected_count_one">%1$d tag selected</string>
     <string name="tag_selected_count_other">%1$d tags selected</string>
     <string name="tags_delete_selected_permanently">Delete %1$d tags permanently?</string>
+    <string name="x_repeats">"%s repeats"</string>
+    <string name="reminder_notification_max_repeat_count">Max repeat count</string>
+    <string name="reminder_notification_escalate_after_repeats">Escalate after</string>
+    <string name="exact_alarms_restricted">Exact alarms are restricted</string>
+    <string name="exact_alarms_restricted_description">Repeating reminders may fire late. Tap to allow exact alarms.</string>
 </resources>

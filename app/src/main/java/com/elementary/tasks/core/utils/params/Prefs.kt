@@ -316,6 +316,14 @@ class Prefs(
     get() = getInt(PrefsConstants.NOTIFICATION_REPEAT_INTERVAL, 15)
     set(value) = putInt(PrefsConstants.NOTIFICATION_REPEAT_INTERVAL, value)
 
+  var maxRepeatCount: Int
+    get() = getInt(PrefsConstants.NOTIFICATION_MAX_REPEAT_COUNT, 10)
+    set(value) = putInt(PrefsConstants.NOTIFICATION_MAX_REPEAT_COUNT, value)
+
+  var escalateAfterRepeats: Int
+    get() = getInt(PrefsConstants.NOTIFICATION_ESCALATE_AFTER_REPEATS, 3)
+    set(value) = putInt(PrefsConstants.NOTIFICATION_ESCALATE_AFTER_REPEATS, value)
+
   var isLedEnabled: Boolean
     get() = getBoolean(PrefsConstants.LED_STATUS, true)
     set(value) = putBoolean(PrefsConstants.LED_STATUS, value)

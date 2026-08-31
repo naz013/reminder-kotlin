@@ -1277,4 +1277,9 @@
     <string name="tag_selected_count_one">Выбран %1$d тег</string>
     <string name="tag_selected_count_other">Выбрано %1$d тегов</string>
     <string name="tags_delete_selected_permanently">Удалить %1$d тегов навсегда?</string>
+    <string name="x_repeats">"%s повторов"</string>
+    <string name="reminder_notification_max_repeat_count">Макс. число повторов</string>
+    <string name="reminder_notification_escalate_after_repeats">Эскалация после</string>
+    <string name="exact_alarms_restricted">Точные будильники ограничены</string>
+    <string name="exact_alarms_restricted_description">Повторяющиеся напоминания могут срабатывать с опозданием. Нажмите, чтобы разрешить точные будильники.</string>
 </resources>

@@ -13,6 +13,7 @@ interface SystemInfo {
   val currentPackageName: String
   val googlePlayServicesAvailable: Boolean
   val isProAppInstalled: Boolean
+  val hasExactAlarmPermission: Boolean
 
   val is17: Boolean
   val is16: Boolean

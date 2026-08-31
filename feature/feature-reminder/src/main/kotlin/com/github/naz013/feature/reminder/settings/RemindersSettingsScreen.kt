@@ -37,6 +37,9 @@ fun RemindersSettingsScreen(
   onSnoozeClick: () -> Unit,
   onRepeatToggle: () -> Unit,
   onRepeatIntervalClick: () -> Unit,
+  onMaxRepeatCountClick: () -> Unit,
+  onEscalateAfterRepeatsClick: () -> Unit,
+  onExactAlarmWarningClick: () -> Unit,
   onLedToggle: () -> Unit,
   onLedColorClick: () -> Unit,
   onPermanentNotificationClick: () -> Unit,
@@ -147,6 +150,31 @@ fun RemindersSettingsScreen(
       icon = AppIcons.Builder.Interval,
       onClick = onRepeatIntervalClick,
     )
+    SettingsItem(
+      title = stringResource(R.string.reminder_notification_max_repeat_count),
+      subtitle = state.maxRepeatCountText,
+      enabled = state.isRepeatIntervalRowEnabled,
+      dividerBottom = true,
+      icon = AppIcons.Fluent.ArrowRepeatAll,
+      onClick = onMaxRepeatCountClick,
+    )
+    SettingsItem(
+      title = stringResource(R.string.reminder_notification_escalate_after_repeats),
+      subtitle = state.escalateAfterRepeatsText,
+      enabled = state.isRepeatIntervalRowEnabled,
+      dividerBottom = true,
+      icon = AppIcons.Fluent.Warning,
+      onClick = onEscalateAfterRepeatsClick,
+    )
+    if (state.isExactAlarmWarningVisible) {
+      SettingsItem(
+        title = stringResource(R.string.exact_alarms_restricted),
+        subtitle = stringResource(R.string.exact_alarms_restricted_description),
+        icon = AppIcons.Fluent.ErrorCircle,
+        dividerBottom = true,
+        onClick = onExactAlarmWarningClick,
+      )
+    }
     if (state.isLedVisible) {
       SettingsSwitchItem(
         title = stringResource(R.string.led_indication_if_available),
@@ -339,7 +367,7 @@ fun RemindersSettingsScreen(
             Slider(
               value = dialog.previewValue.toFloat(),
               onValueChange = { onSeekValueChange(it.toInt()) },
-              valueRange = 0f..60f,
+              valueRange = dialog.minValue.toFloat()..dialog.maxValue.toFloat(),
               modifier = Modifier.fillMaxWidth(),
             )
           }

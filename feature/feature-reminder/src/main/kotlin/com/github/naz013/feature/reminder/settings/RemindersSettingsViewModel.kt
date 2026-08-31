@@ -99,6 +99,39 @@ class RemindersSettingsViewModel(
     )
   }
 
+  fun onMaxRepeatCountClick() {
+    showSeekDialog(
+      kind = SeekDialogKind.MAX_REPEAT_COUNT,
+      title = textProvider.getString(R.string.reminder_notification_max_repeat_count),
+      value = reminderPreferences.maxRepeatCount,
+      minValue = 1,
+      maxValue = MAX_REPEAT_COUNT_LIMIT,
+    )
+  }
+
+  fun onEscalateAfterRepeatsClick() {
+    showSeekDialog(
+      kind = SeekDialogKind.ESCALATE_AFTER_REPEATS,
+      title = textProvider.getString(R.string.reminder_notification_escalate_after_repeats),
+      value = reminderPreferences.escalateAfterRepeats,
+      minValue = 1,
+      // Escalation only makes sense before the loop's own cap ends it, so the slider never lets
+      // the user pick a threshold the repeat loop could never actually reach.
+      maxValue = reminderPreferences.maxRepeatCount.coerceAtLeast(1),
+    )
+  }
+
+  fun onExactAlarmWarningClick() {
+    navigationEvent.value = Event(RemindersSettingsEvent.OpenExactAlarmSettings)
+  }
+
+  /** Re-reads preferences/permissions into state - call on every resume, since the exact-alarm
+   *  permission this screen surfaces a warning for can only change while this screen isn't in the
+   *  foreground (granted from the system Settings screen this links out to). */
+  fun refresh() {
+    refreshState()
+  }
+
   fun onSeekValueChange(value: Int) {
     val dialog = state.value.dialog as? RemindersSettingsDialog.Seek ?: return
     if (dialog.previewValue != value && reminderPreferences.hapticsEnabled) {
@@ -106,7 +139,9 @@ class RemindersSettingsViewModel(
     }
     state.update { current ->
       val currentDialog = current.dialog as? RemindersSettingsDialog.Seek ?: return@update current
-      current.copy(dialog = currentDialog.copy(previewValue = value, formattedValue = minutesText(value)))
+      current.copy(
+        dialog = currentDialog.copy(previewValue = value, formattedValue = formatSeekValue(currentDialog.kind, value)),
+      )
     }
   }
 
@@ -115,6 +150,9 @@ class RemindersSettingsViewModel(
     when (dialog.kind) {
       SeekDialogKind.SNOOZE -> reminderPreferences.snoozeTime = dialog.previewValue
       SeekDialogKind.REPEAT_INTERVAL -> reminderPreferences.notificationRepeatTime = dialog.previewValue
+      SeekDialogKind.MAX_REPEAT_COUNT -> reminderPreferences.maxRepeatCount = dialog.previewValue
+      SeekDialogKind.ESCALATE_AFTER_REPEATS ->
+        reminderPreferences.escalateAfterRepeats = dialog.previewValue.coerceAtMost(reminderPreferences.maxRepeatCount)
     }
     dismissDialog()
   }
@@ -309,6 +347,8 @@ class RemindersSettingsViewModel(
     kind: SeekDialogKind,
     title: String,
     value: Int,
+    minValue: Int = 0,
+    maxValue: Int = 60,
   ) {
     state.update {
       it.copy(
@@ -317,7 +357,9 @@ class RemindersSettingsViewModel(
             kind = kind,
             title = title,
             previewValue = value,
-            formattedValue = minutesText(value),
+            formattedValue = formatSeekValue(kind, value),
+            minValue = minValue,
+            maxValue = maxValue,
           ),
       )
     }
@@ -344,6 +386,9 @@ class RemindersSettingsViewModel(
       isRepeatChecked = isRepeatChecked,
       repeatIntervalText = minutesText(reminderPreferences.notificationRepeatTime),
       isRepeatIntervalRowEnabled = isRepeatChecked,
+      maxRepeatCountText = repeatsText(reminderPreferences.maxRepeatCount),
+      escalateAfterRepeatsText = repeatsText(reminderPreferences.escalateAfterRepeats),
+      isExactAlarmWarningVisible = isRepeatChecked && !systemInfo.hasExactAlarmPermission,
       isLedVisible = buildInfo.isPro && systemInfo.hasLedIndication,
       isLedChecked = isLedChecked,
       ledColorName = ledColorOptions()[reminderPreferences.ledColor.coerceIn(0, 6)],
@@ -381,8 +426,20 @@ class RemindersSettingsViewModel(
     )
   }
 
+  private fun formatSeekValue(
+    kind: SeekDialogKind,
+    value: Int,
+  ): String =
+    when (kind) {
+      SeekDialogKind.SNOOZE, SeekDialogKind.REPEAT_INTERVAL -> minutesText(value)
+      SeekDialogKind.MAX_REPEAT_COUNT, SeekDialogKind.ESCALATE_AFTER_REPEATS -> repeatsText(value)
+    }
+
   private fun minutesText(minutes: Int): String =
     textProvider.getString(R.string.x_minutes, minutes.toString())
+
+  private fun repeatsText(count: Int): String =
+    textProvider.getString(R.string.x_repeats, count.toString())
 
   private fun priorityOptions(): List<String> =
     listOf(
@@ -444,5 +501,9 @@ class RemindersSettingsViewModel(
       textProvider.getString(R.string.priority_highest),
       textProvider.getString(R.string.do_not_allow),
     )
+  }
+
+  companion object {
+    private const val MAX_REPEAT_COUNT_LIMIT = 30
   }
 }

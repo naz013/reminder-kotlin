@@ -38,11 +38,13 @@ class ReminderNotificationHandlerTest : BaseTest() {
     vibrationPattern: List<Long>? = listOf(0L, 250L),
     priority: ReminderPriority = ReminderPriority.HIGH,
     color: Int = 5,
+    wakeScreen: Boolean = false,
   ) = NotificationSettings(
     vibrate = vibrate,
     vibrationPattern = vibrationPattern,
     priority = priority,
     color = color,
+    wakeScreen = wakeScreen,
     category = ReminderNotificationCategory.DEFAULT,
     lockScreenVisibility = LockScreenVisibility.PRIVATE,
   )
@@ -105,5 +107,11 @@ class ReminderNotificationHandlerTest : BaseTest() {
     val result = handler(settings(color = 5)).ledColor(reminder)
 
     assertEquals(5, result)
+  }
+
+  @Test
+  fun `useFullScreenIntent reads the resolved wakeScreen setting`() {
+    assertEquals(true, handler(settings(wakeScreen = true)).useFullScreenIntent(reminder))
+    assertEquals(false, handler(settings(wakeScreen = false)).useFullScreenIntent(reminder))
   }
 }

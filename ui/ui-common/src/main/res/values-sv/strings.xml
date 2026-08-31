@@ -1276,4 +1276,9 @@
     <string name="tag_selected_count_one">%1$d tagg vald</string>
     <string name="tag_selected_count_other">%1$d taggar valda</string>
     <string name="tags_delete_selected_permanently">Ta bort %1$d taggar permanent?</string>
+    <string name="x_repeats">"%s upprepningar"</string>
+    <string name="reminder_notification_max_repeat_count">Max antal upprepningar</string>
+    <string name="reminder_notification_escalate_after_repeats">Eskalera efter</string>
+    <string name="exact_alarms_restricted">Exakta alarm är begränsade</string>
+    <string name="exact_alarms_restricted_description">Upprepade påminnelser kan utlösas sent. Tryck för att tillåta exakta alarm.</string>
 </resources>

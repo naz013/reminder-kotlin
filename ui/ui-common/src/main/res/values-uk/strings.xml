@@ -1279,4 +1279,9 @@
     <string name="tag_selected_count_one">Вибрано %1$d тег</string>
     <string name="tag_selected_count_other">Вибрано %1$d тегів</string>
     <string name="tags_delete_selected_permanently">Видалити %1$d тегів назавжди?</string>
+    <string name="x_repeats">"%s повторів"</string>
+    <string name="reminder_notification_max_repeat_count">Макс. кількість повторів</string>
+    <string name="reminder_notification_escalate_after_repeats">Ескалація після</string>
+    <string name="exact_alarms_restricted">Точні будильники обмежені</string>
+    <string name="exact_alarms_restricted_description">Повторювані нагадування можуть спрацьовувати із запізненням. Торкніться, щоб дозволити точні будильники.</string>
 </resources>

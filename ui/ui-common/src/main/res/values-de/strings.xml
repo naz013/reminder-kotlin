@@ -1274,4 +1274,9 @@
     <string name="tag_selected_count_one">%1$d Tag ausgewählt</string>
     <string name="tag_selected_count_other">%1$d Tags ausgewählt</string>
     <string name="tags_delete_selected_permanently">%1$d Tags dauerhaft löschen?</string>
+    <string name="x_repeats">"%s Wiederholungen"</string>
+    <string name="reminder_notification_max_repeat_count">Maximale Wiederholungsanzahl</string>
+    <string name="reminder_notification_escalate_after_repeats">Eskalieren nach</string>
+    <string name="exact_alarms_restricted">Exakte Alarme sind eingeschränkt</string>
+    <string name="exact_alarms_restricted_description">Wiederkehrende Erinnerungen können verspätet ausgelöst werden. Tippen, um exakte Alarme zuzulassen.</string>
 </resources>

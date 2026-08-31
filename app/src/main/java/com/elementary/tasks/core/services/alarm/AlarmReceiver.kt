@@ -43,10 +43,11 @@ class AlarmReceiver : BaseBroadcast() {
 
   private fun processRepeat(extras: Bundle?) {
     val id = extras?.getString(IntentKeys.INTENT_ID) ?: return
+    val repeatCount = extras.getInt(IntentKeys.INTENT_COUNT, 0)
 
-    Logger.d(TAG, "processRepeat: id = $id")
+    Logger.d(TAG, "processRepeat: id = $id, repeatCount = $repeatCount")
 
-    reminderRepeatProcessor.process(id)
+    reminderRepeatProcessor.process(id, repeatCount)
   }
 
   companion object {

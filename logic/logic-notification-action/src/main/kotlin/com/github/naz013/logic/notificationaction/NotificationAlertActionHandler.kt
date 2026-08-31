@@ -3,6 +3,7 @@ package com.github.naz013.logic.notificationaction
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Intent
+import androidx.core.app.NotificationManagerCompat
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.IntentKeys
@@ -43,6 +44,12 @@ abstract class NotificationAlertActionHandler<T>(
     builder.setSmallIcon(style.resolveIcon(domainIcon(data)))
     builder.setContentIntent(contentPendingIntent(data))
     style.decorate(builder, contextProvider)
+
+    if (useFullScreenIntent(data) &&
+      NotificationManagerCompat.from(contextProvider.context).canUseFullScreenIntent()
+    ) {
+      builder.setFullScreenIntent(contentPendingIntent(data), true)
+    }
 
     val dismissPendingIntent = actionPendingIntent(data, dismissActionKey())
     builder.addAction(
@@ -102,6 +109,12 @@ abstract class NotificationAlertActionHandler<T>(
    *  every domain); override to let a domain's own settings opt out and allow swipe, which - via
    *  the shared [setDeleteIntent] wiring above - completes the item exactly like tapping OK. */
   protected open fun isOngoing(data: T): Boolean = true
+
+  /** Whether this notification should also try to wake the screen and launch
+   *  [contentPendingIntent] directly (alarm-clock-style urgency), subject to the user having
+   *  granted the full-screen-intent permission. Defaults to false; override for domains whose
+   *  resolved settings opt into it. */
+  protected open fun useFullScreenIntent(data: T): Boolean = false
 
   protected abstract fun receiverClass(): Class<out BroadcastReceiver>
 

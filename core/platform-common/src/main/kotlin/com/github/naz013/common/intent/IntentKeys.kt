@@ -7,6 +7,7 @@ object IntentKeys {
   const val INTENT_JSON = "item_json"
   const val INTENT_STATUS = "item_status"
   const val INTENT_POSITION = "item_position"
+  const val INTENT_COUNT = "item_count"
   const val INTENT_ITEM = "item_item"
   const val SELECTED_APPLICATION = "selected_application"
   const val INTENT_SCREEN_TITLE = "screen_title"

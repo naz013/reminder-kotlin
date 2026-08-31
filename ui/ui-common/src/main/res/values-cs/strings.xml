@@ -1278,4 +1278,9 @@
     <string name="tag_selected_count_one">Vybrán %1$d štítek</string>
     <string name="tag_selected_count_other">Vybráno %1$d štítků</string>
     <string name="tags_delete_selected_permanently">Trvale smazat %1$d štítků?</string>
+    <string name="x_repeats">"%s opakování"</string>
+    <string name="reminder_notification_max_repeat_count">Maximální počet opakování</string>
+    <string name="reminder_notification_escalate_after_repeats">Eskalovat po</string>
+    <string name="exact_alarms_restricted">Přesné budíky jsou omezeny</string>
+    <string name="exact_alarms_restricted_description">Opakující se připomínky se mohou spustit se zpožděním. Klepnutím povolíte přesné budíky.</string>
 </resources>

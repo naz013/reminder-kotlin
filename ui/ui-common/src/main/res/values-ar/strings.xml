@@ -1276,4 +1276,9 @@
     <string name="tag_selected_count_one">تم تحديد وسم واحد</string>
     <string name="tag_selected_count_other">تم تحديد %1$d وسوم</string>
     <string name="tags_delete_selected_permanently">حذف %1$d وسوم نهائيًا؟</string>
+    <string name="x_repeats">"%s تكرارات"</string>
+    <string name="reminder_notification_max_repeat_count">الحد الأقصى لعدد التكرارات</string>
+    <string name="reminder_notification_escalate_after_repeats">التصعيد بعد</string>
+    <string name="exact_alarms_restricted">المنبهات الدقيقة مقيدة</string>
+    <string name="exact_alarms_restricted_description">قد تنطلق التذكيرات المتكررة متأخرة. اضغط للسماح بالمنبهات الدقيقة.</string>
 </resources>

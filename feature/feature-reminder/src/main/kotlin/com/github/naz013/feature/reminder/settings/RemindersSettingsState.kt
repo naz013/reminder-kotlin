@@ -10,6 +10,9 @@ data class RemindersSettingsState(
   val isRepeatChecked: Boolean = false,
   val repeatIntervalText: String = "",
   val isRepeatIntervalRowEnabled: Boolean = false,
+  val maxRepeatCountText: String = "",
+  val escalateAfterRepeatsText: String = "",
+  val isExactAlarmWarningVisible: Boolean = false,
   val isLedVisible: Boolean = false,
   val isLedChecked: Boolean = false,
   val ledColorName: String = "",
@@ -41,7 +44,7 @@ enum class ChoiceDialogKind {
   PRIORITY, LED_COLOR, DND_ACTION, DND_IGNORE, CATEGORY, LOCK_SCREEN_VISIBILITY, VIBRATION_PATTERN
 }
 
-enum class SeekDialogKind { SNOOZE, REPEAT_INTERVAL }
+enum class SeekDialogKind { SNOOZE, REPEAT_INTERVAL, MAX_REPEAT_COUNT, ESCALATE_AFTER_REPEATS }
 
 enum class DndTimeTarget { FROM, TO }
 
@@ -58,6 +61,8 @@ sealed class RemindersSettingsDialog {
     val title: String,
     val previewValue: Int,
     val formattedValue: String,
+    val minValue: Int = 0,
+    val maxValue: Int = 60,
   ) : RemindersSettingsDialog()
 }
 
@@ -74,6 +79,8 @@ sealed class RemindersSettingsEvent {
     val title: String,
     val is24Hour: Boolean,
   ) : RemindersSettingsEvent()
+
+  data object OpenExactAlarmSettings : RemindersSettingsEvent()
 
   data object ShowPermanentNotification : RemindersSettingsEvent()
 
