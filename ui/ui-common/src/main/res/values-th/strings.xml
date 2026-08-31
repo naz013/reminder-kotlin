@@ -1276,4 +1276,9 @@
     <string name="tag_selected_count_one">เลือก %1$d แท็กแล้ว</string>
     <string name="tag_selected_count_other">เลือก %1$d แท็กแล้ว</string>
     <string name="tags_delete_selected_permanently">ลบ %1$d แท็กอย่างถาวร?</string>
+    <string name="x_repeats">"%sครั้ง"</string>
+    <string name="reminder_notification_max_repeat_count">จำนวนการทำซ้ำสูงสุด</string>
+    <string name="reminder_notification_escalate_after_repeats">ทวีความรุนแรงหลังจาก</string>
+    <string name="exact_alarms_restricted">การปลุกที่แม่นยำถูกจำกัด</string>
+    <string name="exact_alarms_restricted_description">การแจ้งเตือนซ้ำอาจดังช้ากว่ากำหนด แตะเพื่ออนุญาตการปลุกที่แม่นยำ</string>
 </resources>

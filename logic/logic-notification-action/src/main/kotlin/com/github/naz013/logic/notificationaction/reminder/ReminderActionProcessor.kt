@@ -5,6 +5,8 @@ import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.reminder.v2.NotificationSettings
+import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
@@ -17,6 +19,7 @@ import com.github.naz013.logic.notificationaction.InAppAlertBus
 import com.github.naz013.logic.notificationaction.InAppAlertDomain
 import com.github.naz013.logic.notificationaction.InAppAlertPreferences
 import com.github.naz013.logic.notificationaction.PhoneCallStateProvider
+import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.logic.reminder.query.ResolveReminderV2NotificationSettingsUseCase
 import com.github.naz013.logic.workflow.WorkflowTriggerRunner
 import com.github.naz013.repository.ReminderV2Repository
@@ -45,6 +48,7 @@ class ReminderActionProcessor(
   private val foregroundStateTracker: ForegroundStateTracker,
   private val inAppAlertPreferences: InAppAlertPreferences,
   private val textProvider: TextProvider,
+  private val reminderPreferences: ReminderPreferences,
 ) {
   private val scope = CoroutineScope(dispatcherProvider.default())
 
@@ -70,13 +74,24 @@ class ReminderActionProcessor(
     }
   }
 
-  fun process(id: String) {
-    Logger.i(TAG, "Going to process reminder: $id")
+  /**
+   * @param repeatCount how many times this specific firing has already re-alerted (0 for the
+   * original fire). Once it reaches [ReminderPreferences.escalateAfterRepeats], delivery is
+   * escalated - forced past Do Not Disturb, at max priority, waking the screen - since the whole
+   * point of a repeat that's gone unacknowledged this many times is to stop being ignorable.
+   */
+  fun process(
+    id: String,
+    repeatCount: Int = 0,
+  ) {
+    Logger.i(TAG, "Going to process reminder: $id, repeatCount=$repeatCount")
     scope.launch {
       val reminder = reminderV2Repository.getById(id) ?: return@launch
-      val notificationSettings = resolveReminderV2NotificationSettingsUseCase(reminder)
-      val priority = notificationSettings.priority.ordinal
-      if (!notificationSettings.bypassDoNotDisturb && doNotDisturbManager.applyDoNotDisturb(priority)) {
+      val resolved = resolveReminderV2NotificationSettingsUseCase(reminder)
+      val isEscalated = repeatCount > 0 && repeatCount >= reminderPreferences.escalateAfterRepeats
+      val effective = if (isEscalated) escalate(resolved) else resolved
+      val priority = effective.priority.ordinal
+      if (!effective.bypassDoNotDisturb && doNotDisturbManager.applyDoNotDisturb(priority)) {
         if (doNotDisturbPreferences.doNotDisturbAction == 0) {
           val delayTime =
             dateTimeManager.millisToEndDnd(
@@ -94,7 +109,7 @@ class ReminderActionProcessor(
       } else {
         val canShowWindow = !phoneCallStateProvider.isPhoneCallActive()
         analyticsEventSender.send(FeatureUsedEvent(Feature.REMINDER))
-        val handler = alertHandlerFactory.create(canShowWindow, notificationSettings)
+        val handler = alertHandlerFactory.create(canShowWindow, effective)
         Logger.d(TAG, "Processing reminder id=${reminder.uuId} with handler $handler")
         withContext(dispatcherProvider.main()) {
           handler.handle(reminder)
@@ -103,9 +118,20 @@ class ReminderActionProcessor(
           }
         }
         reminderV2Repository.save(reminder.copy(lastShownAt = dateTimeManager.localToUtc(LocalDateTime.now())))
+        if (resolved.repeatNotification && repeatCount < reminderPreferences.maxRepeatCount) {
+          Logger.d(TAG, "Scheduling repeat #${repeatCount + 1} for reminder id=${reminder.uuId}")
+          jobScheduler.scheduleReminderRepeat(reminder, repeatCount + 1)
+        }
       }
     }
   }
+
+  private fun escalate(settings: NotificationSettings): NotificationSettings =
+    settings.copy(
+      bypassDoNotDisturb = true,
+      wakeScreen = true,
+      priority = ReminderPriority.HIGHEST,
+    )
 
   /** Mirrors [com.elementary.tasks.core.services.action.reminder.process.ReminderNotificationHandler]'s
    *  content/actions so the banner reads the same as the system notification it accompanies. */

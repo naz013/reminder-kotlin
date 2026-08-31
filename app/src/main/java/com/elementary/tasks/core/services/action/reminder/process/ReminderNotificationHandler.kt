@@ -49,6 +49,8 @@ class ReminderNotificationHandler(
 
   public override fun isOngoing(data: ReminderV2): Boolean = !reminderPreferences.isDefaultSwipeToDismissEnabled
 
+  public override fun useFullScreenIntent(data: ReminderV2): Boolean = notificationSettings.wakeScreen
+
   override fun extraActions(data: ReminderV2): List<NotificationAction> =
     if (data.places.isEmpty()) {
       listOf(

@@ -63,6 +63,9 @@ class RemindersSettingsViewModelTest : BaseTest() {
     every { buildInfo.isPro } returns true
     every { systemInfo.hasLedIndication } returns true
     every { systemInfo.hasLocation } returns true
+    every { systemInfo.hasExactAlarmPermission } returns true
+    every { reminderPreferences.maxRepeatCount } returns 10
+    every { reminderPreferences.escalateAfterRepeats } returns 3
     every { dateTimeManager.toLocalTime(any()) } returns LocalTime.of(22, 0)
     every { dateTimeManager.getTime(any()) } returns "10:00 PM"
     every { dateTimeManager.to24HourString(any()) } returns "08:00"
@@ -211,6 +214,100 @@ class RemindersSettingsViewModelTest : BaseTest() {
     val dialog = viewModel.state.value.dialog as? RemindersSettingsDialog.Seek
     assertEquals(SeekDialogKind.REPEAT_INTERVAL, dialog?.kind)
     assertEquals(5, dialog?.previewValue)
+  }
+
+  @Test
+  fun `onMaxRepeatCountClick opens a seek dialog seeded with the current max repeat count`() {
+    viewModel.onMaxRepeatCountClick()
+
+    val dialog = viewModel.state.value.dialog as? RemindersSettingsDialog.Seek
+    assertEquals(SeekDialogKind.MAX_REPEAT_COUNT, dialog?.kind)
+    assertEquals(10, dialog?.previewValue)
+    assertEquals(1, dialog?.minValue)
+  }
+
+  @Test
+  fun `onEscalateAfterRepeatsClick opens a seek dialog capped at the current max repeat count`() {
+    viewModel.onEscalateAfterRepeatsClick()
+
+    val dialog = viewModel.state.value.dialog as? RemindersSettingsDialog.Seek
+    assertEquals(SeekDialogKind.ESCALATE_AFTER_REPEATS, dialog?.kind)
+    assertEquals(3, dialog?.previewValue)
+    assertEquals(10, dialog?.maxValue)
+  }
+
+  @Test
+  fun `onSeekConfirm persists the max repeat count and dismisses the dialog`() {
+    viewModel.onMaxRepeatCountClick()
+    viewModel.onSeekValueChange(15)
+
+    viewModel.onSeekConfirm()
+
+    verify { reminderPreferences.maxRepeatCount = 15 }
+    assertNull(viewModel.state.value.dialog)
+  }
+
+  @Test
+  fun `onSeekConfirm persists the escalation threshold clamped to the max repeat count`() {
+    viewModel.onEscalateAfterRepeatsClick()
+    viewModel.onSeekValueChange(50)
+
+    viewModel.onSeekConfirm()
+
+    verify { reminderPreferences.escalateAfterRepeats = 10 }
+    assertNull(viewModel.state.value.dialog)
+  }
+
+  @Test
+  fun `onExactAlarmWarningClick opens exact alarm settings`() {
+    viewModel.onExactAlarmWarningClick()
+
+    assertEquals(RemindersSettingsEvent.OpenExactAlarmSettings, viewModel.navigationEvent.value?.peekContent())
+  }
+
+  @Test
+  fun `isExactAlarmWarningVisible is false when repeat is off, even without the permission`() {
+    every { systemInfo.hasExactAlarmPermission } returns false
+    every { reminderPreferences.isNotificationRepeatEnabled } returns false
+
+    val vm =
+      RemindersSettingsViewModel(
+        reminderPreferences, textProvider, dateTimeManager, analyticsEventSender,
+        systemInfo, buildInfo, vibrationPlayer, workflowConfig,
+      )
+
+    assertEquals(false, vm.state.value.isExactAlarmWarningVisible)
+  }
+
+  @Test
+  fun `isExactAlarmWarningVisible is true when repeat is on and the permission is missing`() {
+    every { systemInfo.hasExactAlarmPermission } returns false
+    every { reminderPreferences.isNotificationRepeatEnabled } returns true
+
+    val vm =
+      RemindersSettingsViewModel(
+        reminderPreferences, textProvider, dateTimeManager, analyticsEventSender,
+        systemInfo, buildInfo, vibrationPlayer, workflowConfig,
+      )
+
+    assertEquals(true, vm.state.value.isExactAlarmWarningVisible)
+  }
+
+  @Test
+  fun `refresh re-reads the exact alarm permission`() {
+    every { reminderPreferences.isNotificationRepeatEnabled } returns true
+    every { systemInfo.hasExactAlarmPermission } returns false
+    val vm =
+      RemindersSettingsViewModel(
+        reminderPreferences, textProvider, dateTimeManager, analyticsEventSender,
+        systemInfo, buildInfo, vibrationPlayer, workflowConfig,
+      )
+    assertEquals(true, vm.state.value.isExactAlarmWarningVisible)
+
+    every { systemInfo.hasExactAlarmPermission } returns true
+    vm.refresh()
+
+    assertEquals(false, vm.state.value.isExactAlarmWarningVisible)
   }
 
   @Test

@@ -1276,4 +1276,9 @@
     <string name="tag_selected_count_one">%1$d emneknagg valgt</string>
     <string name="tag_selected_count_other">%1$d emneknagger valgt</string>
     <string name="tags_delete_selected_permanently">Slette %1$d emneknagger permanent?</string>
+    <string name="x_repeats">"%s gjentakelser"</string>
+    <string name="reminder_notification_max_repeat_count">Maks. antall gjentakelser</string>
+    <string name="reminder_notification_escalate_after_repeats">Eskaler etter</string>
+    <string name="exact_alarms_restricted">Nøyaktige alarmer er begrenset</string>
+    <string name="exact_alarms_restricted_description">Gjentakende påminnelser kan utløses for sent. Trykk for å tillate nøyaktige alarmer.</string>
 </resources>

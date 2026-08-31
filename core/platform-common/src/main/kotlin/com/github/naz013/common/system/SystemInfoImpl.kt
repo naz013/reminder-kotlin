@@ -1,5 +1,6 @@
 package com.github.naz013.common.system
 
+import android.app.AlarmManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -68,6 +69,16 @@ internal class SystemInfoImpl(
 
   override val isProAppInstalled: Boolean
     get() = isAppInstalled(PRO_PACKAGE_NAME)
+
+  override val hasExactAlarmPermission: Boolean
+    get() {
+      val alarmManager = context.getSystemService(AlarmManager::class.java) ?: return true
+      return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        alarmManager.canScheduleExactAlarms()
+      } else {
+        true
+      }
+    }
 
   override val currentSdkLevel: Int = Build.VERSION.SDK_INT
   override val minSdkLevel: Int = Build.VERSION_CODES.Q

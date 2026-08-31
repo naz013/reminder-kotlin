@@ -1276,4 +1276,9 @@
     <string name="tag_selected_count_one">%1$d tag valgt</string>
     <string name="tag_selected_count_other">%1$d tags valgt</string>
     <string name="tags_delete_selected_permanently">Slet %1$d tags permanent?</string>
+    <string name="x_repeats">"%s gentagelser"</string>
+    <string name="reminder_notification_max_repeat_count">Maks. antal gentagelser</string>
+    <string name="reminder_notification_escalate_after_repeats">Eskaler efter</string>
+    <string name="exact_alarms_restricted">Præcise alarmer er begrænsede</string>
+    <string name="exact_alarms_restricted_description">Gentagne påmindelser kan udløses for sent. Tryk for at tillade præcise alarmer.</string>
 </resources>

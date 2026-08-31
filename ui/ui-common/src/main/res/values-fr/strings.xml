@@ -1278,4 +1278,9 @@
     <string name="tag_selected_count_one">%1$d étiquette sélectionnée</string>
     <string name="tag_selected_count_other">%1$d étiquettes sélectionnées</string>
     <string name="tags_delete_selected_permanently">Supprimer %1$d étiquettes définitivement ?</string>
+    <string name="x_repeats">"%s répétitions"</string>
+    <string name="reminder_notification_max_repeat_count">Nombre maximal de répétitions</string>
+    <string name="reminder_notification_escalate_after_repeats">Escalade après</string>
+    <string name="exact_alarms_restricted">Les alarmes exactes sont restreintes</string>
+    <string name="exact_alarms_restricted_description">Les rappels répétés peuvent se déclencher en retard. Appuyez pour autoriser les alarmes exactes.</string>
 </resources>

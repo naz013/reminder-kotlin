@@ -23,6 +23,8 @@ interface ReminderPreferences {
   var isSbIconEnabled: Boolean
   var isNotificationRepeatEnabled: Boolean
   var notificationRepeatTime: Int
+  var maxRepeatCount: Int
+  var escalateAfterRepeats: Int
   var isLedEnabled: Boolean
   var ledColor: Int
   var isDefaultVibrateEnabled: Boolean

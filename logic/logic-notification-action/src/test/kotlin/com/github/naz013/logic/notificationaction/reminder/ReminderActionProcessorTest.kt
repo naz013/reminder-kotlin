@@ -16,6 +16,7 @@ import com.github.naz013.logic.notificationaction.ForegroundStateTracker
 import com.github.naz013.logic.notificationaction.InAppAlertBus
 import com.github.naz013.logic.notificationaction.InAppAlertPreferences
 import com.github.naz013.logic.notificationaction.PhoneCallStateProvider
+import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.logic.reminder.query.ResolveReminderV2NotificationSettingsUseCase
 import com.github.naz013.logic.workflow.WorkflowTriggerRunner
 import com.github.naz013.repository.ReminderV2Repository
@@ -48,6 +49,7 @@ class ReminderActionProcessorTest {
   private val foregroundStateTracker = mockk<ForegroundStateTracker>()
   private val inAppAlertPreferences = mockk<InAppAlertPreferences>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
+  private val reminderPreferences = mockk<ReminderPreferences>(relaxed = true)
   private val handler = mockk<ActionHandler<ReminderV2>>(relaxed = true)
 
   private lateinit var processor: ReminderActionProcessor
@@ -57,9 +59,11 @@ class ReminderActionProcessorTest {
   private fun notificationSettings(
     priority: ReminderPriority = ReminderPriority.NORMAL,
     bypassDoNotDisturb: Boolean = false,
+    repeatNotification: Boolean = false,
   ) = NotificationSettings(
     priority = priority,
     bypassDoNotDisturb = bypassDoNotDisturb,
+    repeatNotification = repeatNotification,
     category = ReminderNotificationCategory.DEFAULT,
     lockScreenVisibility = LockScreenVisibility.PRIVATE,
   )
@@ -73,6 +77,8 @@ class ReminderActionProcessorTest {
     every { phoneCallStateProvider.isPhoneCallActive() } returns false
     every { foregroundStateTracker.isForeground } returns MutableStateFlow(false)
     every { inAppAlertPreferences.isInAppAlertBannerEnabled } returns true
+    every { reminderPreferences.maxRepeatCount } returns 10
+    every { reminderPreferences.escalateAfterRepeats } returns 3
 
     processor = ReminderActionProcessor(
       dispatcherProvider = mockDispatcherProvider(),
@@ -91,6 +97,7 @@ class ReminderActionProcessorTest {
       foregroundStateTracker = foregroundStateTracker,
       inAppAlertPreferences = inAppAlertPreferences,
       textProvider = textProvider,
+      reminderPreferences = reminderPreferences,
     )
   }
 
@@ -183,5 +190,88 @@ class ReminderActionProcessorTest {
       processor.process("1")
 
       verify(exactly = 0) { inAppAlertBus.show(any()) }
+    }
+
+  @Test
+  fun `process schedules a repeat when repeat notification is enabled and under the cap`() =
+    runTest {
+      val settings = notificationSettings(repeatNotification = true)
+      coEvery { resolveReminderV2NotificationSettingsUseCase(reminder) } returns settings
+      every { doNotDisturbManager.applyDoNotDisturb(any(), any()) } returns false
+
+      processor.process("1", repeatCount = 2)
+
+      coVerify(exactly = 1) { jobScheduler.scheduleReminderRepeat(reminder, 3) }
+    }
+
+  @Test
+  fun `process does not schedule a repeat once the max repeat count is reached`() =
+    runTest {
+      val settings = notificationSettings(repeatNotification = true)
+      coEvery { resolveReminderV2NotificationSettingsUseCase(reminder) } returns settings
+      every { doNotDisturbManager.applyDoNotDisturb(any(), any()) } returns false
+      every { reminderPreferences.maxRepeatCount } returns 3
+
+      processor.process("1", repeatCount = 3)
+
+      coVerify(exactly = 0) { jobScheduler.scheduleReminderRepeat(any(), any()) }
+    }
+
+  @Test
+  fun `process does not schedule a repeat when repeat notification is disabled`() =
+    runTest {
+      val settings = notificationSettings(repeatNotification = false)
+      coEvery { resolveReminderV2NotificationSettingsUseCase(reminder) } returns settings
+      every { doNotDisturbManager.applyDoNotDisturb(any(), any()) } returns false
+
+      processor.process("1", repeatCount = 1)
+
+      coVerify(exactly = 0) { jobScheduler.scheduleReminderRepeat(any(), any()) }
+    }
+
+  @Test
+  fun `process escalates delivery once the escalation threshold is reached`() =
+    runTest {
+      val settings = notificationSettings(priority = ReminderPriority.NORMAL, bypassDoNotDisturb = false)
+      coEvery { resolveReminderV2NotificationSettingsUseCase(reminder) } returns settings
+      every { reminderPreferences.escalateAfterRepeats } returns 3
+      every { doNotDisturbManager.applyDoNotDisturb(any(), any()) } returns false
+
+      processor.process("1", repeatCount = 3)
+
+      coVerify(exactly = 1) {
+        alertHandlerFactory.create(
+          any(),
+          match {
+            it.bypassDoNotDisturb && it.wakeScreen && it.priority == ReminderPriority.HIGHEST
+          },
+        )
+      }
+    }
+
+  @Test
+  fun `process below the escalation threshold does not alter the resolved settings`() =
+    runTest {
+      val settings = notificationSettings(priority = ReminderPriority.NORMAL, bypassDoNotDisturb = false)
+      coEvery { resolveReminderV2NotificationSettingsUseCase(reminder) } returns settings
+      every { reminderPreferences.escalateAfterRepeats } returns 3
+      every { doNotDisturbManager.applyDoNotDisturb(any(), any()) } returns false
+
+      processor.process("1", repeatCount = 2)
+
+      coVerify(exactly = 1) { alertHandlerFactory.create(any(), settings) }
+    }
+
+  @Test
+  fun `process breaks through do not disturb once escalated even though the base settings do not bypass it`() =
+    runTest {
+      val settings = notificationSettings(bypassDoNotDisturb = false)
+      coEvery { resolveReminderV2NotificationSettingsUseCase(reminder) } returns settings
+      every { reminderPreferences.escalateAfterRepeats } returns 1
+      every { doNotDisturbManager.applyDoNotDisturb(any(), any()) } returns true
+
+      processor.process("1", repeatCount = 1)
+
+      coVerify(exactly = 1) { handler.handle(reminder) }
     }
 }
