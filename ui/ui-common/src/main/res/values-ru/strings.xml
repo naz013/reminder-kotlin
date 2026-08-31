@@ -1271,4 +1271,7 @@
     <string name="builder_quick_start_leaving_place_delayed">Уход с места (отложенный старт)</string>
     <string name="select_settings_category_to_see_details">Выберите категорию, чтобы увидеть её настройки</string>
     <string name="select_place_to_see_details">Выберите место, чтобы увидеть подробности</string>
+    <string name="group_selected_count_one">Выбрана %1$d группа</string>
+    <string name="group_selected_count_other">Выбрано %1$d групп</string>
+    <string name="groups_delete_selected_permanently">Удалить %1$d групп навсегда?</string>
 </resources>

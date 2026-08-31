@@ -1,9 +1,10 @@
 package com.github.naz013.ui.group
 
 import androidx.annotation.ColorInt
+import com.github.naz013.ui.common.selection.Selectable
 
 data class UiGroupList(
-  val id: String,
+  override val id: String,
   val title: String,
   @param:ColorInt
   val color: Int,
@@ -14,5 +15,9 @@ data class UiGroupList(
   val canDelete: Boolean,
   val canSetAsDefault: Boolean,
   val reminderCountText: String = "",
-  val isSelected: Boolean = false,
-)
+  /** Whether this group is currently open in the two-pane layout's detail pane. */
+  val isHighlighted: Boolean = false,
+  override val isSelected: Boolean = false,
+) : Selectable<UiGroupList> {
+  override fun withSelected(selected: Boolean) = copy(isSelected = selected)
+}

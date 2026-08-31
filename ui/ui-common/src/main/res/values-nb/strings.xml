@@ -1270,4 +1270,7 @@
     <string name="builder_quick_start_leaving_place_delayed">Forlate et sted (forsinket start)</string>
     <string name="select_settings_category_to_see_details">Velg en kategori for å se innstillingene</string>
     <string name="select_place_to_see_details">Velg et sted for å se detaljer</string>
+    <string name="group_selected_count_one">%1$d gruppe valgt</string>
+    <string name="group_selected_count_other">%1$d grupper valgt</string>
+    <string name="groups_delete_selected_permanently">Slette %1$d grupper permanent?</string>
 </resources>

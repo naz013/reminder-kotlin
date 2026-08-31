@@ -1272,4 +1272,7 @@
     <string name="builder_quick_start_leaving_place_delayed">Lasciare un luogo (avvio ritardato)</string>
     <string name="select_settings_category_to_see_details">Seleziona una categoria per vedere le sue impostazioni</string>
     <string name="select_place_to_see_details">Seleziona un luogo per vedere i dettagli</string>
+    <string name="group_selected_count_one">%1$d gruppo selezionato</string>
+    <string name="group_selected_count_other">%1$d gruppi selezionati</string>
+    <string name="groups_delete_selected_permanently">Eliminare %1$d gruppi definitivamente?</string>
 </resources>

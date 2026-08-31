@@ -1270,4 +1270,7 @@
     <string name="builder_quick_start_leaving_place_delayed">مغادرة مكان (بدء متأخر)</string>
     <string name="select_settings_category_to_see_details">اختر فئة لعرض إعداداتها</string>
     <string name="select_place_to_see_details">اختر مكانًا لعرض التفاصيل</string>
+    <string name="group_selected_count_one">تم تحديد مجموعة واحدة</string>
+    <string name="group_selected_count_other">تم تحديد %1$d مجموعات</string>
+    <string name="groups_delete_selected_permanently">حذف %1$d مجموعات نهائيًا؟</string>
 </resources>

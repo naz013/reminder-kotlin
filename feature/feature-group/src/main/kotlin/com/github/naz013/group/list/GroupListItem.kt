@@ -1,10 +1,12 @@
 package com.github.naz013.group.list
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.SelectionOverlay
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.toColor
@@ -37,25 +40,26 @@ import com.github.naz013.ui.group.UiGroupList
 
 private val COLOR_DOT_SIZE = 14.dp
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun GroupListItem(
   group: UiGroupList,
+  isSelectionMode: Boolean,
   onClick: () -> Unit,
+  onLongClick: () -> Unit,
   onMenuAction: (GroupMenuAction) -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  var menuExpanded by remember { mutableStateOf(false) }
-
   Card(
     modifier =
       modifier
         .fillMaxWidth()
         .clip(MaterialTheme.shapes.medium)
-        .clickable(onClick = onClick),
+        .combinedClickable(onClick = onClick, onLongClick = onLongClick),
     colors = CardDefaults.cardColors(
-      containerColor = if (group.isSelected) MaterialTheme.colorScheme.primaryContainer else CardDefaults.cardColors().containerColor,
+      containerColor = if (group.isHighlighted) MaterialTheme.colorScheme.primaryContainer else CardDefaults.cardColors().containerColor,
     ),
-    border = if (group.isSelected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
+    border = if (group.isHighlighted) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
   ) {
     Row(
       verticalAlignment = Alignment.CenterVertically,
@@ -88,23 +92,38 @@ internal fun GroupListItem(
         )
       }
       Box {
-        MenuIconButton(
-          icon = painterResource(R.drawable.ic_fluent_more_vertical),
-          contentDescription = stringResource(R.string.more_options),
-          onClick = { menuExpanded = true },
-        )
-        AppDropdownMenu(
-          expanded = menuExpanded,
-          onDismissRequest = { menuExpanded = false },
-          items = groupMenuItems(group.canDelete, group.canSetAsDefault),
-          onItemClick = { id ->
-            menuExpanded = false
-            onMenuAction(GroupMenuAction.entries[id])
-          },
-        )
+        SelectionOverlay(
+          isSelectionMode = isSelectionMode,
+          isSelected = group.isSelected,
+          onToggleSelected = onClick,
+        ) {
+          GroupOverflowMenu(group = group, onMenuAction = onMenuAction)
+        }
       }
     }
   }
+}
+
+@Composable
+private fun BoxScope.GroupOverflowMenu(
+  group: UiGroupList,
+  onMenuAction: (GroupMenuAction) -> Unit,
+) {
+  var menuExpanded by remember { mutableStateOf(false) }
+  MenuIconButton(
+    icon = painterResource(R.drawable.ic_fluent_more_vertical),
+    contentDescription = stringResource(R.string.more_options),
+    onClick = { menuExpanded = true },
+  )
+  AppDropdownMenu(
+    expanded = menuExpanded,
+    onDismissRequest = { menuExpanded = false },
+    items = groupMenuItems(group.canDelete, group.canSetAsDefault),
+    onItemClick = { id ->
+      menuExpanded = false
+      onMenuAction(GroupMenuAction.entries[id])
+    },
+  )
 }
 
 @Composable

@@ -1,5 +1,6 @@
 package com.github.naz013.group.list
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,6 +29,8 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.SelectionTopBar
+import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.group.UiGroupList
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,31 +40,51 @@ internal fun GroupsScreen(
   onBackClick: () -> Unit,
   onAddClick: () -> Unit,
   onGroupClick: (String) -> Unit,
+  onGroupLongClick: (String) -> Unit,
   onGroupMenuAction: (UiGroupList, GroupMenuAction) -> Unit,
+  onSelectionCancel: () -> Unit,
+  onDeleteSelectedClick: () -> Unit,
+  onChangeColorClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
+  val isSelectionMode = state.selectedCount > 0
+  val canDeleteSelection = (state.listState as? ListState.Ready)
+    ?.groups?.none { it.isSelected && it.isDefaultGroup } ?: false
+
+  BackHandler(enabled = isSelectionMode) { onSelectionCancel() }
+
   Scaffold(
     modifier = modifier,
     topBar = {
-      TopAppBar(
-        title = { Text(stringResource(R.string.groups)) },
-        navigationIcon = {
-          MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
-            onClick = onBackClick,
-          )
-        },
-        actions = {
-          MenuIconButton(
-            icon = AppIcons.Fluent.Add,
-            contentDescription = stringResource(R.string.create_group),
-            onClick = onAddClick,
-            iconColor = MaterialTheme.colorScheme.primary,
-          )
-        },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
-      )
+      if (isSelectionMode) {
+        GroupsSelectionTopBar(
+          selectedCount = state.selectedCount,
+          canDeleteSelection = canDeleteSelection,
+          onCancelClick = onSelectionCancel,
+          onDeleteClick = onDeleteSelectedClick,
+          onChangeColorClick = onChangeColorClick,
+        )
+      } else {
+        TopAppBar(
+          title = { Text(stringResource(R.string.groups)) },
+          navigationIcon = {
+            MenuIconButton(
+              icon = AppIcons.Builder.ArrowLeft,
+              contentDescription = null,
+              onClick = onBackClick,
+            )
+          },
+          actions = {
+            MenuIconButton(
+              icon = AppIcons.Fluent.Add,
+              contentDescription = stringResource(R.string.create_group),
+              onClick = onAddClick,
+              iconColor = MaterialTheme.colorScheme.primary,
+            )
+          },
+          colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        )
+      }
     },
   ) { padding ->
     when (val listState = state.listState) {
@@ -89,7 +113,9 @@ internal fun GroupsScreen(
           items(listState.groups, key = { it.id }) { group ->
             GroupListItem(
               group = group,
+              isSelectionMode = isSelectionMode,
               onClick = { onGroupClick(group.id) },
+              onLongClick = { onGroupLongClick(group.id) },
               onMenuAction = { action -> onGroupMenuAction(group, action) },
               modifier = Modifier.animateItem(),
             )
@@ -99,6 +125,50 @@ internal fun GroupsScreen(
     }
   }
 }
+
+private enum class GroupsSelectionAction { CHANGE_COLOR, DELETE }
+
+@Composable
+private fun GroupsSelectionTopBar(
+  selectedCount: Int,
+  canDeleteSelection: Boolean,
+  onCancelClick: () -> Unit,
+  onDeleteClick: () -> Unit,
+  onChangeColorClick: () -> Unit,
+) {
+  SelectionTopBar(
+    title = pluralStringResource(R.plurals.groups_selected_count, selectedCount, selectedCount),
+    onCancelClick = onCancelClick,
+    actions = groupsSelectionMenuItems(canDeleteSelection),
+    onActionClick = { id ->
+      when (GroupsSelectionAction.entries[id]) {
+        GroupsSelectionAction.CHANGE_COLOR -> onChangeColorClick()
+        GroupsSelectionAction.DELETE -> onDeleteClick()
+      }
+    },
+  )
+}
+
+@Composable
+private fun groupsSelectionMenuItems(canDeleteSelection: Boolean): List<PopupMenuItem> =
+  buildList {
+    add(
+      PopupMenuItem(
+        id = GroupsSelectionAction.CHANGE_COLOR.ordinal,
+        title = stringResource(R.string.change_color),
+        iconRes = R.drawable.ic_fluent_color_background,
+      )
+    )
+    if (canDeleteSelection) {
+      add(
+        PopupMenuItem(
+          id = GroupsSelectionAction.DELETE.ordinal,
+          title = stringResource(R.string.delete),
+          iconRes = R.drawable.ic_fluent_delete,
+        )
+      )
+    }
+  }
 
 @Composable
 private fun GroupsEmptyState(modifier: Modifier = Modifier) {
@@ -172,6 +242,10 @@ private fun GroupsScreenPreview() {
       onBackClick = {},
       onAddClick = {},
       onGroupClick = {},
+      onGroupLongClick = {},
+      onSelectionCancel = {},
+      onDeleteSelectedClick = {},
+      onChangeColorClick = {},
       onGroupMenuAction = { _, _ -> },
     )
   }

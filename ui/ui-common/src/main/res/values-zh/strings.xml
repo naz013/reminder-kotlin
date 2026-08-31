@@ -1273,4 +1273,7 @@
     <string name="builder_quick_start_leaving_place_delayed">离开某地(延迟开始)</string>
     <string name="select_settings_category_to_see_details">选择类别以查看其设置</string>
     <string name="select_place_to_see_details">选择地点以查看详细信息</string>
+    <string name="group_selected_count_one">已选择 %1$d 个群组</string>
+    <string name="group_selected_count_other">已选择 %1$d 个群组</string>
+    <string name="groups_delete_selected_permanently">永久删除 %1$d 个群组?</string>
 </resources>

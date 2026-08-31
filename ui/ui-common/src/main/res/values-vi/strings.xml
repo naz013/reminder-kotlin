@@ -1270,4 +1270,7 @@
     <string name="builder_quick_start_leaving_place_delayed">Rời khỏi một địa điểm (bắt đầu trễ)</string>
     <string name="select_settings_category_to_see_details">Chọn danh mục để xem cài đặt</string>
     <string name="select_place_to_see_details">Chọn địa điểm để xem chi tiết</string>
+    <string name="group_selected_count_one">%1$d nhóm được chọn</string>
+    <string name="group_selected_count_other">%1$d nhóm được chọn</string>
+    <string name="groups_delete_selected_permanently">Xóa vĩnh viễn %1$d nhóm?</string>
 </resources>

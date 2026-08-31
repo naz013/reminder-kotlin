@@ -1270,4 +1270,7 @@
     <string name="builder_quick_start_leaving_place_delayed">Lämnar en plats (fördröjd start)</string>
     <string name="select_settings_category_to_see_details">Välj en kategori för att se dess inställningar</string>
     <string name="select_place_to_see_details">Välj en plats för att se detaljer</string>
+    <string name="group_selected_count_one">%1$d grupp vald</string>
+    <string name="group_selected_count_other">%1$d grupper valda</string>
+    <string name="groups_delete_selected_permanently">Ta bort %1$d grupper permanent?</string>
 </resources>

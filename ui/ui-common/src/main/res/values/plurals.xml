@@ -24,4 +24,9 @@
         <item quantity="one">@string/note_selected_count_one</item>
         <item quantity="other">@string/note_selected_count_other</item>
     </plurals>
+
+    <plurals name="groups_selected_count" >
+        <item quantity="one">@string/group_selected_count_one</item>
+        <item quantity="other">@string/group_selected_count_other</item>
+    </plurals>
 </resources>
