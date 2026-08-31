@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.foundation.navigation.sidePanelSupporting
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberListDialogDispatcher
@@ -24,6 +25,7 @@ import org.koin.core.parameter.parametersOf
 fun EntryProviderScope<NavKey>.reminderPreviewEntries(
   backStack: MutableList<NavKey>,
   isRenderedAsDetailPane: (NavKey) -> Boolean,
+  isRenderedAsSidePanel: (NavKey) -> Boolean,
   navigateBeyondBackStack: (List<NavKey>) -> Unit,
   adsContent: @Composable () -> Unit,
   onShareFile: (title: String?, file: File) -> Unit,
@@ -36,12 +38,14 @@ fun EntryProviderScope<NavKey>.reminderPreviewEntries(
   onAppClick: (String) -> Unit,
   onUrlClick: (String) -> Unit,
 ) {
-  entry<ReminderPreviewNavKey.Preview>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<ReminderPreviewNavKey.Preview>(
+    metadata = ListDetailSceneStrategy.detailPane() + sidePanelSupporting(),
+  ) { key ->
     // Fixed at first composition of this entry, not re-read on every recomposition: once the
     // entry is popped (key.id no longer on the backstack), isRenderedAsDetailPane(key) would
     // otherwise flip to false while the pop's exit transition is still animating out, flashing
     // the back arrow before the screen finishes closing.
-    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
+    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) || isRenderedAsSidePanel(key) }
     PreviewEntry(
       key,
       backStack,

@@ -25,6 +25,7 @@ import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
+import com.github.naz013.ui.common.compose.foundation.navigation.sidePanelSupporting
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.github.naz013.common.Permissions
@@ -36,6 +37,7 @@ import org.koin.core.parameter.parametersOf
 fun EntryProviderScope<NavKey>.birthdaysEntries(
   backStack: MutableList<NavKey>,
   isRenderedAsDetailPane: (NavKey) -> Boolean,
+  isRenderedAsSidePanel: (NavKey) -> Boolean,
   adsContent: @Composable () -> Unit,
   onCallClick: (String) -> Unit,
   onSmsClick: (String) -> Unit,
@@ -50,16 +52,20 @@ fun EntryProviderScope<NavKey>.birthdaysEntries(
       },
     ),
   ) { ListEntry(backStack) }
-  entry<BirthdaysNavKey.Preview>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<BirthdaysNavKey.Preview>(
+    metadata = ListDetailSceneStrategy.detailPane() + sidePanelSupporting(),
+  ) { key ->
     // Fixed at first composition, not re-read on every recomposition - see the matching comment
     // in ReminderPreviewNavGraph.kt.
-    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
+    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) || isRenderedAsSidePanel(key) }
     PreviewEntry(key, backStack, renderAsDetailPane, adsContent, onCallClick, onSmsClick)
   }
-  entry<BirthdaysNavKey.Edit>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<BirthdaysNavKey.Edit>(
+    metadata = ListDetailSceneStrategy.detailPane() + sidePanelSupporting(),
+  ) { key ->
     // Fixed at first composition, not re-read on every recomposition - see the matching comment
     // in ReminderPreviewNavGraph.kt.
-    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
+    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) || isRenderedAsSidePanel(key) }
     EditEntry(key, backStack, renderAsDetailPane, adsContent)
   }
 }

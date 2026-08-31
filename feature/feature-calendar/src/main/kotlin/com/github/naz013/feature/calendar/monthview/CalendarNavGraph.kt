@@ -17,9 +17,21 @@ import com.github.naz013.feature.calendar.CalendarHostViewModel
 import com.github.naz013.feature.calendar.CalendarViewMode
 import com.github.naz013.feature.calendar.timeline.TimelineScreen
 import com.github.naz013.feature.calendar.timeline.TimelineViewModel
+import com.github.naz013.ui.common.compose.foundation.navigation.sidePanelHost
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+
+/**
+ * Marks Calendar's own entries as the full-screen host a `SidePanelSceneStrategy` (`app` module)
+ * can float a side sheet over - so that build-reminder/edit-birthday/preview screens pushed from
+ * Calendar (tagged `sidePanelSupporting()` in their own nav graphs) render as a Material 3 side
+ * sheet (https://m3.material.io/components/side-sheets/overview) over Calendar instead of pushing
+ * full-screen, on Medium+ width. Calendar itself is never resized or hidden by this - it always
+ * renders at full size; only the supporting entry floats over it. See `AppNavGraph.kt` /
+ * `SidePanelSceneStrategy.kt` for the actual wiring.
+ */
+private val CalendarSidePanelHostMetadata: Map<String, Any> = sidePanelHost()
 
 fun EntryProviderScope<NavKey>.calendarEntries(
   backStack: MutableList<NavKey>,
@@ -29,7 +41,7 @@ fun EntryProviderScope<NavKey>.calendarEntries(
   onOpenBirthdayPreview: (id: String) -> Unit,
   onOpenSettings: (screenTitle: String) -> Unit,
 ) {
-  entry<CalendarNavKey.Home> {
+  entry<CalendarNavKey.Home>(metadata = CalendarSidePanelHostMetadata) {
     CalendarHostEntry(
       initialDateMillis = System.currentTimeMillis(),
       forcedMode = null,
@@ -41,7 +53,7 @@ fun EntryProviderScope<NavKey>.calendarEntries(
       onOpenSettings = onOpenSettings,
     )
   }
-  entry<CalendarNavKey.DayAt> { key ->
+  entry<CalendarNavKey.DayAt>(metadata = CalendarSidePanelHostMetadata) { key ->
     CalendarHostEntry(
       initialDateMillis = key.dateMillis,
       forcedMode = CalendarViewMode.DAY,

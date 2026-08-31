@@ -112,6 +112,15 @@ import org.koin.compose.koinInject
  * `HomeNavKey.Main` and the reminder/birthday preview screens are the first adopters - see
  * `docs/home-two-pane-design.md`.
  *
+ * [sidePanelSceneStrategy] is a second, independent two-pane mechanism for flows that want a
+ * floating Material 3 side sheet (https://m3.material.io/components/side-sheets/overview) instead
+ * of a fixed-width shared column: the host entry stays full-screen and is never adapted (tag it
+ * `sidePanelHost()`), while the entry pushed directly on top of it floats over it with a scrim (tag
+ * it `sidePanelSupporting()`). Deliberately a small hand-rolled `SceneStrategy` rather than the M3
+ * adaptive library's own `SupportingPaneSceneStrategy` - see `SidePanelSceneStrategy.kt`'s doc for
+ * why. Calendar's build-reminder/edit-birthday/preview screens are the only adopters so far - see
+ * `CalendarNavGraph.kt`.
+ *
  * [PersistentNavRailSceneDecoratorStrategy] is registered the same way for the nav rail: it wraps
  * every scene (not just specific tagged entries) in a persistent navigation rail on Medium+
  * width, with the app's top-level sections (Home, Calendar, Notes, ...) as selectable items - see
@@ -190,6 +199,23 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           it == PlacesNavKey.List
       }
   }
+  // Distinct from [isRenderedAsDetailPane]: Calendar never becomes a flat list pane (it always
+  // stays full screen - see `CalendarNavGraph.kt`'s doc), so a build-reminder/edit-birthday/preview
+  // screen reached from it is offered a different rendering: a Material 3 side sheet floating over
+  // Calendar (see [sidePanelSceneStrategy] below), not a fixed-width column beside a shrunk list.
+  // Both predicates can be true for the same key at different points in its lifetime, never
+  // simultaneously, since they key off mutually exclusive predecessor sets.
+  val isRenderedAsSidePanel: (NavKey) -> Boolean = { key ->
+    isMediumOrWiderWidth &&
+      backStack.lastOrNull() == key &&
+      backStack.getOrNull(backStack.lastIndex - 1).let { it == CalendarNavKey.Home || it is CalendarNavKey.DayAt }
+  }
+  // A dedicated hand-rolled SceneStrategy rather than the M3 adaptive library's own
+  // SupportingPaneSceneStrategy - see SidePanelSceneStrategy.kt's doc for why the library one
+  // doesn't work for this case. Not remember()'d (matching persistentNavRailStrategy below) so the
+  // captured isMediumOrWiderWidth lambda always reads the current recomposition's value rather than
+  // freezing to whatever it was on first composition.
+  val sidePanelSceneStrategy = SidePanelSceneStrategy(isMediumOrWiderWidth = { isMediumOrWiderWidth })
 
   DisposableEffect(backStack) {
     appNavBridge.attachOuterBackStack(backStack)
@@ -202,7 +228,13 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
     // shows the raw window canvas (black) instead of the theme's background.
     modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
     onBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
-    sceneStrategies = listOf(listDetailSceneStrategy),
+    // sidePanelSceneStrategy tried first: ListDetailSceneStrategy would otherwise phantom-claim
+    // Calendar's build-reminder/edit-birthday/preview screens too (they're also tagged
+    // ListDetailSceneStrategy.detailPane() for their Home/Agenda/etc. callers) even when reached
+    // from Calendar, which was never tagged listPane() - see SidePanelSceneStrategy.kt's doc.
+    // sidePanelSceneStrategy only ever claims a scene when its own host+panel tags both match, so
+    // trying it first doesn't affect any of listDetailSceneStrategy's own (unrelated) pairings.
+    sceneStrategies = listOf(sidePanelSceneStrategy, listDetailSceneStrategy),
     sceneDecoratorStrategies = listOf(persistentNavRailStrategy),
     entryDecorators =
       listOf(
@@ -300,6 +332,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         birthdaysEntries(
           backStack = backStack,
           isRenderedAsDetailPane = isRenderedAsDetailPane,
+          isRenderedAsSidePanel = isRenderedAsSidePanel,
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Birthday) },
           onCallClick = { number -> phoneCaller.call(number) },
           onSmsClick = { number -> smsSender.send(number, null) },
@@ -312,6 +345,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         buildReminderEntries(
           backStack = backStack,
           isRenderedAsDetailPane = isRenderedAsDetailPane,
+          isRenderedAsSidePanel = isRenderedAsSidePanel,
           rememberContactPhonePicker = { rememberContactPhonePicker() },
         )
         todoEditEntries(
@@ -321,16 +355,18 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         calendarEntries(
           backStack = backStack,
           onOpenNewReminder = { dateMillis ->
-            backStack.add(
+            backStack.navigateToDetailPane(
               BuildReminderNavKey.Main(
                 deepLinkDateTimeType = BuildReminderNavKey.Main.DateTimeType.Date,
                 deepLinkDateTimeMillis = dateMillis,
               ),
             )
           },
-          onOpenReminderPreview = { id -> backStack.add(ReminderPreviewNavKey.Preview(id)) },
-          onOpenNewBirthday = { epochDay -> backStack.add(BirthdaysNavKey.Edit(prefillDateEpochDay = epochDay)) },
-          onOpenBirthdayPreview = { id -> backStack.add(BirthdaysNavKey.Preview(id)) },
+          onOpenReminderPreview = { id -> backStack.navigateToDetailPane(ReminderPreviewNavKey.Preview(id)) },
+          onOpenNewBirthday = { epochDay ->
+            backStack.navigateToDetailPane(BirthdaysNavKey.Edit(prefillDateEpochDay = epochDay))
+          },
+          onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
           onOpenSettings = { title -> backStack.add(SettingsNavKey.Calendar(title)) },
         )
         agendaEntries(
@@ -350,6 +386,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         reminderPreviewEntries(
           backStack = backStack,
           isRenderedAsDetailPane = isRenderedAsDetailPane,
+          isRenderedAsSidePanel = isRenderedAsSidePanel,
           navigateBeyondBackStack = { keys -> appNavBridge.navigate(*keys.toTypedArray()) },
           adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.ReminderPreview) },
           onShareFile = { title, file -> fileIntentSender.send(title, file) },

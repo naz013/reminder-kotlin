@@ -49,6 +49,7 @@ import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.navigation.sidePanelSupporting
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -57,12 +58,15 @@ import org.koin.core.parameter.parametersOf
 fun EntryProviderScope<NavKey>.buildReminderEntries(
   backStack: MutableList<NavKey>,
   isRenderedAsDetailPane: (NavKey) -> Boolean,
+  isRenderedAsSidePanel: (NavKey) -> Boolean,
   rememberContactPhonePicker: @Composable () -> ((onResult: (String) -> Unit) -> Unit),
 ) {
-  entry<BuildReminderNavKey.Main>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+  entry<BuildReminderNavKey.Main>(
+    metadata = ListDetailSceneStrategy.detailPane() + sidePanelSupporting(),
+  ) { key ->
     // Fixed at first composition, not re-read on every recomposition - see the matching comment
     // in ReminderPreviewNavGraph.kt.
-    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
+    val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) || isRenderedAsSidePanel(key) }
     MainEntry(key, backStack, renderAsDetailPane, rememberContactPhonePicker)
   }
   entry<BuildReminderNavKey.Help> {
