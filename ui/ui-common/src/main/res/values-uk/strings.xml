@@ -1279,4 +1279,10 @@
     <string name="tag_selected_count_one">Вибрано %1$d тег</string>
     <string name="tag_selected_count_other">Вибрано %1$d тегів</string>
     <string name="tags_delete_selected_permanently">Видалити %1$d тегів назавжди?</string>
+    <string name="ai_digest">Щоденний AI-дайджест</string>
+    <string name="ai_digest_daily_toggle">Ранковий дайджест</string>
+    <string name="ai_digest_time">Час сповіщення</string>
+    <string name="ai_digest_notification_title">Ваш щоденний дайджест</string>
+    <string name="ai_digest_template_reminders">Сьогодні у вас %1$d нагадувань, зокрема «%2$s» о %3$s.</string>
+    <string name="ai_digest_template_birthdays">Сьогодні день народження %1$s.</string>
 </resources>

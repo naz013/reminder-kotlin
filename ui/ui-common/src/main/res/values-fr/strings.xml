@@ -1278,4 +1278,10 @@
     <string name="tag_selected_count_one">%1$d étiquette sélectionnée</string>
     <string name="tag_selected_count_other">%1$d étiquettes sélectionnées</string>
     <string name="tags_delete_selected_permanently">Supprimer %1$d étiquettes définitivement ?</string>
+    <string name="ai_digest">Résumé quotidien IA</string>
+    <string name="ai_digest_daily_toggle">Résumé du matin</string>
+    <string name="ai_digest_time">Heure de notification</string>
+    <string name="ai_digest_notification_title">Votre résumé quotidien</string>
+    <string name="ai_digest_template_reminders">Vous avez %1$d rappels aujourd\'hui, dont « %2$s » à %3$s.</string>
+    <string name="ai_digest_template_birthdays">Aujourd\'hui, c\'est l\'anniversaire de %1$s.</string>
 </resources>

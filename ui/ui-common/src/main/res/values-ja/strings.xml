@@ -1278,4 +1278,10 @@
     <string name="tag_selected_count_one">%1$dタグを選択中</string>
     <string name="tag_selected_count_other">%1$dタグを選択中</string>
     <string name="tags_delete_selected_permanently">%1$dタグを完全に削除しますか?</string>
+    <string name="ai_digest">AIデイリーダイジェスト</string>
+    <string name="ai_digest_daily_toggle">モーニングダイジェスト</string>
+    <string name="ai_digest_time">通知時刻</string>
+    <string name="ai_digest_notification_title">本日のダイジェスト</string>
+    <string name="ai_digest_template_reminders">本日は%1$d件のリマインダーがあります。\'%2$s\'（%3$s）など。</string>
+    <string name="ai_digest_template_birthdays">本日は%1$sの誕生日です。</string>
 </resources>

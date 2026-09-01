@@ -1278,4 +1278,10 @@
     <string name="tag_selected_count_one">%1$d tag selezionato</string>
     <string name="tag_selected_count_other">%1$d tag selezionati</string>
     <string name="tags_delete_selected_permanently">Eliminare %1$d tag definitivamente?</string>
+    <string name="ai_digest">Riepilogo giornaliero IA</string>
+    <string name="ai_digest_daily_toggle">Riepilogo mattutino</string>
+    <string name="ai_digest_time">Orario notifica</string>
+    <string name="ai_digest_notification_title">Il tuo riepilogo giornaliero</string>
+    <string name="ai_digest_template_reminders">Hai %1$d promemoria oggi, tra cui \'%2$s\' alle %3$s.</string>
+    <string name="ai_digest_template_birthdays">Oggi è il compleanno di %1$s.</string>
 </resources>

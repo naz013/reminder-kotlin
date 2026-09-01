@@ -1280,4 +1280,10 @@
     <string name="tag_selected_count_one">%1$d टैग चयनित</string>
     <string name="tag_selected_count_other">%1$d टैग्स चयनित</string>
     <string name="tags_delete_selected_permanently">%1$d टैग्स को स्थायी रूप से हटाएं?</string>
+    <string name="ai_digest">एआई दैनिक डाइजेस्ट</string>
+    <string name="ai_digest_daily_toggle">सुबह का डाइजेस्ट</string>
+    <string name="ai_digest_time">सूचना का समय</string>
+    <string name="ai_digest_notification_title">आपका दैनिक डाइजेस्ट</string>
+    <string name="ai_digest_template_reminders">आज आपके पास %1$d रिमाइंडर हैं, जिनमें \'%2$s\' (%3$s) शामिल है.</string>
+    <string name="ai_digest_template_birthdays">आज %1$s का जन्मदिन है.</string>
 </resources>

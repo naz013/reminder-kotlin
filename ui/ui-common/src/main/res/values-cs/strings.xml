@@ -1278,4 +1278,10 @@
     <string name="tag_selected_count_one">Vybrán %1$d štítek</string>
     <string name="tag_selected_count_other">Vybráno %1$d štítků</string>
     <string name="tags_delete_selected_permanently">Trvale smazat %1$d štítků?</string>
+    <string name="ai_digest">Denní AI přehled</string>
+    <string name="ai_digest_daily_toggle">Ranní přehled</string>
+    <string name="ai_digest_time">Čas oznámení</string>
+    <string name="ai_digest_notification_title">Váš denní přehled</string>
+    <string name="ai_digest_template_reminders">Dnes máte %1$d připomenutí, včetně „%2$s“ v %3$s.</string>
+    <string name="ai_digest_template_birthdays">Dnes má %1$s narozeniny.</string>
 </resources>

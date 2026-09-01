@@ -1276,4 +1276,10 @@
     <string name="tag_selected_count_one">%1$d tag valgt</string>
     <string name="tag_selected_count_other">%1$d tags valgt</string>
     <string name="tags_delete_selected_permanently">Slet %1$d tags permanent?</string>
+    <string name="ai_digest">AI-dagsoversigt</string>
+    <string name="ai_digest_daily_toggle">Morgenoversigt</string>
+    <string name="ai_digest_time">Notifikationstidspunkt</string>
+    <string name="ai_digest_notification_title">Din dagsoversigt</string>
+    <string name="ai_digest_template_reminders">Du har %1$d påmindelser i dag, herunder \'%2$s\' kl. %3$s.</string>
+    <string name="ai_digest_template_birthdays">%1$s har fødselsdag i dag.</string>
 </resources>

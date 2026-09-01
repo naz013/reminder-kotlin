@@ -1276,4 +1276,10 @@
     <string name="tag_selected_count_one">เลือก %1$d แท็กแล้ว</string>
     <string name="tag_selected_count_other">เลือก %1$d แท็กแล้ว</string>
     <string name="tags_delete_selected_permanently">ลบ %1$d แท็กอย่างถาวร?</string>
+    <string name="ai_digest">สรุปประจำวันด้วย AI</string>
+    <string name="ai_digest_daily_toggle">สรุปยามเช้า</string>
+    <string name="ai_digest_time">เวลาแจ้งเตือน</string>
+    <string name="ai_digest_notification_title">สรุปประจำวันของคุณ</string>
+    <string name="ai_digest_template_reminders">วันนี้คุณมีการแจ้งเตือน %1$d รายการ รวมถึง \'%2$s\' เวลา %3$s</string>
+    <string name="ai_digest_template_birthdays">วันนี้เป็นวันเกิดของ %1$s</string>
 </resources>

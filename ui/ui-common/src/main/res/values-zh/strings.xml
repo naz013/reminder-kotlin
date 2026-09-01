@@ -1279,4 +1279,10 @@
     <string name="tag_selected_count_one">已选择 %1$d 个标签</string>
     <string name="tag_selected_count_other">已选择 %1$d 个标签</string>
     <string name="tags_delete_selected_permanently">永久删除 %1$d 个标签?</string>
+    <string name="ai_digest">AI每日摘要</string>
+    <string name="ai_digest_daily_toggle">早间摘要</string>
+    <string name="ai_digest_time">通知时间</string>
+    <string name="ai_digest_notification_title">您的每日摘要</string>
+    <string name="ai_digest_template_reminders">您今天有%1$d条提醒，包括\'%2$s\'（%3$s）等。</string>
+    <string name="ai_digest_template_birthdays">今天是%1$s的生日。</string>
 </resources>

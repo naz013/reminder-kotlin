@@ -1278,4 +1278,10 @@
     <string name="tag_selected_count_one">태그 %1$d개 선택됨</string>
     <string name="tag_selected_count_other">태그 %1$d개 선택됨</string>
     <string name="tags_delete_selected_permanently">%1$d개의 태그를 영구 삭제하시겠습니까?</string>
+    <string name="ai_digest">AI 데일리 다이제스트</string>
+    <string name="ai_digest_daily_toggle">아침 다이제스트</string>
+    <string name="ai_digest_time">알림 시간</string>
+    <string name="ai_digest_notification_title">오늘의 다이제스트</string>
+    <string name="ai_digest_template_reminders">오늘 %1$d개의 미리 알림이 있습니다. \'%2$s\'(%3$s) 등.</string>
+    <string name="ai_digest_template_birthdays">오늘은 %1$s의 생일입니다.</string>
 </resources>

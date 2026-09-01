@@ -1276,4 +1276,10 @@
     <string name="tag_selected_count_one">%1$d label dipilih</string>
     <string name="tag_selected_count_other">%1$d label dipilih</string>
     <string name="tags_delete_selected_permanently">Hapus %1$d label secara permanen?</string>
+    <string name="ai_digest">Ringkasan harian AI</string>
+    <string name="ai_digest_daily_toggle">Ringkasan pagi</string>
+    <string name="ai_digest_time">Waktu notifikasi</string>
+    <string name="ai_digest_notification_title">Ringkasan harian Anda</string>
+    <string name="ai_digest_template_reminders">Anda memiliki %1$d pengingat hari ini, termasuk \'%2$s\' pukul %3$s.</string>
+    <string name="ai_digest_template_birthdays">Hari ini adalah ulang tahun %1$s.</string>
 </resources>

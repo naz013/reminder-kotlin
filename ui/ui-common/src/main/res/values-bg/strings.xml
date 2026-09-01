@@ -1279,4 +1279,10 @@
     <string name="tag_selected_count_one">Избран е %1$d етикет</string>
     <string name="tag_selected_count_other">Избрани са %1$d етикета</string>
     <string name="tags_delete_selected_permanently">Изтриване на %1$d етикета окончателно?</string>
+    <string name="ai_digest">Дневно AI резюме</string>
+    <string name="ai_digest_daily_toggle">Сутрешно резюме</string>
+    <string name="ai_digest_time">Час на известието</string>
+    <string name="ai_digest_notification_title">Вашето дневно резюме</string>
+    <string name="ai_digest_template_reminders">Днес имате %1$d напомняния, включително „%2$s“ в %3$s.</string>
+    <string name="ai_digest_template_birthdays">Днес е рожденият ден на %1$s.</string>
 </resources>

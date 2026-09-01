@@ -1278,4 +1278,10 @@
     <string name="tag_selected_count_one">Zaznaczono %1$d tag</string>
     <string name="tag_selected_count_other">Zaznaczono %1$d tagów</string>
     <string name="tags_delete_selected_permanently">Usunąć %1$d tagów na stałe?</string>
+    <string name="ai_digest">Codzienne podsumowanie AI</string>
+    <string name="ai_digest_daily_toggle">Poranne podsumowanie</string>
+    <string name="ai_digest_time">Czas powiadomienia</string>
+    <string name="ai_digest_notification_title">Twoje codzienne podsumowanie</string>
+    <string name="ai_digest_template_reminders">Masz dziś %1$d przypomnień, w tym „%2$s” o %3$s.</string>
+    <string name="ai_digest_template_birthdays">Dziś są urodziny %1$s.</string>
 </resources>

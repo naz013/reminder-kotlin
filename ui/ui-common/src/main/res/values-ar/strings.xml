@@ -1276,4 +1276,10 @@
     <string name="tag_selected_count_one">تم تحديد وسم واحد</string>
     <string name="tag_selected_count_other">تم تحديد %1$d وسوم</string>
     <string name="tags_delete_selected_permanently">حذف %1$d وسوم نهائيًا؟</string>
+    <string name="ai_digest">الملخص اليومي بالذكاء الاصطناعي</string>
+    <string name="ai_digest_daily_toggle">الملخص الصباحي</string>
+    <string name="ai_digest_time">وقت الإشعار</string>
+    <string name="ai_digest_notification_title">ملخصك اليومي</string>
+    <string name="ai_digest_template_reminders">لديك %1$d تذكيرات اليوم، بما في ذلك \'%2$s\' في %3$s.</string>
+    <string name="ai_digest_template_birthdays">اليوم عيد ميلاد %1$s.</string>
 </resources>

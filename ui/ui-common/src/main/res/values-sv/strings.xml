@@ -1276,4 +1276,10 @@
     <string name="tag_selected_count_one">%1$d tagg vald</string>
     <string name="tag_selected_count_other">%1$d taggar valda</string>
     <string name="tags_delete_selected_permanently">Ta bort %1$d taggar permanent?</string>
+    <string name="ai_digest">AI-dagssammanfattning</string>
+    <string name="ai_digest_daily_toggle">Morgonsammanfattning</string>
+    <string name="ai_digest_time">Aviseringstid</string>
+    <string name="ai_digest_notification_title">Din dagssammanfattning</string>
+    <string name="ai_digest_template_reminders">Du har %1$d påminnelser idag, inklusive \'%2$s\' kl. %3$s.</string>
+    <string name="ai_digest_template_birthdays">%1$s fyller år idag.</string>
 </resources>

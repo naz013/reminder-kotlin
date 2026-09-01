@@ -1279,4 +1279,10 @@
     <string name="tag_selected_count_one">%1$d etiket seçildi</string>
     <string name="tag_selected_count_other">%1$d etiket seçildi</string>
     <string name="tags_delete_selected_permanently">%1$d etiket kalıcı olarak silinsin mi?</string>
+    <string name="ai_digest">Yapay zeka günlük özeti</string>
+    <string name="ai_digest_daily_toggle">Sabah özeti</string>
+    <string name="ai_digest_time">Bildirim saati</string>
+    <string name="ai_digest_notification_title">Günlük özetiniz</string>
+    <string name="ai_digest_template_reminders">Bugün \'%2$s\' (%3$s) dahil %1$d hatırlatıcınız var.</string>
+    <string name="ai_digest_template_birthdays">Bugün %1$s\'in doğum günü.</string>
 </resources>
