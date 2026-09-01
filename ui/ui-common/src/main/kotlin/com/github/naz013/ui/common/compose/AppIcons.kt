@@ -145,6 +145,7 @@ object AppIcons {
     val TextSortDescending: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.TextSortDescending)
     val TextSortAscending: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.TextSortAscending)
     val TextColor: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.TextColor)
+    val Branch: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Branch)
   }
 
   object Builder {
@@ -172,7 +173,6 @@ object AppIcons {
     val Frequency: Painter @Composable get() = painterResource(DrawableCatalog.Builder.Frequency)
     val GoogleCalendarAdd: Painter @Composable get() = painterResource(DrawableCatalog.Builder.GoogleCalendarAdd)
     val GoogleTaskList: Painter @Composable get() = painterResource(DrawableCatalog.Builder.GoogleTaskList)
-    val Group: Painter @Composable get() = painterResource(DrawableCatalog.Builder.Group)
     val IcalHelp: Painter @Composable get() = painterResource(DrawableCatalog.Builder.IcalHelp)
     val Icalendar: Painter @Composable get() = painterResource(DrawableCatalog.Builder.Icalendar)
     val Interval: Painter @Composable get() = painterResource(DrawableCatalog.Builder.Interval)
@@ -191,7 +191,7 @@ object AppIcons {
     val Rocket: Painter @Composable get() = painterResource(DrawableCatalog.Builder.Rocket)
     val SendMessage: Painter @Composable get() = painterResource(DrawableCatalog.Builder.SendMessage)
     val SubTaskList: Painter @Composable get() = painterResource(DrawableCatalog.Builder.SubTaskList)
-    val Tag: Painter @Composable get() = painterResource(DrawableCatalog.Builder.Group)
+    val Tag: Painter @Composable get() = painterResource(DrawableCatalog.Builder.Tag)
     val Time: Painter @Composable get() = painterResource(DrawableCatalog.Builder.Time)
     val TimePicker: Painter @Composable get() = painterResource(DrawableCatalog.Builder.TimePicker)
     val Timer: Painter @Composable get() = painterResource(DrawableCatalog.Builder.Timer)

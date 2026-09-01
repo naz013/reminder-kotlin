@@ -35,7 +35,7 @@ object DrawableCatalog {
     val Frequency = R.drawable.ic_builder_frequency
     val GoogleCalendarAdd = R.drawable.ic_builder_google_calendar_add
     val GoogleTaskList = R.drawable.ic_builder_google_task_list
-    val Group = R.drawable.ic_builder_group
+    val Tag = R.drawable.ic_builder_group
     val IcalHelp = R.drawable.ic_builder_ical_help
     val Icalendar = R.drawable.ic_builder_icalendar
     val Interval = R.drawable.ic_builder_interval
@@ -200,5 +200,6 @@ object DrawableCatalog {
     val TextSortDescending = R.drawable.ic_fluent_text_sort_descending
     val TextSortAscending = R.drawable.ic_fluent_text_sort_ascending
     val TextColor = R.drawable.ic_fluent_text_color
+    val Branch = R.drawable.ic_fluent_branch
   }
 }

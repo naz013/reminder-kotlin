@@ -225,7 +225,7 @@ internal fun EditGroupScreen(
       if (state.workflowsVisible) {
         SettingsItem(
           title = stringResource(R.string.workflow_rules),
-          icon = painterResource(R.drawable.ic_fluent_arrow_repeat_all),
+          icon = AppIcons.Fluent.Branch,
           modifier = Modifier.padding(top = 16.dp),
           onClick = onWorkflowRulesClick,
         )

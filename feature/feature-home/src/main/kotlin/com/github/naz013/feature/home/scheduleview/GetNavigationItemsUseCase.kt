@@ -75,7 +75,7 @@ class GetNavigationItemsUseCase(
       .async(dispatcherProvider.io()) {
         HeaderNavigationItem(
           titleRes = R.string.calendar,
-          iconRes = R.drawable.ic_fluent_calendar,
+          iconRes = DrawableCatalog.Fluent.Calendar,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenCalendar,
           subtitle = dateTimeManager.formatDayMonth(LocalDate.now()),
@@ -88,7 +88,7 @@ class GetNavigationItemsUseCase(
       .async(dispatcherProvider.io()) {
         HeaderNavigationItem(
           titleRes = R.string.agenda,
-          iconRes = R.drawable.ic_fluent_calendar_agenda,
+          iconRes = DrawableCatalog.Fluent.CalendarAgenda,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenAgenda,
           subtitle = "${reminderV2Repository.count(active = true, removed = false)}",
@@ -100,7 +100,7 @@ class GetNavigationItemsUseCase(
       .async(dispatcherProvider.io()) {
         HeaderNavigationItem(
           titleRes = R.string.notes,
-          iconRes = R.drawable.ic_fluent_note,
+          iconRes = DrawableCatalog.Fluent.Note,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
           subtitle = "${noteRepository.countAll(isArchived = false)}",
@@ -112,7 +112,7 @@ class GetNavigationItemsUseCase(
       .async(dispatcherProvider.io()) {
         HeaderNavigationItem(
           titleRes = R.string.birthdays,
-          iconRes = R.drawable.ic_fluent_food_cake,
+          iconRes = DrawableCatalog.Fluent.FoodCake,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenBirthdays,
           subtitle = "${birthdayRepository.countAll()}",
@@ -124,7 +124,7 @@ class GetNavigationItemsUseCase(
       .async(dispatcherProvider.io()) {
         HeaderNavigationItem(
           titleRes = R.string.google_tasks,
-          iconRes = R.drawable.ic_builder_google_task_list,
+          iconRes = DrawableCatalog.Builder.GoogleTaskList,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGoogleTasks,
           subtitle = "${googleTaskRepository.countAll()}",
@@ -136,7 +136,7 @@ class GetNavigationItemsUseCase(
       .async(dispatcherProvider.io()) {
         HeaderNavigationItem(
           titleRes = R.string.workflow_automations,
-          iconRes = R.drawable.ic_fluent_arrow_repeat_all,
+          iconRes = DrawableCatalog.Fluent.Branch,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenWorkflowGallery,
           subtitle = "${workflowRuleRepository.getEnabled().size}",
@@ -148,7 +148,7 @@ class GetNavigationItemsUseCase(
       .async(dispatcherProvider.io()) {
         HeaderNavigationItem(
           titleRes = R.string.groups,
-          iconRes = R.drawable.ic_fluent_group,
+          iconRes = DrawableCatalog.Fluent.Group,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGroups,
           subtitle = "${groupV2Repository.countAll()}",
@@ -160,7 +160,7 @@ class GetNavigationItemsUseCase(
       .async(dispatcherProvider.io()) {
         HeaderNavigationItem(
           titleRes = R.string.tags,
-          iconRes = DrawableCatalog.Builder.Group,
+          iconRes = DrawableCatalog.Builder.Tag,
           color = Color.Green,
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenTags,
           subtitle = "${tagRepository.getAll().size}",
