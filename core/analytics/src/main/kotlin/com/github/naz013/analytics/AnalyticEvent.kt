@@ -165,7 +165,8 @@ enum class Feature(val value: String) {
   LOCAL_BACKUP("local_backup"),
   GEMINI_FUNCTIONS("gemini_functions"),
   PUBLIC_HOLIDAYS("public_holidays"),
-  BUY_ME_A_COFFEE("buy_me_a_coffee")
+  BUY_ME_A_COFFEE("buy_me_a_coffee"),
+  AI_DIGEST("ai_digest")
 }
 
 enum class Screen(val value: String) {
@@ -189,7 +190,8 @@ enum class Screen(val value: String) {
   SECURITY_SETTINGS("security_settings"),
   NOTE_SETTINGS("note_settings"),
   LOCATION_SETTINGS("location_settings"),
-  OTHER_SETTINGS("other_settings")
+  OTHER_SETTINGS("other_settings"),
+  AI_DIGEST_SETTINGS("ai_digest_settings")
 }
 
 enum class Widget(val value: String) {

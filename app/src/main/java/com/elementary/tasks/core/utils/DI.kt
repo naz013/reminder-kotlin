@@ -5,6 +5,7 @@ import com.elementary.tasks.core.birthdays.AppBirthdayPreferences
 import com.elementary.tasks.core.calendar.AppCalendarPreferences
 import com.elementary.tasks.core.cloud.CloudKeysStorageImpl
 import com.elementary.tasks.core.data.repository.ReminderSettingsRepositoryImpl
+import com.elementary.tasks.core.digest.DigestSettingsGateImpl
 import com.elementary.tasks.core.holidays.HolidaySettingsGateImpl
 import com.elementary.tasks.core.home.AppHomePreferences
 import com.elementary.tasks.core.location.LocationTracker
@@ -24,6 +25,7 @@ import com.github.naz013.cloudapi.CloudKeysStorage
 import com.github.naz013.feature.calendar.CalendarPreferences
 import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.featureflags.FeatureFlags
+import com.github.naz013.digestapi.DigestSettingsGate
 import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.holidaysapi.HolidaySettingsGate
 import com.github.naz013.logic.birthday.BirthdayNotifier
@@ -81,6 +83,7 @@ val utilModule = module {
 
   factory { FeatureManager(get()) as FeatureFlags }
   factory { HolidaySettingsGateImpl(get(), get()) as HolidaySettingsGate }
+  factory { DigestSettingsGateImpl(get(), get()) as DigestSettingsGate }
   factory { AppCalendarPreferences(get()) as CalendarPreferences }
   factory { AppHomePreferences(get()) as HomePreferences }
 

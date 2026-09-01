@@ -27,6 +27,7 @@ dependencies {
   implementation(project(":data:work-api"))
   implementation(project(":data:googlecalendar-api"))
   implementation(project(":data:holidays-api"))
+  implementation(project(":data:digest-api"))
   implementation(project(":data:cloud-api"))
   implementation(project(":data:sync"))
   implementation(project(":data:scheduler-api"))

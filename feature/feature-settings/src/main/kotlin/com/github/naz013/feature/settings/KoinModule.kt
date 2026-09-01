@@ -9,6 +9,7 @@ import com.github.naz013.feature.settings.calendar.work.ScanGoogleCalendarEvents
 import com.github.naz013.feature.settings.debug.DeveloperViewModel
 import com.github.naz013.feature.settings.debug.ObjectExportViewModel
 import com.github.naz013.feature.settings.debug.PopulateCalendarDemoDataUseCase
+import com.github.naz013.feature.settings.digest.DigestSettingsViewModel
 import com.github.naz013.feature.settings.export.CloudBackupSettingsViewModel
 import com.github.naz013.feature.settings.export.DropboxLogin
 import com.github.naz013.feature.settings.export.services.CloudServicesViewModel
@@ -65,6 +66,8 @@ val featureSettingsModule = module {
   viewModelOf(::CalendarSettingsViewModel)
   viewModelOf(::HolidayCountryViewModel)
   single { HolidayCountryPickerResultHolder() }
+
+  viewModelOf(::DigestSettingsViewModel)
 
   factory<BackgroundTask>(named(BackupSettingsTask.TASK_KEY)) { BackupSettingsTask(get()) }
   factory<BackgroundTask>(named(ObservableBackupTask.TASK_KEY)) { ObservableBackupTask(get()) }

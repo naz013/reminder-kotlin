@@ -6,6 +6,8 @@ internal data class OtherSettingsState(
   val isGeminiFunctionsVisible: Boolean = false,
   val isGeminiFunctionsLocked: Boolean = false,
   val isBuyMeACoffeeVisible: Boolean = false,
+  val isDigestVisible: Boolean = false,
+  val isDigestLocked: Boolean = false,
 )
 
 internal data class AboutDialogState(

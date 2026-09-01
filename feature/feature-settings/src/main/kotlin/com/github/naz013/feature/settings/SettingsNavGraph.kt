@@ -38,6 +38,8 @@ import com.github.naz013.feature.settings.debug.DeveloperViewModel
 import com.github.naz013.feature.settings.debug.ObjectExportEvent
 import com.github.naz013.feature.settings.debug.ObjectExportScreen
 import com.github.naz013.feature.settings.debug.ObjectExportViewModel
+import com.github.naz013.feature.settings.digest.DigestSettingsScreen
+import com.github.naz013.feature.settings.digest.DigestSettingsViewModel
 import com.github.naz013.feature.settings.export.ExportNavKey
 import com.github.naz013.feature.settings.general.GeneralSettingsEvent
 import com.github.naz013.feature.settings.general.GeneralSettingsScreen
@@ -133,6 +135,10 @@ fun EntryProviderScope<NavKey>.settingsEntries(
     CalendarEntry(key, backStack, renderAsDetailPane)
   }
   entry<SettingsNavKey.SelectHolidayCountry>(metadata = SettingsDetailPane) { SelectHolidayCountryEntry(backStack) }
+  entry<SettingsNavKey.AiDigest>(metadata = SettingsDetailPane) {
+    val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.AiDigest) }
+    DigestEntry(backStack, renderAsDetailPane)
+  }
   entry<SettingsNavKey.Birthday>(metadata = SettingsDetailPane) { key ->
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
     birthdayEntry(key, backStack, renderAsDetailPane)
@@ -378,6 +384,25 @@ private fun CalendarEntry(
         backStack.add(SettingsNavKey.ProVersion)
       },
       onHolidayCountryClick = { backStack.add(SettingsNavKey.SelectHolidayCountry) },
+      modifier = Modifier.padding(padding),
+    )
+  }
+}
+
+@Composable
+private fun DigestEntry(backStack: MutableList<NavKey>, renderAsDetailPane: Boolean) {
+  val viewModel = koinViewModel<DigestSettingsViewModel>()
+  val state by viewModel.state.collectAsState()
+
+  SettingsScaffold(
+    title = stringResource(R.string.ai_digest),
+    navigationIcon = settingsNavigationIcon(renderAsDetailPane = renderAsDetailPane),
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+  ) { padding ->
+    DigestSettingsScreen(
+      state = state,
+      onDailyToggle = viewModel::onDailyToggle,
+      onHourSelected = viewModel::onHourSelected,
       modifier = Modifier.padding(padding),
     )
   }

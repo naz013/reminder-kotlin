@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ReturnCount:DailyDigestTask.kt$DailyDigestTask$override suspend fun run(input: TaskData, progress: TaskProgressReporter): TaskResult</ID>
+  </CurrentIssues>
+</SmellBaseline>

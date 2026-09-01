@@ -3,6 +3,7 @@ package com.github.naz013.feature.settings.other
 import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
@@ -14,6 +15,7 @@ import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.digestapi.DigestCapabilityChecker
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
@@ -27,6 +29,7 @@ import com.github.naz013.ui.common.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 internal class OtherSettingsViewModel(
   private val packageManagerWrapper: PackageManagerWrapper,
@@ -36,6 +39,7 @@ internal class OtherSettingsViewModel(
   private val systemInfo: SystemInfo,
   private val featureFlags: FeatureFlags,
   private val buildInfo: BuildInfo,
+  private val digestCapabilityChecker: DigestCapabilityChecker,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(OtherSettingsState())
@@ -74,6 +78,10 @@ internal class OtherSettingsViewModel(
 
   fun onGeminiFunctionsLockedClick() {
     analyticsEventSender.send(FeatureGateTappedEvent(Feature.GEMINI_FUNCTIONS))
+  }
+
+  fun onDigestLockedClick() {
+    analyticsEventSender.send(FeatureGateTappedEvent(Feature.AI_DIGEST))
   }
 
   fun onBuyMeACoffeeClicked() {
@@ -126,9 +134,20 @@ internal class OtherSettingsViewModel(
         isGeminiFunctionsVisible = systemInfo.is16,
         isGeminiFunctionsLocked = !buildInfo.isPro,
         isBuyMeACoffeeVisible = featureFlags.isEnabled(FeatureFlag.BUY_ME_A_COFFEE),
+        isDigestVisible = isDigestVisible(digestCapabilityChecker.isDeviceCapableCached()),
+        isDigestLocked = !buildInfo.isPro,
       )
     }
+    // Capability is a genuinely async check (ML Kit model/hardware probe) - the cached read above
+    // renders immediately, this refreshes it and re-emits if the live result disagrees.
+    viewModelScope.launch {
+      val capable = digestCapabilityChecker.refreshCapability()
+      _state.update { it.copy(isDigestVisible = isDigestVisible(capable)) }
+    }
   }
+
+  private fun isDigestVisible(deviceCapable: Boolean): Boolean =
+    featureFlags.isEnabled(FeatureFlag.AI_DIGEST) && deviceCapable
 
   private fun loadPermissionItems(): List<PermissionItem> {
     return buildList {

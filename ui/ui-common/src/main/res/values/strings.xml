@@ -1282,4 +1282,10 @@
     <string name="tag_selected_count_one">%1$d tag selected</string>
     <string name="tag_selected_count_other">%1$d tags selected</string>
     <string name="tags_delete_selected_permanently">Delete %1$d tags permanently?</string>
+    <string name="ai_digest">AI daily digest</string>
+    <string name="ai_digest_daily_toggle">Morning digest</string>
+    <string name="ai_digest_time">Notification time</string>
+    <string name="ai_digest_notification_title">Your daily digest</string>
+    <string name="ai_digest_template_reminders">You have %1$d reminders today, including \'%2$s\' at %3$s.</string>
+    <string name="ai_digest_template_birthdays">It\'s %1$s\'s birthday.</string>
 </resources>
