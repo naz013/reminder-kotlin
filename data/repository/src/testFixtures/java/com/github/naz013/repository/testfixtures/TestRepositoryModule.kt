@@ -3,6 +3,7 @@ package com.github.naz013.repository.testfixtures
 import android.content.Context
 import androidx.room.Room
 import com.github.naz013.repository.AppDb
+import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
@@ -11,6 +12,7 @@ import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.repository.TagSyncTrigger
+import com.github.naz013.repository.impl.BirthdayRepositoryImpl
 import com.github.naz013.repository.impl.GroupV2RepositoryImpl
 import com.github.naz013.repository.impl.NoteRepositoryImpl
 import com.github.naz013.repository.impl.ReminderV2RepositoryImpl
@@ -39,6 +41,9 @@ fun testRepositoryModule(context: Context): Module = module {
   }
   factory<ReminderV2Repository> {
     ReminderV2RepositoryImpl(get<AppDb>().reminderV2Dao(), get())
+  }
+  factory<BirthdayRepository> {
+    BirthdayRepositoryImpl(get<AppDb>().birthdaysDao(), get())
   }
   factory<GroupV2Repository> {
     GroupV2RepositoryImpl(get<AppDb>().groupV2Dao(), get())
