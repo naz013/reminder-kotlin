@@ -76,10 +76,10 @@ internal class HeaderItemsSettingsViewModel(
     HeaderNavigationSection.GROUPS ->
       HeaderItemRow(section, R.string.groups, DrawableCatalog.Fluent.Group, isEnabled)
     HeaderNavigationSection.TAG ->
-      HeaderItemRow(section, R.string.tags, DrawableCatalog.Builder.Group, isEnabled)
+      HeaderItemRow(section, R.string.tags, DrawableCatalog.Builder.Tag, isEnabled)
     HeaderNavigationSection.ROUTINES ->
       HeaderItemRow(section, R.string.routines, DrawableCatalog.Builder.Timer, isEnabled)
     HeaderNavigationSection.WORKFLOW ->
-      HeaderItemRow(section, R.string.workflow_automations, DrawableCatalog.Fluent.ArrowRepeatAll, isEnabled)
+      HeaderItemRow(section, R.string.workflow_automations, DrawableCatalog.Fluent.Branch, isEnabled)
   }
 }

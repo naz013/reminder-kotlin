@@ -280,7 +280,7 @@ private fun OverflowMenu(
         PopupMenuItem(
           id = OverflowAction.WORKFLOW_RULES.ordinal,
           title = stringResource(R.string.workflow_rules),
-          iconRes = DrawableCatalog.Fluent.ArrowRepeatAll,
+          iconRes = DrawableCatalog.Fluent.Branch,
         ),
       )
     }
@@ -486,7 +486,7 @@ private fun TagsDetailRow(tags: List<TagChipState>) {
       .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
   ) {
     Icon(
-      painter = AppIcons.Builder.Group,
+      painter = AppIcons.Builder.Tag,
       contentDescription = null,
       tint = MaterialTheme.colorScheme.onSurfaceVariant,
       modifier = Modifier.size(24.dp),
