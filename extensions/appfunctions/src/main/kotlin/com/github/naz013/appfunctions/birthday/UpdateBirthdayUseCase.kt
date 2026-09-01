@@ -7,19 +7,20 @@ import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.BirthdayRepository
 import java.time.LocalDate as JavaLocalDate
 
-class CreateSimpleBirthdayUseCase(
+class UpdateBirthdayUseCase(
   private val birthdayRepository: BirthdayRepository,
   private val dateTimeManager: DateTimeManager,
 ) {
   suspend operator fun invoke(
+    id: String,
     name: String,
     date: JavaLocalDate,
     ignoreYear: Boolean,
-  ): Birthday {
-    val birthDate = date.toThreeTen()
-    val fields = dateTimeManager.toBirthdayDateFields(birthDate)
-    val birthday =
-      Birthday(
+  ): Birthday? {
+    val existing = birthdayRepository.getById(id) ?: return null
+    val fields = dateTimeManager.toBirthdayDateFields(date.toThreeTen())
+    val updated =
+      existing.copy(
         name = name,
         date = fields.date,
         day = fields.day,
@@ -27,10 +28,10 @@ class CreateSimpleBirthdayUseCase(
         dayMonth = fields.dayMonth,
         updatedAt = dateTimeManager.getNowGmtDateTime(),
         ignoreYear = ignoreYear,
-        syncState = SyncState.WaitingForUpload,
-        version = 0,
+        version = existing.version + 1,
       )
-    birthdayRepository.save(birthday)
-    return birthday
+    birthdayRepository.save(updated)
+    birthdayRepository.updateSyncState(existing.uuId, SyncState.WaitingForUpload)
+    return updated
   }
 }

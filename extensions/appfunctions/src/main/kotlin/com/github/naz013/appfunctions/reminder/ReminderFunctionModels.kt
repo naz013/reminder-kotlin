@@ -28,6 +28,26 @@ data class ReminderIdParams(
   val id: String,
 )
 
+/** The parameters needed to update an existing reminder. */
+@AppFunctionSerializable(isDescribedByKDoc = true)
+data class UpdateReminderParams(
+  /** The unique identifier of the reminder to update, as returned by another reminder AppFunction. */
+  val id: String,
+  /** The new short title of the reminder. */
+  val title: String,
+  /** The new date and time, in the device's local time zone, the reminder should trigger at. */
+  val dueDateTime: LocalDateTime,
+  /** Optional free-text notes to attach to the reminder. */
+  val notes: String? = null,
+)
+
+/** The parameters needed to search existing reminders. */
+@AppFunctionSerializable(isDescribedByKDoc = true)
+data class SearchRemindersParams(
+  /** The text to search for within reminder titles and notes. */
+  val query: String,
+)
+
 /** A reminder. */
 @AppFunctionSerializable(isDescribedByKDoc = true)
 data class ReminderFunctionResult(

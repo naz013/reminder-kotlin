@@ -2,6 +2,8 @@ package com.github.naz013.appfunctions
 
 import androidx.annotation.RequiresApi
 import androidx.appfunctions.AppFunction
+import androidx.appfunctions.AppFunctionAppUnknownException
+import androidx.appfunctions.AppFunctionElementNotFoundException
 import androidx.appfunctions.AppFunctionInvalidArgumentException
 import androidx.appfunctions.AppFunctionPermissionRequiredException
 import androidx.appfunctions.AppFunctionService
@@ -10,12 +12,18 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.appfunctions.birthday.BirthdayFunctionResult
+import com.github.naz013.appfunctions.birthday.BirthdayIdParams
 import com.github.naz013.appfunctions.birthday.CreateBirthdayParams
 import com.github.naz013.appfunctions.birthday.CreateSimpleBirthdayUseCase
+import com.github.naz013.appfunctions.birthday.DeleteBirthdayUseCase
 import com.github.naz013.appfunctions.birthday.ListUpcomingBirthdaysParams
 import com.github.naz013.appfunctions.birthday.ListUpcomingBirthdaysUseCase
-import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.appfunctions.birthday.SearchBirthdaysParams
+import com.github.naz013.appfunctions.birthday.SearchBirthdaysUseCase
+import com.github.naz013.appfunctions.birthday.UpdateBirthdayParams
+import com.github.naz013.appfunctions.birthday.UpdateBirthdayUseCase
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -38,6 +46,9 @@ abstract class BaseBirthdayAppFunctionService :
   private val dateTimeManager: DateTimeManager by inject()
   private val createSimpleBirthdayUseCase: CreateSimpleBirthdayUseCase by inject()
   private val listUpcomingBirthdaysUseCase: ListUpcomingBirthdaysUseCase by inject()
+  private val updateBirthdayUseCase: UpdateBirthdayUseCase by inject()
+  private val deleteBirthdayUseCase: DeleteBirthdayUseCase by inject()
+  private val searchBirthdaysUseCase: SearchBirthdaysUseCase by inject()
   private val analyticsEventSender: AnalyticsEventSender by inject()
 
   /**
@@ -82,6 +93,72 @@ abstract class BaseBirthdayAppFunctionService :
       analyticsEventSender.send(FeatureUsedEvent(Feature.APP_FUNCTION_LIST_BIRTHDAYS))
 
       listUpcomingBirthdaysUseCase(params.withinDays).mapNotNull { it.toFunctionResult() }
+    }
+
+  /**
+   * Updates an existing birthday's name, date, and year-visibility.
+   *
+   * @param params The id of the birthday to update, plus its new name, date, and whether to hide the year.
+   */
+  @AppFunction(isDescribedByKDoc = true)
+  internal suspend fun updateBirthday(params: UpdateBirthdayParams): BirthdayFunctionResult =
+    withContext(Dispatchers.IO) {
+      requirePro()
+      if (params.name.isBlank()) {
+        throw AppFunctionInvalidArgumentException("Name must not be blank")
+      }
+
+      val birthday =
+        updateBirthdayUseCase(
+          id = params.id,
+          name = params.name,
+          date = params.date,
+          ignoreYear = params.ignoreYear,
+        ) ?: throw AppFunctionElementNotFoundException("No birthday found with id = ${params.id}")
+
+      analyticsEventSender.send(FeatureUsedEvent(Feature.APP_FUNCTION_UPDATE_BIRTHDAY))
+
+      BirthdayFunctionResult(id = birthday.uuId, name = birthday.name, date = params.date)
+    }
+
+  /**
+   * Permanently deletes a birthday.
+   *
+   * @param params The id of the birthday to delete.
+   */
+  @AppFunction(isDescribedByKDoc = true)
+  internal suspend fun deleteBirthday(params: BirthdayIdParams): BirthdayFunctionResult =
+    withContext(Dispatchers.IO) {
+      requirePro()
+
+      val birthday =
+        deleteBirthdayUseCase(params.id)
+          ?: throw AppFunctionElementNotFoundException("No birthday found with id = ${params.id}")
+
+      analyticsEventSender.send(FeatureUsedEvent(Feature.APP_FUNCTION_DELETE_BIRTHDAY))
+
+      birthday.toFunctionResult()
+        ?: throw AppFunctionAppUnknownException(
+          "Birthday with id = ${params.id} was deleted, but its stored date could not be parsed.",
+        )
+    }
+
+  /**
+   * Searches for birthdays by name.
+   *
+   * @param params The name text to search for.
+   */
+  @AppFunction(isDescribedByKDoc = true)
+  internal suspend fun searchBirthdays(params: SearchBirthdaysParams): List<BirthdayFunctionResult> =
+    withContext(Dispatchers.IO) {
+      requirePro()
+      if (params.query.isBlank()) {
+        throw AppFunctionInvalidArgumentException("Query must not be blank")
+      }
+
+      analyticsEventSender.send(FeatureUsedEvent(Feature.APP_FUNCTION_SEARCH_BIRTHDAYS))
+
+      searchBirthdaysUseCase(params.query).mapNotNull { it.toFunctionResult() }
     }
 
   private fun requirePro() {
