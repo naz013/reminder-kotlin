@@ -1197,7 +1197,7 @@ class ReminderRecurrenceE2ETest : KoinTest {
     addDateAndTime()
 
     addBuilderItem(r(R.string.note))
-    clickText(note.summary)
+    clickText(note.content.text)
     closeValueEditor()
 
     tapSave()
