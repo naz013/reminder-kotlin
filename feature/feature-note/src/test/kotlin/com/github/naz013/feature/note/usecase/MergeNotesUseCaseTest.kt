@@ -5,6 +5,8 @@ import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteDocument
+import com.github.naz013.domain.note.NoteSpanAttribute
+import com.github.naz013.domain.note.NoteTextSpan
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.note.image.NoteImageRepository
@@ -93,6 +95,42 @@ class MergeNotesUseCaseTest {
 
     coVerify(exactly = 1) {
       noteRepository.save(match<Note> { it.content.text == "Tapped first\nA\nTapped second\nB" })
+    }
+  }
+
+  @Test
+  fun `shifts each note's spans to match its offset in the merged text`() = runTest {
+    val first = Note(
+      key = "id-1",
+      content = NoteDocument(
+        text = "Hello",
+        spans = listOf(NoteTextSpan(0, 5, NoteSpanAttribute.Bold)),
+      ),
+      syncState = SyncState.Synced,
+    )
+    val second = Note(
+      key = "id-2",
+      content = NoteDocument(
+        text = "World",
+        spans = listOf(NoteTextSpan(0, 5, NoteSpanAttribute.Italic)),
+      ),
+      syncState = SyncState.Synced,
+    )
+    coEvery { noteRepository.getByIds(listOf("id-1", "id-2")) } returns
+      listOf(NoteWithImages(first), NoteWithImages(second))
+
+    useCase(listOf("id-1", "id-2"))
+
+    coVerify(exactly = 1) {
+      noteRepository.save(
+        match<Note> {
+          it.content.text == "Hello\nWorld" &&
+            it.content.spans == listOf(
+              NoteTextSpan(0, 5, NoteSpanAttribute.Bold),
+              NoteTextSpan(6, 11, NoteSpanAttribute.Italic),
+            )
+        }
+      )
     }
   }
 
