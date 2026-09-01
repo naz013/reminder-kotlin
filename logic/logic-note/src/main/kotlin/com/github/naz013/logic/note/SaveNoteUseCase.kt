@@ -1,16 +1,15 @@
-package com.github.naz013.feature.note.usecase
+package com.github.naz013.logic.note
 
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.feature.note.image.NoteImageRepository
 import com.github.naz013.files.DataType
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.logic.schedule.WorkType
 import com.github.naz013.repository.NoteRepository
 
-internal class SaveNoteUseCase(
+class SaveNoteUseCase(
   private val noteRepository: NoteRepository,
   private val noteImageRepository: NoteImageRepository,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,

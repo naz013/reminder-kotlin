@@ -5,7 +5,7 @@ import com.github.naz013.feature.note.create.NoteEditViewModel
 import com.github.naz013.feature.note.create.drop.DroppedContentParser
 import com.github.naz013.feature.note.create.images.ImageDecoder
 import com.github.naz013.feature.note.image.NoteImageMigration
-import com.github.naz013.feature.note.image.NoteImageRepository
+import com.github.naz013.feature.note.image.NoteImageRepositoryImpl
 import com.github.naz013.feature.note.list.NotesViewModel
 import com.github.naz013.feature.note.preview.ImagePreviewViewModel
 import com.github.naz013.feature.note.preview.ImagesSingleton
@@ -15,8 +15,8 @@ import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
 import com.github.naz013.feature.note.usecase.MergeNotesUseCase
-import com.github.naz013.feature.note.usecase.SaveNoteUseCase
 import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
+import com.github.naz013.logic.note.NoteImageRepository
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
@@ -25,7 +25,6 @@ import org.koin.dsl.module
 val featureNoteModule = module {
   factoryOf(::DeleteNoteUseCase)
   factoryOf(::MergeNotesUseCase)
-  factoryOf(::SaveNoteUseCase)
   factoryOf(::ChangeNoteArchiveStateUseCase)
   factoryOf(::TogglePinnedNoteUseCase)
 
@@ -40,7 +39,7 @@ val featureNoteModule = module {
   singleOf(::ImagesSingleton)
   factoryOf(::ImageLoader)
 
-  singleOf(::NoteImageRepository)
+  single<NoteImageRepository> { NoteImageRepositoryImpl(get()) }
   factoryOf(::NoteImageMigration)
   factoryOf(::ImageDecoder)
   factoryOf(::DroppedContentParser)

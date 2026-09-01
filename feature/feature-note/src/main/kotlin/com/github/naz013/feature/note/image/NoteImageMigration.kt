@@ -1,6 +1,7 @@
 package com.github.naz013.feature.note.image
 
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.note.NoteImageRepository
 import com.github.naz013.repository.NoteRepository
 import java.util.UUID
 

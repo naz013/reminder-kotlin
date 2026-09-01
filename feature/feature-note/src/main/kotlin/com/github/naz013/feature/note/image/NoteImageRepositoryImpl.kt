@@ -3,14 +3,15 @@ package com.github.naz013.feature.note.image
 import android.content.Context
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.note.NoteImageRepository
 import java.io.File
 import java.io.InputStream
 
-internal class NoteImageRepository(
+internal class NoteImageRepositoryImpl(
   private val context: Context,
-) {
+) : NoteImageRepository {
 
-  fun saveBytesToFile(
+  override fun saveBytesToFile(
     fileName: String,
     byteArray: ByteArray?,
     folderName: String,
@@ -28,7 +29,7 @@ internal class NoteImageRepository(
     }.getOrNull() ?: ""
   }
 
-  fun moveImagesToFolder(
+  override fun moveImagesToFolder(
     files: List<ImageFile>,
     folderName: String,
   ): List<ImageFile> {
@@ -49,7 +50,7 @@ internal class NoteImageRepository(
     return files
   }
 
-  fun copyImagesToFolder(
+  override fun copyImagesToFolder(
     images: List<ImageFile>,
     folderName: String,
   ): List<ImageFile> {
@@ -63,7 +64,7 @@ internal class NoteImageRepository(
     }
   }
 
-  fun saveTemporaryImage(
+  override fun saveTemporaryImage(
     fileName: String,
     inputStream: InputStream,
   ): String {
@@ -73,7 +74,7 @@ internal class NoteImageRepository(
     return tmpFile.toString()
   }
 
-  fun clearFolder(folderName: String) {
+  override fun clearFolder(folderName: String) {
     getImageFolder(folderName).deleteRecursively()
     Logger.i(TAG, "Cleared image folder: $folderName")
   }
@@ -85,7 +86,7 @@ internal class NoteImageRepository(
 
   private fun createTemporaryFile(fileName: String): File = File(getTmpFolder(), fileName).also { it.createNewFile() }
 
-  fun getImageFolder(folderName: String): File =
+  override fun getImageFolder(folderName: String): File =
     File(getImagesFolder(), folderName).also {
       if (!it.exists()) {
         it.mkdirs()
