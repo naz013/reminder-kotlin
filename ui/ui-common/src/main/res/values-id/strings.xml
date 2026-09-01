@@ -1289,4 +1289,6 @@
     <string name="ai_digest_template_birthdays">Hari ini adalah ulang tahun %1$s.</string>
     <string name="remember_last_used_text_color">Ingat warna teks terakhir yang digunakan</string>
     <string name="do_not_remember_last_text_color">Jangan ingat warna teks terakhir yang digunakan</string>
+    <string name="builder_quick_start_arriving_place">Tiba di suatu tempat</string>
+    <string name="builder_quick_start_arriving_place_delayed">Tiba di suatu tempat (mulai tertunda)</string>
 </resources>

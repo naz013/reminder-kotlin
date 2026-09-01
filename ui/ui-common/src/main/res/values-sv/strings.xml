@@ -1289,4 +1289,6 @@
     <string name="ai_digest_template_birthdays">%1$s fyller år idag.</string>
     <string name="remember_last_used_text_color">Kom ihåg senast använda textfärg</string>
     <string name="do_not_remember_last_text_color">Kom inte ihåg senast använda textfärg</string>
+    <string name="builder_quick_start_arriving_place">Ankommer till en plats</string>
+    <string name="builder_quick_start_arriving_place_delayed">Ankommer till en plats (fördröjd start)</string>
 </resources>

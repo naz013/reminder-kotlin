@@ -1289,4 +1289,6 @@
     <string name="ai_digest_template_birthdays">%1$s har bursdag i dag.</string>
     <string name="remember_last_used_text_color">Husk sist brukte tekstfarge</string>
     <string name="do_not_remember_last_text_color">Ikke husk sist brukte tekstfarge</string>
+    <string name="builder_quick_start_arriving_place">Ankomme til et sted</string>
+    <string name="builder_quick_start_arriving_place_delayed">Ankomme til et sted (forsinket start)</string>
 </resources>

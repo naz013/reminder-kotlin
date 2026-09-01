@@ -1289,4 +1289,6 @@
     <string name="ai_digest_template_birthdays">Hôm nay là sinh nhật của %1$s.</string>
     <string name="remember_last_used_text_color">Nhớ màu chữ đã dùng gần nhất</string>
     <string name="do_not_remember_last_text_color">Không nhớ màu chữ đã dùng gần nhất</string>
+    <string name="builder_quick_start_arriving_place">Đến một địa điểm</string>
+    <string name="builder_quick_start_arriving_place_delayed">Đến một địa điểm (bắt đầu trễ)</string>
 </resources>

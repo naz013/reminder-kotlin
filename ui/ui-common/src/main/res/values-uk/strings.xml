@@ -1292,4 +1292,6 @@
     <string name="ai_digest_template_birthdays">Сьогодні день народження %1$s.</string>
     <string name="remember_last_used_text_color">Пам\'ятати останній використаний колір тексту</string>
     <string name="do_not_remember_last_text_color">Не пам\'ятати останній використаний колір тексту</string>
+    <string name="builder_quick_start_arriving_place">Прибуття на місце</string>
+    <string name="builder_quick_start_arriving_place_delayed">Прибуття на місце (відкладений старт)</string>
 </resources>

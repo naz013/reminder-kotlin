@@ -1291,4 +1291,6 @@
     <string name="ai_digest_template_birthdays">Aujourd\'hui, c\'est l\'anniversaire de %1$s.</string>
     <string name="remember_last_used_text_color">Se souvenir de la dernière couleur de texte utilisée</string>
     <string name="do_not_remember_last_text_color">Ne pas se souvenir de la dernière couleur de texte utilisée</string>
+    <string name="builder_quick_start_arriving_place">Arriver à un lieu</string>
+    <string name="builder_quick_start_arriving_place_delayed">Arriver à un lieu (démarrage différé)</string>
 </resources>

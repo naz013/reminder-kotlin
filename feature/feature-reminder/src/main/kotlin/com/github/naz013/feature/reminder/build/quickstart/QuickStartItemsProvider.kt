@@ -2,6 +2,7 @@ package com.github.naz013.feature.reminder.build.quickstart
 
 import android.app.AlarmManager
 import com.github.naz013.ui.common.R
+import com.github.naz013.feature.reminder.build.ArrivingCoordinatesBuilderItem
 import com.github.naz013.feature.reminder.build.BuilderItem
 import com.github.naz013.feature.reminder.build.DateBuilderItem
 import com.github.naz013.feature.reminder.build.DayOfMonthBuilderItem
@@ -120,6 +121,36 @@ internal class QuickStartItemsProvider(
             BiType.LEAVING_COORDINATES,
             null,
             LeavingCoordinatesBuilderItem::class.java,
+          ),
+          biFactory.createWithValue(
+            BiType.LOCATION_DELAY_DATE,
+            LocalDate.now(),
+            LocationDelayDateBuilderItem::class.java,
+          ),
+          biFactory.createWithValue(
+            BiType.LOCATION_DELAY_TIME,
+            LocalTime.now(),
+            LocationDelayTimeBuilderItem::class.java,
+          ),
+        )
+
+      QuickStartOption.ARRIVING_PLACE ->
+        listOfNotNull(
+          summary(),
+          biFactory.createWithValue(
+            BiType.ARRIVING_COORDINATES,
+            null,
+            ArrivingCoordinatesBuilderItem::class.java,
+          ),
+        )
+
+      QuickStartOption.ARRIVING_PLACE_DELAYED ->
+        listOfNotNull(
+          summary(),
+          biFactory.createWithValue(
+            BiType.ARRIVING_COORDINATES,
+            null,
+            ArrivingCoordinatesBuilderItem::class.java,
           ),
           biFactory.createWithValue(
             BiType.LOCATION_DELAY_DATE,
