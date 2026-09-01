@@ -1279,6 +1279,11 @@
     <string name="tag_selected_count_one">%1$d etiket seçildi</string>
     <string name="tag_selected_count_other">%1$d etiket seçildi</string>
     <string name="tags_delete_selected_permanently">%1$d etiket kalıcı olarak silinsin mi?</string>
+    <string name="x_repeats">"%s tekrar"</string>
+    <string name="reminder_notification_max_repeat_count">Maksimum tekrar sayısı</string>
+    <string name="reminder_notification_escalate_after_repeats">Şu kadar tekrardan sonra yükselt</string>
+    <string name="exact_alarms_restricted">Tam zamanlı alarmlar kısıtlandı</string>
+    <string name="exact_alarms_restricted_description">Tekrarlanan hatırlatıcılar geç çalabilir. Tam zamanlı alarmlara izin vermek için dokunun.</string>
     <string name="ai_digest">Yapay zeka günlük özeti</string>
     <string name="ai_digest_daily_toggle">Sabah özeti</string>
     <string name="ai_digest_time">Bildirim saati</string>

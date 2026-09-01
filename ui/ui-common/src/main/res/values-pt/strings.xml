@@ -1278,6 +1278,11 @@
     <string name="tag_selected_count_one">%1$d rótulo selecionado</string>
     <string name="tag_selected_count_other">%1$d rótulos selecionados</string>
     <string name="tags_delete_selected_permanently">Excluir %1$d rótulos permanentemente?</string>
+    <string name="x_repeats">"%s repetições"</string>
+    <string name="reminder_notification_max_repeat_count">Número máximo de repetições</string>
+    <string name="reminder_notification_escalate_after_repeats">Escalar após</string>
+    <string name="exact_alarms_restricted">Os alarmes exatos estão restritos</string>
+    <string name="exact_alarms_restricted_description">Lembretes repetidos podem disparar atrasados. Toque para permitir alarmes exatos.</string>
     <string name="ai_digest">Resumo diário com IA</string>
     <string name="ai_digest_daily_toggle">Resumo matinal</string>
     <string name="ai_digest_time">Hora da notificação</string>

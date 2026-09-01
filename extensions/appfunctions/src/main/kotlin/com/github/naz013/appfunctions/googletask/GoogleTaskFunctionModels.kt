@@ -28,6 +28,26 @@ data class GoogleTaskIdParams(
   val id: String,
 )
 
+/** The parameters needed to update an existing Google Task. */
+@AppFunctionSerializable(isDescribedByKDoc = true)
+data class UpdateGoogleTaskParams(
+  /** The unique identifier of the task to update, as returned by another Google Task AppFunction. */
+  val id: String,
+  /** The new title of the task. */
+  val title: String,
+  /** Optional new notes for the task. */
+  val notes: String? = null,
+  /** Optional new date and time, in the device's local time zone, the task is due at. */
+  val dueDateTime: LocalDateTime? = null,
+)
+
+/** The parameters needed to search existing Google Tasks. */
+@AppFunctionSerializable(isDescribedByKDoc = true)
+data class SearchGoogleTasksParams(
+  /** The text to search for within task titles and notes. */
+  val query: String,
+)
+
 /** A Google Task. */
 @AppFunctionSerializable(isDescribedByKDoc = true)
 data class GoogleTaskFunctionResult(

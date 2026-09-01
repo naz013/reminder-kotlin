@@ -88,6 +88,14 @@ class ReminderPreferencesImpl(
     get() = prefs.notificationRepeatTime
     set(value) { prefs.notificationRepeatTime = value }
 
+  override var maxRepeatCount: Int
+    get() = prefs.maxRepeatCount
+    set(value) { prefs.maxRepeatCount = value }
+
+  override var escalateAfterRepeats: Int
+    get() = prefs.escalateAfterRepeats
+    set(value) { prefs.escalateAfterRepeats = value }
+
   override var isLedEnabled: Boolean
     get() = prefs.isLedEnabled
     set(value) { prefs.isLedEnabled = value }

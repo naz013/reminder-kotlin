@@ -1279,6 +1279,11 @@
     <string name="tag_selected_count_one">已选择 %1$d 个标签</string>
     <string name="tag_selected_count_other">已选择 %1$d 个标签</string>
     <string name="tags_delete_selected_permanently">永久删除 %1$d 个标签?</string>
+    <string name="x_repeats">"%s 次重复"</string>
+    <string name="reminder_notification_max_repeat_count">最大重复次数</string>
+    <string name="reminder_notification_escalate_after_repeats">升级前的重复次数</string>
+    <string name="exact_alarms_restricted">精确闹钟受限</string>
+    <string name="exact_alarms_restricted_description">重复提醒可能会延迟触发。点击以允许精确闹钟。</string>
     <string name="ai_digest">AI每日摘要</string>
     <string name="ai_digest_daily_toggle">早间摘要</string>
     <string name="ai_digest_time">通知时间</string>

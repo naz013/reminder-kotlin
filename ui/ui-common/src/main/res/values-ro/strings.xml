@@ -1278,6 +1278,11 @@
     <string name="tag_selected_count_one">%1$d etichetă selectată</string>
     <string name="tag_selected_count_other">%1$d etichete selectate</string>
     <string name="tags_delete_selected_permanently">Ștergere %1$d etichete permanent?</string>
+    <string name="x_repeats">"%s repetări"</string>
+    <string name="reminder_notification_max_repeat_count">Număr maxim de repetări</string>
+    <string name="reminder_notification_escalate_after_repeats">Escaladare după</string>
+    <string name="exact_alarms_restricted">Alarmele exacte sunt restricționate</string>
+    <string name="exact_alarms_restricted_description">Memento-urile repetate pot suna cu întârziere. Atinge pentru a permite alarme exacte.</string>
     <string name="ai_digest">Rezumat zilnic AI</string>
     <string name="ai_digest_daily_toggle">Rezumat de dimineață</string>
     <string name="ai_digest_time">Ora notificării</string>

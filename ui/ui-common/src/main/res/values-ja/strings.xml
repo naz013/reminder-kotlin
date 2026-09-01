@@ -1278,6 +1278,11 @@
     <string name="tag_selected_count_one">%1$dタグを選択中</string>
     <string name="tag_selected_count_other">%1$dタグを選択中</string>
     <string name="tags_delete_selected_permanently">%1$dタグを完全に削除しますか?</string>
+    <string name="x_repeats">"%s回の繰り返し"</string>
+    <string name="reminder_notification_max_repeat_count">最大繰り返し回数</string>
+    <string name="reminder_notification_escalate_after_repeats">エスカレーションまでの回数</string>
+    <string name="exact_alarms_restricted">正確なアラームが制限されています</string>
+    <string name="exact_alarms_restricted_description">繰り返しリマインダーが遅れて鳴る場合があります。タップして正確なアラームを許可してください。</string>
     <string name="ai_digest">AIデイリーダイジェスト</string>
     <string name="ai_digest_daily_toggle">モーニングダイジェスト</string>
     <string name="ai_digest_time">通知時刻</string>

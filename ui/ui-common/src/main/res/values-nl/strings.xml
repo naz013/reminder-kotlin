@@ -1276,6 +1276,11 @@
     <string name="tag_selected_count_one">%1$d label geselecteerd</string>
     <string name="tag_selected_count_other">%1$d labels geselecteerd</string>
     <string name="tags_delete_selected_permanently">%1$d labels permanent verwijderen?</string>
+    <string name="x_repeats">"%s herhalingen"</string>
+    <string name="reminder_notification_max_repeat_count">Maximaal aantal herhalingen</string>
+    <string name="reminder_notification_escalate_after_repeats">Escaleren na</string>
+    <string name="exact_alarms_restricted">Exacte alarmen zijn beperkt</string>
+    <string name="exact_alarms_restricted_description">Herhalende herinneringen kunnen te laat afgaan. Tik om exacte alarmen toe te staan.</string>
     <string name="ai_digest">AI-dagoverzicht</string>
     <string name="ai_digest_daily_toggle">Ochtendoverzicht</string>
     <string name="ai_digest_time">Meldingstijd</string>

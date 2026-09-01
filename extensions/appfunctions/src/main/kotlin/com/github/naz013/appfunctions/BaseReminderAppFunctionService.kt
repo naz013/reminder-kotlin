@@ -18,8 +18,12 @@ import com.github.naz013.appfunctions.reminder.ListUpcomingRemindersParams
 import com.github.naz013.appfunctions.reminder.ListUpcomingRemindersUseCase
 import com.github.naz013.appfunctions.reminder.ReminderFunctionResult
 import com.github.naz013.appfunctions.reminder.ReminderIdParams
-import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.appfunctions.reminder.SearchRemindersParams
+import com.github.naz013.appfunctions.reminder.SearchRemindersUseCase
+import com.github.naz013.appfunctions.reminder.UpdateReminderParams
+import com.github.naz013.appfunctions.reminder.UpdateReminderUseCase
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -44,6 +48,8 @@ abstract class BaseReminderAppFunctionService :
   private val listUpcomingRemindersUseCase: ListUpcomingRemindersUseCase by inject()
   private val completeReminderUseCase: CompleteReminderUseCase by inject()
   private val deleteReminderUseCase: DeleteReminderUseCase by inject()
+  private val updateReminderUseCase: UpdateReminderUseCase by inject()
+  private val searchRemindersUseCase: SearchRemindersUseCase by inject()
   private val analyticsEventSender: AnalyticsEventSender by inject()
 
   /**
@@ -126,6 +132,50 @@ abstract class BaseReminderAppFunctionService :
       analyticsEventSender.send(FeatureUsedEvent(Feature.APP_FUNCTION_DELETE_REMINDER))
 
       reminder.toFunctionResult()
+    }
+
+  /**
+   * Updates an existing reminder's title, due date/time, and notes.
+   *
+   * @param params The id of the reminder to update, plus its new title, due date/time, and optional notes.
+   */
+  @AppFunction(isDescribedByKDoc = true)
+  internal suspend fun updateReminder(params: UpdateReminderParams): ReminderFunctionResult =
+    withContext(Dispatchers.IO) {
+      requirePro()
+      if (params.title.isBlank()) {
+        throw AppFunctionInvalidArgumentException("Title must not be blank")
+      }
+
+      val reminder =
+        updateReminderUseCase(
+          id = params.id,
+          title = params.title,
+          dueDateTime = params.dueDateTime,
+          notes = params.notes,
+        ) ?: throw AppFunctionElementNotFoundException("No reminder found with id = ${params.id}")
+
+      analyticsEventSender.send(FeatureUsedEvent(Feature.APP_FUNCTION_UPDATE_REMINDER))
+
+      reminder.toFunctionResult()
+    }
+
+  /**
+   * Searches for reminders by title or notes text.
+   *
+   * @param params The text to search for.
+   */
+  @AppFunction(isDescribedByKDoc = true)
+  internal suspend fun searchReminders(params: SearchRemindersParams): List<ReminderFunctionResult> =
+    withContext(Dispatchers.IO) {
+      requirePro()
+      if (params.query.isBlank()) {
+        throw AppFunctionInvalidArgumentException("Query must not be blank")
+      }
+
+      analyticsEventSender.send(FeatureUsedEvent(Feature.APP_FUNCTION_SEARCH_REMINDERS))
+
+      searchRemindersUseCase(params.query).map { it.toFunctionResult() }
     }
 
   private fun requirePro() {

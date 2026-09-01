@@ -1276,6 +1276,11 @@
     <string name="tag_selected_count_one">%1$d thẻ được chọn</string>
     <string name="tag_selected_count_other">%1$d thẻ được chọn</string>
     <string name="tags_delete_selected_permanently">Xóa vĩnh viễn %1$d thẻ?</string>
+    <string name="x_repeats">"%s lần lặp lại"</string>
+    <string name="reminder_notification_max_repeat_count">Số lần lặp lại tối đa</string>
+    <string name="reminder_notification_escalate_after_repeats">Tăng cấp sau</string>
+    <string name="exact_alarms_restricted">Báo thức chính xác bị hạn chế</string>
+    <string name="exact_alarms_restricted_description">Lời nhắc lặp lại có thể kêu muộn. Nhấn để cho phép báo thức chính xác.</string>
     <string name="ai_digest">Bản tóm tắt hằng ngày bằng AI</string>
     <string name="ai_digest_daily_toggle">Tóm tắt buổi sáng</string>
     <string name="ai_digest_time">Thời gian thông báo</string>

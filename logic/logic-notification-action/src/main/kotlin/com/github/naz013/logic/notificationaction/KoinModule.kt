@@ -34,6 +34,7 @@ val logicNotificationActionModule = module {
       get(),
       get(),
       get(),
+      get(),
     )
   }
   factoryOf(::ReminderRepeatProcessor)

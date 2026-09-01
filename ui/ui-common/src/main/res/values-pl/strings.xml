@@ -1278,6 +1278,11 @@
     <string name="tag_selected_count_one">Zaznaczono %1$d tag</string>
     <string name="tag_selected_count_other">Zaznaczono %1$d tagów</string>
     <string name="tags_delete_selected_permanently">Usunąć %1$d tagów na stałe?</string>
+    <string name="x_repeats">"%s powtórzeń"</string>
+    <string name="reminder_notification_max_repeat_count">Maksymalna liczba powtórzeń</string>
+    <string name="reminder_notification_escalate_after_repeats">Eskalacja po</string>
+    <string name="exact_alarms_restricted">Dokładne alarmy są ograniczone</string>
+    <string name="exact_alarms_restricted_description">Powtarzające się przypomnienia mogą uruchamiać się z opóźnieniem. Dotknij, aby zezwolić na dokładne alarmy.</string>
     <string name="ai_digest">Codzienne podsumowanie AI</string>
     <string name="ai_digest_daily_toggle">Poranne podsumowanie</string>
     <string name="ai_digest_time">Czas powiadomienia</string>

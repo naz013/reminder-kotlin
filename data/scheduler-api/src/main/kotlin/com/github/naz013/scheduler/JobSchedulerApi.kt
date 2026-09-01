@@ -25,7 +25,10 @@ interface JobSchedulerApi {
 
   fun scheduleDailyBirthday()
 
-  fun scheduleReminderRepeat(reminderV2: ReminderV2): Boolean
+  fun scheduleReminderRepeat(
+    reminderV2: ReminderV2,
+    repeatCount: Int,
+  ): Boolean
 
   fun scheduleReminderDelay(
     minutes: Int,

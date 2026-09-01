@@ -161,19 +161,23 @@ class JobScheduler(
     )
   }
 
-  override fun scheduleReminderRepeat(reminderV2: ReminderV2): Boolean {
+  override fun scheduleReminderRepeat(
+    reminderV2: ReminderV2,
+    repeatCount: Int,
+  ): Boolean {
     val minutes = prefs.notificationRepeatTime
     val millis = System.currentTimeMillis() + (minutes * INTERVAL_MINUTE)
     if (millis <= 0) {
       return false
     }
-    Logger.d(TAG, "scheduleReminderRepeat: $millis, ${reminderV2.uuId}")
+    Logger.d(TAG, "scheduleReminderRepeat: $millis, ${reminderV2.uuId}, repeatCount=$repeatCount")
 
     scheduleWithAlarm(
       action = AlarmReceiver.ACTION_REMINDER_REPEAT,
       bundle =
         Bundle().apply {
           putString(IntentKeys.INTENT_ID, reminderV2.uuId)
+          putInt(IntentKeys.INTENT_COUNT, repeatCount)
         },
       millis = millis,
       requestCode = reminderV2.uniqueId,

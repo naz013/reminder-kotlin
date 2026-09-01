@@ -23,6 +23,8 @@ object PrefsConstants {
   const val MARKER_STYLE = "marker_style"
   const val NOTIFICATION_REPEAT = "notification_repeat"
   const val NOTIFICATION_REPEAT_INTERVAL = "notification_repeat_interval"
+  const val NOTIFICATION_MAX_REPEAT_COUNT = "notification_max_repeat_count"
+  const val NOTIFICATION_ESCALATE_AFTER_REPEATS = "notification_escalate_after_repeats"
   const val WEAR_NOTIFICATION = "wear_notification"
   const val WIDGET_BIRTHDAYS = "widget_birthdays"
   const val BIRTH_COLOR = "birth_color"

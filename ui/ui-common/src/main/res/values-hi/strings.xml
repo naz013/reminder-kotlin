@@ -1280,6 +1280,11 @@
     <string name="tag_selected_count_one">%1$d टैग चयनित</string>
     <string name="tag_selected_count_other">%1$d टैग्स चयनित</string>
     <string name="tags_delete_selected_permanently">%1$d टैग्स को स्थायी रूप से हटाएं?</string>
+    <string name="x_repeats">"%s बार दोहराव"</string>
+    <string name="reminder_notification_max_repeat_count">अधिकतम दोहराव संख्या</string>
+    <string name="reminder_notification_escalate_after_repeats">इतने दोहराव के बाद एस्केलेट करें</string>
+    <string name="exact_alarms_restricted">सटीक अलार्म प्रतिबंधित हैं</string>
+    <string name="exact_alarms_restricted_description">दोहराए जाने वाले रिमाइंडर देर से बज सकते हैं। सटीक अलार्म की अनुमति देने के लिए टैप करें।</string>
     <string name="ai_digest">एआई दैनिक डाइजेस्ट</string>
     <string name="ai_digest_daily_toggle">सुबह का डाइजेस्ट</string>
     <string name="ai_digest_time">सूचना का समय</string>

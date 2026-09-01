@@ -1276,6 +1276,11 @@
     <string name="tag_selected_count_one">%1$d label dipilih</string>
     <string name="tag_selected_count_other">%1$d label dipilih</string>
     <string name="tags_delete_selected_permanently">Hapus %1$d label secara permanen?</string>
+    <string name="x_repeats">"%s pengulangan"</string>
+    <string name="reminder_notification_max_repeat_count">Jumlah pengulangan maksimum</string>
+    <string name="reminder_notification_escalate_after_repeats">Eskalasi setelah</string>
+    <string name="exact_alarms_restricted">Alarm tepat waktu dibatasi</string>
+    <string name="exact_alarms_restricted_description">Pengingat berulang mungkin berbunyi terlambat. Ketuk untuk mengizinkan alarm tepat waktu.</string>
     <string name="ai_digest">Ringkasan harian AI</string>
     <string name="ai_digest_daily_toggle">Ringkasan pagi</string>
     <string name="ai_digest_time">Waktu notifikasi</string>

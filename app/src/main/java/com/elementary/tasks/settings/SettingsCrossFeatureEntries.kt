@@ -1,9 +1,13 @@
 package com.elementary.tasks.settings
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -11,6 +15,9 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.R
 import com.elementary.tasks.core.services.PermanentBirthdayReceiver
@@ -30,6 +37,7 @@ import com.github.naz013.feature.settings.location.LocationNavKey
 import com.github.naz013.feature.settings.settingsNavigationIcon
 import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.insights.InsightsNavKey
+import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
@@ -56,6 +64,21 @@ fun RemindersCrossFeatureEntry(
   val permissionRequester = rememberPermissionRequesterRationale()
   val state by viewModel.state.collectAsState()
 
+  // The exact-alarm permission this screen warns about can only change from the system Settings
+  // screen it links out to, i.e. while this screen isn't in the foreground - so it's re-read on
+  // every resume rather than only on user actions within this screen.
+  val lifecycleOwner = LocalLifecycleOwner.current
+  DisposableEffect(viewModel, lifecycleOwner) {
+    val observer =
+      LifecycleEventObserver { _, event ->
+        if (event == Lifecycle.Event.ON_RESUME) {
+          viewModel.refresh()
+        }
+      }
+    lifecycleOwner.lifecycle.addObserver(observer)
+    onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+  }
+
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       RemindersSettingsEvent.OpenPresets -> backStack.add(SettingsNavKey.ManagePresets)
@@ -68,6 +91,17 @@ fun RemindersCrossFeatureEntry(
           is24Hour = event.is24Hour,
           onTimeSelected = { viewModel.onTimeSelected(event.target, it) },
         )
+      }
+      RemindersSettingsEvent.OpenExactAlarmSettings -> {
+        val intent =
+          Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+            data = Uri.fromParts("package", context.packageName, null)
+          }
+        try {
+          context.startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+          Logger.e("SettingsCrossFeatureEntries", "No activity found for ACTION_REQUEST_SCHEDULE_EXACT_ALARM", e)
+        }
       }
       RemindersSettingsEvent.ShowPermanentNotification -> PermanentReminderReceiver.show(context)
       RemindersSettingsEvent.HidePermanentNotification -> PermanentReminderReceiver.hide(context)
@@ -101,6 +135,9 @@ fun RemindersCrossFeatureEntry(
       onSnoozeClick = viewModel::onSnoozeClick,
       onRepeatToggle = viewModel::onRepeatToggle,
       onRepeatIntervalClick = viewModel::onRepeatIntervalClick,
+      onMaxRepeatCountClick = viewModel::onMaxRepeatCountClick,
+      onEscalateAfterRepeatsClick = viewModel::onEscalateAfterRepeatsClick,
+      onExactAlarmWarningClick = viewModel::onExactAlarmWarningClick,
       onLedToggle = viewModel::onLedToggle,
       onLedColorClick = viewModel::onLedColorClick,
       onPermanentNotificationClick = {

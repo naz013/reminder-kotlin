@@ -17,13 +17,14 @@ class CreateSimpleBirthdayUseCase(
     ignoreYear: Boolean,
   ): Birthday {
     val birthDate = date.toThreeTen()
+    val fields = dateTimeManager.toBirthdayDateFields(birthDate)
     val birthday =
       Birthday(
         name = name,
-        date = dateTimeManager.formatBirthdayDate(birthDate),
-        day = birthDate.dayOfMonth,
-        month = birthDate.monthValue - 1,
-        dayMonth = "${birthDate.dayOfMonth}|${birthDate.monthValue - 1}",
+        date = fields.date,
+        day = fields.day,
+        month = fields.month,
+        dayMonth = fields.dayMonth,
         updatedAt = dateTimeManager.getNowGmtDateTime(),
         ignoreYear = ignoreYear,
         syncState = SyncState.WaitingForUpload,

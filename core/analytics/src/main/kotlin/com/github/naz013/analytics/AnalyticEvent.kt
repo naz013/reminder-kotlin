@@ -150,16 +150,26 @@ enum class Feature(val value: String) {
   APP_FUNCTION_LIST_REMINDERS("app_function_list_reminders"),
   APP_FUNCTION_COMPLETE_REMINDER("app_function_complete_reminder"),
   APP_FUNCTION_DELETE_REMINDER("app_function_delete_reminder"),
+  APP_FUNCTION_UPDATE_REMINDER("app_function_update_reminder"),
+  APP_FUNCTION_SEARCH_REMINDERS("app_function_search_reminders"),
 
   APP_FUNCTION_CREATE_NOTE("app_function_create_note"),
   APP_FUNCTION_SEARCH_NOTES("app_function_search_notes"),
+  APP_FUNCTION_UPDATE_NOTE("app_function_update_note"),
+  APP_FUNCTION_DELETE_NOTE("app_function_delete_note"),
 
   APP_FUNCTION_CREATE_BIRTHDAY("app_function_create_birthday"),
   APP_FUNCTION_LIST_BIRTHDAYS("app_function_list_birthdays"),
+  APP_FUNCTION_UPDATE_BIRTHDAY("app_function_update_birthday"),
+  APP_FUNCTION_DELETE_BIRTHDAY("app_function_delete_birthday"),
+  APP_FUNCTION_SEARCH_BIRTHDAYS("app_function_search_birthdays"),
 
   APP_FUNCTION_CREATE_GOOGLE_TASK("app_function_create_google_task"),
   APP_FUNCTION_LIST_GOOGLE_TASKS("app_function_list_google_tasks"),
   APP_FUNCTION_COMPLETE_GOOGLE_TASK("app_function_complete_google_task"),
+  APP_FUNCTION_UPDATE_GOOGLE_TASK("app_function_update_google_task"),
+  APP_FUNCTION_DELETE_GOOGLE_TASK("app_function_delete_google_task"),
+  APP_FUNCTION_SEARCH_GOOGLE_TASKS("app_function_search_google_tasks"),
 
   INSIGHTS("insights"),
   LOCAL_BACKUP("local_backup"),
