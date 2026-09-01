@@ -4,6 +4,7 @@ internal data class NoteSettingsState(
   val isColorRememberChecked: Boolean = false,
   val isFontSizeRememberChecked: Boolean = false,
   val isFontStyleRememberChecked: Boolean = false,
+  val isTextColorRememberChecked: Boolean = false,
   val colorOpacity: Int = 100,
   val opacityDialog: OpacityDialogState? = null,
   val hapticFeedbackEnabled: Boolean = true,

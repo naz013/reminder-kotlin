@@ -1289,4 +1289,6 @@
     <string name="ai_digest_notification_title">本日のダイジェスト</string>
     <string name="ai_digest_template_reminders">本日は%1$d件のリマインダーがあります。\'%2$s\'（%3$s）など。</string>
     <string name="ai_digest_template_birthdays">本日は%1$sの誕生日です。</string>
+    <string name="remember_last_used_text_color">最後に使用したテキストの色を記憶する</string>
+    <string name="do_not_remember_last_text_color">最後に使用したテキストの色を記憶しない</string>
 </resources>

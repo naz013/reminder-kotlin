@@ -1289,4 +1289,6 @@
     <string name="ai_digest_notification_title">Seu resumo diário</string>
     <string name="ai_digest_template_reminders">Você tem %1$d lembretes hoje, incluindo \'%2$s\' às %3$s.</string>
     <string name="ai_digest_template_birthdays">Hoje é aniversário de %1$s.</string>
+    <string name="remember_last_used_text_color">Lembrar da última cor de texto usada</string>
+    <string name="do_not_remember_last_text_color">Não lembrar da última cor de texto usada</string>
 </resources>

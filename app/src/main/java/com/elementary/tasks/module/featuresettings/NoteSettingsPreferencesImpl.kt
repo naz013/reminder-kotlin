@@ -18,6 +18,10 @@ class NoteSettingsPreferencesImpl(
     get() = prefs.isNoteFontStyleRememberingEnabled
     set(value) { prefs.isNoteFontStyleRememberingEnabled = value }
 
+  override var isNoteTextColorRememberingEnabled: Boolean
+    get() = prefs.isNoteTextColorRememberingEnabled
+    set(value) { prefs.isNoteTextColorRememberingEnabled = value }
+
   override var noteColorOpacity: Int
     get() = prefs.noteColorOpacity
     set(value) { prefs.noteColorOpacity = value }

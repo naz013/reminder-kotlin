@@ -1287,4 +1287,6 @@
     <string name="ai_digest_notification_title">Bản tóm tắt hằng ngày của bạn</string>
     <string name="ai_digest_template_reminders">Hôm nay bạn có %1$d lời nhắc, bao gồm \'%2$s\' lúc %3$s.</string>
     <string name="ai_digest_template_birthdays">Hôm nay là sinh nhật của %1$s.</string>
+    <string name="remember_last_used_text_color">Nhớ màu chữ đã dùng gần nhất</string>
+    <string name="do_not_remember_last_text_color">Không nhớ màu chữ đã dùng gần nhất</string>
 </resources>

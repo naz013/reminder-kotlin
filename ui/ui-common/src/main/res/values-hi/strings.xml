@@ -1291,4 +1291,6 @@
     <string name="ai_digest_notification_title">आपका दैनिक डाइजेस्ट</string>
     <string name="ai_digest_template_reminders">आज आपके पास %1$d रिमाइंडर हैं, जिनमें \'%2$s\' (%3$s) शामिल है.</string>
     <string name="ai_digest_template_birthdays">आज %1$s का जन्मदिन है.</string>
+    <string name="remember_last_used_text_color">अंतिम उपयोग किया गया टेक्स्ट रंग याद रखें</string>
+    <string name="do_not_remember_last_text_color">अंतिम उपयोग किया गया टेक्स्ट रंग याद न रखें</string>
 </resources>

@@ -11,6 +11,7 @@ interface NotePreferences {
   val isNoteFontSizeRememberingEnabled: Boolean
   val isNoteFontStyleRememberingEnabled: Boolean
   val isNoteColorRememberingEnabled: Boolean
+  val isNoteTextColorRememberingEnabled: Boolean
 
   var notesLayoutMode: ListLayoutMode
   var noteOrder: String
@@ -18,4 +19,8 @@ interface NotePreferences {
   var lastNoteFontStyle: Int
   var lastNoteColor: Int
   var noteColorOpacity: Int
+  var lastNoteTextColorArgb: Int
+  var lastNoteTextGradientStartColorArgb: Int
+  var lastNoteTextGradientEndColorArgb: Int
+  var lastNoteTextGradientAngle: Int
 }

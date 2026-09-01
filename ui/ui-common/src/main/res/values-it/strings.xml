@@ -1289,4 +1289,6 @@
     <string name="ai_digest_notification_title">Il tuo riepilogo giornaliero</string>
     <string name="ai_digest_template_reminders">Hai %1$d promemoria oggi, tra cui \'%2$s\' alle %3$s.</string>
     <string name="ai_digest_template_birthdays">Oggi è il compleanno di %1$s.</string>
+    <string name="remember_last_used_text_color">Ricorda ultimo colore del testo usato</string>
+    <string name="do_not_remember_last_text_color">Non ricordare ultimo colore del testo usato</string>
 </resources>

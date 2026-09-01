@@ -1287,4 +1287,6 @@
     <string name="ai_digest_notification_title">Din dagsoversigt</string>
     <string name="ai_digest_template_reminders">Du har %1$d påmindelser i dag, herunder \'%2$s\' kl. %3$s.</string>
     <string name="ai_digest_template_birthdays">%1$s har fødselsdag i dag.</string>
+    <string name="remember_last_used_text_color">Husk senest brugte tekstfarve</string>
+    <string name="do_not_remember_last_text_color">Husk ikke senest brugte tekstfarve</string>
 </resources>

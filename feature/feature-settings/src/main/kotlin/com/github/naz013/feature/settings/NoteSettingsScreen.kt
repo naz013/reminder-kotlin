@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
 
@@ -27,6 +28,7 @@ internal fun NoteSettingsScreen(
   onColorRememberToggle: () -> Unit,
   onFontSizeRememberToggle: () -> Unit,
   onFontStyleRememberToggle: () -> Unit,
+  onTextColorRememberToggle: () -> Unit,
   onOpacityClick: () -> Unit,
   onOpacityPreviewChange: (Int) -> Unit,
   onOpacityConfirm: () -> Unit,
@@ -73,6 +75,14 @@ internal fun NoteSettingsScreen(
       subtitleOn = stringResource(R.string.remember_last_set_font_style),
       subtitleOff = stringResource(R.string.use_default_font_style),
       dividerBottom = true,
+    )
+    SettingsSwitchItem(
+      title = stringResource(R.string.text_color),
+      checked = state.isTextColorRememberChecked,
+      onCheckedChange = { onTextColorRememberToggle() },
+      subtitleOn = stringResource(R.string.remember_last_used_text_color),
+      subtitleOff = stringResource(R.string.do_not_remember_last_text_color),
+      icon = AppIcons.Fluent.TextColor,
     )
   }
 

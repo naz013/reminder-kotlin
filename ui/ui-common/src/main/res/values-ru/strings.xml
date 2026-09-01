@@ -1288,4 +1288,6 @@
     <string name="ai_digest_notification_title">Ваша ежедневная сводка</string>
     <string name="ai_digest_template_reminders">Сегодня у вас %1$d напоминаний, включая «%2$s» в %3$s.</string>
     <string name="ai_digest_template_birthdays">Сегодня день рождения %1$s.</string>
+    <string name="remember_last_used_text_color">Запомнить последний цвет текста</string>
+    <string name="do_not_remember_last_text_color">Не запоминать последний цвет текста</string>
 </resources>
