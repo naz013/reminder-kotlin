@@ -2,17 +2,20 @@ package com.github.naz013.feature.home.scheduleview
 
 import android.content.Context
 import com.github.naz013.testing.BaseTest
+import com.github.naz013.feature.home.HomeEvent
 import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.feature.home.ResolvedEventAction
 import com.github.naz013.ui.reminder.ShopItemsFormatter
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
@@ -28,6 +31,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.LocalDateTime
@@ -63,14 +67,30 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
     shoppingItems = shoppingItems,
   )
 
+  private fun birthday(
+    id: String = "b1",
+    name: String = "Test birthday",
+    showedYear: Int = 0,
+  ) = Birthday(
+    uuId = id,
+    name = name,
+    showedYear = showedYear,
+    syncState = SyncState.Synced,
+  )
+
   @Before
   override fun setUp() {
     super.setUp()
     mockkObject(ThemeProvider.Companion)
     every { ThemeProvider.themedColor(any(), any()) } returns 0
+    every { ThemeProvider.colorBirthdayCalendar(any(), any()) } returns 0
     every { contextProvider.themedContext } returns mockk<Context>(relaxed = true)
+    every { contextProvider.context } returns mockk<Context>(relaxed = true)
     every { dateTimeManager.getCurrentDateTime() } returns day
     every { modelDateTimeFormatter.getRemaining(any<LocalDateTime>(), any<LocalDateTime>()) } returns "remaining"
+    every {
+      modelDateTimeFormatter.getFutureBirthdayDate(any(), any(), any(), any())
+    } returns day
     every { reminderV2Repository.observeActiveInRange(any(), any(), any()) } returns flowOf(emptyList())
     coEvery { groupV2Repository.getAll() } returns emptyList()
     every { birthdayRepository.observeAll(any()) } returns flowOf(emptyList())
@@ -149,5 +169,35 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
     val event = useCase(day).first().single()
 
     assertEquals("formatted list", event.description)
+  }
+
+  @Test
+  fun `maps a birthday into a HomeEvent`() = runTest {
+    every { birthdayRepository.observeAll(any()) } returns flowOf(listOf(birthday(name = "Jane")))
+
+    val event = useCase(day).first().single()
+
+    assertEquals("Jane", event.text)
+    assertEquals(HomeEvent.EventType.Birthday, event.type)
+  }
+
+  @Test
+  fun `excludes a birthday already shown this year`() = runTest {
+    every { birthdayRepository.observeAll(any()) } returns
+      flowOf(listOf(birthday(showedYear = day.year)))
+
+    val events = useCase(day).first()
+
+    assertTrue(events.isEmpty())
+  }
+
+  @Test
+  fun `includes a birthday shown in a previous year`() = runTest {
+    every { birthdayRepository.observeAll(any()) } returns
+      flowOf(listOf(birthday(showedYear = day.year - 1)))
+
+    val events = useCase(day).first()
+
+    assertEquals(1, events.size)
   }
 }

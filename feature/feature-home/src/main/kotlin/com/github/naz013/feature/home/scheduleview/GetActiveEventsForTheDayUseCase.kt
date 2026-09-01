@@ -47,7 +47,9 @@ class GetActiveEventsForTheDayUseCase(
     return combine(remindersFlow, birthdaysFlow) { reminders, birthdays ->
       val groupsMap = groupV2Repository.getAll().associateBy { it.uuId }
       val reminderEvents = reminders.mapNotNull { toHomeEvent(it, it.groupId?.let { groupId -> groupsMap[groupId] }) }
-      val birthdayEvents = birthdays.map { toHomeEvent(it) }
+      val birthdayEvents = birthdays
+        .filterNot { it.showedYear == day.year }
+        .map { toHomeEvent(it) }
       (reminderEvents + birthdayEvents).sortedBy { it.time }
     }
   }
