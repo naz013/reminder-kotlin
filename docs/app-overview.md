@@ -48,7 +48,7 @@ The app is available on [Google Play](https://play.google.com/store/apps/details
 
 ### Gemini AppFunctions integration (PRO)
 
-- Exposes reminder, note, birthday, and Google Task actions (create, list, complete, search, delete) to Gemini and other on-device assistants via Android's `androidx.appfunctions` platform API — no network round trip, everything runs on-device
+- Exposes reminder, note, birthday, and Google Task actions (create, list, complete, update, delete, search) to Gemini and other on-device assistants via Android's `androidx.appfunctions` platform API — no network round trip, everything runs on-device
 - PRO-only; a "Gemini functions" screen under Settings → Other explains what's supported
 
 ### Calendar View

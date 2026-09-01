@@ -65,7 +65,7 @@ Windows PowerShell:
 .\gradlew.bat :appfunctions:test
 ```
 
-Runs all 24 use-case tests (reminders, notes, birthdays, Google Tasks) with MockK — no device
+Runs all 43 use-case tests (reminders, notes, birthdays, Google Tasks) with MockK — no device
 needed. Run this after any change to `appfunctions/src/main/kotlin/**` before moving on to on-device
 testing; it's the fast feedback loop and will catch most logic bugs before you burn time on `adb`.
 
@@ -114,7 +114,7 @@ Windows PowerShell:
 adb shell cmd app_function list-app-functions | Select-String com.cray.software.justreminderpro
 ```
 
-This should list all 10 functions across the four services. If it comes back empty:
+This should list all 21 functions across the four services. If it comes back empty:
 
 - Confirm the app was actually installed as the **pro** build:
   - Bash: `adb shell pm list packages | grep justreminder`
@@ -196,6 +196,18 @@ adb shell cmd app_function execute-app-function \
     --package com.cray.software.justreminderpro \
     --function 'com.github.naz013.appfunctions.ReminderAppFunctionService#deleteReminder' \
     --parameters '{"id": "<uuid-from-a-previous-result>"}'
+
+# updateReminder
+adb shell cmd app_function execute-app-function \
+    --package com.cray.software.justreminderpro \
+    --function 'com.github.naz013.appfunctions.ReminderAppFunctionService#updateReminder' \
+    --parameters '{"id": "<uuid-from-a-previous-result>", "title": "Pay rent - updated", "dueDateTime": "2026-08-05T10:00:00", "notes": "before 5pm"}'
+
+# searchReminders
+adb shell cmd app_function execute-app-function \
+    --package com.cray.software.justreminderpro \
+    --function 'com.github.naz013.appfunctions.ReminderAppFunctionService#searchReminders' \
+    --parameters '{"query": "rent"}'
 ```
 
 PowerShell, single-line form (easiest to copy-paste one at a time):
@@ -208,6 +220,10 @@ adb shell cmd app_function execute-app-function --package com.cray.software.just
 adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.ReminderAppFunctionService#completeReminder' --parameters '{"id": "<uuid-from-a-previous-result>"}'
 
 adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.ReminderAppFunctionService#deleteReminder' --parameters '{"id": "<uuid-from-a-previous-result>"}'
+
+adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.ReminderAppFunctionService#updateReminder' --parameters '{"id": "<uuid-from-a-previous-result>", "title": "Pay rent - updated", "dueDateTime": "2026-08-05T10:00:00", "notes": "before 5pm"}'
+
+adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.ReminderAppFunctionService#searchReminders' --parameters '{"query": "rent"}'
 ```
 
 After `createReminder`, open the app's reminder list and confirm it actually shows up there — the
@@ -227,6 +243,17 @@ adb shell cmd app_function execute-app-function \
     --package com.cray.software.justreminderpro \
     --function 'com.github.naz013.appfunctions.NoteAppFunctionService#searchNotes' \
     --parameters '{"query": "wifi"}'
+
+# updateNote / deleteNote - id comes from the createNote or searchNotes result
+adb shell cmd app_function execute-app-function \
+    --package com.cray.software.justreminderpro \
+    --function 'com.github.naz013.appfunctions.NoteAppFunctionService#updateNote' \
+    --parameters '{"id": "<key-from-a-previous-result>", "title": "Wi-Fi password", "content": "hunter3"}'
+
+adb shell cmd app_function execute-app-function \
+    --package com.cray.software.justreminderpro \
+    --function 'com.github.naz013.appfunctions.NoteAppFunctionService#deleteNote' \
+    --parameters '{"id": "<key-from-a-previous-result>"}'
 ```
 
 PowerShell:
@@ -235,6 +262,10 @@ PowerShell:
 adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.NoteAppFunctionService#createNote' --parameters '{"title": "Wi-Fi password", "content": "hunter2"}'
 
 adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.NoteAppFunctionService#searchNotes' --parameters '{"query": "wifi"}'
+
+adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.NoteAppFunctionService#updateNote' --parameters '{"id": "<key-from-a-previous-result>", "title": "Wi-Fi password", "content": "hunter3"}'
+
+adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.NoteAppFunctionService#deleteNote' --parameters '{"id": "<key-from-a-previous-result>"}'
 ```
 
 ### Birthdays — `com.github.naz013.appfunctions.BirthdayAppFunctionService`
@@ -249,6 +280,22 @@ adb shell cmd app_function execute-app-function \
     --package com.cray.software.justreminderpro \
     --function 'com.github.naz013.appfunctions.BirthdayAppFunctionService#listUpcomingBirthdays' \
     --parameters '{"withinDays": 30}'
+
+# updateBirthday / deleteBirthday - id comes from a previous result; searchBirthdays by name
+adb shell cmd app_function execute-app-function \
+    --package com.cray.software.justreminderpro \
+    --function 'com.github.naz013.appfunctions.BirthdayAppFunctionService#updateBirthday' \
+    --parameters '{"id": "<uuid-from-a-previous-result>", "name": "Ada Lovelace", "date": "1999-11-04", "ignoreYear": false}'
+
+adb shell cmd app_function execute-app-function \
+    --package com.cray.software.justreminderpro \
+    --function 'com.github.naz013.appfunctions.BirthdayAppFunctionService#deleteBirthday' \
+    --parameters '{"id": "<uuid-from-a-previous-result>"}'
+
+adb shell cmd app_function execute-app-function \
+    --package com.cray.software.justreminderpro \
+    --function 'com.github.naz013.appfunctions.BirthdayAppFunctionService#searchBirthdays' \
+    --parameters '{"query": "ada"}'
 ```
 
 PowerShell:
@@ -257,6 +304,12 @@ PowerShell:
 adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.BirthdayAppFunctionService#createBirthday' --parameters '{"name": "Ada", "date": "1999-10-03", "ignoreYear": false}'
 
 adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.BirthdayAppFunctionService#listUpcomingBirthdays' --parameters '{"withinDays": 30}'
+
+adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.BirthdayAppFunctionService#updateBirthday' --parameters '{"id": "<uuid-from-a-previous-result>", "name": "Ada Lovelace", "date": "1999-11-04", "ignoreYear": false}'
+
+adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.BirthdayAppFunctionService#deleteBirthday' --parameters '{"id": "<uuid-from-a-previous-result>"}'
+
+adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.BirthdayAppFunctionService#searchBirthdays' --parameters '{"query": "ada"}'
 ```
 
 Worth a dedicated check: create a birthday on **Feb 29** with a past leap year, then
@@ -283,6 +336,22 @@ adb shell cmd app_function execute-app-function \
     --package com.cray.software.justreminderpro \
     --function 'com.github.naz013.appfunctions.GoogleTaskAppFunctionService#completeGoogleTask' \
     --parameters '{"id": "<taskId-from-createGoogleTask-result>"}'
+
+# updateGoogleTask / deleteGoogleTask - id comes from a previous result; searchGoogleTasks is local-cache only
+adb shell cmd app_function execute-app-function \
+    --package com.cray.software.justreminderpro \
+    --function 'com.github.naz013.appfunctions.GoogleTaskAppFunctionService#updateGoogleTask' \
+    --parameters '{"id": "<taskId-from-a-previous-result>", "title": "Buy oat milk", "notes": "2%", "dueDateTime": "2026-08-05T10:00:00"}'
+
+adb shell cmd app_function execute-app-function \
+    --package com.cray.software.justreminderpro \
+    --function 'com.github.naz013.appfunctions.GoogleTaskAppFunctionService#deleteGoogleTask' \
+    --parameters '{"id": "<taskId-from-a-previous-result>"}'
+
+adb shell cmd app_function execute-app-function \
+    --package com.cray.software.justreminderpro \
+    --function 'com.github.naz013.appfunctions.GoogleTaskAppFunctionService#searchGoogleTasks' \
+    --parameters '{"query": "milk"}'
 ```
 
 PowerShell:
@@ -293,6 +362,12 @@ adb shell cmd app_function execute-app-function --package com.cray.software.just
 adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.GoogleTaskAppFunctionService#listGoogleTasks' --parameters '{"includeCompleted": false}'
 
 adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.GoogleTaskAppFunctionService#completeGoogleTask' --parameters '{"id": "<taskId-from-createGoogleTask-result>"}'
+
+adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.GoogleTaskAppFunctionService#updateGoogleTask' --parameters '{"id": "<taskId-from-a-previous-result>", "title": "Buy oat milk", "notes": "2%", "dueDateTime": "2026-08-05T10:00:00"}'
+
+adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.GoogleTaskAppFunctionService#deleteGoogleTask' --parameters '{"id": "<taskId-from-a-previous-result>"}'
+
+adb shell cmd app_function execute-app-function --package com.cray.software.justreminderpro --function 'com.github.naz013.appfunctions.GoogleTaskAppFunctionService#searchGoogleTasks' --parameters '{"query": "milk"}'
 ```
 
 Unlike the other three services, `createGoogleTask`/`completeGoogleTask` make a **live network

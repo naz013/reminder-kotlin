@@ -15,13 +15,18 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.appfunctions.googletask.CompleteGoogleTaskUseCase
 import com.github.naz013.appfunctions.googletask.CreateGoogleTaskParams
 import com.github.naz013.appfunctions.googletask.CreateGoogleTaskUseCase
+import com.github.naz013.appfunctions.googletask.DeleteGoogleTaskUseCase
 import com.github.naz013.appfunctions.googletask.GoogleTaskFunctionResult
 import com.github.naz013.appfunctions.googletask.GoogleTaskIdParams
 import com.github.naz013.appfunctions.googletask.ListGoogleTasksParams
 import com.github.naz013.appfunctions.googletask.ListGoogleTasksUseCase
+import com.github.naz013.appfunctions.googletask.SearchGoogleTasksParams
+import com.github.naz013.appfunctions.googletask.SearchGoogleTasksUseCase
+import com.github.naz013.appfunctions.googletask.UpdateGoogleTaskParams
+import com.github.naz013.appfunctions.googletask.UpdateGoogleTaskUseCase
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
-import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.GoogleTask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -47,6 +52,9 @@ abstract class BaseGoogleTaskAppFunctionService :
   private val createGoogleTaskUseCase: CreateGoogleTaskUseCase by inject()
   private val listGoogleTasksUseCase: ListGoogleTasksUseCase by inject()
   private val completeGoogleTaskUseCase: CompleteGoogleTaskUseCase by inject()
+  private val updateGoogleTaskUseCase: UpdateGoogleTaskUseCase by inject()
+  private val deleteGoogleTaskUseCase: DeleteGoogleTaskUseCase by inject()
+  private val searchGoogleTasksUseCase: SearchGoogleTasksUseCase by inject()
   private val analyticsEventSender: AnalyticsEventSender by inject()
 
   /**
@@ -111,6 +119,76 @@ abstract class BaseGoogleTaskAppFunctionService :
       analyticsEventSender.send(FeatureUsedEvent(Feature.APP_FUNCTION_COMPLETE_GOOGLE_TASK))
 
       task.toFunctionResult()
+    }
+
+  /**
+   * Updates an existing Google Task's title, notes, and due date/time.
+   *
+   * @param params The id of the task to update, plus its new title, optional notes, and optional due date/time.
+   */
+  @AppFunction(isDescribedByKDoc = true)
+  internal suspend fun updateGoogleTask(params: UpdateGoogleTaskParams): GoogleTaskFunctionResult =
+    withContext(Dispatchers.IO) {
+      requirePro()
+      requireGoogleTasksLinked()
+      if (params.title.isBlank()) {
+        throw AppFunctionInvalidArgumentException("Title must not be blank")
+      }
+
+      val task =
+        updateGoogleTaskUseCase(
+          id = params.id,
+          title = params.title,
+          notes = params.notes,
+          dueDateTime = params.dueDateTime,
+        ) ?: throw AppFunctionElementNotFoundException(
+          "No Google Task found with id = ${params.id}, or the update failed - check your connection and try again.",
+        )
+
+      analyticsEventSender.send(FeatureUsedEvent(Feature.APP_FUNCTION_UPDATE_GOOGLE_TASK))
+
+      task.toFunctionResult()
+    }
+
+  /**
+   * Permanently deletes a Google Task.
+   *
+   * @param params The id of the task to delete.
+   */
+  @AppFunction(isDescribedByKDoc = true)
+  internal suspend fun deleteGoogleTask(params: GoogleTaskIdParams): GoogleTaskFunctionResult =
+    withContext(Dispatchers.IO) {
+      requirePro()
+      requireGoogleTasksLinked()
+
+      val task =
+        deleteGoogleTaskUseCase(params.id)
+          ?: throw AppFunctionElementNotFoundException(
+            "No Google Task found with id = ${params.id}, or the delete failed - check your connection and try again.",
+          )
+
+      analyticsEventSender.send(FeatureUsedEvent(Feature.APP_FUNCTION_DELETE_GOOGLE_TASK))
+
+      task.toFunctionResult()
+    }
+
+  /**
+   * Searches for Google Tasks by title or notes text, from the locally cached list.
+   *
+   * @param params The text to search for.
+   */
+  @AppFunction(isDescribedByKDoc = true)
+  internal suspend fun searchGoogleTasks(params: SearchGoogleTasksParams): List<GoogleTaskFunctionResult> =
+    withContext(Dispatchers.IO) {
+      requirePro()
+      requireGoogleTasksLinked()
+      if (params.query.isBlank()) {
+        throw AppFunctionInvalidArgumentException("Query must not be blank")
+      }
+
+      analyticsEventSender.send(FeatureUsedEvent(Feature.APP_FUNCTION_SEARCH_GOOGLE_TASKS))
+
+      searchGoogleTasksUseCase(params.query).map { it.toFunctionResult() }
     }
 
   private fun requirePro() {
