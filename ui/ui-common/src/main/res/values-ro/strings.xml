@@ -1283,4 +1283,10 @@
     <string name="reminder_notification_escalate_after_repeats">Escaladare după</string>
     <string name="exact_alarms_restricted">Alarmele exacte sunt restricționate</string>
     <string name="exact_alarms_restricted_description">Memento-urile repetate pot suna cu întârziere. Atinge pentru a permite alarme exacte.</string>
+    <string name="ai_digest">Rezumat zilnic AI</string>
+    <string name="ai_digest_daily_toggle">Rezumat de dimineață</string>
+    <string name="ai_digest_time">Ora notificării</string>
+    <string name="ai_digest_notification_title">Rezumatul tău zilnic</string>
+    <string name="ai_digest_template_reminders">Ai %1$d mementouri astăzi, inclusiv „%2$s” la %3$s.</string>
+    <string name="ai_digest_template_birthdays">Astăzi este ziua de naștere a lui %1$s.</string>
 </resources>

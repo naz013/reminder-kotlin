@@ -436,6 +436,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           isRenderedAsDetailPane = isRenderedAsDetailPane,
           onOpenTroubleshooting = { backStack.add(SettingsNavKey.Troubleshooting) },
           onOpenProVersion = { backStack.add(SettingsNavKey.ProVersion) },
+          onOpenAiDigest = { backStack.add(SettingsNavKey.AiDigest) },
         )
         exportEntries(backStack)
         workflowEntries(backStack = backStack, isRenderedAsDetailPane = isRenderedAsDetailPane)

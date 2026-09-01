@@ -40,6 +40,7 @@ import com.github.naz013.feature.reminder.featureReminderModule
 import com.github.naz013.feature.routine.routineModule
 import com.github.naz013.feature.settings.featureSettingsModule
 import com.github.naz013.feature.workflow.workflowModule
+import com.github.naz013.digest.digestModule
 import com.github.naz013.files.fileModule
 import com.github.naz013.group.groupModule
 import com.github.naz013.holidays.holidaysModule
@@ -177,6 +178,7 @@ class ReminderApp :
           legalModule,
           workModule,
           holidaysModule,
+          digestModule,
           dateTimeCalculationsModule,
           libModule,
           workflowModule,

@@ -10,12 +10,14 @@ import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.digestapi.DigestCapabilityChecker
 import com.github.naz013.featureflags.FeatureFlag
 import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.ui.common.R
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -37,6 +39,7 @@ class OtherSettingsViewModelTest : BaseTest() {
   private val systemInfo = mockk<SystemInfo>()
   private val featureFlags = mockk<FeatureFlags>()
   private val buildInfo = mockk<BuildInfo>(relaxed = true)
+  private val digestCapabilityChecker = mockk<DigestCapabilityChecker>()
 
   private lateinit var viewModel: OtherSettingsViewModel
 
@@ -53,6 +56,8 @@ class OtherSettingsViewModelTest : BaseTest() {
     every { packageManagerWrapper.getVersionName() } returns "1.0.0"
     // All permissions granted by default, so the missing-permissions list starts empty.
     every { Permissions.checkPermission(any(), any<String>()) } returns true
+    every { digestCapabilityChecker.isDeviceCapableCached() } returns false
+    coEvery { digestCapabilityChecker.refreshCapability() } returns false
 
     viewModel =
       OtherSettingsViewModel(
@@ -63,6 +68,7 @@ class OtherSettingsViewModelTest : BaseTest() {
         systemInfo = systemInfo,
         featureFlags = featureFlags,
         buildInfo = buildInfo,
+        digestCapabilityChecker = digestCapabilityChecker,
       )
   }
 
@@ -149,6 +155,72 @@ class OtherSettingsViewModelTest : BaseTest() {
     viewModel.onGeminiFunctionsLockedClick()
 
     verify { analyticsEventSender.send(FeatureGateTappedEvent(Feature.GEMINI_FUNCTIONS)) }
+  }
+
+  @Test
+  fun `isDigestVisible is false when the feature flag is off even if the device is capable`() =
+    runTest {
+      every { featureFlags.isEnabled(FeatureFlag.AI_DIGEST) } returns false
+      every { digestCapabilityChecker.isDeviceCapableCached() } returns true
+      coEvery { digestCapabilityChecker.refreshCapability() } returns true
+
+      val state = viewModel.state.first()
+
+      assertEquals(false, state.isDigestVisible)
+    }
+
+  @Test
+  fun `isDigestVisible is false when the device is not capable even if the feature flag is on`() =
+    runTest {
+      every { featureFlags.isEnabled(FeatureFlag.AI_DIGEST) } returns true
+      every { digestCapabilityChecker.isDeviceCapableCached() } returns false
+      coEvery { digestCapabilityChecker.refreshCapability() } returns false
+
+      val state = viewModel.state.first()
+
+      assertEquals(false, state.isDigestVisible)
+    }
+
+  @Test
+  fun `isDigestVisible is true when the feature flag is on and the device is capable`() =
+    runTest {
+      every { featureFlags.isEnabled(FeatureFlag.AI_DIGEST) } returns true
+      every { digestCapabilityChecker.isDeviceCapableCached() } returns true
+      coEvery { digestCapabilityChecker.refreshCapability() } returns true
+
+      val state = viewModel.state.first()
+
+      assertTrue(state.isDigestVisible)
+    }
+
+  @Test
+  fun `isDigestVisible re-emits once the live capability refresh disagrees with the cache`() =
+    runTest {
+      every { featureFlags.isEnabled(FeatureFlag.AI_DIGEST) } returns true
+      every { digestCapabilityChecker.isDeviceCapableCached() } returns false
+      coEvery { digestCapabilityChecker.refreshCapability() } returns true
+
+      val state = viewModel.state.first()
+
+      assertTrue(state.isDigestVisible)
+    }
+
+  @Test
+  fun `isDigestLocked follows pro status independent of capability`() =
+    runTest {
+      every { buildInfo.isPro } returns true
+      every { digestCapabilityChecker.isDeviceCapableCached() } returns false
+
+      val state = viewModel.state.first()
+
+      assertEquals(false, state.isDigestLocked)
+    }
+
+  @Test
+  fun `onDigestLockedClick sends a feature gate tapped analytics event`() {
+    viewModel.onDigestLockedClick()
+
+    verify { analyticsEventSender.send(FeatureGateTappedEvent(Feature.AI_DIGEST)) }
   }
 
   @Test

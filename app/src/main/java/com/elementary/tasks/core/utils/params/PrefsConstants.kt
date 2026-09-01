@@ -123,6 +123,9 @@ object PrefsConstants {
   const val PUBLIC_HOLIDAYS_ENABLED = "public_holidays_enabled"
   const val PUBLIC_HOLIDAYS_COUNTRY = "public_holidays_country"
 
+  const val AI_DIGEST_DAILY_ENABLED = "ai_digest_daily_enabled"
+  const val AI_DIGEST_HOUR = "ai_digest_hour"
+
   const val CALENDAR_VIEW_MODE = "calendar_view_mode"
 
   const val HEADER_NAVIGATION_ORDER = "header_navigation_order"

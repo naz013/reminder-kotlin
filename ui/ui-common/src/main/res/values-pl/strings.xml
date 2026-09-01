@@ -1283,4 +1283,10 @@
     <string name="reminder_notification_escalate_after_repeats">Eskalacja po</string>
     <string name="exact_alarms_restricted">Dokładne alarmy są ograniczone</string>
     <string name="exact_alarms_restricted_description">Powtarzające się przypomnienia mogą uruchamiać się z opóźnieniem. Dotknij, aby zezwolić na dokładne alarmy.</string>
+    <string name="ai_digest">Codzienne podsumowanie AI</string>
+    <string name="ai_digest_daily_toggle">Poranne podsumowanie</string>
+    <string name="ai_digest_time">Czas powiadomienia</string>
+    <string name="ai_digest_notification_title">Twoje codzienne podsumowanie</string>
+    <string name="ai_digest_template_reminders">Masz dziś %1$d przypomnień, w tym „%2$s” o %3$s.</string>
+    <string name="ai_digest_template_birthdays">Dziś są urodziny %1$s.</string>
 </resources>

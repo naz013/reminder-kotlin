@@ -7,6 +7,7 @@ import com.elementary.tasks.module.featuregoogletask.GoogleTasksPreferencesImpl
 import com.elementary.tasks.module.featuresettings.CalendarSettingsPreferencesImpl
 import com.elementary.tasks.module.featuresettings.CloudBackupSettingsPreferencesImpl
 import com.elementary.tasks.module.featuresettings.DeveloperSettingsPreferencesImpl
+import com.elementary.tasks.module.featuresettings.DigestSettingsPreferencesImpl
 import com.elementary.tasks.module.featuresettings.GeneralSettingsPreferencesImpl
 import com.elementary.tasks.module.featuresettings.HeaderItemsPreferencesImpl
 import com.elementary.tasks.module.featuresettings.LocationSettingsPreferencesImpl
@@ -48,6 +49,7 @@ import com.github.naz013.feature.settings.SettingsHubDoNotDisturbChecker
 import com.github.naz013.feature.settings.SettingsHubRemoteMessages
 import com.github.naz013.feature.settings.calendar.CalendarSettingsPreferences
 import com.github.naz013.feature.settings.debug.DeveloperSettingsPreferences
+import com.github.naz013.feature.settings.digest.DigestSettingsPreferences
 import com.github.naz013.feature.settings.export.CloudBackupSettingsPreferences
 import com.github.naz013.feature.settings.general.GeneralSettingsPreferences
 import com.github.naz013.feature.settings.headeritems.HeaderItemsPreferences
@@ -109,6 +111,7 @@ val libModule = module {
   factory { SecuritySettingsPreferencesImpl(get()) as SecuritySettingsPreferences }
   factory { LocationSettingsPreferencesImpl(get()) as LocationSettingsPreferences }
   factory { CalendarSettingsPreferencesImpl(get()) as CalendarSettingsPreferences }
+  factory { DigestSettingsPreferencesImpl(get()) as DigestSettingsPreferences }
   factory { CloudBackupSettingsPreferencesImpl(get()) as CloudBackupSettingsPreferences }
   factory { NoteSettingsPreferencesImpl(get()) as NoteSettingsPreferences }
   factory { DeveloperSettingsPreferencesImpl(get()) as DeveloperSettingsPreferences }

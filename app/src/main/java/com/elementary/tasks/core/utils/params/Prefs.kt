@@ -83,6 +83,14 @@ class Prefs(
     get() = getString(PrefsConstants.PUBLIC_HOLIDAYS_COUNTRY, def = Locale.getDefault().country)
     set(value) = putString(PrefsConstants.PUBLIC_HOLIDAYS_COUNTRY, value)
 
+  var aiDigestDailyEnabled: Boolean
+    get() = getBoolean(PrefsConstants.AI_DIGEST_DAILY_ENABLED, def = false)
+    set(value) = putBoolean(PrefsConstants.AI_DIGEST_DAILY_ENABLED, value)
+
+  var aiDigestHour: Int
+    get() = getInt(PrefsConstants.AI_DIGEST_HOUR, def = 8)
+    set(value) = putInt(PrefsConstants.AI_DIGEST_HOUR, value)
+
   var occurrenceMigrated: Boolean
     get() = getBoolean(PrefsConstants.OCCURRENCE_MIGRATED, def = false)
     set(value) = putBoolean(PrefsConstants.OCCURRENCE_MIGRATED, value)

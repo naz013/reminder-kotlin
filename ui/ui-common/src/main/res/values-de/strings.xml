@@ -1279,4 +1279,10 @@
     <string name="reminder_notification_escalate_after_repeats">Eskalieren nach</string>
     <string name="exact_alarms_restricted">Exakte Alarme sind eingeschränkt</string>
     <string name="exact_alarms_restricted_description">Wiederkehrende Erinnerungen können verspätet ausgelöst werden. Tippen, um exakte Alarme zuzulassen.</string>
+    <string name="ai_digest">KI-Tagesüberblick</string>
+    <string name="ai_digest_daily_toggle">Morgen-Überblick</string>
+    <string name="ai_digest_time">Benachrichtigungszeit</string>
+    <string name="ai_digest_notification_title">Dein Tagesüberblick</string>
+    <string name="ai_digest_template_reminders">Du hast heute %1$d Erinnerungen, darunter „%2$s“ um %3$s.</string>
+    <string name="ai_digest_template_birthdays">Heute hat %1$s Geburtstag.</string>
 </resources>

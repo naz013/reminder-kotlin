@@ -1283,4 +1283,10 @@
     <string name="reminder_notification_escalate_after_repeats">Escalation dopo</string>
     <string name="exact_alarms_restricted">Le sveglie esatte sono limitate</string>
     <string name="exact_alarms_restricted_description">I promemoria ripetuti potrebbero attivarsi in ritardo. Tocca per consentire le sveglie esatte.</string>
+    <string name="ai_digest">Riepilogo giornaliero IA</string>
+    <string name="ai_digest_daily_toggle">Riepilogo mattutino</string>
+    <string name="ai_digest_time">Orario notifica</string>
+    <string name="ai_digest_notification_title">Il tuo riepilogo giornaliero</string>
+    <string name="ai_digest_template_reminders">Hai %1$d promemoria oggi, tra cui \'%2$s\' alle %3$s.</string>
+    <string name="ai_digest_template_birthdays">Oggi è il compleanno di %1$s.</string>
 </resources>

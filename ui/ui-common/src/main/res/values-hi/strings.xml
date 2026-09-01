@@ -1285,4 +1285,10 @@
     <string name="reminder_notification_escalate_after_repeats">इतने दोहराव के बाद एस्केलेट करें</string>
     <string name="exact_alarms_restricted">सटीक अलार्म प्रतिबंधित हैं</string>
     <string name="exact_alarms_restricted_description">दोहराए जाने वाले रिमाइंडर देर से बज सकते हैं। सटीक अलार्म की अनुमति देने के लिए टैप करें।</string>
+    <string name="ai_digest">एआई दैनिक डाइजेस्ट</string>
+    <string name="ai_digest_daily_toggle">सुबह का डाइजेस्ट</string>
+    <string name="ai_digest_time">सूचना का समय</string>
+    <string name="ai_digest_notification_title">आपका दैनिक डाइजेस्ट</string>
+    <string name="ai_digest_template_reminders">आज आपके पास %1$d रिमाइंडर हैं, जिनमें \'%2$s\' (%3$s) शामिल है.</string>
+    <string name="ai_digest_template_birthdays">आज %1$s का जन्मदिन है.</string>
 </resources>

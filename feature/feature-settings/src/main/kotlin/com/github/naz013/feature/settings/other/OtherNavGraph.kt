@@ -39,10 +39,11 @@ fun EntryProviderScope<NavKey>.otherEntries(
   isRenderedAsDetailPane: (NavKey) -> Boolean,
   onOpenTroubleshooting: () -> Unit,
   onOpenProVersion: () -> Unit,
+  onOpenAiDigest: () -> Unit,
 ) {
   entry<OtherNavKey.Other>(metadata = SettingsDetailPane) {
     val renderAsDetailPane = remember { isRenderedAsDetailPane(OtherNavKey.Other) }
-    OtherEntry(backStack, renderAsDetailPane, onOpenTroubleshooting, onOpenProVersion)
+    OtherEntry(backStack, renderAsDetailPane, onOpenTroubleshooting, onOpenProVersion, onOpenAiDigest)
   }
   entry<OtherNavKey.Permissions>(metadata = SettingsDetailPane) { PermissionsEntry(backStack) }
   entry<OtherNavKey.Oss>(metadata = SettingsDetailPane) { OssEntry(backStack) }
@@ -58,6 +59,7 @@ private fun OtherEntry(
   renderAsDetailPane: Boolean,
   onOpenTroubleshooting: () -> Unit,
   onOpenProVersion: () -> Unit,
+  onOpenAiDigest: () -> Unit,
 ) {
   val viewModel = koinViewModel<OtherSettingsViewModel>()
 
@@ -129,6 +131,14 @@ private fun OtherEntry(
           onOpenProVersion()
         } else {
           backStack.add(OtherNavKey.GeminiFunctions)
+        }
+      },
+      onDigestClick = {
+        if (state.isDigestLocked) {
+          viewModel.onDigestLockedClick()
+          onOpenProVersion()
+        } else {
+          onOpenAiDigest()
         }
       },
       onBuyMeACoffeeClick = { viewModel.onBuyMeACoffeeClicked() },

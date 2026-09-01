@@ -1281,4 +1281,10 @@
     <string name="reminder_notification_escalate_after_repeats">Eskaler etter</string>
     <string name="exact_alarms_restricted">Nøyaktige alarmer er begrenset</string>
     <string name="exact_alarms_restricted_description">Gjentakende påminnelser kan utløses for sent. Trykk for å tillate nøyaktige alarmer.</string>
+    <string name="ai_digest">AI-dagsoversikt</string>
+    <string name="ai_digest_daily_toggle">Morgenoversikt</string>
+    <string name="ai_digest_time">Varslingstidspunkt</string>
+    <string name="ai_digest_notification_title">Din dagsoversikt</string>
+    <string name="ai_digest_template_reminders">Du har %1$d påminnelser i dag, inkludert «%2$s» kl. %3$s.</string>
+    <string name="ai_digest_template_birthdays">%1$s har bursdag i dag.</string>
 </resources>

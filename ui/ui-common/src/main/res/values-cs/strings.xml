@@ -1283,4 +1283,10 @@
     <string name="reminder_notification_escalate_after_repeats">Eskalovat po</string>
     <string name="exact_alarms_restricted">Přesné budíky jsou omezeny</string>
     <string name="exact_alarms_restricted_description">Opakující se připomínky se mohou spustit se zpožděním. Klepnutím povolíte přesné budíky.</string>
+    <string name="ai_digest">Denní AI přehled</string>
+    <string name="ai_digest_daily_toggle">Ranní přehled</string>
+    <string name="ai_digest_time">Čas oznámení</string>
+    <string name="ai_digest_notification_title">Váš denní přehled</string>
+    <string name="ai_digest_template_reminders">Dnes máte %1$d připomenutí, včetně „%2$s“ v %3$s.</string>
+    <string name="ai_digest_template_birthdays">Dnes má %1$s narozeniny.</string>
 </resources>

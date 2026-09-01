@@ -1283,4 +1283,10 @@
     <string name="reminder_notification_escalate_after_repeats">Escalar após</string>
     <string name="exact_alarms_restricted">Os alarmes exatos estão restritos</string>
     <string name="exact_alarms_restricted_description">Lembretes repetidos podem disparar atrasados. Toque para permitir alarmes exatos.</string>
+    <string name="ai_digest">Resumo diário com IA</string>
+    <string name="ai_digest_daily_toggle">Resumo matinal</string>
+    <string name="ai_digest_time">Hora da notificação</string>
+    <string name="ai_digest_notification_title">Seu resumo diário</string>
+    <string name="ai_digest_template_reminders">Você tem %1$d lembretes hoje, incluindo \'%2$s\' às %3$s.</string>
+    <string name="ai_digest_template_birthdays">Hoje é aniversário de %1$s.</string>
 </resources>

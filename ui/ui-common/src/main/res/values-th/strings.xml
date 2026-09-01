@@ -1281,4 +1281,10 @@
     <string name="reminder_notification_escalate_after_repeats">ทวีความรุนแรงหลังจาก</string>
     <string name="exact_alarms_restricted">การปลุกที่แม่นยำถูกจำกัด</string>
     <string name="exact_alarms_restricted_description">การแจ้งเตือนซ้ำอาจดังช้ากว่ากำหนด แตะเพื่ออนุญาตการปลุกที่แม่นยำ</string>
+    <string name="ai_digest">สรุปประจำวันด้วย AI</string>
+    <string name="ai_digest_daily_toggle">สรุปยามเช้า</string>
+    <string name="ai_digest_time">เวลาแจ้งเตือน</string>
+    <string name="ai_digest_notification_title">สรุปประจำวันของคุณ</string>
+    <string name="ai_digest_template_reminders">วันนี้คุณมีการแจ้งเตือน %1$d รายการ รวมถึง \'%2$s\' เวลา %3$s</string>
+    <string name="ai_digest_template_birthdays">วันนี้เป็นวันเกิดของ %1$s</string>
 </resources>

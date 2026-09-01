@@ -1281,4 +1281,10 @@
     <string name="reminder_notification_escalate_after_repeats">Tăng cấp sau</string>
     <string name="exact_alarms_restricted">Báo thức chính xác bị hạn chế</string>
     <string name="exact_alarms_restricted_description">Lời nhắc lặp lại có thể kêu muộn. Nhấn để cho phép báo thức chính xác.</string>
+    <string name="ai_digest">Bản tóm tắt hằng ngày bằng AI</string>
+    <string name="ai_digest_daily_toggle">Tóm tắt buổi sáng</string>
+    <string name="ai_digest_time">Thời gian thông báo</string>
+    <string name="ai_digest_notification_title">Bản tóm tắt hằng ngày của bạn</string>
+    <string name="ai_digest_template_reminders">Hôm nay bạn có %1$d lời nhắc, bao gồm \'%2$s\' lúc %3$s.</string>
+    <string name="ai_digest_template_birthdays">Hôm nay là sinh nhật của %1$s.</string>
 </resources>

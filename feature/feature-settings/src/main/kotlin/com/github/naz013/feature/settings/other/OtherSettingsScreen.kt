@@ -32,6 +32,7 @@ internal fun OtherSettingsScreen(
   onAboutClick: () -> Unit,
   onAboutDialogDismiss: () -> Unit,
   onGeminiFunctionsClick: () -> Unit,
+  onDigestClick: () -> Unit,
   onBuyMeACoffeeClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
@@ -90,6 +91,15 @@ internal fun OtherSettingsScreen(
         locked = state.isGeminiFunctionsLocked,
         dividerBottom = true,
         onClick = onGeminiFunctionsClick,
+      )
+    }
+    if (state.isDigestVisible) {
+      SettingsItem(
+        title = stringResource(R.string.ai_digest),
+        icon = AppIcons.Fluent.CalendarAgenda,
+        locked = state.isDigestLocked,
+        dividerBottom = true,
+        onClick = onDigestClick,
       )
     }
     if (state.isBuyMeACoffeeVisible) {

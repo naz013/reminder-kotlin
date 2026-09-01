@@ -1282,4 +1282,10 @@
     <string name="reminder_notification_escalate_after_repeats">Эскалация после</string>
     <string name="exact_alarms_restricted">Точные будильники ограничены</string>
     <string name="exact_alarms_restricted_description">Повторяющиеся напоминания могут срабатывать с опозданием. Нажмите, чтобы разрешить точные будильники.</string>
+    <string name="ai_digest">Ежедневная AI-сводка</string>
+    <string name="ai_digest_daily_toggle">Утренняя сводка</string>
+    <string name="ai_digest_time">Время уведомления</string>
+    <string name="ai_digest_notification_title">Ваша ежедневная сводка</string>
+    <string name="ai_digest_template_reminders">Сегодня у вас %1$d напоминаний, включая «%2$s» в %3$s.</string>
+    <string name="ai_digest_template_birthdays">Сегодня день рождения %1$s.</string>
 </resources>

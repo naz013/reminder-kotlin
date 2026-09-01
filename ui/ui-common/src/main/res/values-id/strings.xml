@@ -1281,4 +1281,10 @@
     <string name="reminder_notification_escalate_after_repeats">Eskalasi setelah</string>
     <string name="exact_alarms_restricted">Alarm tepat waktu dibatasi</string>
     <string name="exact_alarms_restricted_description">Pengingat berulang mungkin berbunyi terlambat. Ketuk untuk mengizinkan alarm tepat waktu.</string>
+    <string name="ai_digest">Ringkasan harian AI</string>
+    <string name="ai_digest_daily_toggle">Ringkasan pagi</string>
+    <string name="ai_digest_time">Waktu notifikasi</string>
+    <string name="ai_digest_notification_title">Ringkasan harian Anda</string>
+    <string name="ai_digest_template_reminders">Anda memiliki %1$d pengingat hari ini, termasuk \'%2$s\' pukul %3$s.</string>
+    <string name="ai_digest_template_birthdays">Hari ini adalah ulang tahun %1$s.</string>
 </resources>

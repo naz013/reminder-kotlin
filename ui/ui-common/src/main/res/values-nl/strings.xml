@@ -1281,4 +1281,10 @@
     <string name="reminder_notification_escalate_after_repeats">Escaleren na</string>
     <string name="exact_alarms_restricted">Exacte alarmen zijn beperkt</string>
     <string name="exact_alarms_restricted_description">Herhalende herinneringen kunnen te laat afgaan. Tik om exacte alarmen toe te staan.</string>
+    <string name="ai_digest">AI-dagoverzicht</string>
+    <string name="ai_digest_daily_toggle">Ochtendoverzicht</string>
+    <string name="ai_digest_time">Meldingstijd</string>
+    <string name="ai_digest_notification_title">Je dagoverzicht</string>
+    <string name="ai_digest_template_reminders">Je hebt vandaag %1$d herinneringen, waaronder \'%2$s\' om %3$s.</string>
+    <string name="ai_digest_template_birthdays">Vandaag is de verjaardag van %1$s.</string>
 </resources>

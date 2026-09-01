@@ -1284,4 +1284,10 @@
     <string name="reminder_notification_escalate_after_repeats">Ескалация след</string>
     <string name="exact_alarms_restricted">Точните аларми са ограничени</string>
     <string name="exact_alarms_restricted_description">Повтарящите се напомняния може да се задействат със закъснение. Докоснете, за да разрешите точни аларми.</string>
+    <string name="ai_digest">Дневно AI резюме</string>
+    <string name="ai_digest_daily_toggle">Сутрешно резюме</string>
+    <string name="ai_digest_time">Час на известието</string>
+    <string name="ai_digest_notification_title">Вашето дневно резюме</string>
+    <string name="ai_digest_template_reminders">Днес имате %1$d напомняния, включително „%2$s“ в %3$s.</string>
+    <string name="ai_digest_template_birthdays">Днес е рожденият ден на %1$s.</string>
 </resources>

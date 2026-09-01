@@ -1287,4 +1287,10 @@
     <string name="reminder_notification_escalate_after_repeats">Escalate after</string>
     <string name="exact_alarms_restricted">Exact alarms are restricted</string>
     <string name="exact_alarms_restricted_description">Repeating reminders may fire late. Tap to allow exact alarms.</string>
+    <string name="ai_digest">AI daily digest</string>
+    <string name="ai_digest_daily_toggle">Morning digest</string>
+    <string name="ai_digest_time">Notification time</string>
+    <string name="ai_digest_notification_title">Your daily digest</string>
+    <string name="ai_digest_template_reminders">You have %1$d reminders today, including \'%2$s\' at %3$s.</string>
+    <string name="ai_digest_template_birthdays">It\'s %1$s\'s birthday.</string>
 </resources>
