@@ -1289,4 +1289,6 @@
     <string name="ai_digest_notification_title">Rezumatul tău zilnic</string>
     <string name="ai_digest_template_reminders">Ai %1$d mementouri astăzi, inclusiv „%2$s” la %3$s.</string>
     <string name="ai_digest_template_birthdays">Astăzi este ziua de naștere a lui %1$s.</string>
+    <string name="remember_last_used_text_color">Reține ultima culoare de text folosită</string>
+    <string name="do_not_remember_last_text_color">Nu reține ultima culoare de text folosită</string>
 </resources>

@@ -33,6 +33,11 @@ internal class NoteSettingsViewModel(
     refreshState()
   }
 
+  fun onTextColorRememberToggle() {
+    prefs.isNoteTextColorRememberingEnabled = !prefs.isNoteTextColorRememberingEnabled
+    refreshState()
+  }
+
   fun onOpacityClick() {
     state.update { it.copy(opacityDialog = OpacityDialogState(previewValue = prefs.noteColorOpacity)) }
   }
@@ -60,6 +65,7 @@ internal class NoteSettingsViewModel(
       isColorRememberChecked = prefs.isNoteColorRememberingEnabled,
       isFontSizeRememberChecked = prefs.isNoteFontSizeRememberingEnabled,
       isFontStyleRememberChecked = prefs.isNoteFontStyleRememberingEnabled,
+      isTextColorRememberChecked = prefs.isNoteTextColorRememberingEnabled,
       colorOpacity = prefs.noteColorOpacity,
       hapticFeedbackEnabled = prefs.hapticsEnabled,
     )

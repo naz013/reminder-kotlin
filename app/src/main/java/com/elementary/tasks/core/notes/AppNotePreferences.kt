@@ -21,6 +21,8 @@ class AppNotePreferences(
     get() = prefs.isNoteFontStyleRememberingEnabled
   override val isNoteColorRememberingEnabled: Boolean
     get() = prefs.isNoteColorRememberingEnabled
+  override val isNoteTextColorRememberingEnabled: Boolean
+    get() = prefs.isNoteTextColorRememberingEnabled
 
   // Stored as the enum name (not ordinal) so reordering ListLayoutMode can't silently remap a
   // saved preference; an unknown/empty stored value falls back to LIST.
@@ -42,4 +44,16 @@ class AppNotePreferences(
   override var noteColorOpacity: Int
     get() = prefs.noteColorOpacity
     set(value) { prefs.noteColorOpacity = value }
+  override var lastNoteTextColorArgb: Int
+    get() = prefs.lastNoteTextColorArgb
+    set(value) { prefs.lastNoteTextColorArgb = value }
+  override var lastNoteTextGradientStartColorArgb: Int
+    get() = prefs.lastNoteTextGradientStartColorArgb
+    set(value) { prefs.lastNoteTextGradientStartColorArgb = value }
+  override var lastNoteTextGradientEndColorArgb: Int
+    get() = prefs.lastNoteTextGradientEndColorArgb
+    set(value) { prefs.lastNoteTextGradientEndColorArgb = value }
+  override var lastNoteTextGradientAngle: Int
+    get() = prefs.lastNoteTextGradientAngle
+    set(value) { prefs.lastNoteTextGradientAngle = value }
 }

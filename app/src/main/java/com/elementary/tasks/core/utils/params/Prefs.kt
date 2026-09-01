@@ -520,6 +520,26 @@ class Prefs(
     get() = getInt(PrefsConstants.NOTE_COLOR_OPACITY, def = 100)
     set(count) = putInt(PrefsConstants.NOTE_COLOR_OPACITY, count)
 
+  var isNoteTextColorRememberingEnabled: Boolean
+    get() = getBoolean(PrefsConstants.REMEMBER_NOTE_TEXT_COLOR, def = true)
+    set(value) = putBoolean(PrefsConstants.REMEMBER_NOTE_TEXT_COLOR, value)
+
+  var lastNoteTextColorArgb: Int
+    get() = getInt(PrefsConstants.LAST_NOTE_TEXT_COLOR)
+    set(value) = putInt(PrefsConstants.LAST_NOTE_TEXT_COLOR, value)
+
+  var lastNoteTextGradientStartColorArgb: Int
+    get() = getInt(PrefsConstants.LAST_NOTE_TEXT_GRADIENT_START_COLOR)
+    set(value) = putInt(PrefsConstants.LAST_NOTE_TEXT_GRADIENT_START_COLOR, value)
+
+  var lastNoteTextGradientEndColorArgb: Int
+    get() = getInt(PrefsConstants.LAST_NOTE_TEXT_GRADIENT_END_COLOR)
+    set(value) = putInt(PrefsConstants.LAST_NOTE_TEXT_GRADIENT_END_COLOR, value)
+
+  var lastNoteTextGradientAngle: Int
+    get() = getInt(PrefsConstants.LAST_NOTE_TEXT_GRADIENT_ANGLE)
+    set(value) = putInt(PrefsConstants.LAST_NOTE_TEXT_GRADIENT_ANGLE, value)
+
   var dropboxToken: String
     get() = getString(PrefsConstants.DROPBOX_TOKEN)
     set(token) = putString(PrefsConstants.DROPBOX_TOKEN, token)

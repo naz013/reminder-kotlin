@@ -1287,4 +1287,6 @@
     <string name="ai_digest_notification_title">ملخصك اليومي</string>
     <string name="ai_digest_template_reminders">لديك %1$d تذكيرات اليوم، بما في ذلك \'%2$s\' في %3$s.</string>
     <string name="ai_digest_template_birthdays">اليوم عيد ميلاد %1$s.</string>
+    <string name="remember_last_used_text_color">تذكّر آخر لون نص مستخدم</string>
+    <string name="do_not_remember_last_text_color">عدم تذكّر آخر لون نص مستخدم</string>
 </resources>

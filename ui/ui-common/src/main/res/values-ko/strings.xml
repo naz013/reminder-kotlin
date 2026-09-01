@@ -1289,4 +1289,6 @@
     <string name="ai_digest_notification_title">오늘의 다이제스트</string>
     <string name="ai_digest_template_reminders">오늘 %1$d개의 미리 알림이 있습니다. \'%2$s\'(%3$s) 등.</string>
     <string name="ai_digest_template_birthdays">오늘은 %1$s의 생일입니다.</string>
+    <string name="remember_last_used_text_color">마지막으로 사용한 텍스트 색상 기억</string>
+    <string name="do_not_remember_last_text_color">마지막 사용 텍스트 색상 기억 안함</string>
 </resources>

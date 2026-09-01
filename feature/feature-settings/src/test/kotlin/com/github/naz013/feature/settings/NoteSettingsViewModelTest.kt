@@ -19,6 +19,7 @@ class NoteSettingsViewModelTest : BaseTest() {
   private var colorRememberingEnabled = false
   private var fontSizeRememberingEnabled = false
   private var fontStyleRememberingEnabled = false
+  private var textColorRememberingEnabled = false
   private var noteColorOpacity = 100
   private var hapticsEnabled = true
 
@@ -34,6 +35,8 @@ class NoteSettingsViewModelTest : BaseTest() {
     every { prefs.isNoteFontSizeRememberingEnabled = any() } answers { fontSizeRememberingEnabled = firstArg() }
     every { prefs.isNoteFontStyleRememberingEnabled } answers { fontStyleRememberingEnabled }
     every { prefs.isNoteFontStyleRememberingEnabled = any() } answers { fontStyleRememberingEnabled = firstArg() }
+    every { prefs.isNoteTextColorRememberingEnabled } answers { textColorRememberingEnabled }
+    every { prefs.isNoteTextColorRememberingEnabled = any() } answers { textColorRememberingEnabled = firstArg() }
     every { prefs.noteColorOpacity } answers { noteColorOpacity }
     every { prefs.noteColorOpacity = any() } answers { noteColorOpacity = firstArg() }
     every { prefs.hapticsEnabled } answers { hapticsEnabled }
@@ -51,6 +54,7 @@ class NoteSettingsViewModelTest : BaseTest() {
     colorRememberingEnabled = true
     fontSizeRememberingEnabled = false
     fontStyleRememberingEnabled = true
+    textColorRememberingEnabled = true
     noteColorOpacity = 42
     hapticsEnabled = false
     viewModel = NoteSettingsViewModel(prefs, analyticsEventSender)
@@ -60,6 +64,7 @@ class NoteSettingsViewModelTest : BaseTest() {
     assertEquals(true, state.isColorRememberChecked)
     assertEquals(false, state.isFontSizeRememberChecked)
     assertEquals(true, state.isFontStyleRememberChecked)
+    assertEquals(true, state.isTextColorRememberChecked)
     assertEquals(42, state.colorOpacity)
     assertEquals(false, state.hapticFeedbackEnabled)
     assertNull(state.opacityDialog)
@@ -93,6 +98,16 @@ class NoteSettingsViewModelTest : BaseTest() {
 
     assertEquals(true, fontStyleRememberingEnabled)
     assertEquals(true, viewModel.state.value.isFontStyleRememberChecked)
+  }
+
+  @Test
+  fun `onTextColorRememberToggle flips the flag and persists it`() {
+    textColorRememberingEnabled = false
+
+    viewModel.onTextColorRememberToggle()
+
+    assertEquals(true, textColorRememberingEnabled)
+    assertEquals(true, viewModel.state.value.isTextColorRememberChecked)
   }
 
   @Test

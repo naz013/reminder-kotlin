@@ -1290,4 +1290,6 @@
     <string name="ai_digest_notification_title">Вашето дневно резюме</string>
     <string name="ai_digest_template_reminders">Днес имате %1$d напомняния, включително „%2$s“ в %3$s.</string>
     <string name="ai_digest_template_birthdays">Днес е рожденият ден на %1$s.</string>
+    <string name="remember_last_used_text_color">Запомни последно използвания цвят на текста</string>
+    <string name="do_not_remember_last_text_color">Не запомняй последно използвания цвят на текста</string>
 </resources>

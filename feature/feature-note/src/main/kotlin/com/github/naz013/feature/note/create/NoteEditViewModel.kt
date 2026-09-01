@@ -270,10 +270,21 @@ internal class NoteEditViewModel(
 
   fun onToggleStrikethrough() = toggleCharacterAttribute(NoteSpanAttribute.Strikethrough)
 
-  fun onApplySolidColor(argb: Int) = applySingleValueAttribute(NoteSpanAttribute.SolidColor(argb))
+  fun onApplySolidColor(argb: Int) {
+    if (notePreferences.isNoteTextColorRememberingEnabled) {
+      notePreferences.lastNoteTextColorArgb = argb
+    }
+    applySingleValueAttribute(NoteSpanAttribute.SolidColor(argb))
+  }
 
-  fun onApplyGradient(colors: List<Int>, angleDegrees: Float) =
+  fun onApplyGradient(colors: List<Int>, angleDegrees: Float) {
+    if (notePreferences.isNoteTextColorRememberingEnabled) {
+      colors.getOrNull(0)?.let { notePreferences.lastNoteTextGradientStartColorArgb = it }
+      colors.getOrNull(1)?.let { notePreferences.lastNoteTextGradientEndColorArgb = it }
+      notePreferences.lastNoteTextGradientAngle = angleDegrees.toInt()
+    }
     applySingleValueAttribute(NoteSpanAttribute.GradientColor(colors, angleDegrees))
+  }
 
   /** Applies a block/line format (heading level or bullet) to every line touched by the current
    * selection (just the current line if the cursor is collapsed); [attribute] `null` clears any

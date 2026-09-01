@@ -439,6 +439,7 @@ private fun NoteEntry(
       onColorRememberToggle = viewModel::onColorRememberToggle,
       onFontSizeRememberToggle = viewModel::onFontSizeRememberToggle,
       onFontStyleRememberToggle = viewModel::onFontStyleRememberToggle,
+      onTextColorRememberToggle = viewModel::onTextColorRememberToggle,
       onOpacityClick = viewModel::onOpacityClick,
       onOpacityPreviewChange = viewModel::onOpacityPreviewChange,
       onOpacityConfirm = viewModel::onOpacityConfirm,

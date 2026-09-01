@@ -1289,4 +1289,6 @@
     <string name="ai_digest_notification_title">Váš denní přehled</string>
     <string name="ai_digest_template_reminders">Dnes máte %1$d připomenutí, včetně „%2$s“ v %3$s.</string>
     <string name="ai_digest_template_birthdays">Dnes má %1$s narozeniny.</string>
+    <string name="remember_last_used_text_color">Zapamatovat si naposledy použitou barvu textu</string>
+    <string name="do_not_remember_last_text_color">Nepamatovat si naposledy použitou barvu textu</string>
 </resources>

@@ -1290,4 +1290,6 @@
     <string name="ai_digest_notification_title">Günlük özetiniz</string>
     <string name="ai_digest_template_reminders">Bugün \'%2$s\' (%3$s) dahil %1$d hatırlatıcınız var.</string>
     <string name="ai_digest_template_birthdays">Bugün %1$s\'in doğum günü.</string>
+    <string name="remember_last_used_text_color">Son kullanılan metin rengini hatırla</string>
+    <string name="do_not_remember_last_text_color">Son kullanılan metin rengini hatırlama</string>
 </resources>

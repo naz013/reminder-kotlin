@@ -1287,4 +1287,6 @@
     <string name="ai_digest_notification_title">สรุปประจำวันของคุณ</string>
     <string name="ai_digest_template_reminders">วันนี้คุณมีการแจ้งเตือน %1$d รายการ รวมถึง \'%2$s\' เวลา %3$s</string>
     <string name="ai_digest_template_birthdays">วันนี้เป็นวันเกิดของ %1$s</string>
+    <string name="remember_last_used_text_color">จดจำสีข้อความที่ใช้ล่าสุด</string>
+    <string name="do_not_remember_last_text_color">ไม่จดจำสีข้อความที่ใช้ล่าสุด</string>
 </resources>

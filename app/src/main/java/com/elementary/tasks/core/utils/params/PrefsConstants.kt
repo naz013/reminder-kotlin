@@ -45,6 +45,11 @@ object PrefsConstants {
   const val LAST_NOTE_FONT_SIZE = "last_note_font_size"
   const val LAST_NOTE_FONT_STYLE = "last_note_font_style"
   const val NOTE_COLOR_OPACITY = "note_color_opacity"
+  const val REMEMBER_NOTE_TEXT_COLOR = "remember_note_text_color"
+  const val LAST_NOTE_TEXT_COLOR = "last_note_text_color"
+  const val LAST_NOTE_TEXT_GRADIENT_START_COLOR = "last_note_text_gradient_start_color"
+  const val LAST_NOTE_TEXT_GRADIENT_END_COLOR = "last_note_text_gradient_end_color"
+  const val LAST_NOTE_TEXT_GRADIENT_ANGLE = "last_note_text_gradient_angle"
 
   const val DROPBOX_TOKEN = "dropbox_token"
   const val APP_LANGUAGE = "app_language"
