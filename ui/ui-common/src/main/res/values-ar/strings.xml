@@ -1289,4 +1289,6 @@
     <string name="ai_digest_template_birthdays">اليوم عيد ميلاد %1$s.</string>
     <string name="remember_last_used_text_color">تذكّر آخر لون نص مستخدم</string>
     <string name="do_not_remember_last_text_color">عدم تذكّر آخر لون نص مستخدم</string>
+    <string name="builder_quick_start_arriving_place">الوصول إلى مكان</string>
+    <string name="builder_quick_start_arriving_place_delayed">الوصول إلى مكان (بدء متأخر)</string>
 </resources>

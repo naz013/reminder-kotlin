@@ -1291,4 +1291,6 @@
     <string name="ai_digest_template_birthdays">오늘은 %1$s의 생일입니다.</string>
     <string name="remember_last_used_text_color">마지막으로 사용한 텍스트 색상 기억</string>
     <string name="do_not_remember_last_text_color">마지막 사용 텍스트 색상 기억 안함</string>
+    <string name="builder_quick_start_arriving_place">장소 도착</string>
+    <string name="builder_quick_start_arriving_place_delayed">장소 도착 (지연 시작)</string>
 </resources>

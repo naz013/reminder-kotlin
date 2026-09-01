@@ -1292,4 +1292,6 @@
     <string name="ai_digest_template_birthdays">Bugün %1$s\'in doğum günü.</string>
     <string name="remember_last_used_text_color">Son kullanılan metin rengini hatırla</string>
     <string name="do_not_remember_last_text_color">Son kullanılan metin rengini hatırlama</string>
+    <string name="builder_quick_start_arriving_place">Bir yere varma</string>
+    <string name="builder_quick_start_arriving_place_delayed">Bir yere varma (gecikmeli başlangıç)</string>
 </resources>

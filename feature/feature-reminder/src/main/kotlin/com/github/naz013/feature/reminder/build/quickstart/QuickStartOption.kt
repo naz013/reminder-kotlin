@@ -16,4 +16,6 @@ enum class QuickStartOption(val labelRes: Int) {
   SHOPPING_LIST(R.string.builder_quick_start_shopping_list),
   LEAVING_PLACE(R.string.builder_quick_start_leaving_place),
   LEAVING_PLACE_DELAYED(R.string.builder_quick_start_leaving_place_delayed),
+  ARRIVING_PLACE(R.string.builder_quick_start_arriving_place),
+  ARRIVING_PLACE_DELAYED(R.string.builder_quick_start_arriving_place_delayed),
 }

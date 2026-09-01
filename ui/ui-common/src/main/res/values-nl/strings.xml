@@ -1289,4 +1289,6 @@
     <string name="ai_digest_template_birthdays">Vandaag is de verjaardag van %1$s.</string>
     <string name="remember_last_used_text_color">Laatst gebruikte tekstkleur onthouden</string>
     <string name="do_not_remember_last_text_color">Laatst gebruikte tekstkleur niet onthouden</string>
+    <string name="builder_quick_start_arriving_place">Aankomen op een locatie</string>
+    <string name="builder_quick_start_arriving_place_delayed">Aankomen op een locatie (vertraagde start)</string>
 </resources>

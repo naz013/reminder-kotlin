@@ -1291,4 +1291,6 @@
     <string name="ai_digest_template_birthdays">Dnes má %1$s narozeniny.</string>
     <string name="remember_last_used_text_color">Zapamatovat si naposledy použitou barvu textu</string>
     <string name="do_not_remember_last_text_color">Nepamatovat si naposledy použitou barvu textu</string>
+    <string name="builder_quick_start_arriving_place">Příjezd na místo</string>
+    <string name="builder_quick_start_arriving_place_delayed">Příjezd na místo (opožděný start)</string>
 </resources>

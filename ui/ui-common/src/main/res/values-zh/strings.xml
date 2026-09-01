@@ -1292,4 +1292,6 @@
     <string name="ai_digest_template_birthdays">今天是%1$s的生日。</string>
     <string name="remember_last_used_text_color">记住上次使用的文本颜色</string>
     <string name="do_not_remember_last_text_color">不记住上次使用的文本颜色</string>
+    <string name="builder_quick_start_arriving_place">到达某地</string>
+    <string name="builder_quick_start_arriving_place_delayed">到达某地(延迟开始)</string>
 </resources>

@@ -1293,4 +1293,6 @@
     <string name="ai_digest_template_birthdays">आज %1$s का जन्मदिन है.</string>
     <string name="remember_last_used_text_color">अंतिम उपयोग किया गया टेक्स्ट रंग याद रखें</string>
     <string name="do_not_remember_last_text_color">अंतिम उपयोग किया गया टेक्स्ट रंग याद न रखें</string>
+    <string name="builder_quick_start_arriving_place">किसी स्थान पर पहुंचना</string>
+    <string name="builder_quick_start_arriving_place_delayed">किसी स्थान पर पहुंचना (विलंबित प्रारंभ)</string>
 </resources>
