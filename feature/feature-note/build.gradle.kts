@@ -18,6 +18,7 @@ dependencies {
   implementation(project(":core:feature-common"))
   implementation(project(":data:files-api"))
   implementation(project(":logic:logic-schedule"))
+  implementation(project(":logic:logic-note"))
   implementation(project(":logic:logic-tag"))
   implementation(project(":ui:ui-tag"))
   implementation(project(":logic:logic-reminder"))

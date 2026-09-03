@@ -13,11 +13,11 @@ import com.github.naz013.feature.note.UiNoteEdit
 import com.github.naz013.feature.note.UiNoteEditAdapter
 import com.github.naz013.feature.note.create.drop.DroppedContentParser
 import com.github.naz013.feature.note.create.images.ImageDecoder
-import com.github.naz013.feature.note.image.NoteImageRepository
 import com.github.naz013.feature.note.preview.ImagesSingleton
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
-import com.github.naz013.feature.note.usecase.SaveNoteUseCase
+import com.github.naz013.logic.note.NoteImageRepository
+import com.github.naz013.logic.note.SaveNoteUseCase
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase

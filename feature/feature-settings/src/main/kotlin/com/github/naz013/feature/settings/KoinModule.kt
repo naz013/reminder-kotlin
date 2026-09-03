@@ -123,6 +123,7 @@ val featureSettingsModule = module {
       populateCalendarDemoDataUseCase = get(),
       routineRepository = get(),
       routineExecutionRepository = get(),
+      insertDemoDataUseCase = get(),
     )
   }
   viewModelOf(::ObjectExportViewModel)

@@ -23,6 +23,7 @@ import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.LegalDocumentType
+import com.github.naz013.logic.demodata.InsertDemoDataUseCase
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.CalendarEventRepository
@@ -87,6 +88,7 @@ internal class DeveloperViewModel(
   private val populateCalendarDemoDataUseCase: PopulateCalendarDemoDataUseCase,
   private val routineRepository: RoutineRepository,
   private val routineExecutionRepository: RoutineExecutionRepository,
+  private val insertDemoDataUseCase: InsertDemoDataUseCase,
 ) : ViewModel() {
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
   val navigationEvent: LiveData<Event<DeveloperEvent>> field = mutableLiveEventOf()
@@ -153,9 +155,7 @@ internal class DeveloperViewModel(
 
   fun onInsertDemoDataClick() {
     viewModelScope.launch(dispatcherProvider.io()) {
-      insertDemoReminders()
-      insertDemoBirthdays()
-      insertDemoNotes()
+      insertDemoDataUseCase()
       navigationEvent.postValue(Event(DeveloperEvent.ShowMessage("Demo data has been inserted")))
     }
   }
@@ -327,125 +327,6 @@ internal class DeveloperViewModel(
       Table.Holiday -> holidayRepository.deleteAll()
       Table.Routine -> routineRepository.deleteAll()
       Table.RoutineExecution -> routineExecutionRepository.deleteAll()
-    }
-  }
-
-  private suspend fun insertDemoReminders() {
-    val today = LocalDate.now()
-    val tomorrow = today.plusDays(1)
-    val groupId = groupV2Repository.defaultGroup()?.uuId
-    val startDateTime = dateTimeManager.getCurrentDateTime()
-    fun schedule(dateTime: LocalDateTime) =
-      ReminderSchedule(startDateTime = startDateTime, eventDateTime = dateTimeManager.localToUtc(dateTime))
-    val reminders =
-      listOf(
-        ReminderV2(
-          summary = "Team standup meeting",
-          schedule = schedule(LocalDateTime.of(today, LocalTime.of(9, 0))),
-          groupId = groupId,
-        ),
-        ReminderV2(
-          summary = "Weekly grocery shopping",
-          schedule = schedule(LocalDateTime.of(today, LocalTime.of(18, 30))),
-          action = ReminderAction.Shopping,
-          shoppingItems =
-            listOf(
-              ShopItemV2(summary = "Milk", isChecked = false, createdAt = startDateTime),
-              ShopItemV2(summary = "Fresh vegetables", isChecked = false, createdAt = startDateTime),
-              ShopItemV2(summary = "Coffee beans", isChecked = false, createdAt = startDateTime),
-              ShopItemV2(summary = "Birthday candles", isChecked = true, createdAt = startDateTime),
-            ),
-          groupId = groupId,
-        ),
-        ReminderV2(
-          summary = "Call Mom",
-          schedule = schedule(LocalDateTime.of(today, LocalTime.of(20, 0))),
-          action = ReminderAction.Call(target = "+1234567890"),
-          groupId = groupId,
-        ),
-        ReminderV2(
-          summary = "Doctor's appointment",
-          schedule = schedule(LocalDateTime.of(tomorrow, LocalTime.of(10, 30))),
-          groupId = groupId,
-        ),
-        ReminderV2(
-          summary = "Submit quarterly report",
-          schedule = schedule(LocalDateTime.of(tomorrow, LocalTime.of(14, 0))),
-          groupId = groupId,
-        ),
-        ReminderV2(
-          summary = "Flight check-in",
-          schedule = schedule(LocalDateTime.of(tomorrow, LocalTime.of(7, 0))),
-          action = ReminderAction.Link(target = "https://www.google.com/travel/flights"),
-          groupId = groupId,
-        ),
-      )
-    reminders.forEach { reminderV2Repository.save(it) }
-  }
-
-  private suspend fun insertDemoBirthdays() {
-    val today = LocalDate.now()
-    listOf(
-      Triple("Mom", 0L, 1962),
-      Triple("Alex Johnson", 1L, 1990),
-      Triple("Sophia (Best Friend)", 3L, 1993),
-      Triple("Dad", 6L, 1958),
-    ).forEach { (name, daysAhead, birthYear) ->
-      val upcoming = today.plusDays(daysAhead)
-      val date = LocalDate.of(birthYear, upcoming.monthValue, upcoming.dayOfMonth)
-      birthdayRepository.save(
-        Birthday(
-          name = name,
-          date = dateTimeManager.formatBirthdayDate(date),
-          day = date.dayOfMonth,
-          month = date.monthValue - 1,
-          dayMonth = "${date.dayOfMonth}|${date.monthValue - 1}",
-          syncState = SyncState.Synced,
-        ),
-      )
-    }
-  }
-
-  private suspend fun insertDemoNotes() {
-    val notes =
-      listOf(
-        DemoNote(
-          title = "Grocery List",
-          summary = "Milk, eggs, bread, fresh basil, olive oil, and don't forget the candles for Saturday!",
-          color = ThemeProvider.AppColorIndex.GREEN,
-        ),
-        DemoNote(
-          title = "Weekend Trip Ideas",
-          summary =
-            "1. Hike the coastal trail\n2. Visit the farmers market\n3. Try that new ramen place downtown\n4. Sunset photos at the pier",
-          color = ThemeProvider.AppColorIndex.LIGHT_BLUE,
-        ),
-        DemoNote(
-          title = "Meeting Notes - Product Sync",
-          summary =
-            "Discussed Q3 roadmap. Action items: finalize onboarding flow, review pricing page copy, schedule user interviews for next sprint.",
-          color = ThemeProvider.AppColorIndex.AMBER,
-        ),
-        DemoNote(
-          title = "Book Recommendations",
-          summary = "- Atomic Habits\n- Project Hail Mary\n- The Midnight Library\n- Deep Work",
-          color = ThemeProvider.AppColorIndex.DEEP_PURPLE,
-        ),
-        DemoNote(
-          title = "Favorite Quote",
-          summary = "\"The secret of getting ahead is getting started.\" - Mark Twain",
-          color = ThemeProvider.AppColorIndex.PINK,
-        ),
-      )
-    notes.forEach { demoNote ->
-      noteRepository.save(
-        Note(
-          content = NoteDocument.fromLegacy(title = demoNote.title, summary = demoNote.summary),
-          color = demoNote.color,
-          date = dateTimeManager.getNowGmtDateTime(),
-          syncState = SyncState.Synced,
-        ),
-      )
     }
   }
 
@@ -813,10 +694,4 @@ internal class DeveloperViewModel(
     private val STRESS_TEST_FONT_CODES = listOf(0, 9, 20)
     private val STRESS_TEST_FONT_SIZES = listOf(12, 16, 20, 26, 32)
   }
-
-  private data class DemoNote(
-    val title: String,
-    val summary: String,
-    val color: Int,
-  )
 }

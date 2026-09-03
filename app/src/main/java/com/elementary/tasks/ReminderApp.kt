@@ -27,6 +27,7 @@ import com.github.naz013.appwidgets.appWidgetsModule
 import com.github.naz013.cloudapi.cloudApiModule
 import com.github.naz013.common.platformCommonModule
 import com.github.naz013.datecalc.dateTimeCalculationsModule
+import com.github.naz013.demophoto.impl.demoPhotoModule
 import com.github.naz013.feature.agenda.featureAgendaModule
 import com.github.naz013.feature.birthday.featureBirthdayModule
 import com.github.naz013.feature.calendar.featureCalendarModule
@@ -51,7 +52,9 @@ import com.github.naz013.legal.legalModule
 import com.github.naz013.localbackup.localBackupModule
 import com.github.naz013.logging.initLogging
 import com.github.naz013.logic.birthday.logicBirthdayModule
+import com.github.naz013.logic.demodata.logicDemoDataModule
 import com.github.naz013.logic.googletask.logicGoogleTaskModule
+import com.github.naz013.logic.note.logicNoteModule
 import com.github.naz013.logic.notificationaction.logicNotificationActionModule
 import com.github.naz013.logic.reminder.logicReminderModule
 import com.github.naz013.logic.routine.logicRoutineModule
@@ -198,7 +201,10 @@ class ReminderApp :
           logicTagModule,
           uiGroupModule,
           uiAgendaModule,
-          uiReminderModule
+          uiReminderModule,
+          logicNoteModule,
+          logicDemoDataModule,
+          demoPhotoModule
         ),
       )
     }

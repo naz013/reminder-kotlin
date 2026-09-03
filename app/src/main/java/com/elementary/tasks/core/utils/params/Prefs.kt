@@ -556,6 +556,10 @@ class Prefs(
     get() = getBoolean(PrefsConstants.GROUP_V2_BACKFILL_DONE, false)
     set(value) = putBoolean(PrefsConstants.GROUP_V2_BACKFILL_DONE, value)
 
+  var isDemoDataInserted: Boolean
+    get() = getBoolean(PrefsConstants.DEMO_DATA_INSERTED, false)
+    set(value) = putBoolean(PrefsConstants.DEMO_DATA_INSERTED, value)
+
   var workflowRulesScheduled: Boolean
     get() = getBoolean(PrefsConstants.WORKFLOW_RULES_SCHEDULED, false)
     set(value) = putBoolean(PrefsConstants.WORKFLOW_RULES_SCHEDULED, value)
