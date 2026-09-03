@@ -49,7 +49,7 @@ internal class FindNewestCloudApiSourceUseCase(
         fileExtension = dataType.fileExtension
       )
     )
-    val remoteMetadata = remoteFileMetadataRepository.getByLocalUuIdAndSource(id, cloudFileApi.source.name)
+    val remoteMetadata = remoteFileMetadataRepository.getByLocalUuIdAndSource(id, cloudFileApi.source.value)
     return cloudFile?.takeIf { decideIfCanUseFile(cloudFileApi.source, it, remoteMetadata) }
   }
 

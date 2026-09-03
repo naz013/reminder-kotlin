@@ -43,7 +43,7 @@ internal class FindAllFilesToDownloadUseCase(
     dataType: DataType,
   ): List<CloudFile> {
     val cloudFiles = cloudFileApi.findFiles(dataType.fileExtension)
-    val remoteMetadataMap = remoteFileMetadataRepository.getBySource(cloudFileApi.source.name)
+    val remoteMetadataMap = remoteFileMetadataRepository.getBySource(cloudFileApi.source.value)
       .associateBy { it.name }
     return cloudFiles.filter { cloudFile ->
       val remoteMetadata = remoteMetadataMap[cloudFile.name]

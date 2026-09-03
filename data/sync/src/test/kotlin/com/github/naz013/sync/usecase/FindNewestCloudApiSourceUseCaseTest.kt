@@ -70,7 +70,7 @@ class FindNewestCloudApiSourceUseCaseTest {
       every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       coEvery { mockGDriveApi.findFile(searchParams) } returns cloudFile
-      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(reminderId, "GoogleDrive") } returns null
+      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(reminderId, "google_drive") } returns null
 
       // Act
       val result = findNewestCloudApiSourceUseCase(dataType, reminderId)
@@ -81,7 +81,7 @@ class FindNewestCloudApiSourceUseCaseTest {
       assertEquals(cloudFile, result.cloudFile)
 
       coVerify(exactly = 1) { mockGDriveApi.findFile(searchParams) }
-      coVerify(exactly = 1) { remoteFileMetadataRepository.getByLocalUuIdAndSource(reminderId, "GoogleDrive") }
+      coVerify(exactly = 1) { remoteFileMetadataRepository.getByLocalUuIdAndSource(reminderId, "google_drive") }
     }
   }
 
@@ -143,8 +143,8 @@ class FindNewestCloudApiSourceUseCaseTest {
       every { mockDropboxApi.source } returns Source.Dropbox
       coEvery { mockGDriveApi.findFile(searchParams) } returns gdriveFile
       coEvery { mockDropboxApi.findFile(searchParams) } returns dropboxFile
-      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(noteId, "GoogleDrive") } returns null
-      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(noteId, "Dropbox") } returns null
+      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(noteId, "google_drive") } returns null
+      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(noteId, "dropbox") } returns null
 
       // Act
       val result = findNewestCloudApiSourceUseCase(dataType, noteId)
@@ -177,7 +177,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         name = "$reminderId.ta2",
         lastModified = 1698850000000L,  // Same timestamp
         size = 1024,
-        source = "GoogleDrive",
+        source = "google_drive",
         localUuId = reminderId,
         fileExtension = ".ta2",
         version = 5L,  // Same version
@@ -191,7 +191,7 @@ class FindNewestCloudApiSourceUseCaseTest {
       every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       coEvery { mockGDriveApi.findFile(searchParams) } returns cloudFile
-      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(reminderId, "GoogleDrive") } returns localMetadata
+      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(reminderId, "google_drive") } returns localMetadata
 
       // Act
       val result = findNewestCloudApiSourceUseCase(dataType, reminderId)
@@ -221,7 +221,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         name = "$groupId.gr2",
         lastModified = 1698900000000L,  // Same timestamp
         size = 256,
-        source = "GoogleDrive",
+        source = "google_drive",
         localUuId = groupId,
         fileExtension = ".gr2",
         version = 5L,  // Older version
@@ -235,7 +235,7 @@ class FindNewestCloudApiSourceUseCaseTest {
       every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       coEvery { mockGDriveApi.findFile(searchParams) } returns cloudFile
-      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(groupId, "GoogleDrive") } returns localMetadata
+      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(groupId, "google_drive") } returns localMetadata
 
       // Act
       val result = findNewestCloudApiSourceUseCase(dataType, groupId)
@@ -266,7 +266,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         name = "$placeId.pl2",
         lastModified = 1698900000000L,  // Older timestamp
         size = 512,
-        source = "GoogleDrive",
+        source = "google_drive",
         localUuId = placeId,
         fileExtension = ".pl2",
         version = 3L,  // Same version
@@ -280,7 +280,7 @@ class FindNewestCloudApiSourceUseCaseTest {
       every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       coEvery { mockGDriveApi.findFile(searchParams) } returns cloudFile
-      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(placeId, "GoogleDrive") } returns localMetadata
+      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(placeId, "google_drive") } returns localMetadata
 
       // Act
       val result = findNewestCloudApiSourceUseCase(dataType, placeId)
@@ -311,7 +311,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         name = "$birthdayId.bi2",
         lastModified = 1698950000000L,
         size = 1024,
-        source = "Dropbox",
+        source = "dropbox",
         localUuId = birthdayId,
         fileExtension = ".bi2",
         version = 2L,
@@ -325,7 +325,7 @@ class FindNewestCloudApiSourceUseCaseTest {
       every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockDropboxApi)
       every { mockDropboxApi.source } returns Source.Dropbox
       coEvery { mockDropboxApi.findFile(searchParams) } returns cloudFile
-      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(birthdayId, "Dropbox") } returns localMetadata
+      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(birthdayId, "dropbox") } returns localMetadata
 
       // Act
       val result = findNewestCloudApiSourceUseCase(dataType, birthdayId)
@@ -355,7 +355,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         name = "$noteId.no3",
         lastModified = 1699000000000L,  // Same timestamp doesn't matter for Dropbox
         size = 768,
-        source = "Dropbox",
+        source = "dropbox",
         localUuId = noteId,
         fileExtension = ".no3",
         version = 1L,
@@ -369,7 +369,7 @@ class FindNewestCloudApiSourceUseCaseTest {
       every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockDropboxApi)
       every { mockDropboxApi.source } returns Source.Dropbox
       coEvery { mockDropboxApi.findFile(searchParams) } returns cloudFile
-      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(noteId, "Dropbox") } returns localMetadata
+      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(noteId, "dropbox") } returns localMetadata
 
       // Act
       val result = findNewestCloudApiSourceUseCase(dataType, noteId)
@@ -422,7 +422,7 @@ class FindNewestCloudApiSourceUseCaseTest {
       every {getAllowedCloudApisUseCase.invoke() } returns listOf(mockGDriveApi)
       every { mockGDriveApi.source } returns Source.GoogleDrive
       coEvery { mockGDriveApi.findFile(searchParams) } returns cloudFile
-      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(reminderId, "GoogleDrive") } returns null
+      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(reminderId, "google_drive") } returns null
 
       // Act
       val result = findNewestCloudApiSourceUseCase(dataType, reminderId)
@@ -462,7 +462,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         name = "$groupId.gr2",
         lastModified = 1699090000000L,  // Older than cloud
         size = 256,
-        source = "GoogleDrive",
+        source = "google_drive",
         localUuId = groupId,
         fileExtension = ".gr2",
         version = 4L,  // Older version
@@ -473,7 +473,7 @@ class FindNewestCloudApiSourceUseCaseTest {
         name = "$groupId.gr2",
         lastModified = 1699000000000L,
         size = 256,
-        source = "Dropbox",
+        source = "dropbox",
         localUuId = groupId,
         fileExtension = ".gr2",
         version = 3L,
@@ -489,8 +489,8 @@ class FindNewestCloudApiSourceUseCaseTest {
       every { mockDropboxApi.source } returns Source.Dropbox
       coEvery { mockGDriveApi.findFile(searchParams) } returns gdriveFile
       coEvery { mockDropboxApi.findFile(searchParams) } returns dropboxFile
-      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(groupId, "GoogleDrive") } returns gdriveMetadata
-      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(groupId, "Dropbox") } returns dropboxMetadata
+      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(groupId, "google_drive") } returns gdriveMetadata
+      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(groupId, "dropbox") } returns dropboxMetadata
 
       // Act
       val result = findNewestCloudApiSourceUseCase(dataType, groupId)
@@ -536,8 +536,8 @@ class FindNewestCloudApiSourceUseCaseTest {
       every { mockDropboxApi.source } returns Source.Dropbox
       coEvery { mockGDriveApi.findFile(searchParams) } returns gdriveFile
       coEvery { mockDropboxApi.findFile(searchParams) } returns dropboxFile
-      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(placeId, "GoogleDrive") } returns null
-      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(placeId, "Dropbox") } returns null
+      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(placeId, "google_drive") } returns null
+      coEvery { remoteFileMetadataRepository.getByLocalUuIdAndSource(placeId, "dropbox") } returns null
 
       // Act
       val result = findNewestCloudApiSourceUseCase(dataType, placeId)

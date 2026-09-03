@@ -442,6 +442,39 @@ class DownloadSingleUseCaseTest {
   }
 
   @Test
+  fun `invoke should skip download when local item has pending upload`() {
+    runBlocking {
+      // Arrange - id has local edits still waiting to be uploaded
+      val dataType = DataType.Reminders
+      val reminderId = "reminder-pending-upload"
+      val cloudFile = CloudFile(
+        id = "gdrive-file-id",
+        name = "$reminderId.ta2",
+        fileExtension = ".ta2",
+        lastModified = 1698765432000L,
+        size = 2048,
+        version = 3L,
+        rev = "rev3"
+      )
+
+      every { dataTypeRepositoryCallerFactory.getCaller(dataType) } returns mockRepositoryCaller
+      coEvery { findNewestCloudApiSourceUseCase(dataType, reminderId) } returns
+        FindNewestCloudApiSourceUseCase.SearchResult(mockCloudFileApi, cloudFile)
+      coEvery {
+        mockRepositoryCaller.getIdsByState(listOf(SyncState.WaitingForUpload, SyncState.FailedToUpload))
+      } returns listOf(reminderId)
+
+      // Act
+      val result = downloadSingleUseCase(dataType, reminderId)
+
+      // Assert - Should skip without ever downloading or overwriting the pending local edit
+      assertTrue(result is SyncResult.Skipped)
+      coVerify(exactly = 0) { downloadCloudFileUseCase(any(), any(), any()) }
+      coVerify(exactly = 0) { mockRepositoryCaller.insertOrUpdate(any()) }
+    }
+  }
+
+  @Test
   fun `invoke should return success result with correct downloaded information`() {
     runBlocking {
       // Arrange - Verify result structure

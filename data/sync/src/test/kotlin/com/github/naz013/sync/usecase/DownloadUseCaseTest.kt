@@ -479,6 +479,43 @@ class DownloadUseCaseTest {
   }
 
   @Test
+  fun `invoke should skip item with pending local upload to avoid overwriting unsynced changes`() {
+    runBlocking {
+      // Arrange - Cloud has an update for r1, but r1 has local edits still waiting to be uploaded
+      val dataType = DataType.Reminders
+      val pendingReminder = Reminder(summary = "Local edit", uuId = "r1")
+      val cloudFile = CloudFile(id = "cf1", name = "r1.ta2", fileExtension = ".ta2", lastModified = 1000L, size = 100, version = 1L, rev = "r1")
+
+      val searchResult = FindAllFilesToDownloadUseCase.SearchResult(
+        sources = listOf(
+          FindAllFilesToDownloadUseCase.CloudFilesWithSource(
+            source = mockCloudFileApi,
+            cloudFiles = listOf(cloudFile)
+          )
+        )
+      )
+
+      every { dataTypeRepositoryCallerFactory.getCaller(dataType) } returns mockRepositoryCaller
+      coEvery { findAllFilesToDownloadUseCase(dataType) } returns searchResult
+      every { mockCloudFileApi.source } returns Source.GoogleDrive
+      coEvery { downloadCloudFileUseCase(mockCloudFileApi, cloudFile, dataType) } returns pendingReminder
+      every { getLocalUuIdUseCase(pendingReminder) } returns "r1"
+      coEvery {
+        mockRepositoryCaller.getIdsByState(listOf(SyncState.WaitingForUpload, SyncState.FailedToUpload))
+      } returns listOf("r1")
+
+      // Act
+      val result = downloadUseCase(dataType)
+
+      // Assert - Should skip the item entirely rather than overwrite the pending local edit
+      assertTrue(result is SyncResult.Skipped)
+      coVerify(exactly = 0) { mockRepositoryCaller.insertOrUpdate(any()) }
+      coVerify(exactly = 0) { dataPostProcessor.process(any(), any()) }
+      coVerify(exactly = 0) { mockRepositoryCaller.updateSyncState(any(), any()) }
+    }
+  }
+
+  @Test
   fun `invoke with large number of files should process all sequentially`() {
     runBlocking {
       // Arrange - 10 birthday files

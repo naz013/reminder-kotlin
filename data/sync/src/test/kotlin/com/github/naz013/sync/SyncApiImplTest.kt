@@ -583,6 +583,63 @@ class SyncApiImplTest {
     }
   }
 
+  @Test
+  fun `force upload with Settings data type should delegate to upload data type use case`() {
+    runBlocking {
+      // Arrange - Settings has no per-id sync state, so forcing it must still upload it
+      every { hasAnyCloudApiUseCase() } returns true
+      coEvery { uploadDataTypeUseCase(DataType.Settings) } returns Unit
+
+      // Act
+      syncApi.forceUpload(DataType.Settings)
+
+      // Assert
+      coVerify(exactly = 1) { uploadDataTypeUseCase(DataType.Settings) }
+      coVerify(exactly = 0) { dataTypeRepositoryCallerFactory.getCaller(any()) }
+      coVerify(exactly = 0) { uploadSingleUseCase(any(), any()) }
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
+    }
+  }
+
+  @Test
+  fun `force upload with TagAssignments data type should delegate to upload data type use case`() {
+    runBlocking {
+      // Arrange - TagAssignments has no per-id sync state, so forcing it must still upload it
+      every { hasAnyCloudApiUseCase() } returns true
+      coEvery { uploadDataTypeUseCase(DataType.TagAssignments) } returns Unit
+
+      // Act
+      syncApi.forceUpload(DataType.TagAssignments)
+
+      // Assert
+      coVerify(exactly = 1) { uploadDataTypeUseCase(DataType.TagAssignments) }
+      coVerify(exactly = 0) { dataTypeRepositoryCallerFactory.getCaller(any()) }
+      coVerify(exactly = 0) { uploadSingleUseCase(any(), any()) }
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
+    }
+  }
+
+  @Test
+  fun `force upload without parameters should also force upload Settings and TagAssignments`() {
+    runBlocking {
+      // Arrange
+      val allowedTypes = listOf(DataType.Settings, DataType.TagAssignments)
+
+      every { hasAnyCloudApiUseCase() } returns true
+      every { getAllowedDataTypesUseCase() } returns allowedTypes
+      coEvery { uploadDataTypeUseCase(any()) } returns Unit
+
+      // Act
+      syncApi.forceUpload()
+
+      // Assert - Both snapshot types were force-uploaded via the always-upload path
+      coVerify(exactly = 1) { uploadDataTypeUseCase(DataType.Settings) }
+      coVerify(exactly = 1) { uploadDataTypeUseCase(DataType.TagAssignments) }
+      coVerify(exactly = 0) { dataTypeRepositoryCallerFactory.getCaller(any()) }
+      coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
+    }
+  }
+
   // ==================== delete() Tests ====================
 
   @Test

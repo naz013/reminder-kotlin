@@ -158,6 +158,13 @@ internal class SyncApiImpl(
 
   private suspend fun forceUploadInternal(dataType: DataType) {
     Logger.i(TAG, "Force uploading items for data type: $dataType")
+    if (dataType == DataType.Settings || dataType == DataType.TagAssignments) {
+      // Whole-collection snapshot types have no per-id sync state to ignore, so forcing
+      // them is identical to a normal upload - delegate to the same always-upload path
+      // instead of falling through to getAllIds(), which is a no-op for these types.
+      uploadDataTypeUseCase(dataType)
+      return
+    }
     val repositoryCaller = dataTypeRepositoryCallerFactory.getCaller(dataType)
     val ids = repositoryCaller.getAllIds()
     Logger.i(TAG, "Found ${ids.size} items to force upload for data type: $dataType")
