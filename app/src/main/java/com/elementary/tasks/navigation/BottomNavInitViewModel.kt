@@ -17,6 +17,7 @@ import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.featureflags.FeatureFlag
 import com.github.naz013.featureflags.FeatureFlags
+import com.github.naz013.logic.demodata.InsertDemoDataUseCase
 import com.github.naz013.repository.migration.GroupV2BackfillUseCase
 import com.github.naz013.repository.migration.ReminderV2BackfillUseCase
 import com.github.naz013.scheduler.JobSchedulerApi
@@ -50,6 +51,7 @@ class BottomNavInitViewModel(
   private val reminderV2BackfillUseCase: ReminderV2BackfillUseCase,
   private val workflowRulesUtil: WorkflowRulesUtil,
   private val jobScheduler: JobSchedulerApi,
+  private val insertDemoDataUseCase: InsertDemoDataUseCase,
 ) : ViewModel() {
 
   val isGoogleTasksEnabled = featureFlags.isEnabled(FeatureFlag.GOOGLE_TASKS) &&
@@ -82,6 +84,10 @@ class BottomNavInitViewModel(
   private suspend fun checkDb() {
     runCatching {
       groupsUtil.initDefaultIfEmpty()
+      if (!prefs.isDemoDataInserted) {
+        prefs.isDemoDataInserted = true
+        insertDemoDataUseCase()
+      }
       if (!prefs.noteMigrationDone) {
         prefs.noteMigrationDone = true
         noteImageMigration.migrate()

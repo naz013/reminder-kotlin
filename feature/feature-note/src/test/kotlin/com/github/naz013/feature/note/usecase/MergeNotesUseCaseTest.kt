@@ -9,7 +9,7 @@ import com.github.naz013.domain.note.NoteSpanAttribute
 import com.github.naz013.domain.note.NoteTextSpan
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.feature.note.image.NoteImageRepository
+import com.github.naz013.logic.note.NoteImageRepository
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.TagAssignmentRepository

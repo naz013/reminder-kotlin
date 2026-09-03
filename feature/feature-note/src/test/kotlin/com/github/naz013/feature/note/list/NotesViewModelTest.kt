@@ -19,7 +19,7 @@ import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
 import com.github.naz013.feature.note.usecase.MergeNotesUseCase
-import com.github.naz013.feature.note.usecase.SaveNoteUseCase
+import com.github.naz013.logic.note.SaveNoteUseCase
 import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.TagAssignmentRepository

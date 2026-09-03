@@ -1,6 +1,7 @@
 package com.github.naz013.logic.note
 
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.demophoto.DemoPhotoDownloader
 import com.github.naz013.domain.note.ImageFile
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteDocument
@@ -13,22 +14,33 @@ import com.github.naz013.domain.sync.SyncState
  * Seeds a few showcase notes on first install: one demonstrating rich-text formatting, one a
  * short practical checklist, and one with an attached photo. All three go through
  * [SaveNoteUseCase] - the same path a real user's note takes - so they get sync state and
- * background upload scheduling like any other note.
+ * background upload scheduling like any other note. The photo is fetched via
+ * [DemoPhotoDownloader], which never throws - a failed/offline fetch just means the photo note
+ * is saved without an image rather than blocking the rest of the demo content.
  */
 class InsertDemoNotesUseCase(
   private val saveNoteUseCase: SaveNoteUseCase,
   private val noteImageRepository: NoteImageRepository,
+  private val demoPhotoDownloader: DemoPhotoDownloader,
   private val dateTimeManager: DateTimeManager,
 ) {
-  suspend operator fun invoke(demoPhotoBytes: ByteArray) {
+  suspend operator fun invoke() {
     saveNoteUseCase(NoteWithImages(note = buildWelcomeNote()))
     saveNoteUseCase(NoteWithImages(note = buildTripIdeasNote()))
+    insertPhotoNote()
+  }
 
-    val photoNote = buildPhotoNote()
-    val tmpPath = noteImageRepository.saveTemporaryImage(PHOTO_FILE_NAME, demoPhotoBytes.inputStream())
+  private suspend fun insertPhotoNote() {
+    val photo = demoPhotoDownloader.downloadRandomWallpaper()
+    val note = buildPhotoNote(photo?.photographerName)
+    if (photo == null) {
+      saveNoteUseCase(NoteWithImages(note = note))
+      return
+    }
+    val tmpPath = noteImageRepository.saveTemporaryImage(PHOTO_FILE_NAME, photo.bytes.inputStream())
     saveNoteUseCase(
       NoteWithImages(
-        note = photoNote,
+        note = note,
         images = listOf(ImageFile(fileName = PHOTO_FILE_NAME, filePath = tmpPath)),
       ),
     )
@@ -94,11 +106,14 @@ class InsertDemoNotesUseCase(
     )
   }
 
-  private fun buildPhotoNote(): Note {
+  private fun buildPhotoNote(photographerName: String?): Note {
     val title = "A Little Inspiration"
     val caption = "A little inspiration for your next note — attach photos just like this one."
-    val text = "$title\n$caption"
-    val spans = listOf(spanOf(text, title, NoteSpanAttribute.Heading1))
+    val attribution = photographerName?.let { "Photo by $it on Unsplash" }
+    val text = listOfNotNull(title, caption, attribution).joinToString("\n")
+
+    val spans = mutableListOf(spanOf(text, title, NoteSpanAttribute.Heading1))
+    attribution?.let { spans += spanOf(text, it, NoteSpanAttribute.Italic) }
 
     return Note(
       content = NoteDocument(text = text, spans = spans),

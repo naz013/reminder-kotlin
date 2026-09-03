@@ -33,6 +33,7 @@ dependencies {
   implementation(project(":data:scheduler-api"))
   implementation(project(":data:files-api"))
   implementation(project(":extensions:appwidgets-api"))
+  implementation(project(":logic:logic-demo-data"))
   implementation(project(":logic:logic-reminder"))
   implementation(project(":logic:logic-schedule"))
   implementation(project(":logic:logic-googletask"))

@@ -212,6 +212,7 @@ dependencies {
   implementation(project(":core:platform-api"))
 
   implementation(project(":data:sync"))
+  implementation(project(":data:demo-photo"))
   implementation(project(":core:date-calculations"))
   implementation(project(":core:logging"))
   implementation(project(":core:analytics"))
@@ -259,8 +260,10 @@ dependencies {
   implementation(project(":ui:ui-tag"))
 
   implementation(project(":logic:logic-birthday"))
+  implementation(project(":logic:logic-demo-data"))
   implementation(project(":logic:logic-googletask"))
   implementation(project(":logic:logic-group"))
+  implementation(project(":logic:logic-note"))
   implementation(project(":logic:logic-notification-action"))
   implementation(project(":logic:logic-reminder"))
   implementation(project(":logic:logic-routine"))

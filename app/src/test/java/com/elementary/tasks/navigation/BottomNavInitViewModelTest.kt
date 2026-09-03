@@ -16,6 +16,7 @@ import com.github.naz013.feature.workflow.WorkflowRulesUtil
 import com.github.naz013.appwidgets.AppWidgetPreviewUpdater
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.PackageManagerWrapper
+import com.github.naz013.logic.demodata.InsertDemoDataUseCase
 import com.github.naz013.repository.migration.GroupV2BackfillUseCase
 import com.github.naz013.repository.migration.ReminderV2BackfillUseCase
 import com.github.naz013.scheduler.JobSchedulerApi
@@ -50,9 +51,11 @@ class BottomNavInitViewModelTest : BaseTest() {
   private val reminderV2BackfillUseCase = mockk<ReminderV2BackfillUseCase>(relaxed = true)
   private val workflowRulesUtil = mockk<WorkflowRulesUtil>(relaxed = true)
   private val jobScheduler = mockk<JobSchedulerApi>(relaxed = true)
+  private val insertDemoDataUseCase = mockk<InsertDemoDataUseCase>(relaxed = true)
 
   private var occurrenceMigrated = false
   private var noteMigrationDone = false
+  private var demoDataInserted = false
   private val savedVersions = mutableSetOf<String>()
 
   private lateinit var viewModel: BottomNavInitViewModel
@@ -72,6 +75,8 @@ class BottomNavInitViewModelTest : BaseTest() {
     every { prefs.occurrenceMigrated = any() } answers { occurrenceMigrated = firstArg() }
     every { prefs.noteMigrationDone } answers { noteMigrationDone }
     every { prefs.noteMigrationDone = any() } answers { noteMigrationDone = firstArg() }
+    every { prefs.isDemoDataInserted } answers { demoDataInserted }
+    every { prefs.isDemoDataInserted = any() } answers { demoDataInserted = firstArg() }
     every { prefs.getVersion(any()) } answers { savedVersions.contains(firstArg()) }
     every { prefs.saveVersionBoolean(any()) } answers { savedVersions.add(firstArg()) }
     every { prefs.isSbNotificationEnabled } returns false
@@ -101,6 +106,7 @@ class BottomNavInitViewModelTest : BaseTest() {
       reminderV2BackfillUseCase = reminderV2BackfillUseCase,
       workflowRulesUtil = workflowRulesUtil,
       jobScheduler = jobScheduler,
+      insertDemoDataUseCase = insertDemoDataUseCase,
     )
 
   @Test
@@ -218,9 +224,27 @@ class BottomNavInitViewModelTest : BaseTest() {
 
     coVerify(exactly = 1) { migrateExistingEventOccurrencesUseCase() }
     coVerify(exactly = 1) { noteImageMigration.migrate() }
+    coVerify(exactly = 1) { insertDemoDataUseCase() }
     verify(exactly = 1) { activateAllActiveRemindersUseCase.run() }
     assertTrue(occurrenceMigrated)
     assertTrue(noteMigrationDone)
+    assertTrue(demoDataInserted)
     assertTrue(savedVersions.contains("1.0.0"))
+  }
+
+  @Test
+  fun `inserts demo data once on a fresh install`() {
+    // viewModel from setUp() already ran init on a fresh (demoDataInserted = false) start.
+    coVerify(exactly = 1) { insertDemoDataUseCase() }
+    verify(exactly = 1) { prefs.isDemoDataInserted = true }
+  }
+
+  @Test
+  fun `does not insert demo data when it was already inserted`() {
+    demoDataInserted = true
+
+    createViewModel()
+
+    coVerify(exactly = 1) { insertDemoDataUseCase() } // still just the one call from setUp()
   }
 }

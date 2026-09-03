@@ -39,6 +39,8 @@ include(":core:preferences")
 include(":core:testing")
 
 // data - persistence, cloud, sync, and thin platform-contract api modules
+include(":data:demo-photo-api")
+include(":data:demo-photo")
 include(":data:repository-api")
 include(":data:repository")
 include(":data:cloud-api")
@@ -76,6 +78,7 @@ include(":ui:ui-tag")
 
 // logic - cross-feature business logic
 include(":logic:logic-birthday")
+include(":logic:logic-demo-data")
 include(":logic:logic-googletask")
 include(":logic:logic-group")
 include(":logic:logic-note")
