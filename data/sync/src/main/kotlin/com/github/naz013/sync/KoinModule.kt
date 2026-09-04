@@ -34,7 +34,7 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 val syncApiModule = module {
-  factory { SyncApiImpl(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) as SyncApi }
+  factory { SyncApiImpl(get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get()) as SyncApi }
 
   factoryOf(::DataTypeRepositoryCallerFactory)
 

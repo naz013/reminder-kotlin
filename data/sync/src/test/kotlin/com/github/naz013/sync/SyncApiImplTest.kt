@@ -45,6 +45,7 @@ class SyncApiImplTest {
   private lateinit var syncApi: SyncApiImpl
   private lateinit var syncApiSessionCache: SyncApiSessionCache
   private lateinit var downloadLegacyFilesUseCase: DownloadLegacyFilesUseCase
+  private lateinit var isProUserUseCase: IsProUserUseCase
 
   private lateinit var mockRepositoryCaller: DataTypeRepositoryCaller<Any>
 
@@ -62,6 +63,7 @@ class SyncApiImplTest {
     mockRepositoryCaller = mockk(relaxed = true)
     syncApiSessionCache = mockk(relaxed = true)
     downloadLegacyFilesUseCase = mockk(relaxed = true)
+    isProUserUseCase = mockk()
 
     syncApi = SyncApiImpl(
       dataTypeRepositoryCallerFactory = dataTypeRepositoryCallerFactory,
@@ -74,7 +76,8 @@ class SyncApiImplTest {
       uploadDataTypeUseCase = uploadDataTypeUseCase,
       hasAnyCloudApiUseCase = hasAnyCloudApiUseCase,
       syncApiSessionCache = syncApiSessionCache,
-      downloadLegacyFilesUseCase = downloadLegacyFilesUseCase
+      downloadLegacyFilesUseCase = downloadLegacyFilesUseCase,
+      isProUserUseCase = isProUserUseCase
     )
   }
 
@@ -637,6 +640,143 @@ class SyncApiImplTest {
       coVerify(exactly = 1) { uploadDataTypeUseCase(DataType.TagAssignments) }
       coVerify(exactly = 0) { dataTypeRepositoryCallerFactory.getCaller(any()) }
       coVerify(exactly = 1) { syncApiSessionCache.clearCache() }
+    }
+  }
+
+  // ==================== Pro-only data type gating Tests ====================
+
+  @Test
+  fun `sync with a Pro-only data type should be skipped for a free user`() {
+    runBlocking {
+      every { hasAnyCloudApiUseCase() } returns true
+      every { isProUserUseCase() } returns false
+
+      val result = syncApi.sync(DataType.WorkflowRules)
+
+      assertEquals(SyncResult.Skipped, result)
+      coVerify(exactly = 0) { uploadDataTypeUseCase(any()) }
+      coVerify(exactly = 0) { downloadUseCase(any()) }
+    }
+  }
+
+  @Test
+  fun `sync with a Pro-only data type should proceed for a Pro user`() {
+    runBlocking {
+      val dataType = DataType.WorkflowRules
+      val downloadResult = SyncResult.Success(downloaded = listOf(Downloaded(dataType, "w1")), success = true)
+
+      every { hasAnyCloudApiUseCase() } returns true
+      every { isProUserUseCase() } returns true
+      coEvery { uploadDataTypeUseCase(dataType) } returns Unit
+      coEvery { downloadUseCase(dataType) } returns downloadResult
+
+      val result = syncApi.sync(dataType)
+
+      assertEquals(downloadResult, result)
+      coVerify(exactly = 1) { uploadDataTypeUseCase(dataType) }
+      coVerify(exactly = 1) { downloadUseCase(dataType) }
+    }
+  }
+
+  @Test
+  fun `sync single item with a Pro-only data type should be skipped for a free user`() {
+    runBlocking {
+      every { hasAnyCloudApiUseCase() } returns true
+      every { isProUserUseCase() } returns false
+
+      val result = syncApi.sync(DataType.WorkflowTemplates, "template-1")
+
+      assertEquals(SyncResult.Skipped, result)
+      coVerify(exactly = 0) { uploadSingleUseCase(any(), any()) }
+      coVerify(exactly = 0) { downloadSingleUseCase(any(), any()) }
+    }
+  }
+
+  @Test
+  fun `upload with a Pro-only data type should be skipped for a free user`() {
+    runBlocking {
+      every { hasAnyCloudApiUseCase() } returns true
+      every { isProUserUseCase() } returns false
+
+      syncApi.upload(DataType.WorkflowRules)
+
+      coVerify(exactly = 0) { uploadDataTypeUseCase(any()) }
+    }
+  }
+
+  @Test
+  fun `upload single item with a Pro-only data type should be skipped for a free user`() {
+    runBlocking {
+      every { hasAnyCloudApiUseCase() } returns true
+      every { isProUserUseCase() } returns false
+
+      syncApi.upload(DataType.WorkflowTemplates, "template-1")
+
+      coVerify(exactly = 0) { uploadSingleUseCase(any(), any()) }
+    }
+  }
+
+  @Test
+  fun `force upload with a Pro-only data type should be skipped for a free user`() {
+    runBlocking {
+      every { hasAnyCloudApiUseCase() } returns true
+      every { isProUserUseCase() } returns false
+
+      syncApi.forceUpload(DataType.WorkflowRules)
+
+      coVerify(exactly = 0) { dataTypeRepositoryCallerFactory.getCaller(any()) }
+      coVerify(exactly = 0) { uploadSingleUseCase(any(), any()) }
+    }
+  }
+
+  @Test
+  fun `force upload single item with a Pro-only data type should be skipped for a free user`() {
+    runBlocking {
+      every { hasAnyCloudApiUseCase() } returns true
+      every { isProUserUseCase() } returns false
+
+      syncApi.forceUpload(DataType.WorkflowTemplates, "template-1")
+
+      coVerify(exactly = 0) { uploadSingleUseCase(any(), any()) }
+    }
+  }
+
+  @Test
+  fun `bulk sync should exclude Pro-only data types for a free user but keep the rest`() {
+    runBlocking {
+      val allowedTypes = listOf(DataType.Reminders, DataType.WorkflowRules, DataType.WorkflowTemplates)
+      val downloadResult = SyncResult.Success(downloaded = listOf(Downloaded(DataType.Reminders, "r1")), success = true)
+
+      every { hasAnyCloudApiUseCase() } returns true
+      every { getAllowedDataTypesUseCase() } returns allowedTypes
+      every { isProUserUseCase() } returns false
+      coEvery { uploadDataTypeUseCase(any()) } returns Unit
+      coEvery { downloadUseCase(DataType.Reminders) } returns downloadResult
+
+      syncApi.sync()
+
+      coVerify(exactly = 1) { uploadDataTypeUseCase(DataType.Reminders) }
+      coVerify(exactly = 1) { downloadUseCase(DataType.Reminders) }
+      coVerify(exactly = 0) { uploadDataTypeUseCase(DataType.WorkflowRules) }
+      coVerify(exactly = 0) { uploadDataTypeUseCase(DataType.WorkflowTemplates) }
+      coVerify(exactly = 0) { downloadUseCase(DataType.WorkflowRules) }
+      coVerify(exactly = 0) { downloadUseCase(DataType.WorkflowTemplates) }
+    }
+  }
+
+  @Test
+  fun `delete of a Pro-only data type is never gated so a downgraded user can still clean up the cloud`() {
+    runBlocking {
+      val dataType = DataType.WorkflowRules
+      val itemId = "workflow-rule-1"
+
+      every { hasAnyCloudApiUseCase() } returns true
+      coEvery { deleteSingleUseCase(dataType, itemId) } returns Unit
+
+      // Note: isProUserUseCase is never stubbed here - delete must not even query it.
+      syncApi.delete(dataType, itemId)
+
+      coVerify(exactly = 1) { deleteSingleUseCase(dataType, itemId) }
     }
   }
 

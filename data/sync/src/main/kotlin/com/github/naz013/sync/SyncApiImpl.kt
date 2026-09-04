@@ -26,15 +26,25 @@ internal class SyncApiImpl(
   private val uploadDataTypeUseCase: UploadDataTypeUseCase,
   private val hasAnyCloudApiUseCase: HasAnyCloudApiUseCase,
   private val syncApiSessionCache: SyncApiSessionCache,
-  private val downloadLegacyFilesUseCase: DownloadLegacyFilesUseCase
+  private val downloadLegacyFilesUseCase: DownloadLegacyFilesUseCase,
+  private val isProUserUseCase: IsProUserUseCase
 ) : SyncApi {
+
+  /**
+   * Deletion is deliberately never gated here: a user whose Pro subscription lapses must still
+   * be able to remove their own already-synced Pro-only data (e.g. workflow rules) from the
+   * cloud - otherwise it's stranded forever, the same class of bug fixed for legacy files.
+   */
+  private fun isDataTypeAllowed(dataType: DataType): Boolean {
+    return !dataType.isProOnly || isProUserUseCase()
+  }
 
   override suspend fun sync(forceUpload: Boolean): SyncResult = measure("Total sync") {
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for sync.")
       return@measure SyncResult.Skipped
     }
-    val allowedDataTypes = getAllowedDataTypesUseCase()
+    val allowedDataTypes = getAllowedDataTypesUseCase().filter(::isDataTypeAllowed)
     if (allowedDataTypes.isEmpty()) {
       Logger.i(TAG, "No allowed data types for sync.")
       return@measure SyncResult.Skipped
@@ -55,6 +65,10 @@ internal class SyncApiImpl(
   override suspend fun sync(dataType: DataType, forceUpload: Boolean): SyncResult = measure("Sync for data type: $dataType") {
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for sync.")
+      return@measure SyncResult.Skipped
+    }
+    if (!isDataTypeAllowed(dataType)) {
+      Logger.i(TAG, "Data type $dataType requires a Pro subscription. Skipping sync.")
       return@measure SyncResult.Skipped
     }
     syncInternal(dataType, forceUpload).also {
@@ -79,6 +93,10 @@ internal class SyncApiImpl(
       Logger.i(TAG, "No cloud API configured for sync.")
       return@measure SyncResult.Skipped
     }
+    if (!isDataTypeAllowed(dataType)) {
+      Logger.i(TAG, "Data type $dataType requires a Pro subscription. Skipping sync.")
+      return@measure SyncResult.Skipped
+    }
     if (dataType == DataType.Settings) {
       throw IllegalArgumentException("Cannot sync single settings item.")
     }
@@ -97,7 +115,7 @@ internal class SyncApiImpl(
       Logger.i(TAG, "No cloud API configured for upload.")
       return@measure
     }
-    val allowedDataTypes = getAllowedDataTypesUseCase()
+    val allowedDataTypes = getAllowedDataTypesUseCase().filter(::isDataTypeAllowed)
     for (dataType in allowedDataTypes) {
       Logger.i(TAG, "Uploading items for data type: $dataType")
       uploadInternal(dataType)
@@ -108,6 +126,10 @@ internal class SyncApiImpl(
   override suspend fun upload(dataType: DataType) = measure("Upload for data type: $dataType") {
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for upload.")
+      return@measure
+    }
+    if (!isDataTypeAllowed(dataType)) {
+      Logger.i(TAG, "Data type $dataType requires a Pro subscription. Skipping upload.")
       return@measure
     }
     uploadInternal(dataType)
@@ -122,6 +144,10 @@ internal class SyncApiImpl(
     require(id.isNotBlank()) { "Id cannot be blank" }
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for upload.")
+      return@measure
+    }
+    if (!isDataTypeAllowed(dataType)) {
+      Logger.i(TAG, "Data type $dataType requires a Pro subscription. Skipping upload.")
       return@measure
     }
     if (dataType == DataType.Settings) {
@@ -140,7 +166,7 @@ internal class SyncApiImpl(
       Logger.i(TAG, "No cloud API configured for upload.")
       return
     }
-    val allowedDataTypes = getAllowedDataTypesUseCase()
+    val allowedDataTypes = getAllowedDataTypesUseCase().filter(::isDataTypeAllowed)
     for (dataType in allowedDataTypes) {
       forceUploadInternal(dataType)
     }
@@ -150,6 +176,10 @@ internal class SyncApiImpl(
   override suspend fun forceUpload(dataType: DataType) {
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for upload.")
+      return
+    }
+    if (!isDataTypeAllowed(dataType)) {
+      Logger.i(TAG, "Data type $dataType requires a Pro subscription. Skipping force upload.")
       return
     }
     forceUploadInternal(dataType)
@@ -177,6 +207,10 @@ internal class SyncApiImpl(
     require(id.isNotBlank()) { "Id cannot be blank" }
     if (!hasAnyCloudApiUseCase()) {
       Logger.i(TAG, "No cloud API configured for upload.")
+      return
+    }
+    if (!isDataTypeAllowed(dataType)) {
+      Logger.i(TAG, "Data type $dataType requires a Pro subscription. Skipping force upload.")
       return
     }
     Logger.i(TAG, "Force uploading single item. dataType: $dataType, id: $id")
