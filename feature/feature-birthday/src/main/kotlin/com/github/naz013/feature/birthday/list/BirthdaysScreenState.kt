@@ -12,12 +12,13 @@ internal data class BirthdaysScreenState(
   val selectedTagId: String? = null,
   val availableTags: List<TagChipState> = emptyList(),
   val confirmDeleteId: String? = null,
+  val selectedCount: Int = 0,
 )
 
 internal fun BirthdaysScreenState.withSelectedItem(selectedItemId: String?): BirthdaysScreenState {
   val ready = listState as? ListState.Ready ?: return this
   return copy(
-    listState = ListState.Ready(ready.items.map { it.copy(isSelected = it.id == selectedItemId) }),
+    listState = ListState.Ready(ready.items.map { it.copy(isHighlighted = it.id == selectedItemId) }),
   )
 }
 

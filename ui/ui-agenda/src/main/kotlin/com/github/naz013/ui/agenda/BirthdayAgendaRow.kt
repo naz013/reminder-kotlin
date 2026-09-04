@@ -27,6 +27,9 @@ fun BirthdayAgendaRow(
   onClick: () -> Unit,
   onMenuAction: ((AgendaMenuAction) -> Unit)?,
   modifier: Modifier = Modifier,
+  onLongClick: (() -> Unit)? = null,
+  isSelectionMode: Boolean = false,
+  onToggleSelected: () -> Unit = {},
 ) {
   AgendaListItem(
     mainText = item.name,
@@ -38,7 +41,11 @@ fun BirthdayAgendaRow(
     onMenuItemClick = { id -> onMenuAction?.invoke(AgendaMenuAction.entries[id]) },
     modifier = modifier,
     leading = { ColorDot(color = item.color) },
+    isHighlighted = item.isHighlighted,
+    onLongClick = onLongClick,
+    isSelectionMode = isSelectionMode,
     isSelected = item.isSelected,
+    onToggleSelected = onToggleSelected,
   )
 }
 

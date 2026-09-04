@@ -24,6 +24,7 @@ import com.github.naz013.feature.birthday.preview.PreviewBirthdayViewModel
 import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.compose.foundation.navigation.sidePanelSupporting
 import com.github.naz013.ui.common.livedata.ObserveEvent
@@ -75,6 +76,7 @@ private fun ListEntry(
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<BirthdaysViewModel>()
+  val dialogDispatcher = rememberDialogDispatcher()
 
   val selectedItemId =
     backStack.lastOrNull()?.let { key ->
@@ -101,6 +103,15 @@ private fun ListEntry(
       is BirthdaysViewModel.NavigationEvent.OpenNewBirthday -> {
         backStack.navigateToDetailPane(BirthdaysNavKey.Edit())
       }
+
+      is BirthdaysViewModel.NavigationEvent.ConfirmDeleteSelected -> {
+        dialogDispatcher.showDialog(
+          text = event.title,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.cancel,
+          onPositive = { viewModel.deleteSelectedBirthdays(event.ids) },
+        )
+      }
     }
   }
 
@@ -113,9 +124,12 @@ private fun ListEntry(
     onTagFilterSelected = viewModel::onTagFilterSelected,
     onAddClick = viewModel::onAddClick,
     onItemClick = viewModel::onItemClick,
+    onItemLongClick = viewModel::onItemLongClick,
     onMenuAction = viewModel::onMenuAction,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDeleteDismiss = viewModel::onDeleteDismiss,
+    onSelectionCancel = viewModel::onSelectionCancel,
+    onDeleteSelectedClick = viewModel::onDeleteSelectedClick,
   )
 }
 

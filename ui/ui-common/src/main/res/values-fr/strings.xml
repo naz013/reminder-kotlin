@@ -1354,4 +1354,9 @@
     <string name="settings_search_keyword_auto_backup_interval">intervalle de sauvegarde automatique</string>
     <string name="settings_search_keyword_wifi_only_sync">synchronisation wifi uniquement</string>
     <string name="settings_search_keyword_delete_cloud_backup">supprimer la sauvegarde cloud</string>
+    <string name="birthday_selected_count_one">%1$d anniversaire sélectionné</string>
+    <string name="birthday_selected_count_other">%1$d anniversaires sélectionnés</string>
+    <string name="birthdays_delete_selected_permanently">Supprimer %1$d anniversaires définitivement ?</string>
+    <string name="agenda_delete_selected_permanently">Supprimer %1$d éléments définitivement ?</string>
+    <string name="selected_count">%1$d sélectionné(s)</string>
 </resources>

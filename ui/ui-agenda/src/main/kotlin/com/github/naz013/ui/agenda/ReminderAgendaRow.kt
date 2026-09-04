@@ -21,6 +21,9 @@ fun ReminderAgendaRow(
   onClick: () -> Unit,
   onMenuAction: ((AgendaMenuAction) -> Unit)?,
   modifier: Modifier = Modifier,
+  onLongClick: (() -> Unit)? = null,
+  isSelectionMode: Boolean = false,
+  onToggleSelected: () -> Unit = {},
 ) {
   AgendaListItem(
     mainText = item.mainText.text,
@@ -32,8 +35,12 @@ fun ReminderAgendaRow(
     menuItems = if (onMenuAction != null) reminderMenuItems(item) else emptyList(),
     onMenuItemClick = { id -> onMenuAction?.invoke(AgendaMenuAction.entries[id]) },
     modifier = modifier,
-    isSelected = item.isSelected,
+    isHighlighted = item.isHighlighted,
     isOverdue = item.isOverdue,
+    onLongClick = onLongClick,
+    isSelectionMode = isSelectionMode,
+    isSelected = item.isSelected,
+    onToggleSelected = onToggleSelected,
   )
 }
 

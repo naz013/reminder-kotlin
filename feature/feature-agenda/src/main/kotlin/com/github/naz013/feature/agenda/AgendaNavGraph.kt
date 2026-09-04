@@ -160,6 +160,24 @@ private fun AgendaEntry(
           onPositive = { viewModel.deleteBirthday(event.id) }
         )
       }
+
+      is AgendaViewModel.NavigationEvent.ConfirmDeleteSelected -> {
+        dialogDispatcher.showDialog(
+          text = event.title,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.cancel,
+          onPositive = { viewModel.deleteSelected(event.reminderIds, event.birthdayIds) },
+        )
+      }
+
+      is AgendaViewModel.NavigationEvent.ConfirmArchiveSelectedReminders -> {
+        dialogDispatcher.showDialog(
+          titleRes = R.string.move_to_archive,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.cancel,
+          onPositive = { viewModel.archiveSelectedReminders(event.ids) },
+        )
+      }
     }
   }
 
@@ -179,8 +197,12 @@ private fun AgendaEntry(
     onGroupsClick = viewModel::onGroupsClick,
     onTagsClick = viewModel::onTagsClick,
     onItemClick = viewModel::onItemClick,
+    onItemLongClick = viewModel::onItemLongClick,
     onAgendaMenuAction = viewModel::onAgendaMenuAction,
     hasScrolledToToday = viewModel.hasScrolledToToday,
     onScrolledToToday = viewModel::onScrolledToToday,
+    onSelectionCancel = viewModel::onSelectionCancel,
+    onDeleteSelectedClick = viewModel::onDeleteSelectedClick,
+    onArchiveSelectedClick = viewModel::onArchiveSelectedClick,
   )
 }

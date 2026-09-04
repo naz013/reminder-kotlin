@@ -1,9 +1,11 @@
 package com.github.naz013.feature.agenda
 
+import com.github.naz013.common.TextProvider
 import com.github.naz013.logic.birthday.BirthdaySmartListPredicate
 import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
 import com.github.naz013.ui.common.text.UiTextElement
 import com.github.naz013.ui.common.text.UiTextFormat
+import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.reminder.UiReminderListActions
 import com.github.naz013.ui.reminder.UiReminderListState
@@ -33,11 +35,15 @@ import com.github.naz013.ui.agenda.UiAgendaBirthday
 import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.ui.agenda.UiAgendaItemAdapter
 import com.github.naz013.ui.agenda.UiAgendaReminder
+import com.github.naz013.ui.common.R
+import io.mockk.Runs
 import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -51,7 +57,7 @@ import org.threeten.bp.LocalDateTime
  * it through category and search-query filtering, rather than on presentation formatting (covered
  * separately by ui-agenda's own UiAgendaItemAdapterTest).
  */
-class AgendaViewModelTest {
+class AgendaViewModelTest : BaseTest() {
   private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val groupV2Repository = mockk<GroupV2Repository>()
   private val birthdayRepository = mockk<BirthdayRepository>()
@@ -66,11 +72,13 @@ class AgendaViewModelTest {
   private val deleteReminderUseCase = mockk<DeleteReminderUseCase>()
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>()
   private val birthdaySmartListPredicate = BirthdaySmartListPredicate(provideBirthdayDateCalculator())
+  private val textProvider = mockk<TextProvider>(relaxed = true)
 
   private lateinit var viewModel: AgendaViewModel
 
   @Before
-  fun setUp() {
+  override fun setUp() {
+    super.setUp()
     coEvery { groupV2Repository.getAll() } returns emptyList()
     // AgendaViewModel's init{} eagerly runs the load pipeline once on construction, and
     // mockDispatcherProvider() uses Dispatchers.Unconfined, so that eager call executes
@@ -99,6 +107,7 @@ class AgendaViewModelTest {
     viewModel =
       AgendaViewModel(
         dispatcherProvider = mockDispatcherProvider(),
+        textProvider = textProvider,
         reminderV2Repository = reminderV2Repository,
         groupV2Repository = groupV2Repository,
         birthdayRepository = birthdayRepository,
@@ -452,6 +461,165 @@ class AgendaViewModelTest {
 
     assertEquals(true, viewModel.hasScrolledToToday)
   }
+
+  private fun readyViewModelWithReminderAndBirthday(): AgendaViewModel {
+    coEvery { reminderV2Repository.getByRemovedStatus(removed = false) } returns listOf(reminderV2(id = "r1"))
+    coEvery { birthdayRepository.getAll() } returns listOf(reminderBirthday(id = "b1"))
+    return AgendaViewModel(
+      dispatcherProvider = mockDispatcherProvider(),
+      textProvider = textProvider,
+      reminderV2Repository = reminderV2Repository,
+      groupV2Repository = groupV2Repository,
+      birthdayRepository = birthdayRepository,
+      tagRepository = tagRepository,
+      tagAssignmentRepository = tagAssignmentRepository,
+      uiAgendaItemAdapter = uiAgendaItemAdapter,
+      dateTimeManager = dateTimeManager,
+      birthdaySmartListPredicate = birthdaySmartListPredicate,
+      moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
+      skipReminderUseCase = skipReminderUseCase,
+      toggleReminderStateUseCase = toggleReminderStateUseCase,
+      togglePinnedReminderUseCase = togglePinnedReminderUseCase,
+      deleteReminderUseCase = deleteReminderUseCase,
+      deleteBirthdayUseCase = deleteBirthdayUseCase,
+    )
+  }
+
+  @Test
+  fun `onItemLongClick selects the item and enters selection mode`() =
+    runTest {
+      val vm = readyViewModelWithReminderAndBirthday()
+
+      vm.onItemLongClick("r1")
+
+      val state = vm.agendaScreenState.first()
+      assertEquals(1, state.selectedCount)
+    }
+
+  @Test
+  fun `onItemClick toggles selection while in selection mode instead of opening a preview`() =
+    runTest {
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onItemLongClick("r1")
+      val ready = vm.agendaScreenState.first().listState as ListState.Ready
+      val birthdayItem = ready.items.first { it.id == "b1" } as UiAgendaBirthday
+
+      vm.onItemClick(birthdayItem)
+
+      assertEquals(2, vm.agendaScreenState.first().selectedCount)
+      assertEquals(null, vm.navigationEvent.value)
+    }
+
+  @Test
+  fun `onItemClick exits selection mode automatically after the last item is deselected`() =
+    runTest {
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onItemLongClick("r1")
+      val reminderItem = (vm.agendaScreenState.first().listState as ListState.Ready)
+        .items.first { it.id == "r1" } as UiAgendaReminder
+
+      vm.onItemClick(reminderItem)
+
+      assertEquals(0, vm.agendaScreenState.first().selectedCount)
+    }
+
+  @Test
+  fun `onSelectionCancel clears the selection`() =
+    runTest {
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onItemLongClick("r1")
+
+      vm.onSelectionCancel()
+
+      assertEquals(0, vm.agendaScreenState.first().selectedCount)
+    }
+
+  @Test
+  fun `onDeleteSelectedClick posts ConfirmDeleteSelected with the selected reminder and birthday ids`() =
+    runTest {
+      every {
+        textProvider.getText(R.string.agenda_delete_selected_permanently, 2)
+      } returns "Delete 2 items permanently?"
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onItemLongClick("r1")
+      val birthdayItem = (vm.agendaScreenState.first().listState as ListState.Ready)
+        .items.first { it.id == "b1" } as UiAgendaBirthday
+      vm.onItemClick(birthdayItem)
+
+      vm.onDeleteSelectedClick()
+
+      assertEquals(
+        AgendaViewModel.NavigationEvent.ConfirmDeleteSelected(setOf("r1"), setOf("b1"), "Delete 2 items permanently?"),
+        vm.navigationEvent.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `onDeleteSelectedClick does nothing when nothing is selected`() =
+    runTest {
+      val vm = readyViewModelWithReminderAndBirthday()
+
+      vm.onDeleteSelectedClick()
+
+      assertEquals(null, vm.navigationEvent.value)
+    }
+
+  @Test
+  fun `deleteSelected deletes the selected reminders and birthdays by type and clears selection`() =
+    runTest {
+      val reminder = reminderV2(id = "r1")
+      coEvery { reminderV2Repository.getById("r1") } returns reminder
+      coEvery { deleteReminderUseCase(reminder) } just Runs
+      coEvery { deleteBirthdayUseCase("b1") } just Runs
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onItemLongClick("r1")
+
+      vm.deleteSelected(reminderIds = setOf("r1"), birthdayIds = setOf("b1"))
+
+      coVerify(exactly = 1) { deleteReminderUseCase(reminder) }
+      coVerify(exactly = 1) { deleteBirthdayUseCase("b1") }
+      assertEquals(0, vm.agendaScreenState.first().selectedCount)
+    }
+
+  @Test
+  fun `onArchiveSelectedClick posts ConfirmArchiveSelectedReminders for only the selected reminders`() =
+    runTest {
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onItemLongClick("r1")
+
+      vm.onArchiveSelectedClick()
+
+      assertEquals(
+        AgendaViewModel.NavigationEvent.ConfirmArchiveSelectedReminders(setOf("r1")),
+        vm.navigationEvent.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `onArchiveSelectedClick does nothing when only birthdays are selected`() =
+    runTest {
+      val vm = readyViewModelWithReminderAndBirthday()
+      val birthdayItem = (vm.agendaScreenState.first().listState as ListState.Ready)
+        .items.first { it.id == "b1" } as UiAgendaBirthday
+      vm.onItemLongClick(birthdayItem.id)
+
+      vm.onArchiveSelectedClick()
+
+      assertEquals(null, vm.navigationEvent.value)
+    }
+
+  @Test
+  fun `archiveSelectedReminders archives each selected reminder and clears selection`() =
+    runTest {
+      coEvery { moveReminderToArchiveUseCase("r1") } just Runs
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onItemLongClick("r1")
+
+      vm.archiveSelectedReminders(setOf("r1"))
+
+      coVerify(exactly = 1) { moveReminderToArchiveUseCase("r1") }
+      assertEquals(0, vm.agendaScreenState.first().selectedCount)
+    }
 
   private fun reminderV2(
     id: String,

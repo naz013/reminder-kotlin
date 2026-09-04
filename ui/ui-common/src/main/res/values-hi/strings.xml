@@ -1356,4 +1356,9 @@
     <string name="settings_search_keyword_auto_backup_interval">ऑटो बैकअप अंतराल</string>
     <string name="settings_search_keyword_wifi_only_sync">केवल वाईफाई सिंक</string>
     <string name="settings_search_keyword_delete_cloud_backup">क्लाउड बैकअप हटाएं</string>
+    <string name="birthday_selected_count_one">%1$d जन्मदिन चयनित</string>
+    <string name="birthday_selected_count_other">%1$d जन्मदिन चयनित</string>
+    <string name="birthdays_delete_selected_permanently">%1$d जन्मदिन को स्थायी रूप से हटाएं?</string>
+    <string name="agenda_delete_selected_permanently">%1$d आइटम को स्थायी रूप से हटाएं?</string>
+    <string name="selected_count">%1$d चयनित</string>
 </resources>

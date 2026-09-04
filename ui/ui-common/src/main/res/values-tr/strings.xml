@@ -1355,4 +1355,9 @@
     <string name="settings_search_keyword_auto_backup_interval">otomatik yedekleme aralığı</string>
     <string name="settings_search_keyword_wifi_only_sync">yalnızca wifi ile senkronizasyon</string>
     <string name="settings_search_keyword_delete_cloud_backup">bulut yedeğini sil</string>
+    <string name="birthday_selected_count_one">%1$d doğum günü seçildi</string>
+    <string name="birthday_selected_count_other">%1$d doğum günü seçildi</string>
+    <string name="birthdays_delete_selected_permanently">%1$d doğum günü kalıcı olarak silinsin mi?</string>
+    <string name="agenda_delete_selected_permanently">%1$d öğe kalıcı olarak silinsin mi?</string>
+    <string name="selected_count">%1$d seçildi</string>
 </resources>

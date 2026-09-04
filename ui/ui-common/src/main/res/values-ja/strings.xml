@@ -1354,4 +1354,9 @@
     <string name="settings_search_keyword_auto_backup_interval">自動バックアップの間隔</string>
     <string name="settings_search_keyword_wifi_only_sync">Wi-Fiのみで同期</string>
     <string name="settings_search_keyword_delete_cloud_backup">クラウドバックアップを削除</string>
+    <string name="birthday_selected_count_one">%1$d件の誕生日を選択中</string>
+    <string name="birthday_selected_count_other">%1$d件の誕生日を選択中</string>
+    <string name="birthdays_delete_selected_permanently">%1$d件の誕生日を完全に削除しますか?</string>
+    <string name="agenda_delete_selected_permanently">%1$d件のアイテムを完全に削除しますか?</string>
+    <string name="selected_count">%1$d件選択中</string>
 </resources>

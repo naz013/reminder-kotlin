@@ -1,5 +1,6 @@
 package com.github.naz013.feature.birthday.list
 
+import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.sync.SyncState
@@ -14,6 +15,7 @@ import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.agenda.AgendaMenuAction
 import com.github.naz013.ui.agenda.UiAgendaBirthday
 import com.github.naz013.ui.agenda.UiAgendaItemAdapter
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -36,6 +38,7 @@ class BirthdaysViewModelTest : BaseTest() {
   private val uiAgendaItemAdapter = mockk<UiAgendaItemAdapter>()
   private val birthdaySmartListPredicate = mockk<BirthdaySmartListPredicate>()
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>(relaxed = true)
+  private val textProvider = mockk<TextProvider>(relaxed = true)
 
   private lateinit var viewModel: BirthdaysViewModel
 
@@ -50,6 +53,7 @@ class BirthdaysViewModelTest : BaseTest() {
   private fun createViewModel(): BirthdaysViewModel =
     BirthdaysViewModel(
       dispatcherProvider = mockDispatcherProvider(),
+      textProvider = textProvider,
       birthdayRepository = birthdayRepository,
       tagRepository = tagRepository,
       tagAssignmentRepository = tagAssignmentRepository,
@@ -223,4 +227,103 @@ class BirthdaysViewModelTest : BaseTest() {
       viewModel.navigationEvent.value?.peekContent(),
     )
   }
+
+  private fun readyViewModelWithTwoBirthdays(): BirthdaysViewModel {
+    val b1 = birthday(id = "1")
+    val b2 = birthday(id = "2")
+    every { birthdayRepository.observeAll() } returns flowOf(listOf(b1, b2))
+    every { uiAgendaItemAdapter.convertBirthday(b1) } returns uiBirthday(id = "1")
+    every { uiAgendaItemAdapter.convertBirthday(b2) } returns uiBirthday(id = "2")
+    return createViewModel()
+  }
+
+  @Test
+  fun `onItemLongClick selects the birthday and enters selection mode`() =
+    runTest {
+      val vm = readyViewModelWithTwoBirthdays()
+
+      vm.onItemLongClick("1")
+
+      val state = vm.state.first()
+      assertEquals(1, state.selectedCount)
+      val ready = state.listState as ListState.Ready
+      assertEquals(true, ready.items.first { it.id == "1" }.isSelected)
+    }
+
+  @Test
+  fun `onItemClick toggles selection while in selection mode instead of opening the birthday`() =
+    runTest {
+      val vm = readyViewModelWithTwoBirthdays()
+      vm.onItemLongClick("1")
+
+      vm.onItemClick(uiBirthday(id = "2"))
+
+      assertEquals(2, vm.state.first().selectedCount)
+      assertEquals(null, vm.navigationEvent.value)
+    }
+
+  @Test
+  fun `onItemClick exits selection mode automatically after the last birthday is deselected`() =
+    runTest {
+      val vm = readyViewModelWithTwoBirthdays()
+      vm.onItemLongClick("1")
+
+      vm.onItemClick(uiBirthday(id = "1"))
+
+      assertEquals(0, vm.state.first().selectedCount)
+    }
+
+  @Test
+  fun `onSelectionCancel clears all selected birthdays`() =
+    runTest {
+      val vm = readyViewModelWithTwoBirthdays()
+      vm.onItemLongClick("1")
+      vm.onItemClick(uiBirthday(id = "2"))
+
+      vm.onSelectionCancel()
+
+      assertEquals(0, vm.state.first().selectedCount)
+    }
+
+  @Test
+  fun `onDeleteSelectedClick posts ConfirmDeleteSelected with the selected ids and a formatted title`() =
+    runTest {
+      every {
+        textProvider.getText(R.string.birthdays_delete_selected_permanently, 2)
+      } returns "Delete 2 birthdays permanently?"
+      val vm = readyViewModelWithTwoBirthdays()
+      vm.onItemLongClick("1")
+      vm.onItemClick(uiBirthday(id = "2"))
+
+      vm.onDeleteSelectedClick()
+
+      assertEquals(
+        BirthdaysViewModel.NavigationEvent.ConfirmDeleteSelected(setOf("1", "2"), "Delete 2 birthdays permanently?"),
+        vm.navigationEvent.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `onDeleteSelectedClick does nothing when nothing is selected`() =
+    runTest {
+      val vm = readyViewModelWithTwoBirthdays()
+
+      vm.onDeleteSelectedClick()
+
+      assertEquals(null, vm.navigationEvent.value)
+    }
+
+  @Test
+  fun `deleteSelectedBirthdays deletes each birthday and clears selection`() =
+    runTest {
+      val vm = readyViewModelWithTwoBirthdays()
+      vm.onItemLongClick("1")
+      vm.onItemClick(uiBirthday(id = "2"))
+
+      vm.deleteSelectedBirthdays(setOf("1", "2"))
+
+      coVerify(exactly = 1) { deleteBirthdayUseCase("1") }
+      coVerify(exactly = 1) { deleteBirthdayUseCase("2") }
+      assertEquals(0, vm.state.first().selectedCount)
+    }
 }

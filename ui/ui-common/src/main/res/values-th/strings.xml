@@ -1352,4 +1352,9 @@
     <string name="settings_search_keyword_auto_backup_interval">ช่วงเวลาสำรองข้อมูลอัตโนมัติ</string>
     <string name="settings_search_keyword_wifi_only_sync">ซิงค์ผ่าน Wi-Fi เท่านั้น</string>
     <string name="settings_search_keyword_delete_cloud_backup">ลบข้อมูลสำรองบนคลาวด์</string>
+    <string name="birthday_selected_count_one">เลือก %1$d วันเกิดแล้ว</string>
+    <string name="birthday_selected_count_other">เลือก %1$d วันเกิดแล้ว</string>
+    <string name="birthdays_delete_selected_permanently">ลบ %1$d วันเกิดอย่างถาวร?</string>
+    <string name="agenda_delete_selected_permanently">ลบ %1$d รายการอย่างถาวร?</string>
+    <string name="selected_count">เลือก %1$d รายการแล้ว</string>
 </resources>

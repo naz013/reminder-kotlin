@@ -1,5 +1,6 @@
 package com.github.naz013.feature.birthday.list
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,8 +56,10 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.SelectionTopBar
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 import com.github.naz013.ui.common.compose.foundation.component.BottomSheetHeader
+import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 import com.github.naz013.ui.tag.TagFilterRow
 
@@ -72,9 +76,12 @@ internal fun BirthdaysScreen(
   onTagFilterSelected: (String?) -> Unit,
   onAddClick: () -> Unit,
   onItemClick: (UiAgendaBirthday) -> Unit,
+  onItemLongClick: (String) -> Unit,
   onMenuAction: (UiAgendaBirthday, AgendaMenuAction) -> Unit,
   onDeleteConfirmed: () -> Unit,
   onDeleteDismiss: () -> Unit,
+  onSelectionCancel: () -> Unit,
+  onDeleteSelectedClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val lazyListState = rememberLazyListState()
@@ -85,28 +92,39 @@ internal fun BirthdaysScreen(
   )
   var showFilterSheet by remember { mutableStateOf(false) }
   val hasActiveFilters = state.selectedSmartList != null || state.selectedTagId != null
+  val isSelectionMode = state.selectedCount > 0
+
+  BackHandler(enabled = isSelectionMode) { onSelectionCancel() }
 
   Scaffold(
     modifier = modifier,
     topBar = {
-      Surface(color = MaterialTheme.colorScheme.background, shadowElevation = headerElevation) {
-        Column {
-          BirthdaysTopBar(
-            onBackClick = onBackClick,
-            onAddClick = onAddClick,
-            onFilterClick = { showFilterSheet = true },
-            hasActiveFilters = hasActiveFilters,
-          )
-
-          if (state.hasAnyItems) {
-            SearchBar(
-              query = state.searchQuery,
-              onQueryChange = onSearchQueryChange,
-              placeholder = stringResource(R.string.search),
-              modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+      if (isSelectionMode) {
+        BirthdaysSelectionTopBar(
+          selectedCount = state.selectedCount,
+          onCancelClick = onSelectionCancel,
+          onDeleteClick = onDeleteSelectedClick,
+        )
+      } else {
+        Surface(color = MaterialTheme.colorScheme.background, shadowElevation = headerElevation) {
+          Column {
+            BirthdaysTopBar(
+              onBackClick = onBackClick,
+              onAddClick = onAddClick,
+              onFilterClick = { showFilterSheet = true },
+              hasActiveFilters = hasActiveFilters,
             )
+
+            if (state.hasAnyItems) {
+              SearchBar(
+                query = state.searchQuery,
+                onQueryChange = onSearchQueryChange,
+                placeholder = stringResource(R.string.search),
+                modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp),
+              )
+            }
           }
         }
       }
@@ -150,6 +168,9 @@ internal fun BirthdaysScreen(
                 onClick = { onItemClick(item) },
                 onMenuAction = { action -> onMenuAction(item, action) },
                 modifier = Modifier.animateItem(),
+                onLongClick = { onItemLongClick(item.id) },
+                isSelectionMode = isSelectionMode,
+                onToggleSelected = { onItemClick(item) },
               )
             }
           }
@@ -295,6 +316,32 @@ private fun BirthdaysEmptyState(modifier: Modifier = Modifier) {
   }
 }
 
+private enum class BirthdaysSelectionAction { DELETE }
+
+@Composable
+private fun BirthdaysSelectionTopBar(
+  selectedCount: Int,
+  onCancelClick: () -> Unit,
+  onDeleteClick: () -> Unit,
+) {
+  SelectionTopBar(
+    title = pluralStringResource(R.plurals.birthdays_selected_count, selectedCount, selectedCount),
+    onCancelClick = onCancelClick,
+    actions = listOf(
+      PopupMenuItem(
+        id = BirthdaysSelectionAction.DELETE.ordinal,
+        title = stringResource(R.string.delete),
+        iconRes = R.drawable.ic_fluent_delete,
+      ),
+    ),
+    onActionClick = { id ->
+      when (BirthdaysSelectionAction.entries[id]) {
+        BirthdaysSelectionAction.DELETE -> onDeleteClick()
+      }
+    },
+  )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun BirthdaysTopBar(
@@ -345,9 +392,12 @@ private fun BirthdaysScreenEmptyPreview() {
       onTagFilterSelected = {},
       onAddClick = {},
       onItemClick = {},
+      onItemLongClick = {},
       onMenuAction = { _, _ -> },
       onDeleteConfirmed = {},
       onDeleteDismiss = {},
+      onSelectionCancel = {},
+      onDeleteSelectedClick = {},
     )
   }
 }

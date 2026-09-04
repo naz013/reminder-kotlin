@@ -1355,4 +1355,9 @@
     <string name="settings_search_keyword_auto_backup_interval">自动备份间隔</string>
     <string name="settings_search_keyword_wifi_only_sync">仅wifi同步</string>
     <string name="settings_search_keyword_delete_cloud_backup">删除云备份</string>
+    <string name="birthday_selected_count_one">已选择 %1$d 个生日</string>
+    <string name="birthday_selected_count_other">已选择 %1$d 个生日</string>
+    <string name="birthdays_delete_selected_permanently">永久删除 %1$d 个生日?</string>
+    <string name="agenda_delete_selected_permanently">永久删除 %1$d 项?</string>
+    <string name="selected_count">已选择 %1$d 项</string>
 </resources>

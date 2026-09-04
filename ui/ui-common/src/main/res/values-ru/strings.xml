@@ -1353,4 +1353,9 @@
     <string name="settings_search_keyword_auto_backup_interval">интервал автоматического резервного копирования</string>
     <string name="settings_search_keyword_wifi_only_sync">синхронизация только по Wi-Fi</string>
     <string name="settings_search_keyword_delete_cloud_backup">удалить резервную копию в облаке</string>
+    <string name="birthday_selected_count_one">Выбран %1$d день рождения</string>
+    <string name="birthday_selected_count_other">Выбрано %1$d дней рождения</string>
+    <string name="birthdays_delete_selected_permanently">Удалить %1$d дней рождения навсегда?</string>
+    <string name="agenda_delete_selected_permanently">Удалить %1$d элементов навсегда?</string>
+    <string name="selected_count">Выбрано %1$d</string>
 </resources>

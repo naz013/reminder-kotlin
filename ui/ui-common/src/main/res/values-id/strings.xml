@@ -1352,4 +1352,9 @@
     <string name="settings_search_keyword_auto_backup_interval">interval cadangan otomatis</string>
     <string name="settings_search_keyword_wifi_only_sync">sinkronisasi hanya wifi</string>
     <string name="settings_search_keyword_delete_cloud_backup">hapus cadangan cloud</string>
+    <string name="birthday_selected_count_one">%1$d ulang tahun dipilih</string>
+    <string name="birthday_selected_count_other">%1$d ulang tahun dipilih</string>
+    <string name="birthdays_delete_selected_permanently">Hapus %1$d ulang tahun secara permanen?</string>
+    <string name="agenda_delete_selected_permanently">Hapus %1$d item secara permanen?</string>
+    <string name="selected_count">%1$d dipilih</string>
 </resources>

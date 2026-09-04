@@ -1354,4 +1354,9 @@
     <string name="settings_search_keyword_auto_backup_interval">interval automatického zálohování</string>
     <string name="settings_search_keyword_wifi_only_sync">synchronizace pouze přes wifi</string>
     <string name="settings_search_keyword_delete_cloud_backup">smazat zálohu v cloudu</string>
+    <string name="birthday_selected_count_one">Vybrány %1$d narozeniny</string>
+    <string name="birthday_selected_count_other">Vybráno %1$d narozenin</string>
+    <string name="birthdays_delete_selected_permanently">Trvale smazat %1$d narozenin?</string>
+    <string name="agenda_delete_selected_permanently">Trvale smazat %1$d položek?</string>
+    <string name="selected_count">Vybráno %1$d</string>
 </resources>
