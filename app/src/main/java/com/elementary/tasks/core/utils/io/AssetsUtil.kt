@@ -5,10 +5,9 @@ import android.graphics.Typeface
 import androidx.core.content.res.ResourcesCompat
 import com.elementary.tasks.AssetsUtilExtended
 import com.elementary.tasks.R
-import com.elementary.tasks.core.utils.BuildParams
 
 object AssetsUtil {
-  fun getFontNames(): List<String> {
+  fun getFontNames(isPro: Boolean): List<String> {
     val list = mutableListOf<String>()
 
     list.add("Roboto Black")
@@ -35,7 +34,7 @@ object AssetsUtil {
 
     list.add("Lobster Regular")
 
-    if (BuildParams.isPro) {
+    if (isPro) {
       list.addAll(AssetsUtilExtended.getFontNames())
     }
 
@@ -45,6 +44,7 @@ object AssetsUtil {
   fun getTypeface(
     context: Context,
     code: Int,
+    isPro: Boolean,
   ): Typeface? =
     when (code) {
       0 -> ResourcesCompat.getFont(context, R.font.roboto_black)
@@ -69,7 +69,7 @@ object AssetsUtil {
       19 -> ResourcesCompat.getFont(context, R.font.merriweathersans_regular)
       20 -> ResourcesCompat.getFont(context, R.font.lobster_regular)
       else ->
-        if (BuildParams.isPro) {
+        if (isPro) {
           AssetsUtilExtended.getTypeface(context, code)
         } else {
           ResourcesCompat.getFont(context, R.font.roboto_regular)

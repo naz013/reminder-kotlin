@@ -89,7 +89,7 @@ val libModule = module {
   single { ThemePreferencesImpl(get()) as ThemePreferences }
   single { LocalePreferencesImpl(get()) as LocalePreferences }
   single { AuthPreferencesImpl(get()) as AuthPreferences }
-  factory { FontApiImpl(get()) as FontApi }
+  factory { FontApiImpl(get(), get()) as FontApi }
   factory { AppPreferencesImpl(get()) as AppPreferences }
 
   // appwidgets
@@ -125,7 +125,7 @@ val libModule = module {
 
   // logic reminder
   factory { ReminderPreferencesImpl(get()) as ReminderPreferences }
-  factory { AppReminderNotifier(get(), get(), get(), get()) as ReminderNotifier }
+  factory { AppReminderNotifier(get(), get(), get(), get(), get()) as ReminderNotifier }
 
   // logic notification action
   factory { NotificationGatewayImpl(get()) as NotificationGateway }
@@ -147,6 +147,7 @@ val libModule = module {
   }
   factory {
     AppBirthdayAlertHandlerFactory(
+      get(),
       get(),
       get(),
       get(),

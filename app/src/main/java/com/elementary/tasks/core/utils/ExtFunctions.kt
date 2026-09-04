@@ -16,9 +16,3 @@ fun launchDefault(
   start: CoroutineStart = CoroutineStart.DEFAULT,
   block: suspend CoroutineScope.() -> Unit,
 ): Job = GlobalScope.launch(Dispatchers.Default, start, block)
-
-@Deprecated("Use class scope for coroutine")
-fun launchIo(
-  start: CoroutineStart = CoroutineStart.DEFAULT,
-  block: suspend CoroutineScope.() -> Unit,
-): Job = GlobalScope.launch(Dispatchers.IO, start, block)

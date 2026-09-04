@@ -173,7 +173,7 @@ consider folding it into that migration rather than sequencing it separately.
 `app/src/main/java/com/elementary/tasks/core/cloud/*Impl.kt` (`CloudApiProviderImpl`,
 `CloudKeysStorageImpl`, `DataPostProcessorImpl`, `FileCacheProviderImpl`, `SyncSettingsImpl`,
 `TagSyncTriggerImpl`) implement `cloud-api`/`sync`'s seam interfaces using OAuth client IDs and cache
-paths sourced from `Prefs`/`BuildParams`. This is *supposed* to differ per app — a second app needs
+paths sourced from `Prefs`/`BuildInfo`. This is *supposed* to differ per app — a second app needs
 its own Google Drive/Dropbox app registration regardless of module structure — so it's not something
 to fix. It's listed here only so a second app's setup checklist includes: register cloud app
 credentials, then re-implement these six classes (thin — they're mostly credential plumbing, not

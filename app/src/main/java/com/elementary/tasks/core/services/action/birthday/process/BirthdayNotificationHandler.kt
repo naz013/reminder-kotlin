@@ -6,10 +6,10 @@ import com.elementary.tasks.R
 import com.elementary.tasks.birthdays.dialog.BirthdayActionActivity
 import com.elementary.tasks.core.services.BirthdayActionReceiver
 import com.elementary.tasks.core.services.action.birthday.BirthdayDataProvider
-import com.elementary.tasks.core.utils.BuildParams
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.PendingIntentWrapper
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Birthday
 import com.github.naz013.logic.birthday.BirthdayPreferences
 import com.github.naz013.logic.notificationaction.NotificationAction
@@ -30,6 +30,7 @@ class BirthdayNotificationHandler(
   wearNotification: WearNotification,
   private val modelDateTimeFormatter: ModelDateTimeFormatter,
   style: NotificationStyle,
+  private val buildInfo: BuildInfo,
 ) : NotificationAlertActionHandler<Birthday>(
     contextProvider = contextProvider,
     textProvider = textProvider,
@@ -81,7 +82,7 @@ class BirthdayNotificationHandler(
   override fun vibrationPattern(data: Birthday): LongArray? = birthdayDataProvider.getVibrationPattern()
 
   override fun ledColor(data: Birthday): Int? =
-    if (BuildParams.isPro && birthdayDataProvider.isBirthdayLed()) {
+    if (buildInfo.isPro && birthdayDataProvider.isBirthdayLed()) {
       birthdayDataProvider.getLedColor()
     } else {
       null

@@ -13,6 +13,7 @@ import com.elementary.tasks.core.services.usecase.CheckLocationReminderUseCase
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.launchDefault
 import com.elementary.tasks.core.utils.withUIContext
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.notificationaction.reminder.ReminderActionProcessor
 import org.koin.android.ext.android.inject
@@ -22,6 +23,7 @@ class GeolocationService : Service() {
   private val notifier by inject<Notifier>()
   private val reminderActionProcessor by inject<ReminderActionProcessor>()
   private val checkLocationReminderUseCase by inject<CheckLocationReminderUseCase>()
+  private val buildInfo by inject<BuildInfo>()
 
   private val locationTracker by inject<LocationTracker> { parametersOf(locationListener) }
   private var locationListener: LocationTracker.Listener =
@@ -90,7 +92,7 @@ class GeolocationService : Service() {
 
   private fun showDefaultNotification() {
     val builder = NotificationCompat.Builder(applicationContext, Notifier.CHANNEL_SYSTEM)
-    if (com.elementary.tasks.core.utils.BuildParams.isPro) {
+    if (buildInfo.isPro) {
       builder.setContentText(getString(R.string.app_name_pro))
     } else {
       builder.setContentText(getString(R.string.app_name))

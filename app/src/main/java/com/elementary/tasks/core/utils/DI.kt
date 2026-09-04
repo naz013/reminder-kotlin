@@ -65,7 +65,7 @@ val utilModule = module {
   singleOf(::RemotePrefs)
 
   factory { AppNotePreferences(get()) as NotePreferences }
-  factory { AppNoteFontProvider() as NoteFontProvider }
+  factory { AppNoteFontProvider(get()) as NoteFontProvider }
   factory { AppNoteNotifier(get()) as NoteNotifier }
 
   factory { AppBirthdayPreferences(get()) as BirthdayPreferences }
