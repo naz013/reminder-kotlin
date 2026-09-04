@@ -46,7 +46,7 @@ class DownloadLegacyFilesUseCaseTest {
     getLocalUuIdUseCase = mockk()
     dataPostProcessor = mockk(relaxed = true)
     mockRepositoryCaller = mockk(relaxed = true)
-    mockCloudFileApi = mockk(relaxUnitFun = true)
+    mockCloudFileApi = mockk(relaxed = true)
 
     downloadLegacyFilesUseCase = DownloadLegacyFilesUseCase(
       getAllFilesToDeleteUseCase = getAllFilesToDeleteUseCase,
