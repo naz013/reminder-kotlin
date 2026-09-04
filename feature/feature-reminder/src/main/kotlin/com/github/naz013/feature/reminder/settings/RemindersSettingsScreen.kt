@@ -19,6 +19,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.DisabledAlpha
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
+import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
@@ -74,6 +75,7 @@ fun RemindersSettingsScreen(
       title = stringResource(R.string.insights),
       icon = AppIcons.Fluent.DataPie,
       locked = state.isInsightsLocked,
+      itemKey = SettingsSearchItemKeys.REMINDERS_INSIGHTS,
       dividerBottom = true,
       onClick = onInsightsClick,
     )
@@ -103,6 +105,7 @@ fun RemindersSettingsScreen(
       title = stringResource(R.string.reminder_default_priority),
       subtitle = state.priorityName,
       icon = AppIcons.Fluent.Star,
+      itemKey = SettingsSearchItemKeys.REMINDERS_PRIORITY,
       dividerBottom = true,
       onClick = onPriorityClick,
     )
@@ -113,6 +116,7 @@ fun RemindersSettingsScreen(
       subtitleOn = stringResource(R.string.move_to_the_archive),
       subtitleOff = stringResource(R.string.do_nothing),
       icon = painterResource(R.drawable.ic_builder_google_task_list),
+      itemKey = SettingsSearchItemKeys.REMINDERS_COMPLETED,
       dividerBottom = true,
     )
 
@@ -125,12 +129,14 @@ fun RemindersSettingsScreen(
       subtitleOn = stringResource(R.string.show_notifications_on_wear_devices),
       subtitleOff = stringResource(R.string.do_no_show_notifications_on_wear_devices),
       icon = painterResource(R.drawable.ic_fluent_watch),
+      itemKey = SettingsSearchItemKeys.REMINDERS_WEAR,
       dividerBottom = true,
     )
     SettingsItem(
       title = stringResource(R.string.default_reminder_snooze_time),
       subtitle = state.snoozeText,
       icon = painterResource(R.drawable.ic_fluent_alert_snooze),
+      itemKey = SettingsSearchItemKeys.REMINDERS_SNOOZE_TIME,
       dividerBottom = true,
       onClick = onSnoozeClick,
     )
@@ -146,6 +152,7 @@ fun RemindersSettingsScreen(
       title = stringResource(R.string.reminder_notification_repeat_interval),
       subtitle = state.repeatIntervalText,
       enabled = state.isRepeatIntervalRowEnabled,
+      itemKey = SettingsSearchItemKeys.REMINDERS_REPEAT_INTERVAL,
       dividerBottom = true,
       icon = AppIcons.Builder.Interval,
       onClick = onRepeatIntervalClick,
@@ -154,6 +161,7 @@ fun RemindersSettingsScreen(
       title = stringResource(R.string.reminder_notification_max_repeat_count),
       subtitle = state.maxRepeatCountText,
       enabled = state.isRepeatIntervalRowEnabled,
+      itemKey = SettingsSearchItemKeys.REMINDERS_MAX_REPEAT_COUNT,
       dividerBottom = true,
       icon = AppIcons.Fluent.ArrowRepeatAll,
       onClick = onMaxRepeatCountClick,
@@ -162,6 +170,7 @@ fun RemindersSettingsScreen(
       title = stringResource(R.string.reminder_notification_escalate_after_repeats),
       subtitle = state.escalateAfterRepeatsText,
       enabled = state.isRepeatIntervalRowEnabled,
+      itemKey = SettingsSearchItemKeys.REMINDERS_ESCALATE,
       dividerBottom = true,
       icon = AppIcons.Fluent.Warning,
       onClick = onEscalateAfterRepeatsClick,
@@ -190,6 +199,7 @@ fun RemindersSettingsScreen(
         subtitle = state.ledColorName,
         icon = painterResource(R.drawable.ic_fluent_color),
         enabled = state.isLedColorRowEnabled,
+        itemKey = SettingsSearchItemKeys.REMINDERS_LED_COLOR,
         dividerBottom = true,
         onClick = onLedColorClick,
       )
@@ -201,6 +211,7 @@ fun RemindersSettingsScreen(
       onCheckedChange = { onDefaultSwipeToDismissToggle() },
       subtitleOn = stringResource(R.string.allow_swipe_to_dismiss_enabled),
       subtitleOff = stringResource(R.string.allow_swipe_to_dismiss_disabled),
+      itemKey = SettingsSearchItemKeys.REMINDERS_SWIPE_TO_DISMISS,
       dividerBottom = true,
     )
     SettingsSwitchItem(
@@ -209,6 +220,7 @@ fun RemindersSettingsScreen(
       onCheckedChange = { onInAppAlertBannerToggle() },
       subtitleOn = stringResource(R.string.in_app_notification_banner_enabled),
       subtitleOff = stringResource(R.string.in_app_notification_banner_disabled),
+      itemKey = SettingsSearchItemKeys.REMINDERS_IN_APP_BANNER,
       dividerBottom = true,
     )
 
@@ -220,6 +232,7 @@ fun RemindersSettingsScreen(
       onCheckedChange = { onPermanentNotificationClick() },
       subtitleOn = stringResource(R.string.always_showing),
       subtitleOff = stringResource(R.string.hidden),
+      itemKey = SettingsSearchItemKeys.REMINDERS_PERMANENT_NOTIFICATION,
       dividerBottom = true,
     )
     SettingsSwitchItem(
@@ -239,6 +252,7 @@ fun RemindersSettingsScreen(
       checked = state.isDoNotDisturbChecked,
       onCheckedChange = { onDoNotDisturbToggle() },
       icon = AppIcons.Fluent.Sleep,
+      itemKey = SettingsSearchItemKeys.REMINDERS_DO_NOT_DISTURB,
       dividerBottom = true,
     )
 
@@ -301,6 +315,7 @@ fun RemindersSettingsScreen(
     SettingsItem(
       title = stringResource(R.string.notification_category),
       subtitle = state.defaultCategoryName,
+      itemKey = SettingsSearchItemKeys.REMINDERS_DEFAULT_CATEGORY,
       dividerBottom = true,
       onClick = onDefaultCategoryClick,
       icon = AppIcons.Fluent.ChannelNotifications,
@@ -317,6 +332,7 @@ fun RemindersSettingsScreen(
     SettingsItem(
       title = stringResource(R.string.vibration_pattern),
       subtitle = state.defaultVibrationPatternName,
+      itemKey = SettingsSearchItemKeys.REMINDERS_VIBRATION_PATTERN,
       dividerBottom = true,
       onClick = onDefaultVibrationPatternClick,
       icon = AppIcons.Fluent.PhoneVibrate,
@@ -340,6 +356,7 @@ fun RemindersSettingsScreen(
     SettingsItem(
       title = stringResource(R.string.lock_screen_visibility),
       subtitle = state.defaultLockScreenVisibilityName,
+      itemKey = SettingsSearchItemKeys.REMINDERS_LOCK_SCREEN_VISIBILITY,
       dividerBottom = true,
       onClick = onDefaultLockScreenVisibilityClick,
       icon = AppIcons.Fluent.LockShield,

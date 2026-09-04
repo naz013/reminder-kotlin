@@ -20,6 +20,7 @@ import com.github.naz013.feature.settings.export.services.CloudServicesScreen
 import com.github.naz013.feature.settings.export.services.CloudServicesState
 import com.github.naz013.feature.settings.export.services.CloudServicesViewModel
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.foundation.component.SettingsHighlightScope
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.livedata.ObserveEvent
@@ -58,20 +59,22 @@ private fun CloudBackupEntry(backStack: MutableList<NavKey>) {
     title = stringResource(R.string.cloud_backup),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
-    CloudBackupSettingsScreen(
-      state = state,
-      onCloudServicesClick = { backStack.add(ExportNavKey.CloudServices) },
-      onAutoBackupIntervalClick = viewModel::onAutoBackupIntervalClick,
-      onAutoBackupIntervalSelected = viewModel::onAutoBackupIntervalSelected,
-      onNetworkTypeClick = viewModel::onNetworkTypeClick,
-      onNetworkTypeSelected = viewModel::onNetworkTypeSelected,
-      onEraseClick = viewModel::onEraseClick,
-      onEraseConfirmed = viewModel::onEraseConfirmed,
-      onBackupNowClick = viewModel::onBackupNowClick,
-      onSyncNowClick = viewModel::onSyncNowClick,
-      onDialogDismiss = viewModel::onDialogDismiss,
-      modifier = Modifier.padding(padding),
-    )
+    SettingsHighlightScope {
+      CloudBackupSettingsScreen(
+        state = state,
+        onCloudServicesClick = { backStack.add(ExportNavKey.CloudServices) },
+        onAutoBackupIntervalClick = viewModel::onAutoBackupIntervalClick,
+        onAutoBackupIntervalSelected = viewModel::onAutoBackupIntervalSelected,
+        onNetworkTypeClick = viewModel::onNetworkTypeClick,
+        onNetworkTypeSelected = viewModel::onNetworkTypeSelected,
+        onEraseClick = viewModel::onEraseClick,
+        onEraseConfirmed = viewModel::onEraseConfirmed,
+        onBackupNowClick = viewModel::onBackupNowClick,
+        onSyncNowClick = viewModel::onSyncNowClick,
+        onDialogDismiss = viewModel::onDialogDismiss,
+        modifier = Modifier.padding(padding),
+      )
+    }
   }
 }
 

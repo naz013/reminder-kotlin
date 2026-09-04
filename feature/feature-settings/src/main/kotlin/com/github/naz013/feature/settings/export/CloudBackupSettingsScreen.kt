@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
+import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
 @Composable
@@ -56,6 +57,7 @@ internal fun CloudBackupSettingsScreen(
       subtitle = state.autoBackupStateName,
       icon = painterResource(R.drawable.ic_fluent_cloud_backup),
       enabled = state.hasAnyCloudApi,
+      itemKey = SettingsSearchItemKeys.BACKUP_AUTO_INTERVAL,
       dividerBottom = true,
       onClick = onAutoBackupIntervalClick,
     )
@@ -64,6 +66,7 @@ internal fun CloudBackupSettingsScreen(
       subtitle = state.networkTypeName,
       icon = painterResource(R.drawable.ic_fluent_network_check),
       enabled = state.hasAnyCloudApi,
+      itemKey = SettingsSearchItemKeys.BACKUP_NETWORK_TYPE,
       dividerBottom = true,
       onClick = onNetworkTypeClick,
     )
@@ -71,6 +74,7 @@ internal fun CloudBackupSettingsScreen(
       title = stringResource(R.string.erase_cloud_data),
       icon = painterResource(R.drawable.ic_fluent_broom),
       enabled = state.hasAnyCloudApi,
+      itemKey = SettingsSearchItemKeys.BACKUP_ERASE_CLOUD,
       dividerBottom = true,
       onClick = onEraseClick,
     )

@@ -52,6 +52,7 @@ import com.github.naz013.feature.settings.other.OtherNavKey
 import com.github.naz013.feature.settings.proversion.ProVersionScreen
 import com.github.naz013.feature.settings.proversion.ProVersionViewModel
 import com.github.naz013.feature.settings.proversion.rememberGooglePlayMarketLauncher
+import com.github.naz013.feature.settings.search.SettingsSearchResult
 import com.github.naz013.feature.settings.security.SecurityNavKey
 import com.github.naz013.feature.settings.troubleshooting.TroubleshootingScreen
 import com.github.naz013.feature.settings.troubleshooting.TroubleshootingScreenState
@@ -61,6 +62,8 @@ import com.github.naz013.platform.SystemInfo
 import com.github.naz013.reviews.rememberReviewsFormLauncher
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.component.SettingsHighlightScope
+import com.github.naz013.ui.common.compose.foundation.component.rememberSettingsHighlightController
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.livedata.ObserveEvent
@@ -172,6 +175,7 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
 
   val googlePlayMarketLauncher = rememberGooglePlayMarketLauncher()
   val authProvider = rememberAuthProvider()
+  val highlightController = rememberSettingsHighlightController()
 
   val state by viewModel.state.collectAsState(SettingsHubState())
 
@@ -202,6 +206,11 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
     SettingsHubScreen(
       state = state,
       selectedCategory = selectedCategory,
+      onSearchQueryChange = viewModel::onSearchQueryChange,
+      onSearchResultClick = { result ->
+        highlightController.pendingHighlightKey = result.highlightItemId
+        backStack.jumpToSettingsSearchResult(result)
+      },
       onBuyProClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.ProVersion) },
       onUpdateClick = { googlePlayMarketLauncher.launchSelf() },
       onGeneralClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.General) },
@@ -292,19 +301,21 @@ private fun GeneralEntry(
     navigationIcon = settingsNavigationIcon(renderAsDetailPane = renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
-    GeneralSettingsScreen(
-      modifier = Modifier.padding(padding),
-      state = state,
-      onLanguageClick = viewModel::onLanguageClick,
-      onThemeClick = viewModel::onThemeClick,
-      onTimeFormatClick = viewModel::onTimeFormatClick,
-      onHeaderItemsClick = { backStack.add(SettingsNavKey.HeaderItems) },
-      onMetricToggle = { viewModel.onMetricToggle() },
-      onAnalyticsToggle = { viewModel.onAnalyticsToggle() },
-      onDialogOptionSelected = viewModel::onDialogOptionSelected,
-      onDialogDismiss = viewModel::onDialogDismiss,
-      onHapticToggle = { viewModel.onHapticToggle() }
-    )
+    SettingsHighlightScope {
+      GeneralSettingsScreen(
+        modifier = Modifier.padding(padding),
+        state = state,
+        onLanguageClick = viewModel::onLanguageClick,
+        onThemeClick = viewModel::onThemeClick,
+        onTimeFormatClick = viewModel::onTimeFormatClick,
+        onHeaderItemsClick = { backStack.add(SettingsNavKey.HeaderItems) },
+        onMetricToggle = { viewModel.onMetricToggle() },
+        onAnalyticsToggle = { viewModel.onAnalyticsToggle() },
+        onDialogOptionSelected = viewModel::onDialogOptionSelected,
+        onDialogDismiss = viewModel::onDialogDismiss,
+        onHapticToggle = { viewModel.onHapticToggle() }
+      )
+    }
   }
 }
 
@@ -357,37 +368,39 @@ private fun CalendarEntry(
     navigationIcon = settingsNavigationIcon(key.screenTitle, renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
-    CalendarSettingsScreen(
-      state = state,
-      onFirstDayClick = viewModel::onFirstDayClick,
-      onFirstDayOptionSelected = viewModel::onFirstDayOptionSelected,
-      onTodayColorClick = viewModel::onTodayColorClick,
-      onReminderColorClick = viewModel::onReminderColorClick,
-      onBirthdayColorClick = viewModel::onBirthdayColorClick,
-      onCalendarEventColorClick = viewModel::onCalendarEventColorClick,
-      onColorOptionSelected = viewModel::onColorOptionSelected,
-      onSelectCalendarClick = {
-        permissionRequester.request(
-          listOf(Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR),
-          onGranted = { viewModel.onSelectGoogleCalendarClicked() },
-        )
-      },
-      onGoogleCalendarOptionToggled = viewModel::onGoogleCalendarOptionToggled,
-      onGoogleCalendarSelectionConfirmed = viewModel::onGoogleCalendarSelectionConfirmed,
-      onCalendarResetClick = viewModel::onCalendarReset,
-      onExportToggle = viewModel::onExportToggle,
-      onScanToggle = viewModel::onScanToggle,
-      onDialogDismiss = viewModel::onDialogDismiss,
-      isHolidaysSectionVisible = featureFlags.isEnabled(FeatureFlag.PUBLIC_HOLIDAYS),
-      isHolidaysLocked = !buildInfo.isPro,
-      onHolidaysToggle = viewModel::onHolidaysToggle,
-      onHolidaysLockedClick = {
-        analyticsEventSender.send(FeatureGateTappedEvent(Feature.PUBLIC_HOLIDAYS))
-        backStack.add(SettingsNavKey.ProVersion)
-      },
-      onHolidayCountryClick = { backStack.add(SettingsNavKey.SelectHolidayCountry) },
-      modifier = Modifier.padding(padding),
-    )
+    SettingsHighlightScope {
+      CalendarSettingsScreen(
+        state = state,
+        onFirstDayClick = viewModel::onFirstDayClick,
+        onFirstDayOptionSelected = viewModel::onFirstDayOptionSelected,
+        onTodayColorClick = viewModel::onTodayColorClick,
+        onReminderColorClick = viewModel::onReminderColorClick,
+        onBirthdayColorClick = viewModel::onBirthdayColorClick,
+        onCalendarEventColorClick = viewModel::onCalendarEventColorClick,
+        onColorOptionSelected = viewModel::onColorOptionSelected,
+        onSelectCalendarClick = {
+          permissionRequester.request(
+            listOf(Permissions.READ_CALENDAR, Permissions.WRITE_CALENDAR),
+            onGranted = { viewModel.onSelectGoogleCalendarClicked() },
+          )
+        },
+        onGoogleCalendarOptionToggled = viewModel::onGoogleCalendarOptionToggled,
+        onGoogleCalendarSelectionConfirmed = viewModel::onGoogleCalendarSelectionConfirmed,
+        onCalendarResetClick = viewModel::onCalendarReset,
+        onExportToggle = viewModel::onExportToggle,
+        onScanToggle = viewModel::onScanToggle,
+        onDialogDismiss = viewModel::onDialogDismiss,
+        isHolidaysSectionVisible = featureFlags.isEnabled(FeatureFlag.PUBLIC_HOLIDAYS),
+        isHolidaysLocked = !buildInfo.isPro,
+        onHolidaysToggle = viewModel::onHolidaysToggle,
+        onHolidaysLockedClick = {
+          analyticsEventSender.send(FeatureGateTappedEvent(Feature.PUBLIC_HOLIDAYS))
+          backStack.add(SettingsNavKey.ProVersion)
+        },
+        onHolidayCountryClick = { backStack.add(SettingsNavKey.SelectHolidayCountry) },
+        modifier = Modifier.padding(padding),
+      )
+    }
   }
 }
 
@@ -436,18 +449,20 @@ private fun NoteEntry(
     navigationIcon = settingsNavigationIcon(key.screenTitle, renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
-    NoteSettingsScreen(
-      state = state,
-      onColorRememberToggle = viewModel::onColorRememberToggle,
-      onFontSizeRememberToggle = viewModel::onFontSizeRememberToggle,
-      onFontStyleRememberToggle = viewModel::onFontStyleRememberToggle,
-      onTextColorRememberToggle = viewModel::onTextColorRememberToggle,
-      onOpacityClick = viewModel::onOpacityClick,
-      onOpacityPreviewChange = viewModel::onOpacityPreviewChange,
-      onOpacityConfirm = viewModel::onOpacityConfirm,
-      onOpacityDialogDismiss = viewModel::onOpacityDialogDismiss,
-      modifier = Modifier.padding(padding),
-    )
+    SettingsHighlightScope {
+      NoteSettingsScreen(
+        state = state,
+        onColorRememberToggle = viewModel::onColorRememberToggle,
+        onFontSizeRememberToggle = viewModel::onFontSizeRememberToggle,
+        onFontStyleRememberToggle = viewModel::onFontStyleRememberToggle,
+        onTextColorRememberToggle = viewModel::onTextColorRememberToggle,
+        onOpacityClick = viewModel::onOpacityClick,
+        onOpacityPreviewChange = viewModel::onOpacityPreviewChange,
+        onOpacityConfirm = viewModel::onOpacityConfirm,
+        onOpacityDialogDismiss = viewModel::onOpacityDialogDismiss,
+        modifier = Modifier.padding(padding),
+      )
+    }
   }
 }
 
@@ -637,6 +652,19 @@ private fun MutableList<NavKey>.navigateToSettingsDetailPane(key: NavKey) {
     removeLastOrNull()
   }
   add(key)
+}
+
+/**
+ * Jumps from the Hub straight to a settings-search result: truncates the backstack back to
+ * (and including) the Hub, then pushes the result's whole parent chain, so the resulting
+ * backstack - and the back button - behaves exactly like drilling down there by hand would have.
+ */
+private fun MutableList<NavKey>.jumpToSettingsSearchResult(result: SettingsSearchResult) {
+  val hubIndex = indexOf(SettingsNavKey.Hub)
+  if (hubIndex >= 0) {
+    while (size > hubIndex + 1) removeLastOrNull()
+  }
+  addAll(result.path)
 }
 
 private const val BACKUP_FILE_NAME = "reminder_backup.rbkp"

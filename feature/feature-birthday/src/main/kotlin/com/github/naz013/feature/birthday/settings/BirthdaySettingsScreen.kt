@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
+import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
@@ -61,12 +62,14 @@ fun BirthdaySettingsScreen(
       subtitleOn = stringResource(R.string.show_reminder_about_birthdays),
       subtitleOff = stringResource(R.string.do_not_remind_about_birthdays),
       icon = painterResource(R.drawable.ic_fluent_alert),
+      itemKey = SettingsSearchItemKeys.BIRTHDAY_REMINDER_TOGGLE,
       dividerBottom = true,
     )
     SettingsItem(
       title = stringResource(R.string.days_to_birthday),
       subtitle = stringResource(R.string.days_to_birthday_explanation),
       enabled = state.isDependentEnabled,
+      itemKey = SettingsSearchItemKeys.BIRTHDAY_DAYS_BEFORE,
       dividerBottom = true,
       onClick = onDaysToBirthdayClick,
       trailing = {
@@ -81,6 +84,7 @@ fun BirthdaySettingsScreen(
       subtitle = state.priorityName,
       icon = painterResource(R.drawable.ic_fluent_star),
       enabled = state.isDependentEnabled,
+      itemKey = SettingsSearchItemKeys.BIRTHDAY_PRIORITY,
       dividerBottom = true,
       onClick = onPriorityClick,
     )
@@ -89,6 +93,7 @@ fun BirthdaySettingsScreen(
       subtitle = stringResource(R.string.birthday_remind_at_description),
       icon = painterResource(R.drawable.ic_builder_time),
       enabled = state.isDependentEnabled,
+      itemKey = SettingsSearchItemKeys.BIRTHDAY_REMIND_TIME,
       dividerBottom = true,
       onClick = onReminderTimeClick,
       trailing = { Text(state.reminderTime, style = MaterialTheme.typography.titleLarge) },
@@ -100,6 +105,7 @@ fun BirthdaySettingsScreen(
       subtitleOn = stringResource(R.string.show_in_home_screen),
       subtitleOff = stringResource(R.string.do_not_show_in_home_screen_widget),
       enabled = state.isDependentEnabled,
+      itemKey = SettingsSearchItemKeys.BIRTHDAY_WIDGET,
       dividerBottom = true,
     )
     SettingsItem(
@@ -162,6 +168,7 @@ fun BirthdaySettingsScreen(
       subtitleOff = stringResource(R.string.use_only_my_birthdays),
       icon = painterResource(R.drawable.ic_fluent_contacts),
       enabled = state.isDependentEnabled,
+      itemKey = SettingsSearchItemKeys.BIRTHDAY_USE_CONTACTS,
       dividerBottom = true,
     )
     SettingsSwitchItem(
@@ -171,6 +178,7 @@ fun BirthdaySettingsScreen(
       subtitleOn = stringResource(R.string.automatically_check_for_new_birthdays),
       subtitleOff = stringResource(R.string.do_not_scan_contacts),
       enabled = state.isAutoScanRowEnabled,
+      itemKey = SettingsSearchItemKeys.BIRTHDAY_AUTO_SCAN,
       dividerBottom = true,
     )
   }

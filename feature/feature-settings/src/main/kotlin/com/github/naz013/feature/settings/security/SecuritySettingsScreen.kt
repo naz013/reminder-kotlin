@@ -12,6 +12,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
+import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
 
 @Composable
@@ -38,12 +39,14 @@ internal fun SecuritySettingsScreen(
       subtitleOn = stringResource(R.string.protect_application_with_pin),
       subtitleOff = stringResource(R.string.do_not_use_pin_protection),
       icon = painterResource(R.drawable.ic_fluent_password),
+      itemKey = SettingsSearchItemKeys.SECURITY_PIN_PROTECTION,
       dividerBottom = true,
     )
     SettingsItem(
       title = stringResource(R.string.change_pin),
       icon = painterResource(R.drawable.ic_fluent_edit),
       enabled = state.isPinChecked,
+      itemKey = SettingsSearchItemKeys.SECURITY_CHANGE_PIN,
       dividerBottom = true,
       onClick = onChangePinClick,
     )
@@ -56,6 +59,7 @@ internal fun SecuritySettingsScreen(
         subtitleOff = stringResource(R.string.do_not_use_fingerprint_to_login),
         icon = painterResource(R.drawable.ic_fluent_fingerprint),
         enabled = state.isPinChecked,
+        itemKey = SettingsSearchItemKeys.SECURITY_FINGERPRINT,
         dividerBottom = true,
       )
     }
@@ -66,6 +70,7 @@ internal fun SecuritySettingsScreen(
       subtitleOn = stringResource(R.string.shuffle_digits_during_pin_login),
       subtitleOff = stringResource(R.string.do_not_shuffle_digits_during_pin_login),
       enabled = state.isPinChecked,
+      itemKey = SettingsSearchItemKeys.SECURITY_SHUFFLE_DIGITS,
       dividerBottom = true,
     )
     SettingsSwitchItem(
@@ -76,6 +81,7 @@ internal fun SecuritySettingsScreen(
       subtitleOff = stringResource(R.string.hide_that_functionality),
       icon = painterResource(R.drawable.ic_fluent_phone),
       enabled = state.hasTelephony,
+      itemKey = SettingsSearchItemKeys.SECURITY_PHONE_SMS,
       dividerBottom = true,
     )
   }

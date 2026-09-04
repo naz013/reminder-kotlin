@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
+import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
@@ -57,12 +58,14 @@ internal fun LocationSettingsScreen(
       subtitleOn = stringResource(R.string.show_notification_about_left_distance),
       subtitleOff = stringResource(R.string.do_not_show_notification),
       icon = painterResource(R.drawable.ic_fluent_alert),
+      itemKey = SettingsSearchItemKeys.LOCATION_NOTIFICATION_TOGGLE,
       dividerBottom = true,
     )
     SettingsItem(
       title = stringResource(R.string.radius),
       subtitle = state.radiusText,
       icon = painterResource(R.drawable.ic_builder_map_radius),
+      itemKey = SettingsSearchItemKeys.LOCATION_RADIUS,
       dividerBottom = true,
       onClick = onRadiusClick,
     )
@@ -70,6 +73,7 @@ internal fun LocationSettingsScreen(
       title = stringResource(R.string.map_type),
       subtitle = state.mapTypeName,
       icon = painterResource(R.drawable.ic_fluent_map),
+      itemKey = SettingsSearchItemKeys.LOCATION_MAP_TYPE,
       dividerBottom = true,
       onClick = onMapTypeClick,
     )
@@ -97,6 +101,7 @@ internal fun LocationSettingsScreen(
       SettingsItem(
         title = stringResource(R.string.style_of_marker),
         icon = painterResource(R.drawable.ic_fluent_color),
+        itemKey = SettingsSearchItemKeys.LOCATION_MARKER_STYLE,
         dividerBottom = true,
         onClick = onMarkerStyleClick,
         trailing = {
@@ -111,6 +116,7 @@ internal fun LocationSettingsScreen(
     SettingsItem(
       title = stringResource(R.string.tracking_settings),
       icon = painterResource(R.drawable.ic_fluent_location_live),
+      itemKey = SettingsSearchItemKeys.LOCATION_TRACKING,
       dividerBottom = true,
       onClick = onTrackerClick,
     )

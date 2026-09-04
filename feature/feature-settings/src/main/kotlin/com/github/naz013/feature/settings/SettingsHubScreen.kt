@@ -25,8 +25,10 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.naz013.feature.settings.search.SettingsSearchResult
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 
 private val BannerHorizontalPadding = 16.dp
@@ -55,6 +57,8 @@ internal fun SettingsHubScreen(
   modifier: Modifier = Modifier,
   state: SettingsHubState,
   selectedCategory: SettingsCategory? = null,
+  onSearchQueryChange: (String) -> Unit,
+  onSearchResultClick: (SettingsSearchResult) -> Unit,
   onBuyProClick: () -> Unit,
   onUpdateClick: () -> Unit,
   onGeneralClick: () -> Unit,
@@ -75,6 +79,23 @@ internal fun SettingsHubScreen(
         .verticalScroll(rememberScrollState())
         .padding(vertical = 8.dp),
   ) {
+    SearchBar(
+      query = state.searchQuery,
+      onQueryChange = onSearchQueryChange,
+      placeholder = stringResource(R.string.settings_search_hint),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = BannerHorizontalPadding, vertical = BannerVerticalPadding),
+    )
+
+    if (state.searchQuery.isNotBlank()) {
+      SettingsSearchResults(
+        results = state.searchResults,
+        onResultClick = onSearchResultClick,
+      )
+      return@Column
+    }
+
     if (state.isBuyProBadgeVisible) {
       SettingsBanner(
         text = stringResource(R.string.pro_version),
@@ -256,5 +277,39 @@ private fun SettingsBanner(
     Card(onClick = onClick, colors = colors, modifier = cardModifier, content = { content() })
   } else {
     Card(colors = colors, modifier = cardModifier, content = { content() })
+  }
+}
+
+/** The Hub's search results list, shown in place of the category card while a search query is active. */
+@Composable
+private fun SettingsSearchResults(
+  results: List<SettingsSearchResult>,
+  onResultClick: (SettingsSearchResult) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  if (results.isEmpty()) {
+    Text(
+      text = stringResource(R.string.settings_search_no_results),
+      style = MaterialTheme.typography.titleSmall,
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
+      modifier = modifier.padding(horizontal = 32.dp, vertical = 24.dp),
+    )
+    return
+  }
+
+  Card(
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+    modifier =
+      modifier
+        .fillMaxWidth()
+        .padding(horizontal = BannerHorizontalPadding, vertical = BannerVerticalPadding),
+  ) {
+    results.forEachIndexed { index, result ->
+      SettingsItem(
+        title = result.title,
+        dividerBottom = index != results.lastIndex,
+        onClick = { onResultClick(result) },
+      )
+    }
   }
 }

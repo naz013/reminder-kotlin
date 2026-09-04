@@ -25,6 +25,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
+import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
 
 @Composable
@@ -52,6 +53,7 @@ internal fun GeneralSettingsScreen(
       title = stringResource(R.string.application_language),
       subtitle = state.languageName,
       icon = painterResource(R.drawable.ic_fluent_local_language),
+      itemKey = SettingsSearchItemKeys.GENERAL_LANGUAGE,
       dividerBottom = true,
       onClick = onLanguageClick,
     )
@@ -59,6 +61,7 @@ internal fun GeneralSettingsScreen(
       title = stringResource(R.string.dark_mode),
       subtitle = state.themeName,
       icon = painterResource(R.drawable.ic_fluent_dark_theme),
+      itemKey = SettingsSearchItemKeys.GENERAL_DARK_MODE,
       dividerBottom = true,
       onClick = onThemeClick,
     )
@@ -66,6 +69,7 @@ internal fun GeneralSettingsScreen(
       title = stringResource(R.string._24_hour_format),
       subtitle = state.timeFormatName,
       icon = painterResource(R.drawable.ic_builder_time),
+      itemKey = SettingsSearchItemKeys.GENERAL_TIME_FORMAT,
       dividerBottom = true,
       onClick = onTimeFormatClick,
     )
@@ -83,6 +87,7 @@ internal fun GeneralSettingsScreen(
       subtitleOn = stringResource(R.string.use_metric_system),
       subtitleOff = stringResource(R.string.use_imperial_system),
       icon = painterResource(R.drawable.ic_fluent_math_formula),
+      itemKey = SettingsSearchItemKeys.GENERAL_METRIC_UNITS,
       dividerBottom = true,
     )
     SettingsSwitchItem(
@@ -92,6 +97,7 @@ internal fun GeneralSettingsScreen(
       subtitleOn = stringResource(R.string.collecting_of_app_analytics_is_enabled),
       subtitleOff = stringResource(R.string.collecting_of_app_analytics_is_disabled),
       icon = painterResource(R.drawable.ic_fluent_data_area),
+      itemKey = SettingsSearchItemKeys.GENERAL_ANALYTICS,
       dividerBottom = true,
     )
     SettingsSwitchItem(
@@ -101,6 +107,7 @@ internal fun GeneralSettingsScreen(
       subtitleOn = stringResource(R.string.use_haptic_feedback_for_interactions),
       subtitleOff = stringResource(R.string.do_not_use_haptic_feedback_for_interactions),
       icon = painterResource(R.drawable.ic_fluent_phone_vibrate),
+      itemKey = SettingsSearchItemKeys.GENERAL_HAPTIC_FEEDBACK,
       dividerBottom = true,
     )
   }

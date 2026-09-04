@@ -38,6 +38,7 @@ import com.github.naz013.feature.settings.settingsNavigationIcon
 import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.insights.InsightsNavKey
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.compose.foundation.component.SettingsHighlightScope
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
@@ -116,62 +117,64 @@ fun RemindersCrossFeatureEntry(
     navigationIcon = settingsNavigationIcon(key.screenTitle, renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
-    RemindersSettingsScreen(
-      state = state,
-      onInsightsClick = {
-        if (state.isInsightsLocked) {
-          viewModel.onInsightsLockedClick()
-          backStack.add(SettingsNavKey.ProVersion)
-        } else {
-          backStack.add(InsightsNavKey.Dashboard)
-        }
-      },
-      onPresetsClick = viewModel::onPresetsClick,
-      onLocationClick = viewModel::onLocationClick,
-      onWorkflowRulesClick = viewModel::onWorkflowRulesClick,
-      onPriorityClick = viewModel::onPriorityClick,
-      onCompletedToggle = viewModel::onCompletedToggle,
-      onWearToggle = viewModel::onWearToggle,
-      onSnoozeClick = viewModel::onSnoozeClick,
-      onRepeatToggle = viewModel::onRepeatToggle,
-      onRepeatIntervalClick = viewModel::onRepeatIntervalClick,
-      onMaxRepeatCountClick = viewModel::onMaxRepeatCountClick,
-      onEscalateAfterRepeatsClick = viewModel::onEscalateAfterRepeatsClick,
-      onExactAlarmWarningClick = viewModel::onExactAlarmWarningClick,
-      onLedToggle = viewModel::onLedToggle,
-      onLedColorClick = viewModel::onLedColorClick,
-      onPermanentNotificationClick = {
-        val turningOn = !viewModel.state.value.isPermanentNotificationChecked
-        if (turningOn && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-          permissionRequester.request(
-            Permissions.POST_NOTIFICATION,
-            onGranted = { viewModel.onPermanentNotificationToggle() },
-          )
-        } else {
-          viewModel.onPermanentNotificationToggle()
-        }
-      },
-      onStatusIconToggle = viewModel::onStatusIconToggle,
-      onDoNotDisturbToggle = viewModel::onDoNotDisturbToggle,
-      onDndFromClick = viewModel::onDndFromClick,
-      onDndToClick = viewModel::onDndToClick,
-      onDndActionClick = viewModel::onDndActionClick,
-      onDndIgnoreClick = viewModel::onDndIgnoreClick,
-      onDefaultVibrateToggle = viewModel::onDefaultVibrateToggle,
-      onDefaultBypassDoNotDisturbToggle = viewModel::onDefaultBypassDoNotDisturbToggle,
-      onDefaultWakeScreenToggle = viewModel::onDefaultWakeScreenToggle,
-      onDefaultSwipeToDismissToggle = viewModel::onDefaultSwipeToDismissToggle,
-      onInAppAlertBannerToggle = viewModel::onInAppAlertBannerToggle,
-      onDefaultCategoryClick = viewModel::onDefaultCategoryClick,
-      onDefaultLockScreenVisibilityClick = viewModel::onDefaultLockScreenVisibilityClick,
-      onDefaultVibrationPatternClick = viewModel::onDefaultVibrationPatternClick,
-      onNotificationHelpClick = { backStack.add(SettingsNavKey.NotificationCustomizationHelp) },
-      onChoiceOptionSelected = viewModel::onChoiceOptionSelected,
-      onSeekValueChange = viewModel::onSeekValueChange,
-      onSeekConfirm = viewModel::onSeekConfirm,
-      onDialogDismiss = viewModel::onDialogDismiss,
-      modifier = Modifier.padding(padding),
-    )
+    SettingsHighlightScope {
+      RemindersSettingsScreen(
+        state = state,
+        onInsightsClick = {
+          if (state.isInsightsLocked) {
+            viewModel.onInsightsLockedClick()
+            backStack.add(SettingsNavKey.ProVersion)
+          } else {
+            backStack.add(InsightsNavKey.Dashboard)
+          }
+        },
+        onPresetsClick = viewModel::onPresetsClick,
+        onLocationClick = viewModel::onLocationClick,
+        onWorkflowRulesClick = viewModel::onWorkflowRulesClick,
+        onPriorityClick = viewModel::onPriorityClick,
+        onCompletedToggle = viewModel::onCompletedToggle,
+        onWearToggle = viewModel::onWearToggle,
+        onSnoozeClick = viewModel::onSnoozeClick,
+        onRepeatToggle = viewModel::onRepeatToggle,
+        onRepeatIntervalClick = viewModel::onRepeatIntervalClick,
+        onMaxRepeatCountClick = viewModel::onMaxRepeatCountClick,
+        onEscalateAfterRepeatsClick = viewModel::onEscalateAfterRepeatsClick,
+        onExactAlarmWarningClick = viewModel::onExactAlarmWarningClick,
+        onLedToggle = viewModel::onLedToggle,
+        onLedColorClick = viewModel::onLedColorClick,
+        onPermanentNotificationClick = {
+          val turningOn = !viewModel.state.value.isPermanentNotificationChecked
+          if (turningOn && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionRequester.request(
+              Permissions.POST_NOTIFICATION,
+              onGranted = { viewModel.onPermanentNotificationToggle() },
+            )
+          } else {
+            viewModel.onPermanentNotificationToggle()
+          }
+        },
+        onStatusIconToggle = viewModel::onStatusIconToggle,
+        onDoNotDisturbToggle = viewModel::onDoNotDisturbToggle,
+        onDndFromClick = viewModel::onDndFromClick,
+        onDndToClick = viewModel::onDndToClick,
+        onDndActionClick = viewModel::onDndActionClick,
+        onDndIgnoreClick = viewModel::onDndIgnoreClick,
+        onDefaultVibrateToggle = viewModel::onDefaultVibrateToggle,
+        onDefaultBypassDoNotDisturbToggle = viewModel::onDefaultBypassDoNotDisturbToggle,
+        onDefaultWakeScreenToggle = viewModel::onDefaultWakeScreenToggle,
+        onDefaultSwipeToDismissToggle = viewModel::onDefaultSwipeToDismissToggle,
+        onInAppAlertBannerToggle = viewModel::onInAppAlertBannerToggle,
+        onDefaultCategoryClick = viewModel::onDefaultCategoryClick,
+        onDefaultLockScreenVisibilityClick = viewModel::onDefaultLockScreenVisibilityClick,
+        onDefaultVibrationPatternClick = viewModel::onDefaultVibrationPatternClick,
+        onNotificationHelpClick = { backStack.add(SettingsNavKey.NotificationCustomizationHelp) },
+        onChoiceOptionSelected = viewModel::onChoiceOptionSelected,
+        onSeekValueChange = viewModel::onSeekValueChange,
+        onSeekConfirm = viewModel::onSeekConfirm,
+        onDialogDismiss = viewModel::onDialogDismiss,
+        modifier = Modifier.padding(padding),
+      )
+    }
   }
 }
 
@@ -209,31 +212,33 @@ fun BirthdayCrossFeatureEntry(
     navigationIcon = settingsNavigationIcon(key.screenTitle, renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
-    BirthdaySettingsScreen(
-      state = state,
-      onReminderToggle = viewModel::onReminderToggle,
-      onDaysToBirthdayClick = viewModel::onDaysToBirthdayClick,
-      onDaysToBirthdayPreviewChange = viewModel::onDaysToBirthdayPreviewChange,
-      onDaysToBirthdayConfirm = viewModel::onDaysToBirthdayConfirm,
-      onPriorityClick = viewModel::onPriorityClick,
-      onPriorityOptionSelected = viewModel::onPriorityOptionSelected,
-      onReminderTimeClick = viewModel::onReminderTimeClick,
-      onWidgetToggle = viewModel::onWidgetToggle,
-      onHomeDaysClick = viewModel::onHomeDaysClick,
-      onHomeDaysPreviewChange = viewModel::onHomeDaysPreviewChange,
-      onHomeDaysConfirm = viewModel::onHomeDaysConfirm,
-      onPermanentToggle = viewModel::onPermanentToggle,
-      onGlobalToggle = viewModel::onGlobalToggle,
-      onLedToggle = viewModel::onLedToggle,
-      onLedColorClick = viewModel::onLedColorClick,
-      onLedColorOptionSelected = viewModel::onLedColorOptionSelected,
-      onUseContactsToggle = {
-        permissionRequester.request(Permissions.READ_CONTACTS, onGranted = { viewModel.onUseContactsToggle() })
-      },
-      onAutoScanToggle = viewModel::onAutoScanToggle,
-      onDialogDismiss = viewModel::onDialogDismiss,
-      modifier = Modifier.padding(padding),
-    )
+    SettingsHighlightScope {
+      BirthdaySettingsScreen(
+        state = state,
+        onReminderToggle = viewModel::onReminderToggle,
+        onDaysToBirthdayClick = viewModel::onDaysToBirthdayClick,
+        onDaysToBirthdayPreviewChange = viewModel::onDaysToBirthdayPreviewChange,
+        onDaysToBirthdayConfirm = viewModel::onDaysToBirthdayConfirm,
+        onPriorityClick = viewModel::onPriorityClick,
+        onPriorityOptionSelected = viewModel::onPriorityOptionSelected,
+        onReminderTimeClick = viewModel::onReminderTimeClick,
+        onWidgetToggle = viewModel::onWidgetToggle,
+        onHomeDaysClick = viewModel::onHomeDaysClick,
+        onHomeDaysPreviewChange = viewModel::onHomeDaysPreviewChange,
+        onHomeDaysConfirm = viewModel::onHomeDaysConfirm,
+        onPermanentToggle = viewModel::onPermanentToggle,
+        onGlobalToggle = viewModel::onGlobalToggle,
+        onLedToggle = viewModel::onLedToggle,
+        onLedColorClick = viewModel::onLedColorClick,
+        onLedColorOptionSelected = viewModel::onLedColorOptionSelected,
+        onUseContactsToggle = {
+          permissionRequester.request(Permissions.READ_CONTACTS, onGranted = { viewModel.onUseContactsToggle() })
+        },
+        onAutoScanToggle = viewModel::onAutoScanToggle,
+        onDialogDismiss = viewModel::onDialogDismiss,
+        modifier = Modifier.padding(padding),
+      )
+    }
   }
 }
 
