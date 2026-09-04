@@ -7,6 +7,7 @@ import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.domain.history.EventHistoricalRecordType
 import com.github.naz013.domain.occurance.OccurrenceType
 import com.github.naz013.repository.BirthdayRepository
+import com.github.naz013.repository.GoogleCalendarEventRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import org.threeten.bp.LocalDate
@@ -25,6 +26,7 @@ internal class GetRangeEventItemsUseCase(
   private val birthdayRepository: BirthdayRepository,
   private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
+  private val googleCalendarEventRepository: GoogleCalendarEventRepository,
   private val agendaItemFactory: CalendarAgendaItemFactory,
 ) {
   suspend operator fun invoke(
@@ -34,6 +36,7 @@ internal class GetRangeEventItemsUseCase(
     val birthdays = birthdayRepository.getAll().associateBy { it.uuId }
     val reminders = reminderV2Repository.getAll(active = true, removed = false).associateBy { it.uuId }
     val groupsById = groupV2Repository.getAll().associateBy { it.uuId }
+    val calendarEvents = googleCalendarEventRepository.getVisible().associateBy { it.uuId }
 
     val occurrences =
       getOccurrencesByDateRangeUseCase(startDate, endDate).mapNotNull {
@@ -41,7 +44,8 @@ internal class GetRangeEventItemsUseCase(
         when (it.type) {
           OccurrenceType.Birthday -> birthdays[it.eventId]?.let { birthday -> agendaItemFactory.toUiAgendaBirthday(birthday, dateTime) }
           OccurrenceType.Reminder -> reminders[it.eventId]?.let { reminder -> agendaItemFactory.toUiAgendaReminder(reminder, dateTime, groupsById) }
-          else -> null
+          OccurrenceType.CalendarEvent ->
+            calendarEvents[it.eventId]?.let { event -> agendaItemFactory.toUiAgendaGoogleCalendarEvent(event, dateTime) }
         }
       }
 

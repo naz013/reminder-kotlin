@@ -33,6 +33,7 @@ import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.agenda.AgendaCategory
 import com.github.naz013.ui.agenda.AgendaMenuAction
 import com.github.naz013.ui.agenda.UiAgendaBirthday
+import com.github.naz013.ui.agenda.UiAgendaGoogleCalendarEvent
 import com.github.naz013.ui.agenda.UiAgendaHeader
 import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.ui.agenda.UiAgendaItemAdapter
@@ -279,6 +280,7 @@ internal class AgendaViewModel(
       is UiAgendaReminder -> navigationEvent.value = Event(NavigationEvent.OpenReminderPreview(item.id))
       is UiAgendaBirthday -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayPreview(item.id))
       is UiAgendaHeader -> Unit
+      is UiAgendaGoogleCalendarEvent -> Unit
     }
   }
 
@@ -305,6 +307,7 @@ internal class AgendaViewModel(
       is UiAgendaReminder -> onReminderMenuAction(item, action)
       is UiAgendaBirthday -> onBirthdayMenuAction(item, action)
       is UiAgendaHeader -> Unit
+      is UiAgendaGoogleCalendarEvent -> Unit
     }
   }
 

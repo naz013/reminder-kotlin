@@ -1295,4 +1295,12 @@
     <string name="do_not_remember_last_text_color">अंतिम उपयोग किया गया टेक्स्ट रंग याद न रखें</string>
     <string name="builder_quick_start_arriving_place">किसी स्थान पर पहुंचना</string>
     <string name="builder_quick_start_arriving_place_delayed">किसी स्थान पर पहुंचना (विलंबित प्रारंभ)</string>
+    <string name="google_calendar_events_color">कैलेंडर इवेंट का रंग</string>
+    <string name="google_calendar_event">कैलेंडर इवेंट</string>
+    <string name="delete_calendar_event_title">कैलेंडर इवेंट हटाएं</string>
+    <string name="delete_calendar_event_message">इस इवेंट को केवल ऐप से हटाएं, या डिवाइस कैलेंडर से भी हटाएं?</string>
+    <string name="delete_from_app_only">केवल ऐप से हटाएं</string>
+    <string name="delete_from_app_and_calendar">ऐप और कैलेंडर दोनों से हटाएं</string>
+    <string name="all_day">पूरा दिन</string>
+    <string name="channel_for_calendar_event_notifications">Google कैलेंडर इवेंट सूचनाओं के लिए चैनल</string>
 </resources>

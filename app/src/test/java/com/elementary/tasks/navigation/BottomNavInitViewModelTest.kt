@@ -68,6 +68,7 @@ class BottomNavInitViewModelTest : BaseTest() {
     every { featureFlags.isEnabled(FeatureFlag.WORKFLOW_ENABLED) } returns false
     every { prefs.workflowRulesScheduled } returns false
     every { prefs.workflowUnacknowledgedRulesScheduled } returns false
+    every { prefs.googleCalendarScanFallbackScheduled } returns true
     every { googleTasksAuthManager.isAuthorized() } returns true
     every { packageManagerWrapper.getVersionName() } returns "1.0.0"
 
@@ -230,6 +231,25 @@ class BottomNavInitViewModelTest : BaseTest() {
     assertTrue(noteMigrationDone)
     assertTrue(demoDataInserted)
     assertTrue(savedVersions.contains("1.0.0"))
+  }
+
+  @Test
+  fun `schedules the Google Calendar scan fallback check on first run`() {
+    every { prefs.googleCalendarScanFallbackScheduled } returns false
+
+    createViewModel()
+
+    verify(exactly = 1) { jobScheduler.scheduleGoogleCalendarScanFallbackCheck() }
+    verify(exactly = 1) { prefs.googleCalendarScanFallbackScheduled = true }
+  }
+
+  @Test
+  fun `does not reschedule the Google Calendar scan fallback check once already scheduled`() {
+    every { prefs.googleCalendarScanFallbackScheduled } returns true
+
+    createViewModel()
+
+    verify(exactly = 0) { jobScheduler.scheduleGoogleCalendarScanFallbackCheck() }
   }
 
   @Test

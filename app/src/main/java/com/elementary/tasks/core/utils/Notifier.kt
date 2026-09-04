@@ -64,7 +64,19 @@ class Notifier(
       createNotificationChannel(createSystemChannel())
       createNotificationChannel(createSilentChannel())
       createNotificationChannel(createNoteChannel())
+      createNotificationChannel(createCalendarEventChannel())
     }
+  }
+
+  private fun createCalendarEventChannel(): NotificationChannel {
+    val name = context.getString(R.string.google_calendar_event)
+    val descr = context.getString(R.string.channel_for_calendar_event_notifications)
+    val importance = NotificationManager.IMPORTANCE_DEFAULT
+    val channel = NotificationChannel(CHANNEL_CALENDAR_EVENT, name, importance)
+    channel.description = descr
+    channel.setAllowBubbles(false)
+    channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+    return channel
   }
 
   private fun createSystemChannel(): NotificationChannel {
@@ -425,5 +437,6 @@ class Notifier(
     const val CHANNEL_NOTES = "reminder.channel.notes"
     const val CHANNEL_SILENT = "reminder.channel.silent"
     const val CHANNEL_SYSTEM = "reminder.channel.system"
+    const val CHANNEL_CALENDAR_EVENT = "reminder.channel.calendar_event"
   }
 }

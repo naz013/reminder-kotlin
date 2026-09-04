@@ -1293,4 +1293,12 @@
     <string name="do_not_remember_last_text_color">最後に使用したテキストの色を記憶しない</string>
     <string name="builder_quick_start_arriving_place">場所に到着</string>
     <string name="builder_quick_start_arriving_place_delayed">場所に到着(遅延開始)</string>
+    <string name="google_calendar_events_color">カレンダーの予定の色</string>
+    <string name="google_calendar_event">カレンダーの予定</string>
+    <string name="delete_calendar_event_title">カレンダーの予定を削除</string>
+    <string name="delete_calendar_event_message">この予定をアプリからのみ削除しますか、それとも端末のカレンダーからも削除しますか?</string>
+    <string name="delete_from_app_only">アプリからのみ削除</string>
+    <string name="delete_from_app_and_calendar">アプリとカレンダーの両方から削除</string>
+    <string name="all_day">終日</string>
+    <string name="channel_for_calendar_event_notifications">Google カレンダーの予定通知用チャンネル</string>
 </resources>

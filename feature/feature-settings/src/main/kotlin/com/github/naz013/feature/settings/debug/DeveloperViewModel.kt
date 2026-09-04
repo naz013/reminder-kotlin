@@ -27,6 +27,7 @@ import com.github.naz013.logic.demodata.InsertDemoDataUseCase
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.CalendarEventRepository
+import com.github.naz013.repository.GoogleCalendarEventRepository
 import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.EventOccurrenceRepository
 import com.github.naz013.repository.GoogleTaskListRepository
@@ -89,6 +90,7 @@ internal class DeveloperViewModel(
   private val routineRepository: RoutineRepository,
   private val routineExecutionRepository: RoutineExecutionRepository,
   private val insertDemoDataUseCase: InsertDemoDataUseCase,
+  private val googleCalendarEventRepository: GoogleCalendarEventRepository,
 ) : ViewModel() {
   val state: StateFlow<DeveloperState> field = MutableStateFlow(DeveloperState())
   val navigationEvent: LiveData<Event<DeveloperEvent>> field = mutableLiveEventOf()
@@ -327,6 +329,7 @@ internal class DeveloperViewModel(
       Table.Holiday -> holidayRepository.deleteAll()
       Table.Routine -> routineRepository.deleteAll()
       Table.RoutineExecution -> routineExecutionRepository.deleteAll()
+      Table.GoogleCalendarEvent -> googleCalendarEventRepository.deleteAll()
     }
   }
 

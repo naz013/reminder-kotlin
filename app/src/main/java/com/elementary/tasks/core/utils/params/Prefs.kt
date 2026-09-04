@@ -75,6 +75,22 @@ class Prefs(
     get() = getLong(PrefsConstants.GOOGLE_CALENDAR_ID, def = -1L)
     set(value) = putLong(PrefsConstants.GOOGLE_CALENDAR_ID, value)
 
+  // Stored as an ordered comma-joined string, not getStringSet/putStringSet, which round-trip
+  // through SharedPreferences.putStringSet and silently lose ordering - same reasoning as
+  // headerNavigationOrder above. Falls back to the legacy single-calendar id (googleCalendarReminderId)
+  // the first time this is read on an upgrade, so existing users keep their selection.
+  var selectedGoogleCalendarIds: Set<Long>
+    get() =
+      if (!sharedPrefs().contains(PrefsConstants.GOOGLE_CALENDAR_IDS)) {
+        googleCalendarReminderId.takeIf { it > 0 }?.let { setOf(it) } ?: emptySet()
+      } else {
+        getString(PrefsConstants.GOOGLE_CALENDAR_IDS, "")
+          .split(",")
+          .mapNotNull { it.trim().toLongOrNull() }
+          .toSet()
+      }
+    set(value) = putString(PrefsConstants.GOOGLE_CALENDAR_IDS, value.joinToString(","))
+
   var publicHolidaysEnabled: Boolean
     get() = getBoolean(PrefsConstants.PUBLIC_HOLIDAYS_ENABLED, def = false)
     set(value) = putBoolean(PrefsConstants.PUBLIC_HOLIDAYS_ENABLED, value)
@@ -253,6 +269,10 @@ class Prefs(
   var birthdayColor: Int
     get() = getInt(PrefsConstants.BIRTH_COLOR, 2)
     set(value) = putInt(PrefsConstants.BIRTH_COLOR, value)
+
+  var calendarEventColor: Int
+    get() = getInt(PrefsConstants.GOOGLE_CALENDAR_EVENT_COLOR, 6)
+    set(value) = putInt(PrefsConstants.GOOGLE_CALENDAR_EVENT_COLOR, value)
 
   val is24HourFormat: Boolean
     get() {
@@ -571,4 +591,8 @@ class Prefs(
   var routineRecurrenceResetScheduled: Boolean
     get() = getBoolean(PrefsConstants.ROUTINE_RECURRENCE_RESET_SCHEDULED, false)
     set(value) = putBoolean(PrefsConstants.ROUTINE_RECURRENCE_RESET_SCHEDULED, value)
+
+  var googleCalendarScanFallbackScheduled: Boolean
+    get() = getBoolean(PrefsConstants.GOOGLE_CALENDAR_SCAN_FALLBACK_SCHEDULED, false)
+    set(value) = putBoolean(PrefsConstants.GOOGLE_CALENDAR_SCAN_FALLBACK_SCHEDULED, value)
 }

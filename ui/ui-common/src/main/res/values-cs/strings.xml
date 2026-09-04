@@ -1293,4 +1293,12 @@
     <string name="do_not_remember_last_text_color">Nepamatovat si naposledy použitou barvu textu</string>
     <string name="builder_quick_start_arriving_place">Příjezd na místo</string>
     <string name="builder_quick_start_arriving_place_delayed">Příjezd na místo (opožděný start)</string>
+    <string name="google_calendar_events_color">Barva událostí kalendáře</string>
+    <string name="google_calendar_event">Událost kalendáře</string>
+    <string name="delete_calendar_event_title">Odstranit událost kalendáře</string>
+    <string name="delete_calendar_event_message">Odebrat tuto událost pouze z aplikace, nebo ji smazat i z kalendáře zařízení?</string>
+    <string name="delete_from_app_only">Odstranit pouze z aplikace</string>
+    <string name="delete_from_app_and_calendar">Odstranit z aplikace i kalendáře</string>
+    <string name="all_day">Celý den</string>
+    <string name="channel_for_calendar_event_notifications">Kanál pro oznámení událostí Google Kalendáře</string>
 </resources>

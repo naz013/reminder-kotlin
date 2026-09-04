@@ -1292,4 +1292,12 @@
     <string name="do_not_remember_last_text_color">Не запоминать последний цвет текста</string>
     <string name="builder_quick_start_arriving_place">Прибытие на место</string>
     <string name="builder_quick_start_arriving_place_delayed">Прибытие на место (отложенный старт)</string>
+    <string name="google_calendar_events_color">Цвет событий календаря</string>
+    <string name="google_calendar_event">Событие календаря</string>
+    <string name="delete_calendar_event_title">Удалить событие календаря</string>
+    <string name="delete_calendar_event_message">Удалить это событие только из приложения или также удалить его из календаря устройства?</string>
+    <string name="delete_from_app_only">Удалить только из приложения</string>
+    <string name="delete_from_app_and_calendar">Удалить из приложения и календаря</string>
+    <string name="all_day">Весь день</string>
+    <string name="channel_for_calendar_event_notifications">Канал для уведомлений о событиях Google Календаря</string>
 </resources>

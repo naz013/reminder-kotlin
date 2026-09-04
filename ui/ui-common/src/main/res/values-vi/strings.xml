@@ -1291,4 +1291,12 @@
     <string name="do_not_remember_last_text_color">Không nhớ màu chữ đã dùng gần nhất</string>
     <string name="builder_quick_start_arriving_place">Đến một địa điểm</string>
     <string name="builder_quick_start_arriving_place_delayed">Đến một địa điểm (bắt đầu trễ)</string>
+    <string name="google_calendar_events_color">Màu sự kiện lịch</string>
+    <string name="google_calendar_event">Sự kiện lịch</string>
+    <string name="delete_calendar_event_title">Xóa sự kiện lịch</string>
+    <string name="delete_calendar_event_message">Chỉ xóa sự kiện này khỏi ứng dụng, hay cũng xóa khỏi lịch trên thiết bị?</string>
+    <string name="delete_from_app_only">Chỉ xóa khỏi ứng dụng</string>
+    <string name="delete_from_app_and_calendar">Xóa khỏi ứng dụng và lịch</string>
+    <string name="all_day">Cả ngày</string>
+    <string name="channel_for_calendar_event_notifications">Kênh thông báo sự kiện Google Lịch</string>
 </resources>

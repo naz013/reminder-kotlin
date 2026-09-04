@@ -7,7 +7,8 @@ internal data class CalendarSettingsState(
   val todayColor: Color = Color.Unspecified,
   val reminderColor: Color = Color.Unspecified,
   val birthdayColor: Color = Color.Unspecified,
-  val selectedCalendarName: String = "",
+  val calendarEventColor: Color = Color.Unspecified,
+  val selectedCalendarsLabel: String = "",
   val isCalendarSelected: Boolean = false,
   val isExportChecked: Boolean = false,
   val isScanChecked: Boolean = false,
@@ -32,11 +33,11 @@ internal sealed class CalendarSettingsDialog {
 
   data class SelectGoogleCalendar(
     val calendars: List<GoogleCalendar>,
-    val selectedPosition: Int,
+    val selectedPositions: Set<Int>,
   ) : CalendarSettingsDialog()
 }
 
-internal enum class ColorPickerTarget { TODAY, REMINDER, BIRTHDAY }
+internal enum class ColorPickerTarget { TODAY, REMINDER, BIRTHDAY, CALENDAR_EVENT }
 
 internal data class GoogleCalendar(
   val id: Long,

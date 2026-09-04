@@ -1,5 +1,6 @@
 package com.github.naz013.scheduler
 
+import com.github.naz013.domain.GoogleCalendarEvent
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.reminder.v2.ReminderV2
 
@@ -14,6 +15,8 @@ interface JobSchedulerApi {
   fun scheduleWorkflowUnacknowledgedCheck()
 
   fun scheduleRoutineRecurrenceResetCheck()
+
+  fun scheduleGoogleCalendarScanFallbackCheck()
 
   fun scheduleBirthdayPermanent()
 
@@ -57,4 +60,8 @@ interface JobSchedulerApi {
     googleTask: GoogleTask,
     uuId: String,
   )
+
+  fun scheduleGoogleCalendarEvent(event: GoogleCalendarEvent)
+
+  fun cancelGoogleCalendarEvent(requestCode: Int)
 }

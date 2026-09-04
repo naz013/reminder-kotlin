@@ -1291,4 +1291,12 @@
     <string name="do_not_remember_last_text_color">Ikke husk sist brukte tekstfarge</string>
     <string name="builder_quick_start_arriving_place">Ankomme til et sted</string>
     <string name="builder_quick_start_arriving_place_delayed">Ankomme til et sted (forsinket start)</string>
+    <string name="google_calendar_events_color">Farge for kalenderhendelser</string>
+    <string name="google_calendar_event">Kalenderhendelse</string>
+    <string name="delete_calendar_event_title">Slett kalenderhendelse</string>
+    <string name="delete_calendar_event_message">Fjern denne hendelsen bare fra appen, eller slett den også fra enhetskalenderen?</string>
+    <string name="delete_from_app_only">Slett bare fra appen</string>
+    <string name="delete_from_app_and_calendar">Slett fra app og kalender</string>
+    <string name="all_day">Hele dagen</string>
+    <string name="channel_for_calendar_event_notifications">Kanal for varsler om Google Kalender-hendelser</string>
 </resources>

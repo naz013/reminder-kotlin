@@ -36,7 +36,8 @@ class CalendarSettingsViewModelTest : BaseTest() {
     every { prefs.todayColor } returns 1
     every { prefs.reminderColor } returns 2
     every { prefs.birthdayColor } returns 3
-    every { prefs.googleCalendarReminderId } returns -1L
+    every { prefs.calendarEventColor } returns 4
+    every { prefs.selectedGoogleCalendarIds } returns emptySet()
     every { prefs.addRemindersToGoogleCalendar } returns false
     every { prefs.scanGoogleCalendarEvents } returns false
     every { prefs.hapticsEnabled } returns true
@@ -64,14 +65,14 @@ class CalendarSettingsViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `init leaves no calendar selected when none is found for the stored id`() {
-    assertEquals("", viewModel.state.value.selectedCalendarName)
+  fun `init leaves no calendar selected when none are stored`() {
+    assertEquals("", viewModel.state.value.selectedCalendarsLabel)
     assertEquals(false, viewModel.state.value.isCalendarSelected)
   }
 
   @Test
-  fun `init selects the calendar found for the stored id`() {
-    every { prefs.googleCalendarReminderId } returns 7L
+  fun `init selects the calendars found for the stored ids`() {
+    every { prefs.selectedGoogleCalendarIds } returns setOf(7L)
     every { calendarUtils.getCalendarById(7L) } returns CalendarItem("Work", 7L)
 
     val vm = CalendarSettingsViewModel(
@@ -84,7 +85,7 @@ class CalendarSettingsViewModelTest : BaseTest() {
       holidaySyncScheduler = holidaySyncScheduler,
     )
 
-    assertEquals("Work", vm.state.value.selectedCalendarName)
+    assertEquals("Work", vm.state.value.selectedCalendarsLabel)
     assertEquals(true, vm.state.value.isCalendarSelected)
   }
 
@@ -143,6 +144,15 @@ class CalendarSettingsViewModelTest : BaseTest() {
   }
 
   @Test
+  fun `onCalendarEventColorClick opens a color picker for the calendar event target`() {
+    viewModel.onCalendarEventColorClick()
+
+    val dialog = viewModel.state.value.dialog as? CalendarSettingsDialog.ColorPicker
+    assertEquals(ColorPickerTarget.CALENDAR_EVENT, dialog?.target)
+    assertEquals(4, dialog?.selectedIndex)
+  }
+
+  @Test
   fun `onColorOptionSelected persists the today color and dismisses the dialog`() {
     viewModel.onTodayColorClick()
 
@@ -168,6 +178,15 @@ class CalendarSettingsViewModelTest : BaseTest() {
     viewModel.onColorOptionSelected(7)
 
     verify { prefs.birthdayColor = 7 }
+  }
+
+  @Test
+  fun `onColorOptionSelected persists the calendar event color`() {
+    viewModel.onCalendarEventColorClick()
+
+    viewModel.onColorOptionSelected(8)
+
+    verify { prefs.calendarEventColor = 8 }
   }
 
   @Test
@@ -201,8 +220,8 @@ class CalendarSettingsViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onCalendarReset clears the selected calendar`() {
-    every { prefs.googleCalendarReminderId } returns 7L
+  fun `onCalendarReset clears the selected calendars`() {
+    every { prefs.selectedGoogleCalendarIds } returns setOf(7L)
     every { calendarUtils.getCalendarById(7L) } returns CalendarItem("Work", 7L)
     val vm = CalendarSettingsViewModel(
       dispatcherProvider = mockDispatcherProvider(),
@@ -216,13 +235,13 @@ class CalendarSettingsViewModelTest : BaseTest() {
 
     vm.onCalendarReset()
 
-    verify { prefs.googleCalendarReminderId = -1L }
-    assertEquals("", vm.state.value.selectedCalendarName)
+    verify { prefs.selectedGoogleCalendarIds = emptySet() }
+    assertEquals("", vm.state.value.selectedCalendarsLabel)
     assertEquals(false, vm.state.value.isCalendarSelected)
   }
 
   @Test
-  fun `onGoogleCalendarOptionSelected persists the chosen calendar and dismisses the dialog`() {
+  fun `onGoogleCalendarSelectionConfirmed persists the toggled calendars and dismisses the dialog`() {
     every { calendarUtils.getCalendarsList() } returns
       listOf(
         CalendarItem("Home", 1L),
@@ -230,23 +249,25 @@ class CalendarSettingsViewModelTest : BaseTest() {
       )
     viewModel.onSelectGoogleCalendarClicked()
 
-    viewModel.onGoogleCalendarOptionSelected(1)
+    viewModel.onGoogleCalendarOptionToggled(1)
+    viewModel.onGoogleCalendarSelectionConfirmed()
 
-    verify { prefs.googleCalendarReminderId = 2L }
-    assertEquals("Work", viewModel.state.value.selectedCalendarName)
+    verify { prefs.selectedGoogleCalendarIds = setOf(2L) }
+    assertEquals("Work", viewModel.state.value.selectedCalendarsLabel)
     assertEquals(true, viewModel.state.value.isCalendarSelected)
     assertNull(viewModel.state.value.dialog)
   }
 
   @Test
-  fun `onGoogleCalendarOptionSelected is a no-op for an out-of-range position`() {
+  fun `onGoogleCalendarOptionToggled ignores an out-of-range position`() {
     every { calendarUtils.getCalendarsList() } returns
       listOf(CalendarItem("Home", 1L))
     viewModel.onSelectGoogleCalendarClicked()
 
-    viewModel.onGoogleCalendarOptionSelected(9)
+    viewModel.onGoogleCalendarOptionToggled(9)
+    viewModel.onGoogleCalendarSelectionConfirmed()
 
-    verify(exactly = 0) { prefs.googleCalendarReminderId = any() }
+    verify { prefs.selectedGoogleCalendarIds = emptySet() }
   }
 
   @Test

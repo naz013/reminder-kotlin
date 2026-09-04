@@ -23,4 +23,8 @@ object Actions {
     const val ACTION_SMS = "com.elementary.tasks.pro.birthday.SMS"
     const val ACTION_HIDE_SIMPLE = "com.elementary.tasks.pro.birthday.SIMPLE_HIDE"
   }
+
+  object GoogleCalendarEvent {
+    const val ACTION_HIDE_SIMPLE = "com.elementary.tasks.pro.calendarevent.SIMPLE_HIDE"
+  }
 }

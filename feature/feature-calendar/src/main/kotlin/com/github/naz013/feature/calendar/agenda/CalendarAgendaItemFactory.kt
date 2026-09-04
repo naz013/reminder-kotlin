@@ -2,11 +2,13 @@ package com.github.naz013.feature.calendar.agenda
 
 import com.github.naz013.ui.agenda.AgendaCategory
 import com.github.naz013.ui.agenda.UiAgendaBirthday
+import com.github.naz013.ui.agenda.UiAgendaGoogleCalendarEvent
 import com.github.naz013.ui.agenda.UiAgendaReminder
 import com.github.naz013.ui.birthday.UiBirthdayListAdapter
 import com.github.naz013.ui.reminder.UiReminderListAdapter
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.GoogleCalendarEvent
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -58,4 +60,16 @@ internal class CalendarAgendaItemFactory(
       dateFormatted = uiBirthdayList.nextBirthdayDateFormatted,
     )
   }
+
+  fun toUiAgendaGoogleCalendarEvent(
+    event: GoogleCalendarEvent,
+    dateTime: LocalDateTime,
+  ): UiAgendaGoogleCalendarEvent =
+    UiAgendaGoogleCalendarEvent(
+      id = event.uuId,
+      dateTime = dateTime,
+      title = event.title,
+      calendarName = event.calendarName,
+      allDay = event.allDay,
+    )
 }

@@ -18,6 +18,7 @@ import com.elementary.tasks.AdsProvider
 import com.elementary.tasks.R
 import com.github.naz013.feature.birthday.BirthdaysNavKey
 import com.github.naz013.feature.calendar.monthview.CalendarNavKey
+import com.github.naz013.feature.calendar.preview.GoogleCalendarEventPreviewNavKey
 import com.elementary.tasks.core.os.ContextSwitcher
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
 import com.github.naz013.group.GroupsNavKey
@@ -32,6 +33,7 @@ import com.elementary.tasks.splash.ShortcutDestination
 import com.github.naz013.feature.common.android.readParcelable
 import com.github.naz013.logging.Logger
 import com.github.naz013.navigation.DayViewScreen
+import com.github.naz013.navigation.ViewGoogleCalendarEventScreen
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.EditBirthdayScreen
 import com.github.naz013.navigation.EditGoogleTaskScreen
@@ -263,6 +265,11 @@ class BottomNavActivity : BaseAuthActivity() {
 
         is DayViewScreen ->
           return listOf(CalendarNavKey.DayAt(deepLinkDestination.dateMillis))
+
+        is ViewGoogleCalendarEventScreen -> {
+          val id = deepLinkDestination.id
+          return if (id != null) listOf(GoogleCalendarEventPreviewNavKey.Preview(id)) else emptyList()
+        }
 
         is SettingsScreen -> return listOf(SettingsNavKey.Hub)
 

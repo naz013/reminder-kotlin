@@ -22,9 +22,13 @@ class CalendarSettingsPreferencesImpl(
     get() = prefs.birthdayColor
     set(value) { prefs.birthdayColor = value }
 
-  override var googleCalendarReminderId: Long
-    get() = prefs.googleCalendarReminderId
-    set(value) { prefs.googleCalendarReminderId = value }
+  override var calendarEventColor: Int
+    get() = prefs.calendarEventColor
+    set(value) { prefs.calendarEventColor = value }
+
+  override var selectedGoogleCalendarIds: Set<Long>
+    get() = prefs.selectedGoogleCalendarIds
+    set(value) { prefs.selectedGoogleCalendarIds = value }
 
   override var addRemindersToGoogleCalendar: Boolean
     get() = prefs.addRemindersToGoogleCalendar

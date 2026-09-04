@@ -1297,4 +1297,12 @@
     <string name="do_not_remember_last_text_color">Do not remember last used text color</string>
     <string name="builder_quick_start_arriving_place">Arriving at a place</string>
     <string name="builder_quick_start_arriving_place_delayed">Arriving at a place (delayed start)</string>
+    <string name="google_calendar_events_color">Calendar events color</string>
+    <string name="google_calendar_event">Calendar event</string>
+    <string name="delete_calendar_event_title">Delete calendar event</string>
+    <string name="delete_calendar_event_message">Remove this event from the app, or also delete it from your device calendar?</string>
+    <string name="delete_from_app_only">Delete from app only</string>
+    <string name="delete_from_app_and_calendar">Delete from app and calendar</string>
+    <string name="all_day">All day</string>
+    <string name="channel_for_calendar_event_notifications">Channel for Google Calendar event notifications</string>
 </resources>

@@ -28,11 +28,14 @@ internal class CalendarSettingsViewModel(
   private val themeProvider: ThemeProvider,
   private val holidaySyncScheduler: HolidaySyncScheduler,
 ) : ViewModel() {
-  val state: StateFlow<CalendarSettingsState> field = MutableStateFlow(buildState())
-
-  private var selectedCalendarId: Long = -1L
-  private var selectedCalendarName: String? = null
+  // Declared before `state` - its eager `buildState()` call reads these, and Kotlin initializes
+  // properties in declaration order, so they must already hold their default values by then.
+  private var selectedCalendarIds: Set<Long> = emptySet()
+  private var selectedCalendarNames: List<String> = emptyList()
+  private var pendingSelectedPositions: Set<Int> = emptySet()
   private var calendars: List<GoogleCalendar> = emptyList()
+
+  val state: StateFlow<CalendarSettingsState> field = MutableStateFlow(buildState())
 
   init {
     analyticsEventSender.send(ScreenUsedEvent(Screen.CALENDAR_SETTINGS))
@@ -84,12 +87,21 @@ internal class CalendarSettingsViewModel(
     )
   }
 
+  fun onCalendarEventColorClick() {
+    showColorPicker(
+      target = ColorPickerTarget.CALENDAR_EVENT,
+      currentColorIndex = prefs.calendarEventColor,
+      title = textProvider.getString(R.string.google_calendar_events_color),
+    )
+  }
+
   fun onColorOptionSelected(index: Int) {
     val dialog = state.value.dialog as? CalendarSettingsDialog.ColorPicker ?: return
     when (dialog.target) {
       ColorPickerTarget.TODAY -> prefs.todayColor = index
       ColorPickerTarget.REMINDER -> prefs.reminderColor = index
       ColorPickerTarget.BIRTHDAY -> prefs.birthdayColor = index
+      ColorPickerTarget.CALENDAR_EVENT -> prefs.calendarEventColor = index
     }
     dismissDialog()
   }
@@ -102,13 +114,15 @@ internal class CalendarSettingsViewModel(
         Logger.e(TAG, "No Google Calendars found.")
         return@launch
       }
-      val selectedPosition = calendars.indexOfFirst { it.id == selectedCalendarId }
+      pendingSelectedPositions =
+        calendars.withIndex().filter { (_, calendar) -> calendar.id in selectedCalendarIds }
+          .mapTo(mutableSetOf()) { it.index }
       withContext(dispatcherProvider.main()) {
         state.update {
           it.copy(
             dialog = CalendarSettingsDialog.SelectGoogleCalendar(
               calendars = calendars,
-              selectedPosition = selectedPosition
+              selectedPositions = pendingSelectedPositions,
             ),
           )
         }
@@ -117,17 +131,28 @@ internal class CalendarSettingsViewModel(
   }
 
   fun onCalendarReset() {
-    selectedCalendarId = -1L
-    selectedCalendarName = null
-    prefs.googleCalendarReminderId = selectedCalendarId
+    selectedCalendarIds = emptySet()
+    selectedCalendarNames = emptyList()
+    prefs.selectedGoogleCalendarIds = selectedCalendarIds
     refreshState()
   }
 
-  fun onGoogleCalendarOptionSelected(position: Int) {
-    val calendar = calendars.getOrNull(position) ?: return
-    selectedCalendarId = calendar.id
-    selectedCalendarName = calendar.name
-    prefs.googleCalendarReminderId = selectedCalendarId
+  fun onGoogleCalendarOptionToggled(position: Int) {
+    pendingSelectedPositions =
+      if (position in pendingSelectedPositions) {
+        pendingSelectedPositions - position
+      } else {
+        pendingSelectedPositions + position
+      }
+    val dialog = state.value.dialog as? CalendarSettingsDialog.SelectGoogleCalendar ?: return
+    state.update { it.copy(dialog = dialog.copy(selectedPositions = pendingSelectedPositions)) }
+  }
+
+  fun onGoogleCalendarSelectionConfirmed() {
+    val selected = pendingSelectedPositions.mapNotNull { calendars.getOrNull(it) }
+    selectedCalendarIds = selected.mapTo(mutableSetOf()) { it.id }
+    selectedCalendarNames = selected.mapNotNull { it.name }
+    prefs.selectedGoogleCalendarIds = selectedCalendarIds
     dismissDialog()
   }
 
@@ -182,12 +207,14 @@ internal class CalendarSettingsViewModel(
 
   private fun loadSelectedCalendar() {
     viewModelScope.launch(dispatcherProvider.default()) {
-      selectedCalendarId = prefs.googleCalendarReminderId
-      val calendar = googleCalendarApi.getCalendarById(selectedCalendarId)
-      selectedCalendarName = calendar?.name
-      if (calendar == null) {
-        Logger.e(TAG, "Selected calendar not found for id: $selectedCalendarId")
-        selectedCalendarId = -1L
+      selectedCalendarIds = prefs.selectedGoogleCalendarIds
+      val resolved = selectedCalendarIds.mapNotNull { googleCalendarApi.getCalendarById(it) }
+      selectedCalendarNames = resolved.mapNotNull { it.name }
+      val missing = selectedCalendarIds - resolved.mapTo(mutableSetOf()) { it.id }
+      if (missing.isNotEmpty()) {
+        Logger.e(TAG, "Selected calendars not found for ids: $missing")
+        selectedCalendarIds = selectedCalendarIds - missing
+        prefs.selectedGoogleCalendarIds = selectedCalendarIds
       }
       withContext(dispatcherProvider.main()) { refreshState() }
     }
@@ -202,13 +229,14 @@ internal class CalendarSettingsViewModel(
   }
 
   private fun buildState(): CalendarSettingsState {
-    val isCalendarSelected = selectedCalendarId != -1L
+    val isCalendarSelected = selectedCalendarIds.isNotEmpty()
     return CalendarSettingsState(
       firstDayName = firstDayOptions()[prefs.startDay.coerceIn(0, 1)],
       todayColor = themeProvider.themedColor(prefs.todayColor),
       reminderColor = themeProvider.themedColor(prefs.reminderColor),
       birthdayColor = themeProvider.themedColor(prefs.birthdayColor),
-      selectedCalendarName = selectedCalendarName ?: "",
+      calendarEventColor = themeProvider.themedColor(prefs.calendarEventColor),
+      selectedCalendarsLabel = selectedCalendarNames.joinToString(", "),
       isCalendarSelected = isCalendarSelected,
       isExportChecked = prefs.addRemindersToGoogleCalendar,
       isScanChecked = prefs.scanGoogleCalendarEvents,

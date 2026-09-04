@@ -59,3 +59,12 @@ data class UiAgendaBirthday(
   val dateFormatted: String,
   val isSelected: Boolean = false,
 ) : UiAgendaItem
+
+/** A read-only device/Google Calendar event, imported for display only - never a reminder. */
+data class UiAgendaGoogleCalendarEvent(
+  override val id: String,
+  override val dateTime: LocalDateTime,
+  val title: String,
+  val calendarName: String,
+  val allDay: Boolean,
+) : UiAgendaItem

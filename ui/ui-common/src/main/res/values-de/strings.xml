@@ -1289,4 +1289,12 @@
     <string name="do_not_remember_last_text_color">Zuletzt verwendete Textfarbe nicht merken</string>
     <string name="builder_quick_start_arriving_place">An einem Ort ankommen</string>
     <string name="builder_quick_start_arriving_place_delayed">An einem Ort ankommen (verzögerter Start)</string>
+    <string name="google_calendar_events_color">Farbe für Kalenderereignisse</string>
+    <string name="google_calendar_event">Kalenderereignis</string>
+    <string name="delete_calendar_event_title">Kalenderereignis löschen</string>
+    <string name="delete_calendar_event_message">Dieses Ereignis nur aus der App entfernen oder auch aus dem Gerätekalender löschen?</string>
+    <string name="delete_from_app_only">Nur aus der App löschen</string>
+    <string name="delete_from_app_and_calendar">Aus App und Kalender löschen</string>
+    <string name="all_day">Ganztägig</string>
+    <string name="channel_for_calendar_event_notifications">Kanal für Google Kalender-Ereignisbenachrichtigungen</string>
 </resources>

@@ -1291,4 +1291,12 @@
     <string name="do_not_remember_last_text_color">Jangan ingat warna teks terakhir yang digunakan</string>
     <string name="builder_quick_start_arriving_place">Tiba di suatu tempat</string>
     <string name="builder_quick_start_arriving_place_delayed">Tiba di suatu tempat (mulai tertunda)</string>
+    <string name="google_calendar_events_color">Warna acara kalender</string>
+    <string name="google_calendar_event">Acara kalender</string>
+    <string name="delete_calendar_event_title">Hapus acara kalender</string>
+    <string name="delete_calendar_event_message">Hapus acara ini hanya dari aplikasi, atau juga hapus dari kalender perangkat?</string>
+    <string name="delete_from_app_only">Hapus dari aplikasi saja</string>
+    <string name="delete_from_app_and_calendar">Hapus dari aplikasi dan kalender</string>
+    <string name="all_day">Sepanjang hari</string>
+    <string name="channel_for_calendar_event_notifications">Saluran untuk notifikasi acara Google Kalender</string>
 </resources>

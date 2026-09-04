@@ -72,3 +72,8 @@ data class EditNoteScreen(
   val sharedText: String? = null,
   val sharedImageUris: List<String>? = null
 ) : DeepLinkDestination()
+
+@Parcelize
+data class ViewGoogleCalendarEventScreen(
+  val id: String? = null
+) : DeepLinkDestination()

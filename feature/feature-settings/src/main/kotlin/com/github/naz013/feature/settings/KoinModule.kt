@@ -4,6 +4,7 @@ import android.content.Context
 import com.github.naz013.feature.settings.calendar.CalendarSettingsViewModel
 import com.github.naz013.feature.settings.calendar.country.HolidayCountryPickerResultHolder
 import com.github.naz013.feature.settings.calendar.country.HolidayCountryViewModel
+import com.github.naz013.feature.settings.calendar.usecase.CalculateGoogleCalendarEventOccurrencesUseCase
 import com.github.naz013.feature.settings.calendar.usecase.ScanGoogleCalendarForNewEventsUseCase
 import com.github.naz013.feature.settings.calendar.work.ScanGoogleCalendarEventsTask
 import com.github.naz013.feature.settings.debug.DeveloperViewModel
@@ -55,6 +56,7 @@ val featureSettingsModule = module {
   viewModelOf(::MapStyleViewModel)
 
   factoryOf(::ScanGoogleCalendarForNewEventsUseCase)
+  factoryOf(::CalculateGoogleCalendarEventOccurrencesUseCase)
 
   factory<BackgroundTask>(named(ScanGoogleCalendarEventsTask.TASK_KEY)) {
     ScanGoogleCalendarEventsTask(
@@ -124,6 +126,7 @@ val featureSettingsModule = module {
       routineRepository = get(),
       routineExecutionRepository = get(),
       insertDemoDataUseCase = get(),
+      googleCalendarEventRepository = get(),
     )
   }
   viewModelOf(::ObjectExportViewModel)

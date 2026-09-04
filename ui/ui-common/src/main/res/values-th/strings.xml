@@ -1291,4 +1291,12 @@
     <string name="do_not_remember_last_text_color">ไม่จดจำสีข้อความที่ใช้ล่าสุด</string>
     <string name="builder_quick_start_arriving_place">มาถึงสถานที่</string>
     <string name="builder_quick_start_arriving_place_delayed">มาถึงสถานที่ (เริ่มล่าช้า)</string>
+    <string name="google_calendar_events_color">สีของกิจกรรมปฏิทิน</string>
+    <string name="google_calendar_event">กิจกรรมปฏิทิน</string>
+    <string name="delete_calendar_event_title">ลบกิจกรรมปฏิทิน</string>
+    <string name="delete_calendar_event_message">ต้องการลบกิจกรรมนี้ออกจากแอปเท่านั้น หรือลบออกจากปฏิทินในอุปกรณ์ด้วย?</string>
+    <string name="delete_from_app_only">ลบออกจากแอปเท่านั้น</string>
+    <string name="delete_from_app_and_calendar">ลบออกจากแอปและปฏิทิน</string>
+    <string name="all_day">ทั้งวัน</string>
+    <string name="channel_for_calendar_event_notifications">ช่องทางการแจ้งเตือนกิจกรรม Google ปฏิทิน</string>
 </resources>

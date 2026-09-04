@@ -1294,4 +1294,12 @@
     <string name="do_not_remember_last_text_color">不记住上次使用的文本颜色</string>
     <string name="builder_quick_start_arriving_place">到达某地</string>
     <string name="builder_quick_start_arriving_place_delayed">到达某地(延迟开始)</string>
+    <string name="google_calendar_events_color">日历事件颜色</string>
+    <string name="google_calendar_event">日历事件</string>
+    <string name="delete_calendar_event_title">删除日历事件</string>
+    <string name="delete_calendar_event_message">仅从应用中移除此事件，还是也从设备日历中删除？</string>
+    <string name="delete_from_app_only">仅从应用中删除</string>
+    <string name="delete_from_app_and_calendar">从应用和日历中删除</string>
+    <string name="all_day">全天</string>
+    <string name="channel_for_calendar_event_notifications">Google 日历事件通知渠道</string>
 </resources>

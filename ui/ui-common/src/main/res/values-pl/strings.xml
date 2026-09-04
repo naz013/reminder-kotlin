@@ -1293,4 +1293,12 @@
     <string name="do_not_remember_last_text_color">Nie pamiętaj ostatnio używanego koloru tekstu</string>
     <string name="builder_quick_start_arriving_place">Przybycie na miejsce</string>
     <string name="builder_quick_start_arriving_place_delayed">Przybycie na miejsce (opóźniony start)</string>
+    <string name="google_calendar_events_color">Kolor wydarzeń kalendarza</string>
+    <string name="google_calendar_event">Wydarzenie kalendarza</string>
+    <string name="delete_calendar_event_title">Usuń wydarzenie kalendarza</string>
+    <string name="delete_calendar_event_message">Usunąć to wydarzenie tylko z aplikacji, czy również z kalendarza urządzenia?</string>
+    <string name="delete_from_app_only">Usuń tylko z aplikacji</string>
+    <string name="delete_from_app_and_calendar">Usuń z aplikacji i kalendarza</string>
+    <string name="all_day">Cały dzień</string>
+    <string name="channel_for_calendar_event_notifications">Kanał powiadomień o wydarzeniach Kalendarza Google</string>
 </resources>

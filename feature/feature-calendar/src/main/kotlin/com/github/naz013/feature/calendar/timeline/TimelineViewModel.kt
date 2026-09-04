@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.feature.calendar.CalendarPreferences
 import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.ui.agenda.UiAgendaBirthday
+import com.github.naz013.ui.agenda.UiAgendaGoogleCalendarEvent
 import com.github.naz013.ui.agenda.UiAgendaReminder
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.PublicHoliday
@@ -137,6 +138,7 @@ internal class TimelineViewModel(
     when (item) {
       is UiAgendaReminder -> navigationEvent.value = Event(NavigationEvent.OpenReminderPreview(item.id))
       is UiAgendaBirthday -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayPreview(item.id))
+      is UiAgendaGoogleCalendarEvent -> navigationEvent.value = Event(NavigationEvent.OpenGoogleCalendarEventPreview(item.id))
       else -> Unit
     }
   }
@@ -180,6 +182,10 @@ internal class TimelineViewModel(
     ) : NavigationEvent
 
     data class OpenBirthdayPreview(
+      val id: String,
+    ) : NavigationEvent
+
+    data class OpenGoogleCalendarEventPreview(
       val id: String,
     ) : NavigationEvent
 

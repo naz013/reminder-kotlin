@@ -28,5 +28,12 @@ interface NotificationGateway {
      * Must stay equal to `Notifier.CHANNEL_SYSTEM` in `app` - same reasoning as [CHANNEL_REMINDER].
      */
     const val CHANNEL_SYSTEM = "reminder.channel.system"
+
+    /**
+     * Must stay equal to `Notifier.CHANNEL_CALENDAR_EVENT` in `app` - same reasoning as
+     * [CHANNEL_REMINDER]. A separate channel (and notification) from [CHANNEL_REMINDER] since a
+     * Google Calendar event is never a reminder - see `GoogleCalendarEventNotificationHandler`.
+     */
+    const val CHANNEL_CALENDAR_EVENT = "reminder.channel.calendar_event"
   }
 }
