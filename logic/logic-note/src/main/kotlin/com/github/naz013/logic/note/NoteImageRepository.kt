@@ -29,5 +29,10 @@ interface NoteImageRepository {
 
   fun clearFolder(folderName: String)
 
+  fun deleteImageFile(
+    folderName: String,
+    fileName: String,
+  )
+
   fun getImageFolder(folderName: String): File
 }

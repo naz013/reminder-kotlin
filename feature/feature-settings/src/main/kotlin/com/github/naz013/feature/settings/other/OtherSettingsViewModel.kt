@@ -163,8 +163,6 @@ internal class OtherSettingsViewModel(
       addIfMissing(R.string.read_calendar, Permissions.READ_CALENDAR)
       addIfMissing(R.string.write_calendar, Permissions.WRITE_CALENDAR)
       addIfMissing(R.string.read_contacts, Permissions.READ_CONTACTS)
-      addIfMissing(R.string.read_external_storage, Permissions.READ_EXTERNAL)
-      addIfMissing(R.string.write_external_storage, Permissions.WRITE_EXTERNAL)
       addIfMissing(R.string.record_audio, Permissions.RECORD_AUDIO)
       addIfMissing(R.string.foreground_service, Permissions.FOREGROUND_SERVICE)
       addIfMissing(R.string.background_location, Permissions.BACKGROUND_LOCATION)

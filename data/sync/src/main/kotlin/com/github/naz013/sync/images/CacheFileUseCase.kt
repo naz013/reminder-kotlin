@@ -14,7 +14,7 @@ class CacheFileUseCase(
     folder: String,
     name: String
   ): String {
-    val rootFolder = File(fileCacheProvider.getRootCacheDir(), folder)
+    val rootFolder = File(fileCacheProvider.getNoteImagesRootDir(), folder)
     if (!rootFolder.exists()) {
       rootFolder.mkdirs()
     }

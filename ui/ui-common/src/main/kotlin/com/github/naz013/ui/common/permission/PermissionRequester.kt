@@ -107,7 +107,6 @@ class PermissionRequester internal constructor(
     when (permission) {
       Permissions.FOREGROUND_SERVICE_LOCATION -> !Module.is15
       Permissions.POST_NOTIFICATION -> !Module.is13
-      Permissions.READ_EXTERNAL, Permissions.WRITE_EXTERNAL -> Module.is13
       else -> false
     }
 
@@ -121,8 +120,6 @@ class PermissionRequester internal constructor(
       Permissions.CALL_PHONE -> UiPermissionDialogData.CALL_PHONE
       Permissions.READ_CALENDAR -> UiPermissionDialogData.READ_CALENDAR
       Permissions.WRITE_CALENDAR -> UiPermissionDialogData.WRITE_CALENDAR
-      Permissions.READ_EXTERNAL -> UiPermissionDialogData.READ_EXTERNAL
-      Permissions.WRITE_EXTERNAL -> UiPermissionDialogData.WRITE_EXTERNAL
       Permissions.ACCESS_FINE_LOCATION -> UiPermissionDialogData.FINE_LOCATION
       Permissions.ACCESS_COARSE_LOCATION -> UiPermissionDialogData.COARSE_LOCATION
       Permissions.RECORD_AUDIO -> UiPermissionDialogData.RECORD_AUDIO

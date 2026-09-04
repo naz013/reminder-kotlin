@@ -79,6 +79,14 @@ internal class NoteImageRepositoryImpl(
     Logger.i(TAG, "Cleared image folder: $folderName")
   }
 
+  override fun deleteImageFile(
+    folderName: String,
+    fileName: String,
+  ) {
+    val deleted = File(getImageFolder(folderName), fileName).delete()
+    Logger.i(TAG, "Deleted image file $fileName from $folderName: $deleted")
+  }
+
   private fun clearTemporaryFolder() {
     getTmpFolder().deleteRecursively()
     Logger.i(TAG, "Cleared temporary image folder")

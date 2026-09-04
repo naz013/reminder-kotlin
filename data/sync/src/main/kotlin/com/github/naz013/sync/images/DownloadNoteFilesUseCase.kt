@@ -21,7 +21,7 @@ internal class DownloadNoteFilesUseCase(
       val inputStream = cloudFileApi.downloadFile(cloudFile) ?: return@mapNotNull null
       val filePath = cacheFileUseCase(
         inputStream = inputStream,
-        folder = "note_images/$noteId",
+        folder = noteId,
         name = cloudFile.name
       )
       ImageFile(
