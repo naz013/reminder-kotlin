@@ -3,7 +3,6 @@ package com.github.naz013.feature.home
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
@@ -27,7 +26,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -49,14 +47,15 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.feature.home.scheduleview.ScheduleHomeViewModel
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.AppShapes
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
+import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.dynamicParameter
 import com.github.naz013.ui.common.compose.foundation.isDesktopScreen
@@ -66,13 +65,13 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import kotlin.time.Duration.Companion.milliseconds
 
-private const val TILE_ANIMATION_DURATION_MS = 250
 private const val TILE_STAGGER_DELAY_MS = 40L
 private const val TILE_MAX_STAGGER_DELAY_MS = 240L
 
-private const val LIST_ITEM_ANIMATION_DURATION_MS = 250
 private const val LIST_ITEM_STAGGER_DELAY_MS = 30L
 private const val LIST_ITEM_MAX_STAGGER_DELAY_MS = 180L
+
+private const val TILE_ICON_TINT_ALPHA = 0.16f
 
 @Composable
 fun ChronologicalHomeScreen(
@@ -159,7 +158,9 @@ fun ChronologicalHomeScreen(
 
         is ListState.Empty -> {
           item {
-            EmptyEventsState(
+            EmptyState(
+              icon = AppIcons.Fluent.CalendarAgenda,
+              message = stringResource(R.string.no_events),
               modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp),
@@ -313,14 +314,14 @@ private fun HeaderNavigationTile(
   AnimatedVisibility(
     modifier = modifier,
     visibleState = visibleState,
-    enter = fadeIn(animationSpec = tween(TILE_ANIMATION_DURATION_MS)) +
-      scaleIn(animationSpec = tween(TILE_ANIMATION_DURATION_MS), initialScale = 0.85f),
+    enter = fadeIn(animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()) +
+      scaleIn(animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec(), initialScale = 0.85f),
   ) {
     Surface(
       modifier = Modifier
-        .clip(RoundedCornerShape(12.dp))
+        .clip(AppShapes.tile)
         .combinedClickable(onClick = onClick, onLongClick = onLongClick),
-      shape = RoundedCornerShape(12.dp),
+      shape = AppShapes.tile,
       color = MaterialTheme.colorScheme.surfaceContainer,
     ) {
       Row(
@@ -332,14 +333,14 @@ private fun HeaderNavigationTile(
           modifier = Modifier
             .size(32.dp)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.secondaryContainer),
+            .background(item.color.copy(alpha = TILE_ICON_TINT_ALPHA)),
           contentAlignment = Alignment.Center,
         ) {
           Icon(
             painter = painterResource(item.iconRes),
             contentDescription = null,
             modifier = Modifier.size(18.dp),
-            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+            tint = item.color,
           )
         }
         Column(
@@ -347,39 +348,15 @@ private fun HeaderNavigationTile(
         ) {
           Text(
             text = stringResource(item.titleRes),
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Medium,
+            style = MaterialTheme.typography.labelSmallEmphasized,
           )
           Text(
             text = item.subtitle,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleMediumEmphasized,
           )
         }
       }
     }
-  }
-}
-
-@Composable
-private fun EmptyEventsState(modifier: Modifier = Modifier) {
-  Column(
-    modifier = modifier,
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center,
-  ) {
-    Icon(
-      painter = painterResource(R.drawable.ic_fluent_calendar_agenda),
-      contentDescription = null,
-      modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-    )
-    Spacer(modifier = Modifier.height(12.dp))
-    Text(
-      text = stringResource(R.string.no_events),
-      style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-    )
   }
 }
 
@@ -399,8 +376,8 @@ private fun TimeSectionRow(
   AnimatedVisibility(
     modifier = modifier,
     visibleState = visibleState,
-    enter = fadeIn(animationSpec = tween(LIST_ITEM_ANIMATION_DURATION_MS)) +
-      slideInVertically(animationSpec = tween(LIST_ITEM_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight / 6 },
+    enter = fadeIn(animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()) +
+      slideInVertically(animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()) { fullHeight -> fullHeight / 6 },
   ) {
     Row(
       modifier = Modifier.fillMaxWidth(),
@@ -412,7 +389,7 @@ private fun TimeSectionRow(
           .padding(start = 0.dp, top = 16.dp),
         text = timeSection.time,
         color = MaterialTheme.colorScheme.onBackground,
-        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+        style = MaterialTheme.typography.bodyMediumEmphasized,
       )
       EventCard(
         modifier = Modifier.weight(4f),
@@ -431,19 +408,35 @@ private fun EventCard(
   onEventClick: (HomeEvent) -> Unit,
   onEventActionClick: (HomeEvent.EventAction) -> Unit,
 ) {
-  val onContainerColor = if (event.isSelected) {
-    MaterialTheme.colorScheme.onPrimaryContainer
-  } else {
-    MaterialTheme.colorScheme.onBackground
+  val containerColor: Color
+  val onContainerColor: Color
+  when {
+    event.isSelected -> {
+      containerColor = MaterialTheme.colorScheme.primaryContainer
+      onContainerColor = MaterialTheme.colorScheme.onPrimaryContainer
+    }
+
+    event.isOverdue -> {
+      containerColor = MaterialTheme.colorScheme.errorContainer
+      onContainerColor = MaterialTheme.colorScheme.onErrorContainer
+    }
+
+    event.type == HomeEvent.EventType.Birthday -> {
+      containerColor = MaterialTheme.colorScheme.tertiaryContainer
+      onContainerColor = MaterialTheme.colorScheme.onTertiaryContainer
+    }
+
+    else -> {
+      containerColor = CardDefaults.cardColors().containerColor
+      onContainerColor = MaterialTheme.colorScheme.onBackground
+    }
   }
   Card(
     modifier = modifier
       .fillMaxWidth()
-      .clip(MaterialTheme.shapes.medium)
+      .clip(AppShapes.card)
       .clickable(onClick = { onEventClick(event) }),
-    colors = CardDefaults.cardColors(
-      containerColor = if (event.isSelected) MaterialTheme.colorScheme.primaryContainer else CardDefaults.cardColors().containerColor,
-    ),
+    colors = CardDefaults.cardColors(containerColor = containerColor),
     border = if (event.isSelected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
     elevation = CardDefaults.elevatedCardElevation(
       defaultElevation = 0.dp,
@@ -467,7 +460,7 @@ private fun EventCard(
           event.text?.let {
             Text(
               text = it,
-              style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+              style = MaterialTheme.typography.bodyMediumEmphasized,
               color = onContainerColor,
             )
           }
@@ -500,9 +493,7 @@ private fun EventCard(
         Spacer(modifier = Modifier.height(4.dp))
         Text(
           text = it,
-          style = MaterialTheme.typography.bodySmall.copy(
-            fontWeight = FontWeight.Medium,
-          ),
+          style = MaterialTheme.typography.bodySmallEmphasized,
           modifier = Modifier.fillMaxWidth(),
           color = onContainerColor,
         )
@@ -535,7 +526,7 @@ private fun Greeting(
     Text(
       modifier = Modifier.weight(1f),
       text = greeting,
-      style = MaterialTheme.typography.headlineMedium,
+      style = MaterialTheme.typography.headlineMediumEmphasized,
       color = MaterialTheme.colorScheme.onBackground,
     )
     Spacer(modifier = Modifier.width(16.dp))
@@ -625,6 +616,59 @@ private fun EventCardPreview_WithAction() {
         time = LocalTime.of(12, 0),
         isSelected = false,
         type = HomeEvent.EventType.Reminder,
+      ),
+      onEventClick = {},
+      onEventActionClick = {},
+    )
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EventCardPreview_Overdue() {
+  Box(
+    modifier = Modifier.padding(16.dp),
+  ) {
+    EventCard(
+      event = HomeEvent(
+        id = "",
+        text = "Event text",
+        description = "Event description",
+        color = Color.Red,
+        groupName = "Group",
+        remaining = "Overdue",
+        action = null,
+        date = LocalDate.of(2026, 6, 15),
+        time = LocalTime.of(12, 0),
+        isSelected = false,
+        type = HomeEvent.EventType.Reminder,
+        isOverdue = true,
+      ),
+      onEventClick = {},
+      onEventActionClick = {},
+    )
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EventCardPreview_Birthday() {
+  Box(
+    modifier = Modifier.padding(16.dp),
+  ) {
+    EventCard(
+      event = HomeEvent(
+        id = "",
+        text = "Jane's birthday",
+        description = null,
+        color = Color.Magenta,
+        groupName = null,
+        remaining = "2 days",
+        action = null,
+        date = LocalDate.of(2026, 6, 15),
+        time = LocalTime.of(12, 0),
+        isSelected = false,
+        type = HomeEvent.EventType.Birthday,
       ),
       onEventClick = {},
       onEventActionClick = {},

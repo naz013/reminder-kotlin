@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppShapes
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 
@@ -57,18 +58,22 @@ fun AgendaListItem(
   statusChips: List<String> = emptyList(),
   leading: (@Composable () -> Unit)? = null,
   isSelected: Boolean = false,
+  isOverdue: Boolean = false,
 ) {
   var menuExpanded by remember { mutableStateOf(false) }
+  val containerColor = when {
+    isSelected -> MaterialTheme.colorScheme.primaryContainer
+    isOverdue -> MaterialTheme.colorScheme.errorContainer
+    else -> CardDefaults.cardColors().containerColor
+  }
 
   Card(
     modifier =
       modifier
         .fillMaxWidth()
-        .clip(MaterialTheme.shapes.medium)
+        .clip(AppShapes.card)
         .clickable(onClick = onClick),
-    colors = CardDefaults.cardColors(
-      containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else CardDefaults.cardColors().containerColor,
-    ),
+    colors = CardDefaults.cardColors(containerColor = containerColor),
     border = if (isSelected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
   ) {
     Row(
@@ -175,6 +180,24 @@ private fun AgendaListItemPreview() {
       onClick = {},
       menuItems = emptyList(),
       onMenuItemClick = {},
+    )
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AgendaListItemPreview_Overdue() {
+  AppTheme {
+    AgendaListItem(
+      mainText = "Buy milk",
+      secondaryText = "Yesterday, 18:00",
+      tertiaryText = null,
+      tags = listOf("Repeats", "Home"),
+      statusChips = listOf("Enabled"),
+      onClick = {},
+      menuItems = emptyList(),
+      onMenuItemClick = {},
+      isOverdue = true,
     )
   }
 }

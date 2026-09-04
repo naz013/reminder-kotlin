@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
@@ -25,7 +24,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -65,6 +63,7 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 import com.github.naz013.ui.common.compose.foundation.component.BottomSheetHeader
+import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 
@@ -171,7 +170,11 @@ internal fun AgendaScreen(
         }
 
         is ListState.Empty -> {
-          AgendaEmptyState(modifier = Modifier.fillMaxSize().weight(1f))
+          EmptyState(
+            icon = AppIcons.Fluent.CalendarAgenda,
+            message = stringResource(R.string.no_events),
+            modifier = Modifier.fillMaxSize().weight(1f),
+          )
         }
 
         is ListState.Ready -> {
@@ -314,7 +317,7 @@ private fun AgendaList(
         is UiAgendaHeader -> {
           Text(
             text = item.text,
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleMediumEmphasized,
             modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
           )
         }
@@ -357,10 +360,11 @@ private fun CategoryChipRow(
     horizontalArrangement = Arrangement.spacedBy(8.dp),
   ) {
     AgendaCategory.entries.forEach { category ->
+      val isSelected = category in selected
       FilterChip(
-        selected = category in selected,
+        selected = isSelected,
         onClick = { onToggle(category) },
-        label = { Text(stringResource(category.titleRes())) },
+        label = { FilterChipLabel(text = stringResource(category.titleRes()), selected = isSelected) },
       )
     }
   }
@@ -386,10 +390,11 @@ private fun SmartListChipRow(
     horizontalArrangement = Arrangement.spacedBy(8.dp),
   ) {
     SmartListFilter.entries.forEach { filter ->
+      val isSelected = filter == selected
       FilterChip(
-        selected = filter == selected,
+        selected = isSelected,
         onClick = { onSelect(filter) },
-        label = { Text(stringResource(filter.titleRes())) },
+        label = { FilterChipLabel(text = stringResource(filter.titleRes()), selected = isSelected) },
       )
     }
   }
@@ -416,10 +421,11 @@ private fun TagFilterChipRow(
     horizontalArrangement = Arrangement.spacedBy(8.dp),
   ) {
     tags.forEach { tag ->
+      val isSelected = tag.id == selected
       FilterChip(
-        selected = tag.id == selected,
+        selected = isSelected,
         onClick = { onSelect(tag.id) },
-        label = { Text(tag.name) },
+        label = { FilterChipLabel(text = tag.name, selected = isSelected) },
       )
     }
   }
@@ -438,35 +444,25 @@ private fun GroupFilterChipRow(
     horizontalArrangement = Arrangement.spacedBy(8.dp),
   ) {
     groups.forEach { group ->
+      val isSelected = group.uuId == selected
       FilterChip(
-        selected = group.uuId == selected,
+        selected = isSelected,
         onClick = { onSelect(group.uuId) },
-        label = { Text(group.title) },
+        label = { FilterChipLabel(text = group.title, selected = isSelected) },
       )
     }
   }
 }
 
 @Composable
-private fun AgendaEmptyState(modifier: Modifier = Modifier) {
-  Column(
-    modifier = modifier,
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center,
-  ) {
-    Icon(
-      painter = painterResource(R.drawable.ic_fluent_calendar_agenda),
-      contentDescription = null,
-      modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-    )
-    Text(
-      text = stringResource(R.string.no_events),
-      style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-      modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
-    )
-  }
+private fun FilterChipLabel(
+  text: String,
+  selected: Boolean,
+) {
+  Text(
+    text = text,
+    style = if (selected) MaterialTheme.typography.labelLargeEmphasized else MaterialTheme.typography.labelLarge,
+  )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

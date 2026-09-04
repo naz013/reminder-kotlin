@@ -46,6 +46,7 @@ data class UiAgendaReminder(
   val actions: UiReminderListActions,
   val state: UiReminderListState,
   val isSelected: Boolean = false,
+  val isOverdue: Boolean = false,
 ) : UiAgendaItem
 
 data class UiAgendaBirthday(

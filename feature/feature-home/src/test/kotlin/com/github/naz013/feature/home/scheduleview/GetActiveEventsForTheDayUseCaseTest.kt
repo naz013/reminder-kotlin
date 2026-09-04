@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -87,6 +88,7 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
     every { contextProvider.themedContext } returns mockk<Context>(relaxed = true)
     every { contextProvider.context } returns mockk<Context>(relaxed = true)
     every { dateTimeManager.getCurrentDateTime() } returns day
+    every { dateTimeManager.utcToLocal(any()) } answers { firstArg() }
     every { modelDateTimeFormatter.getRemaining(any<LocalDateTime>(), any<LocalDateTime>()) } returns "remaining"
     every {
       modelDateTimeFormatter.getFutureBirthdayDate(any(), any(), any(), any())
@@ -169,6 +171,26 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
     val event = useCase(day).first().single()
 
     assertEquals("formatted list", event.description)
+  }
+
+  @Test
+  fun `marks a reminder due in the past as overdue`() = runTest {
+    every { reminderV2Repository.observeActiveInRange(any(), any(), any()) } returns
+      flowOf(listOf(reminder(eventDateTime = day.minusHours(1))))
+
+    val event = useCase(day).first().single()
+
+    assertTrue(event.isOverdue)
+  }
+
+  @Test
+  fun `does not mark a reminder due in the future as overdue`() = runTest {
+    every { reminderV2Repository.observeActiveInRange(any(), any(), any()) } returns
+      flowOf(listOf(reminder(eventDateTime = day.plusHours(1))))
+
+    val event = useCase(day).first().single()
+
+    assertFalse(event.isOverdue)
   }
 
   @Test

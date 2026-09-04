@@ -95,6 +95,8 @@ class UiAgendaItemAdapter(
       tags = uiReminderList.tags,
       actions = uiReminderList.actions,
       state = uiReminderList.state,
+      isOverdue = uiReminderList.state.isActive &&
+        uiReminderList.dueDateTime?.isAfter(dateTimeManager.getCurrentDateTime()) == false,
     )
   }
 

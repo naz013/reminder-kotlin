@@ -21,6 +21,7 @@ import com.github.naz013.domain.sync.SyncState
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -37,10 +38,12 @@ class UiAgendaItemAdapterTest {
 
   private val today: LocalDate = LocalDate.now()
   private val tomorrow: LocalDate = today.plusDays(1)
+  private val now: LocalDateTime = today.atTime(12, 0)
 
   @Before
   fun setUp() {
     every { dateTimeManager.getHeaderDateFormatted(any()) } answers { firstArg<LocalDate>().toString() }
+    every { dateTimeManager.getCurrentDateTime() } returns now
     every { textProvider.getText(R.string.today) } returns "Today"
     every { textProvider.getText(R.string.tomorrow) } returns "Tomorrow"
     every { textProvider.getText(R.string.permanent) } returns "Permanent"
@@ -286,6 +289,39 @@ class UiAgendaItemAdapterTest {
     val targetId = adapter.findTodayScrollTargetId(emptyList())
 
     assertEquals(null, targetId)
+  }
+
+  @Test
+  fun `marks an active reminder due before now as overdue`() {
+    val reminder = reminderV2("overdue-reminder")
+    every { uiReminderListAdapter.createV2(reminder, null) } returns
+      uiReminderList(id = "overdue", dueDateTime = now.minusHours(1), isActive = true)
+
+    val result = adapter.convertV2(listOf(reminder), emptyMap(), emptyList())
+
+    assertTrue((result.single { it.id == "overdue" } as UiAgendaReminder).isOverdue)
+  }
+
+  @Test
+  fun `does not mark an active reminder due after now as overdue`() {
+    val reminder = reminderV2("upcoming-reminder")
+    every { uiReminderListAdapter.createV2(reminder, null) } returns
+      uiReminderList(id = "upcoming", dueDateTime = now.plusHours(1), isActive = true)
+
+    val result = adapter.convertV2(listOf(reminder), emptyMap(), emptyList())
+
+    assertFalse((result.single { it.id == "upcoming" } as UiAgendaReminder).isOverdue)
+  }
+
+  @Test
+  fun `does not mark a disabled reminder as overdue even when its due date is in the past`() {
+    val reminder = reminderV2("disabled-past-reminder")
+    every { uiReminderListAdapter.createV2(reminder, null) } returns
+      uiReminderList(id = "disabled-past", dueDateTime = now.minusHours(1), isActive = false)
+
+    val result = adapter.convertV2(listOf(reminder), emptyMap(), emptyList())
+
+    assertFalse((result.single { it.id == "disabled-past" } as UiAgendaReminder).isOverdue)
   }
 
   private fun textElement(text: String) = UiTextElement(text = text, textFormat = UiTextFormat(fontSize = 14f))
