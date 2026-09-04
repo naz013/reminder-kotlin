@@ -14,6 +14,7 @@ import com.github.naz013.feature.settings.SettingsDetailPane
 import com.github.naz013.feature.settings.SettingsScaffold
 import com.github.naz013.feature.settings.settingsNavigationIcon
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.foundation.component.SettingsHighlightScope
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.login.rememberBiometricProvider
@@ -60,15 +61,17 @@ private fun SecurityEntry(backStack: MutableList<NavKey>, renderAsDetailPane: Bo
     navigationIcon = settingsNavigationIcon(renderAsDetailPane = renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
-    SecuritySettingsScreen(
-      state = state,
-      onPinRowClick = viewModel::onPinRowClick,
-      onChangePinClick = viewModel::onChangePinClick,
-      onFingerprintClick = viewModel::onBiometricAuthClicked,
-      onShuffleToggle = viewModel::onShuffleToggle,
-      onTelephonyToggle = viewModel::onTelephonyToggle,
-      modifier = Modifier.padding(padding),
-    )
+    SettingsHighlightScope {
+      SecuritySettingsScreen(
+        state = state,
+        onPinRowClick = viewModel::onPinRowClick,
+        onChangePinClick = viewModel::onChangePinClick,
+        onFingerprintClick = viewModel::onBiometricAuthClicked,
+        onShuffleToggle = viewModel::onShuffleToggle,
+        onTelephonyToggle = viewModel::onTelephonyToggle,
+        modifier = Modifier.padding(padding),
+      )
+    }
   }
 }
 

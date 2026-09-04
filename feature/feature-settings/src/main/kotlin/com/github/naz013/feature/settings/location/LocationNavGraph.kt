@@ -14,6 +14,7 @@ import androidx.navigation3.runtime.NavKey
 import com.github.naz013.feature.settings.SettingsDetailPane
 import com.github.naz013.feature.settings.SettingsScaffold
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.foundation.component.SettingsHighlightScope
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import org.koin.compose.viewmodel.koinViewModel
@@ -61,23 +62,25 @@ private fun LocationEntry(
     title = stringResource(R.string.location),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
-    LocationSettingsScreen(
-      state = state,
-      onNotificationToggle = viewModel::onNotificationToggle,
-      onRadiusClick = viewModel::onRadiusClick,
-      onRadiusPreviewChange = viewModel::onRadiusPreviewChange,
-      onRadiusConfirm = viewModel::onRadiusConfirm,
-      onMapTypeClick = viewModel::onMapTypeClick,
-      onMapTypeOptionSelected = viewModel::onMapTypeOptionSelected,
-      onMapStyleClick = viewModel::onMapStyleClick,
-      onMarkerStyleClick = viewModel::onMarkerStyleClick,
-      onTrackerClick = viewModel::onTrackerClick,
-      onTrackerPreviewChange = viewModel::onTrackerPreviewChange,
-      onTrackerConfirm = viewModel::onTrackerConfirm,
-      onPlacesClick = viewModel::onPlacesClick,
-      onDialogDismiss = viewModel::onDialogDismiss,
-      modifier = Modifier.padding(padding),
-    )
+    SettingsHighlightScope {
+      LocationSettingsScreen(
+        state = state,
+        onNotificationToggle = viewModel::onNotificationToggle,
+        onRadiusClick = viewModel::onRadiusClick,
+        onRadiusPreviewChange = viewModel::onRadiusPreviewChange,
+        onRadiusConfirm = viewModel::onRadiusConfirm,
+        onMapTypeClick = viewModel::onMapTypeClick,
+        onMapTypeOptionSelected = viewModel::onMapTypeOptionSelected,
+        onMapStyleClick = viewModel::onMapStyleClick,
+        onMarkerStyleClick = viewModel::onMarkerStyleClick,
+        onTrackerClick = viewModel::onTrackerClick,
+        onTrackerPreviewChange = viewModel::onTrackerPreviewChange,
+        onTrackerConfirm = viewModel::onTrackerConfirm,
+        onPlacesClick = viewModel::onPlacesClick,
+        onDialogDismiss = viewModel::onDialogDismiss,
+        modifier = Modifier.padding(padding),
+      )
+    }
   }
 }
 

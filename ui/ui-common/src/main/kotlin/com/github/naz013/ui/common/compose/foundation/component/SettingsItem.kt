@@ -1,5 +1,7 @@
 package com.github.naz013.ui.common.compose.foundation.component
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -18,8 +22,14 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.DisabledAlpha
+import kotlinx.coroutines.delay
 
 private val ItemPadding = 16.dp
 private val IconSize = 24.dp
@@ -57,6 +68,12 @@ private val TrailingSpacing = 16.dp
  * [selected] gives the row a tonal background - for a two-pane list-detail layout (see
  * `DetailPanePlaceholder`), pass `true` for whichever row's destination is currently showing in
  * the detail pane, the same way a selected row is highlighted elsewhere in the app.
+ *
+ * [itemKey] is this row's stable identity for settings search: when it matches
+ * [LocalSettingsHighlightKey] (provided once per screen by `SettingsHighlightScope` after a
+ * search-result jump), the row scrolls itself into view and flashes its background once so the
+ * user can find the setting they searched for. Leave it `null` for rows that aren't indexed by
+ * search.
  */
 @Composable
 fun SettingsItem(
@@ -68,6 +85,7 @@ fun SettingsItem(
   locked: Boolean = false,
   isLoading: Boolean = false,
   selected: Boolean = false,
+  itemKey: String? = null,
   dividerTop: Boolean = false,
   dividerBottom: Boolean = false,
   onClick: (() -> Unit)? = null,
@@ -76,14 +94,36 @@ fun SettingsItem(
   val contentAlpha = if (enabled && !locked) 1f else DisabledAlpha
   val effectiveTrailing = trailing ?: if (locked) { @Composable { ProBadgeChip() } } else null
 
+  val bringIntoViewRequester = remember { BringIntoViewRequester() }
+  val flashColor = MaterialTheme.colorScheme.tertiaryContainer
+  var isFlashing by remember { mutableStateOf(false) }
+  val highlightBackground by animateColorAsState(
+    targetValue = if (isFlashing) flashColor else Color.Transparent,
+    animationSpec = tween(durationMillis = if (isFlashing) 150 else 900),
+    label = "settingsItemHighlight",
+  )
+
+  val isHighlightTarget = itemKey != null && itemKey == LocalSettingsHighlightKey.current
+  LaunchedEffect(isHighlightTarget) {
+    if (isHighlightTarget) {
+      bringIntoViewRequester.bringIntoView()
+      isFlashing = true
+      delay(600)
+      isFlashing = false
+    }
+  }
+
   Column(modifier = modifier.fillMaxWidth()) {
     if (dividerTop) HorizontalDivider()
 
     Row(
       modifier = Modifier
         .fillMaxWidth()
+        .bringIntoViewRequester(bringIntoViewRequester)
         .then(
-          if (selected) {
+          if (isFlashing || highlightBackground != Color.Transparent) {
+            Modifier.background(highlightBackground)
+          } else if (selected) {
             Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
           } else {
             Modifier
@@ -159,6 +199,7 @@ fun SettingsSwitchItem(
   subtitleOff: String? = null,
   icon: Painter? = null,
   enabled: Boolean = true,
+  itemKey: String? = null,
   dividerTop: Boolean = false,
   dividerBottom: Boolean = false
 ) {
@@ -168,6 +209,7 @@ fun SettingsSwitchItem(
     subtitle = if (checked) subtitleOn else subtitleOff,
     icon = icon,
     enabled = enabled,
+    itemKey = itemKey,
     dividerTop = dividerTop,
     dividerBottom = dividerBottom,
     onClick = { onCheckedChange(!checked) },
@@ -187,6 +229,7 @@ fun SettingsCheckboxItem(
   subtitle: String? = null,
   icon: Painter? = null,
   enabled: Boolean = true,
+  itemKey: String? = null,
   dividerTop: Boolean = false,
   dividerBottom: Boolean = false
 ) {
@@ -196,6 +239,7 @@ fun SettingsCheckboxItem(
     subtitle = subtitle,
     icon = icon,
     enabled = enabled,
+    itemKey = itemKey,
     dividerTop = dividerTop,
     dividerBottom = dividerBottom,
     onClick = { onCheckedChange(!checked) },

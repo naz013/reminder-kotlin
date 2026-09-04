@@ -7,6 +7,8 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
+import com.github.naz013.feature.settings.search.SettingsSearchIndex
+import com.github.naz013.feature.settings.search.SettingsSearchResult
 import com.github.naz013.feature.settings.security.SecuritySettingsPreferences
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.ui.common.R
@@ -104,5 +106,25 @@ internal class SettingsHubViewModel(
 
   private fun checkDoNotDisturb() {
     _state.update { it.copy(isDoNotDisturbActive = doNotDisturbChecker.isActive()) }
+  }
+
+  fun onSearchQueryChange(query: String) {
+    _state.update { it.copy(searchQuery = query, searchResults = search(query)) }
+  }
+
+  private fun search(query: String): List<SettingsSearchResult> {
+    if (query.isBlank()) return emptyList()
+    return SettingsSearchIndex.entries.mapNotNull { entry ->
+      if (entry.isProOnly && !buildInfo.isPro) {
+        return@mapNotNull null
+      }
+      val title = textProvider.getString(entry.titleRes)
+      val matches = title.contains(query, ignoreCase = true) ||
+        entry.keywordRes.any { textProvider.getString(it).contains(query, ignoreCase = true) }
+      if (!matches) {
+        return@mapNotNull null
+      }
+      SettingsSearchResult(title = title, path = entry.path, highlightItemId = entry.highlightItemId)
+    }
   }
 }

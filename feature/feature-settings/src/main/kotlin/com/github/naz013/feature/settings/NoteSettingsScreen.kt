@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
+import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
 
 @Composable
@@ -50,12 +51,14 @@ internal fun NoteSettingsScreen(
       onCheckedChange = { onColorRememberToggle() },
       subtitleOn = stringResource(R.string.remember_last_used_note_color),
       subtitleOff = stringResource(R.string.do_not_remember_last_color),
+      itemKey = SettingsSearchItemKeys.NOTES_LAST_COLOR,
       dividerBottom = true,
     )
     SettingsItem(
       title = stringResource(R.string.color_saturation),
       subtitle = "${state.colorOpacity}%",
       icon = painterResource(R.drawable.ic_fluent_circle_half_fill),
+      itemKey = SettingsSearchItemKeys.NOTES_OPACITY,
       dividerBottom = true,
       onClick = onOpacityClick,
     )
@@ -66,6 +69,7 @@ internal fun NoteSettingsScreen(
       subtitleOn = stringResource(R.string.remember_last_set_text_size),
       subtitleOff = stringResource(R.string.use_default_text_size),
       icon = painterResource(R.drawable.ic_fluent_text),
+      itemKey = SettingsSearchItemKeys.NOTES_TEXT_SIZE,
       dividerBottom = true,
     )
     SettingsSwitchItem(
@@ -74,6 +78,7 @@ internal fun NoteSettingsScreen(
       onCheckedChange = { onFontStyleRememberToggle() },
       subtitleOn = stringResource(R.string.remember_last_set_font_style),
       subtitleOff = stringResource(R.string.use_default_font_style),
+      itemKey = SettingsSearchItemKeys.NOTES_FONT_STYLE,
       dividerBottom = true,
     )
     SettingsSwitchItem(
@@ -83,6 +88,7 @@ internal fun NoteSettingsScreen(
       subtitleOn = stringResource(R.string.remember_last_used_text_color),
       subtitleOff = stringResource(R.string.do_not_remember_last_text_color),
       icon = AppIcons.Fluent.TextColor,
+      itemKey = SettingsSearchItemKeys.NOTES_TEXT_COLOR,
     )
   }
 
