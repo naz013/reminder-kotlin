@@ -22,8 +22,8 @@ internal class DisablePinViewModel(
       state.update { it.copy(pin = updated) }
       return
     }
-    if (prefs.pinCode == updated) {
-      prefs.pinCode = ""
+    if (prefs.verifyPinCode(updated)) {
+      prefs.setPinCode("")
       navigationEvent.value = Event(DisablePinEvent.PinCleared)
     } else {
       navigationEvent.value = Event(DisablePinEvent.ShowPinMismatch)

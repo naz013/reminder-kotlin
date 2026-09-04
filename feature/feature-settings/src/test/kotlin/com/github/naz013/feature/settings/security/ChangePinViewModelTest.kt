@@ -17,7 +17,7 @@ class ChangePinViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    every { prefs.pinCode } returns "123456"
+    every { prefs.verifyPinCode("123456") } returns true
 
     viewModel = ChangePinViewModel(prefs = prefs)
   }
@@ -76,7 +76,7 @@ class ChangePinViewModelTest : BaseTest() {
 
     enter("111111")
 
-    verify { prefs.pinCode = "111111" }
+    verify { prefs.setPinCode("111111") }
     val event = viewModel.navigationEvent.value?.peekContent()
     assertEquals(ChangePinEvent.PinSaved, event)
   }
@@ -92,7 +92,7 @@ class ChangePinViewModelTest : BaseTest() {
     assertEquals(ChangePinEvent.ShowPinMismatch, event)
     assertEquals(ChangePinStage.INPUT, viewModel.state.value.stage)
     assertEquals("", viewModel.state.value.pin)
-    verify(exactly = 0) { prefs.pinCode = any() }
+    verify(exactly = 0) { prefs.setPinCode(any()) }
   }
 
   @Test
