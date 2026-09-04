@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+  implementation(project(":core:crypto"))
   implementation(project(":core:domain"))
   implementation(project(":data:repository-api"))
   implementation(project(":data:files-api"))

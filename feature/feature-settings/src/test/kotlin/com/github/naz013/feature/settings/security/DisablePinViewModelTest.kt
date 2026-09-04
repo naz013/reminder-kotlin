@@ -17,7 +17,7 @@ class DisablePinViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    every { prefs.pinCode } returns "123456"
+    every { prefs.verifyPinCode("123456") } returns true
 
     viewModel = DisablePinViewModel(prefs = prefs)
   }
@@ -42,7 +42,7 @@ class DisablePinViewModelTest : BaseTest() {
   fun `onDigitClick clears the stored pin and emits PinCleared when the entry matches`() {
     enter("123456")
 
-    verify { prefs.pinCode = "" }
+    verify { prefs.setPinCode("") }
     val event = viewModel.navigationEvent.value?.peekContent()
     assertEquals(DisablePinEvent.PinCleared, event)
     // The matching branch never calls state.update - `pin` is left at its pre-final-digit value.
@@ -56,7 +56,7 @@ class DisablePinViewModelTest : BaseTest() {
     val event = viewModel.navigationEvent.value?.peekContent()
     assertEquals(DisablePinEvent.ShowPinMismatch, event)
     assertEquals("", viewModel.state.value.pin)
-    verify(exactly = 0) { prefs.pinCode = "" }
+    verify(exactly = 0) { prefs.setPinCode("") }
   }
 
   @Test
@@ -65,7 +65,7 @@ class DisablePinViewModelTest : BaseTest() {
 
     enter("123456")
 
-    verify { prefs.pinCode = "" }
+    verify { prefs.setPinCode("") }
     val event = viewModel.navigationEvent.value?.peekContent()
     assertEquals(DisablePinEvent.PinCleared, event)
   }

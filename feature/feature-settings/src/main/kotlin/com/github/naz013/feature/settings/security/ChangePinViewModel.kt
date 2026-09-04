@@ -26,7 +26,7 @@ internal class ChangePinViewModel(
     }
     when (state.value.stage) {
       ChangePinStage.OLD -> {
-        if (prefs.pinCode == updated) {
+        if (prefs.verifyPinCode(updated)) {
           state.update { ChangePinState(stage = ChangePinStage.INPUT) }
         } else {
           navigationEvent.value = Event(ChangePinEvent.ShowPinMismatch)
@@ -41,7 +41,7 @@ internal class ChangePinViewModel(
 
       ChangePinStage.REPEAT -> {
         if (firstPin == updated) {
-          prefs.pinCode = updated
+          prefs.setPinCode(updated)
           navigationEvent.value = Event(ChangePinEvent.PinSaved)
         } else {
           navigationEvent.value = Event(ChangePinEvent.ShowPinMismatch)

@@ -25,6 +25,7 @@ rootProject.name = "Reminder"
 include(":app")
 
 // core - foundation shared by every other layer
+include(":core:crypto")
 include(":core:domain")
 include(":core:logging-api")
 include(":core:logging")

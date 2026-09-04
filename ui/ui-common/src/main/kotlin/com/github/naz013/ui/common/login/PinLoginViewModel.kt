@@ -27,7 +27,7 @@ internal class PinLoginViewModel(
       state.update { it.copy(pin = updated) }
       return
     }
-    if (updated == authPreferences.pinCode) {
+    if (authPreferences.verifyPinCode(updated)) {
       eventChannel.trySend(PinLoginEvent.Success)
     } else {
       eventChannel.trySend(PinLoginEvent.ShowPinMismatch)

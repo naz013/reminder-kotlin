@@ -1,4 +1,4 @@
-package com.github.naz013.localbackup.crypto
+package com.github.naz013.crypto
 
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertThrows

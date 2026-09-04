@@ -1,4 +1,4 @@
-package com.github.naz013.localbackup.crypto
+package com.github.naz013.crypto
 
 import java.io.InputStream
 import java.io.OutputStream

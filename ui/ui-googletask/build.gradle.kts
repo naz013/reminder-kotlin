@@ -23,7 +23,6 @@ dependencies {
   implementation(libs.koin.androidx.compose)
 
   implementation(libs.androidx.core.ktx)
-  implementation(libs.androidx.biometric.compose)
   implementation(libs.material)
 
   implementation(libs.threetenbp)

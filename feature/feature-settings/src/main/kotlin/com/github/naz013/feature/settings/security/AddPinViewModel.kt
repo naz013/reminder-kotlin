@@ -32,7 +32,7 @@ internal class AddPinViewModel(
 
       AddPinStage.REPEAT -> {
         if (firstPin == updated) {
-          prefs.pinCode = updated
+          prefs.setPinCode(updated)
           navigationEvent.value = Event(AddPinEvent.PinSaved)
         } else {
           navigationEvent.value = Event(AddPinEvent.ShowPinMismatch)

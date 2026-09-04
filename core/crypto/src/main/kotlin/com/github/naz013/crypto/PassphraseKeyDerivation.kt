@@ -1,4 +1,4 @@
-package com.github.naz013.localbackup.crypto
+package com.github.naz013.crypto
 
 import java.security.SecureRandom
 import javax.crypto.SecretKeyFactory

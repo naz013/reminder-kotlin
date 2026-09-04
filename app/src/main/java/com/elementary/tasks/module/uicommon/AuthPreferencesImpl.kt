@@ -18,8 +18,8 @@ class AuthPreferencesImpl(
     get() {
       return prefs.hasPinCode
     }
-  override val pinCode: String
-    get() {
-      return prefs.pinCode
-    }
+
+  override fun verifyPinCode(pin: String): Boolean {
+    return prefs.verifyPinCode(pin)
+  }
 }

@@ -17,7 +17,6 @@ dependencies {
 
   implementation(libs.koin.android)
   implementation(libs.androidx.core.ktx)
-  implementation(libs.androidx.biometric.compose)
   implementation(libs.material)
   implementation(libs.play.services.maps)
 

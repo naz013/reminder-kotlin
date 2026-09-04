@@ -57,7 +57,7 @@ class AddPinViewModelTest : BaseTest() {
     "123456".forEach { viewModel.onDigitClick(it.digitToInt()) }
     "123456".forEach { viewModel.onDigitClick(it.digitToInt()) }
 
-    verify { prefs.pinCode = "123456" }
+    verify { prefs.setPinCode("123456") }
     val event = viewModel.navigationEvent.value?.peekContent()
     assertEquals(AddPinEvent.PinSaved, event)
   }
@@ -71,7 +71,7 @@ class AddPinViewModelTest : BaseTest() {
     assertEquals(AddPinEvent.ShowPinMismatch, event)
     assertEquals(AddPinStage.INPUT, viewModel.state.value.stage)
     assertEquals("", viewModel.state.value.pin)
-    verify(exactly = 0) { prefs.pinCode = any() }
+    verify(exactly = 0) { prefs.setPinCode(any()) }
   }
 
   @Test
@@ -82,7 +82,7 @@ class AddPinViewModelTest : BaseTest() {
     "111111".forEach { viewModel.onDigitClick(it.digitToInt()) }
     "111111".forEach { viewModel.onDigitClick(it.digitToInt()) }
 
-    verify { prefs.pinCode = "111111" }
+    verify { prefs.setPinCode("111111") }
     val event = viewModel.navigationEvent.value?.peekContent()
     assertEquals(AddPinEvent.PinSaved, event)
   }

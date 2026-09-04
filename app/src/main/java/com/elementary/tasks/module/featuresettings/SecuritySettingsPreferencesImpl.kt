@@ -6,9 +6,11 @@ import com.github.naz013.feature.settings.security.SecuritySettingsPreferences
 class SecuritySettingsPreferencesImpl(
   private val prefs: Prefs,
 ) : SecuritySettingsPreferences {
-  override var pinCode: String
-    get() = prefs.pinCode
-    set(value) { prefs.pinCode = value }
+  override fun verifyPinCode(pin: String): Boolean = prefs.verifyPinCode(pin)
+
+  override fun setPinCode(pin: String) {
+    prefs.setPinCode(pin)
+  }
 
   override val hasPinCode: Boolean
     get() = prefs.hasPinCode
