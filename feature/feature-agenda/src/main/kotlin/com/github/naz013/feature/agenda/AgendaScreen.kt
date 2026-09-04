@@ -1,5 +1,6 @@
 package com.github.naz013.feature.agenda
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -60,6 +61,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.SelectionTopBar
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 import com.github.naz013.ui.common.compose.foundation.component.BottomSheetHeader
@@ -86,9 +88,13 @@ internal fun AgendaScreen(
   onGroupsClick: () -> Unit,
   onTagsClick: () -> Unit,
   onItemClick: (UiAgendaItem) -> Unit,
+  onItemLongClick: (String) -> Unit,
   onAgendaMenuAction: (UiAgendaItem, AgendaMenuAction) -> Unit,
   hasScrolledToToday: Boolean,
   onScrolledToToday: () -> Unit,
+  onSelectionCancel: () -> Unit,
+  onDeleteSelectedClick: () -> Unit,
+  onArchiveSelectedClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val lazyListState = rememberLazyListState()
@@ -120,34 +126,52 @@ internal fun AgendaScreen(
       state.selectedSmartList != null ||
       state.selectedTagId != null ||
       state.selectedGroupId != null
+  val isSelectionMode = state.selectedCount > 0
+  val canArchiveSelection = (readyListState?.items ?: emptyList())
+    .let { items ->
+      items.any { it is UiAgendaReminder && it.isSelected } &&
+        items.none { it is UiAgendaBirthday && it.isSelected }
+    }
+
+  BackHandler(enabled = isSelectionMode) { onSelectionCancel() }
 
   Scaffold(
     modifier = modifier,
     topBar = {
-      Surface(color = MaterialTheme.colorScheme.background, shadowElevation = headerElevation) {
-        Column {
-          AgendaTopBar(
-            onBackClick = onBackClick,
-            onAddReminderClick = onAddReminderClick,
-            onAddTodoClick = onAddTodoClick,
-            onAddBirthdayClick = onAddBirthdayClick,
-            onArchiveClick = onArchiveClick,
-            onGroupsClick = onGroupsClick,
-            onTagsClick = onTagsClick,
-            onFilterClick = { showFilterSheet = true },
-            hasActiveFilters = hasActiveFilters,
-          )
-
-          if (state.hasAnyItems) {
-            SearchBar(
-              query = state.searchQuery,
-              onQueryChange = onSearchQueryChange,
-              placeholder = stringResource(R.string.search),
-              modifier =
-                Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp),
+      if (isSelectionMode) {
+        AgendaSelectionTopBar(
+          selectedCount = state.selectedCount,
+          canArchiveSelection = canArchiveSelection,
+          onCancelClick = onSelectionCancel,
+          onDeleteClick = onDeleteSelectedClick,
+          onArchiveClick = onArchiveSelectedClick,
+        )
+      } else {
+        Surface(color = MaterialTheme.colorScheme.background, shadowElevation = headerElevation) {
+          Column {
+            AgendaTopBar(
+              onBackClick = onBackClick,
+              onAddReminderClick = onAddReminderClick,
+              onAddTodoClick = onAddTodoClick,
+              onAddBirthdayClick = onAddBirthdayClick,
+              onArchiveClick = onArchiveClick,
+              onGroupsClick = onGroupsClick,
+              onTagsClick = onTagsClick,
+              onFilterClick = { showFilterSheet = true },
+              hasActiveFilters = hasActiveFilters,
             )
+
+            if (state.hasAnyItems) {
+              SearchBar(
+                query = state.searchQuery,
+                onQueryChange = onSearchQueryChange,
+                placeholder = stringResource(R.string.search),
+                modifier =
+                  Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+              )
+            }
           }
         }
       }
@@ -181,7 +205,9 @@ internal fun AgendaScreen(
           AgendaList(
             items = listState.items,
             lazyListState = lazyListState,
+            isSelectionMode = isSelectionMode,
             onItemClick = onItemClick,
+            onItemLongClick = onItemLongClick,
             onAgendaMenuAction = onAgendaMenuAction,
             modifier = Modifier.fillMaxSize().weight(1f),
           )
@@ -302,7 +328,9 @@ private fun FilterSection(
 private fun AgendaList(
   items: List<UiAgendaItem>,
   lazyListState: LazyListState,
+  isSelectionMode: Boolean,
   onItemClick: (UiAgendaItem) -> Unit,
+  onItemLongClick: (String) -> Unit,
   onAgendaMenuAction: (UiAgendaItem, AgendaMenuAction) -> Unit,
   modifier: Modifier = Modifier,
 ) {
@@ -328,6 +356,9 @@ private fun AgendaList(
             onClick = { onItemClick(item) },
             onMenuAction = { action -> onAgendaMenuAction(item, action) },
             modifier = Modifier.animateItem(),
+            onLongClick = { onItemLongClick(item.id) },
+            isSelectionMode = isSelectionMode,
+            onToggleSelected = { onItemClick(item) },
           )
         }
 
@@ -337,6 +368,9 @@ private fun AgendaList(
             onClick = { onItemClick(item) },
             onMenuAction = { action -> onAgendaMenuAction(item, action) },
             modifier = Modifier.animateItem(),
+            onLongClick = { onItemLongClick(item.id) },
+            isSelectionMode = isSelectionMode,
+            onToggleSelected = { onItemClick(item) },
           )
         }
 
@@ -462,6 +496,46 @@ private fun FilterChipLabel(
   Text(
     text = text,
     style = if (selected) MaterialTheme.typography.labelLargeEmphasized else MaterialTheme.typography.labelLarge,
+  )
+}
+
+private enum class AgendaSelectionAction { ARCHIVE, DELETE }
+
+@Composable
+private fun AgendaSelectionTopBar(
+  selectedCount: Int,
+  canArchiveSelection: Boolean,
+  onCancelClick: () -> Unit,
+  onDeleteClick: () -> Unit,
+  onArchiveClick: () -> Unit,
+) {
+  SelectionTopBar(
+    title = stringResource(R.string.selected_count, selectedCount),
+    onCancelClick = onCancelClick,
+    actions = buildList {
+      if (canArchiveSelection) {
+        add(
+          PopupMenuItem(
+            id = AgendaSelectionAction.ARCHIVE.ordinal,
+            title = stringResource(R.string.move_to_archive),
+            iconRes = R.drawable.ic_fluent_archive,
+          ),
+        )
+      }
+      add(
+        PopupMenuItem(
+          id = AgendaSelectionAction.DELETE.ordinal,
+          title = stringResource(R.string.delete),
+          iconRes = R.drawable.ic_fluent_delete,
+        ),
+      )
+    },
+    onActionClick = { id ->
+      when (AgendaSelectionAction.entries[id]) {
+        AgendaSelectionAction.ARCHIVE -> onArchiveClick()
+        AgendaSelectionAction.DELETE -> onDeleteClick()
+      }
+    },
   )
 }
 
@@ -593,9 +667,13 @@ private fun AgendaScreenEmptyPreview() {
       onGroupsClick = {},
       onTagsClick = {},
       onItemClick = {},
+      onItemLongClick = {},
       onAgendaMenuAction = { _, _ -> },
       hasScrolledToToday = true,
       onScrolledToToday = {},
+      onSelectionCancel = {},
+      onDeleteSelectedClick = {},
+      onArchiveSelectedClick = {},
     )
   }
 }

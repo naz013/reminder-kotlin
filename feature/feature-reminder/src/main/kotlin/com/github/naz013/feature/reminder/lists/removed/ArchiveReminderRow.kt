@@ -36,6 +36,6 @@ fun ArchiveReminderRow(
       ),
     onMenuItemClick = { id -> onMenuAction(ArchiveReminderMenuAction.entries[id]) },
     modifier = modifier,
-    isSelected = item.isSelected,
+    isHighlighted = item.isSelected,
   )
 }

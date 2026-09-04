@@ -1,7 +1,8 @@
 package com.github.naz013.ui.common.compose.foundation.component
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,6 +34,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppShapes
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.SelectionOverlay
 
 private const val MAIN_TEXT_MAX_LINES = 2
 private const val SECONDARY_TEXT_MAX_LINES = 1
@@ -44,7 +46,7 @@ private const val TERTIARY_TEXT_MAX_LINES = 2
  * an optional non-clickable tag-chip row (repeat/remaining/group labels) below, an optional
  * leading slot, and a "more" menu in the top-right.
  */
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun AgendaListItem(
   mainText: String,
@@ -57,12 +59,16 @@ fun AgendaListItem(
   modifier: Modifier = Modifier,
   statusChips: List<String> = emptyList(),
   leading: (@Composable () -> Unit)? = null,
-  isSelected: Boolean = false,
+  isHighlighted: Boolean = false,
   isOverdue: Boolean = false,
+  onLongClick: (() -> Unit)? = null,
+  isSelectionMode: Boolean = false,
+  isSelected: Boolean = false,
+  onToggleSelected: () -> Unit = {},
 ) {
   var menuExpanded by remember { mutableStateOf(false) }
   val containerColor = when {
-    isSelected -> MaterialTheme.colorScheme.primaryContainer
+    isHighlighted -> MaterialTheme.colorScheme.primaryContainer
     isOverdue -> MaterialTheme.colorScheme.errorContainer
     else -> CardDefaults.cardColors().containerColor
   }
@@ -72,9 +78,9 @@ fun AgendaListItem(
       modifier
         .fillMaxWidth()
         .clip(AppShapes.card)
-        .clickable(onClick = onClick),
+        .combinedClickable(onClick = onClick, onLongClick = onLongClick),
     colors = CardDefaults.cardColors(containerColor = containerColor),
-    border = if (isSelected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
+    border = if (isHighlighted) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
   ) {
     Row(
       modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 4.dp, bottom = 12.dp),
@@ -117,19 +123,27 @@ fun AgendaListItem(
           AgendaChipRow(chips = tags, modifier = Modifier.padding(top = 6.dp))
         }
       }
-      if (menuItems.isNotEmpty()) {
+      if (isSelectionMode || menuItems.isNotEmpty()) {
         Box {
-          MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_more_vertical),
-            contentDescription = stringResource(R.string.more_options),
-            onClick = { menuExpanded = true },
-          )
-          AppDropdownMenu(
-            expanded = menuExpanded,
-            onDismissRequest = { menuExpanded = false },
-            items = menuItems,
-            onItemClick = onMenuItemClick,
-          )
+          SelectionOverlay(
+            isSelectionMode = isSelectionMode,
+            isSelected = isSelected,
+            onToggleSelected = onToggleSelected,
+          ) {
+            if (menuItems.isNotEmpty()) {
+              MenuIconButton(
+                icon = painterResource(R.drawable.ic_fluent_more_vertical),
+                contentDescription = stringResource(R.string.more_options),
+                onClick = { menuExpanded = true },
+              )
+              AppDropdownMenu(
+                expanded = menuExpanded,
+                onDismissRequest = { menuExpanded = false },
+                items = menuItems,
+                onItemClick = onMenuItemClick,
+              )
+            }
+          }
         }
       }
     }

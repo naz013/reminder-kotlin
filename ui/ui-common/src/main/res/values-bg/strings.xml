@@ -1355,4 +1355,9 @@
     <string name="settings_search_keyword_auto_backup_interval">интервал на автоматично архивиране</string>
     <string name="settings_search_keyword_wifi_only_sync">синхронизиране само през wifi</string>
     <string name="settings_search_keyword_delete_cloud_backup">изтриване на облачно архивиране</string>
+    <string name="birthday_selected_count_one">Избран е %1$d роден ден</string>
+    <string name="birthday_selected_count_other">Избрани са %1$d рождени дни</string>
+    <string name="birthdays_delete_selected_permanently">Изтриване на %1$d рождени дни окончателно?</string>
+    <string name="agenda_delete_selected_permanently">Изтриване на %1$d елемента окончателно?</string>
+    <string name="selected_count">Избрани %1$d</string>
 </resources>

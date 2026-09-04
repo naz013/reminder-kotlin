@@ -2,6 +2,7 @@ package com.github.naz013.ui.agenda
 
 import com.github.naz013.ui.reminder.UiReminderListActions
 import com.github.naz013.ui.reminder.UiReminderListState
+import com.github.naz013.ui.common.selection.Selectable
 import com.github.naz013.ui.common.text.UiTextElement
 import org.threeten.bp.LocalDateTime
 
@@ -45,9 +46,13 @@ data class UiAgendaReminder(
   val tags: List<UiTextElement>,
   val actions: UiReminderListActions,
   val state: UiReminderListState,
-  val isSelected: Boolean = false,
+  /** Whether this row is currently open in the two-pane layout's detail pane. */
+  val isHighlighted: Boolean = false,
   val isOverdue: Boolean = false,
-) : UiAgendaItem
+  override val isSelected: Boolean = false,
+) : UiAgendaItem, Selectable<UiAgendaReminder> {
+  override fun withSelected(selected: Boolean) = copy(isSelected = selected)
+}
 
 data class UiAgendaBirthday(
   override val id: String,
@@ -58,8 +63,12 @@ data class UiAgendaBirthday(
   val color: Int,
   val contrastColor: Int,
   val dateFormatted: String,
-  val isSelected: Boolean = false,
-) : UiAgendaItem
+  /** Whether this row is currently open in the two-pane layout's detail pane. */
+  val isHighlighted: Boolean = false,
+  override val isSelected: Boolean = false,
+) : UiAgendaItem, Selectable<UiAgendaBirthday> {
+  override fun withSelected(selected: Boolean) = copy(isSelected = selected)
+}
 
 /** A read-only device/Google Calendar event, imported for display only - never a reminder. */
 data class UiAgendaGoogleCalendarEvent(

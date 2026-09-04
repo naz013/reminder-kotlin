@@ -1355,4 +1355,9 @@
     <string name="settings_search_keyword_auto_backup_interval">інтервал автоматичного резервного копіювання</string>
     <string name="settings_search_keyword_wifi_only_sync">синхронізація лише через wifi</string>
     <string name="settings_search_keyword_delete_cloud_backup">видалити хмарну резервну копію</string>
+    <string name="birthday_selected_count_one">Вибрано %1$d день народження</string>
+    <string name="birthday_selected_count_other">Вибрано %1$d днів народження</string>
+    <string name="birthdays_delete_selected_permanently">Видалити %1$d днів народження назавжди?</string>
+    <string name="agenda_delete_selected_permanently">Видалити %1$d елементів назавжди?</string>
+    <string name="selected_count">Вибрано %1$d</string>
 </resources>

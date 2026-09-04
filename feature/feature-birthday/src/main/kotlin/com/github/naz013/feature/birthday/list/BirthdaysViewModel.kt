@@ -3,6 +3,7 @@ package com.github.naz013.feature.birthday.list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -20,6 +21,12 @@ import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.agenda.AgendaMenuAction
 import com.github.naz013.ui.agenda.UiAgendaBirthday
 import com.github.naz013.ui.agenda.UiAgendaItemAdapter
+import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.selection.clearSelection
+import com.github.naz013.ui.common.selection.select
+import com.github.naz013.ui.common.selection.selectedCount
+import com.github.naz013.ui.common.selection.selectedIds
+import com.github.naz013.ui.common.selection.toggleSelection
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -30,11 +37,13 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 internal class BirthdaysViewModel(
   private val dispatcherProvider: DispatcherProvider,
+  private val textProvider: TextProvider,
   private val birthdayRepository: BirthdayRepository,
   private val tagRepository: TagRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
@@ -128,7 +137,52 @@ internal class BirthdaysViewModel(
   }
 
   fun onItemClick(item: UiAgendaBirthday) {
-    navigationEvent.emit(NavigationEvent.OpenPreview(item.id))
+    if (_state.value.selectedCount > 0) {
+      updateSelection { it.toggleSelection(item.id) }
+    } else {
+      navigationEvent.emit(NavigationEvent.OpenPreview(item.id))
+    }
+  }
+
+  fun onItemLongClick(id: String) {
+    updateSelection { it.select(id) }
+  }
+
+  fun onSelectionCancel() {
+    updateSelection { it.clearSelection() }
+  }
+
+  private fun updateSelection(transform: (List<UiAgendaBirthday>) -> List<UiAgendaBirthday>) {
+    _state.update { state ->
+      val listState = state.listState
+      if (listState !is ListState.Ready) return@update state
+      val items = transform(listState.items)
+      state.copy(listState = ListState.Ready(items), selectedCount = items.selectedCount())
+    }
+  }
+
+  private fun selectedIds(): Set<String> =
+    (_state.value.listState as? ListState.Ready)?.items.orEmpty().selectedIds()
+
+  fun onDeleteSelectedClick() {
+    val ids = selectedIds()
+    if (ids.isEmpty()) return
+    navigationEvent.emit(
+      NavigationEvent.ConfirmDeleteSelected(
+        ids = ids,
+        title = textProvider.getText(R.string.birthdays_delete_selected_permanently, ids.size),
+      ),
+    )
+  }
+
+  fun deleteSelectedBirthdays(ids: Set<String>) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      ids.forEach { deleteBirthdayUseCase(it) }
+
+      withContext(dispatcherProvider.main()) {
+        onSelectionCancel()
+      }
+    }
   }
 
   fun onMenuAction(
@@ -165,6 +219,7 @@ internal class BirthdaysViewModel(
     data class OpenPreview(val id: String) : NavigationEvent
     data class OpenEdit(val id: String) : NavigationEvent
     data object OpenNewBirthday : NavigationEvent
+    data class ConfirmDeleteSelected(val ids: Set<String>, val title: String) : NavigationEvent
   }
 
   companion object {

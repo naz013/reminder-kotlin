@@ -1352,4 +1352,9 @@
     <string name="settings_search_keyword_auto_backup_interval">interval for automatisk backup</string>
     <string name="settings_search_keyword_wifi_only_sync">synkroniser kun via wifi</string>
     <string name="settings_search_keyword_delete_cloud_backup">slet cloud-backup</string>
+    <string name="birthday_selected_count_one">%1$d fødselsdag valgt</string>
+    <string name="birthday_selected_count_other">%1$d fødselsdage valgt</string>
+    <string name="birthdays_delete_selected_permanently">Slet %1$d fødselsdage permanent?</string>
+    <string name="agenda_delete_selected_permanently">Slet %1$d emner permanent?</string>
+    <string name="selected_count">%1$d valgt</string>
 </resources>

@@ -1352,4 +1352,9 @@
     <string name="settings_search_keyword_auto_backup_interval">khoảng thời gian sao lưu tự động</string>
     <string name="settings_search_keyword_wifi_only_sync">đồng bộ chỉ qua wifi</string>
     <string name="settings_search_keyword_delete_cloud_backup">xóa bản sao lưu đám mây</string>
+    <string name="birthday_selected_count_one">%1$d sinh nhật được chọn</string>
+    <string name="birthday_selected_count_other">%1$d sinh nhật được chọn</string>
+    <string name="birthdays_delete_selected_permanently">Xóa vĩnh viễn %1$d sinh nhật?</string>
+    <string name="agenda_delete_selected_permanently">Xóa vĩnh viễn %1$d mục?</string>
+    <string name="selected_count">Đã chọn %1$d</string>
 </resources>

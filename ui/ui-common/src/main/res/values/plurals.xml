@@ -34,4 +34,9 @@
         <item quantity="one">@string/tag_selected_count_one</item>
         <item quantity="other">@string/tag_selected_count_other</item>
     </plurals>
+
+    <plurals name="birthdays_selected_count" >
+        <item quantity="one">@string/birthday_selected_count_one</item>
+        <item quantity="other">@string/birthday_selected_count_other</item>
+    </plurals>
 </resources>

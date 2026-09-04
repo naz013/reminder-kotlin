@@ -1354,4 +1354,9 @@
     <string name="settings_search_keyword_auto_backup_interval">자동 백업 주기</string>
     <string name="settings_search_keyword_wifi_only_sync">와이파이에서만 동기화</string>
     <string name="settings_search_keyword_delete_cloud_backup">클라우드 백업 삭제</string>
+    <string name="birthday_selected_count_one">생일 %1$d개 선택됨</string>
+    <string name="birthday_selected_count_other">생일 %1$d개 선택됨</string>
+    <string name="birthdays_delete_selected_permanently">%1$d개의 생일을 영구 삭제하시겠습니까?</string>
+    <string name="agenda_delete_selected_permanently">%1$d개의 항목을 영구 삭제하시겠습니까?</string>
+    <string name="selected_count">%1$d개 선택됨</string>
 </resources>

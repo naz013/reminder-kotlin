@@ -11,6 +11,7 @@ import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
 import com.github.naz013.logic.reminder.usecase.TogglePinnedReminderUseCase
 import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
+import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Tag
@@ -30,6 +31,7 @@ import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.agenda.AgendaCategory
 import com.github.naz013.ui.agenda.AgendaMenuAction
 import com.github.naz013.ui.agenda.UiAgendaBirthday
@@ -50,10 +52,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 internal class AgendaViewModel(
   private val dispatcherProvider: DispatcherProvider,
+  private val textProvider: TextProvider,
   private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
   private val birthdayRepository: BirthdayRepository,
@@ -276,11 +280,83 @@ internal class AgendaViewModel(
   }
 
   fun onItemClick(item: UiAgendaItem) {
+    if (_agendaScreenState.value.selectedCount > 0) {
+      updateSelection { it.toggleItemSelection(item.id) }
+      return
+    }
     when (item) {
       is UiAgendaReminder -> navigationEvent.value = Event(NavigationEvent.OpenReminderPreview(item.id))
       is UiAgendaBirthday -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayPreview(item.id))
       is UiAgendaHeader -> Unit
       is UiAgendaGoogleCalendarEvent -> Unit
+    }
+  }
+
+  fun onItemLongClick(id: String) {
+    updateSelection { it.selectItem(id) }
+  }
+
+  fun onSelectionCancel() {
+    updateSelection { it.clearItemSelection() }
+  }
+
+  private fun updateSelection(transform: (List<UiAgendaItem>) -> List<UiAgendaItem>) {
+    _agendaScreenState.update { state ->
+      val listState = state.listState
+      if (listState !is ListState.Ready) return@update state
+      val items = transform(listState.items)
+      state.copy(listState = ListState.Ready(items), selectedCount = items.selectedItemCount())
+    }
+  }
+
+  private fun selectedReminderIds(): Set<String> =
+    (_agendaScreenState.value.listState as? ListState.Ready)?.items.orEmpty()
+      .filterIsInstance<UiAgendaReminder>().filter { it.isSelected }.mapTo(mutableSetOf()) { it.id }
+
+  private fun selectedBirthdayIds(): Set<String> =
+    (_agendaScreenState.value.listState as? ListState.Ready)?.items.orEmpty()
+      .filterIsInstance<UiAgendaBirthday>().filter { it.isSelected }.mapTo(mutableSetOf()) { it.id }
+
+  fun onDeleteSelectedClick() {
+    val reminderIds = selectedReminderIds()
+    val birthdayIds = selectedBirthdayIds()
+    if (reminderIds.isEmpty() && birthdayIds.isEmpty()) return
+    navigationEvent.value = Event(
+      NavigationEvent.ConfirmDeleteSelected(
+        reminderIds = reminderIds,
+        birthdayIds = birthdayIds,
+        title = textProvider.getText(R.string.agenda_delete_selected_permanently, reminderIds.size + birthdayIds.size),
+      ),
+    )
+  }
+
+  fun deleteSelected(
+    reminderIds: Set<String>,
+    birthdayIds: Set<String>,
+  ) {
+    viewModelScope.launch(dispatcherProvider.io()) {
+      reminderIds.forEach { id -> reminderV2Repository.getById(id)?.let { deleteReminderUseCase(it) } }
+      birthdayIds.forEach { deleteBirthdayUseCase(it) }
+
+      withContext(dispatcherProvider.main()) {
+        onSelectionCancel()
+      }
+    }
+  }
+
+  fun onArchiveSelectedClick() {
+    val ids = selectedReminderIds()
+    if (ids.isEmpty()) return
+    navigationEvent.value = Event(NavigationEvent.ConfirmArchiveSelectedReminders(ids))
+  }
+
+  fun archiveSelectedReminders(ids: Set<String>) {
+    viewModelScope.launch(dispatcherProvider.io()) {
+      ids.forEach { moveReminderToArchiveUseCase(it) }
+
+      withContext(dispatcherProvider.main()) {
+        onSelectionCancel()
+      }
     }
   }
 
@@ -458,6 +534,16 @@ internal class AgendaViewModel(
 
     data class ConfirmDeleteBirthday(
       val id: String,
+    ) : NavigationEvent
+
+    data class ConfirmDeleteSelected(
+      val reminderIds: Set<String>,
+      val birthdayIds: Set<String>,
+      val title: String,
+    ) : NavigationEvent
+
+    data class ConfirmArchiveSelectedReminders(
+      val ids: Set<String>,
     ) : NavigationEvent
   }
 

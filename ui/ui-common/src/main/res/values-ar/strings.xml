@@ -1352,4 +1352,9 @@
     <string name="settings_search_keyword_auto_backup_interval">فاصل النسخ الاحتياطي التلقائي</string>
     <string name="settings_search_keyword_wifi_only_sync">مزامنة عبر واي فاي فقط</string>
     <string name="settings_search_keyword_delete_cloud_backup">حذف النسخة الاحتياطية السحابية</string>
+    <string name="birthday_selected_count_one">تم تحديد عيد ميلاد واحد</string>
+    <string name="birthday_selected_count_other">تم تحديد %1$d أعياد ميلاد</string>
+    <string name="birthdays_delete_selected_permanently">حذف %1$d أعياد الميلاد نهائيًا؟</string>
+    <string name="agenda_delete_selected_permanently">حذف %1$d عناصر نهائيًا؟</string>
+    <string name="selected_count">تم تحديد %1$d</string>
 </resources>
