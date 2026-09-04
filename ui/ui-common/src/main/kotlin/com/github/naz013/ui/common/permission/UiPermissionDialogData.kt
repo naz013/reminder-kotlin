@@ -35,19 +35,6 @@ data class UiPermissionDialogData(
         R.string.write_calendar_explanation,
       )
 
-    val READ_EXTERNAL =
-      UiPermissionDialogData(
-        Permissions.READ_EXTERNAL,
-        R.string.read_external_storage,
-        R.string.read_external_storage_explanation,
-      )
-    val WRITE_EXTERNAL =
-      UiPermissionDialogData(
-        Permissions.WRITE_EXTERNAL,
-        R.string.write_external_storage,
-        R.string.write_external_storage_explanation,
-      )
-
     val READ_CONTACTS =
       UiPermissionDialogData(
         Permissions.READ_CONTACTS,

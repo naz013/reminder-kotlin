@@ -32,7 +32,7 @@ internal class PostProcessOldNoteUseCase(
       val fileName = UUID.randomUUID().toString()
       val cachedPath = cacheByteArray(
         data = byteArray,
-        folder = "note_images/${oldNote.key}",
+        folder = oldNote.key,
         name = fileName
       )
       ImageFile(
@@ -50,7 +50,7 @@ internal class PostProcessOldNoteUseCase(
   }
 
   private fun cacheByteArray(data: ByteArray, folder: String, name: String): String {
-    val rootFolder = File(fileCacheProvider.getRootCacheDir(), folder)
+    val rootFolder = File(fileCacheProvider.getNoteImagesRootDir(), folder)
     if (!rootFolder.exists()) {
       rootFolder.mkdirs()
     }

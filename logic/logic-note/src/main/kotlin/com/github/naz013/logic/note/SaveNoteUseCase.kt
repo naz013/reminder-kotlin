@@ -32,8 +32,12 @@ class SaveNoteUseCase(
     id: String,
   ) {
     val oldList = noteRepository.getImagesByNoteId(id)
+    val keptFileNames = list.map { it.fileName }.toSet()
     for (image in oldList) {
       noteRepository.deleteImage(image.id)
+      if (image.fileName !in keptFileNames) {
+        noteImageRepository.deleteImageFile(id, image.fileName)
+      }
     }
     noteImageRepository
       .moveImagesToFolder(list, id)

@@ -15,8 +15,6 @@ object Permissions {
   const val GET_ACCOUNTS = Manifest.permission.GET_ACCOUNTS
   const val READ_CALENDAR = Manifest.permission.READ_CALENDAR
   const val WRITE_CALENDAR = Manifest.permission.WRITE_CALENDAR
-  const val WRITE_EXTERNAL = Manifest.permission.WRITE_EXTERNAL_STORAGE
-  const val READ_EXTERNAL = Manifest.permission.READ_EXTERNAL_STORAGE
   const val ACCESS_FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
   const val ACCESS_COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION
 
@@ -69,9 +67,6 @@ object Permissions {
   fun checkPermission(a: Context, permission: String): Boolean {
     return when {
       !Module.is15 && permission == FOREGROUND_SERVICE_LOCATION -> {
-        true
-      }
-      Module.is13 && (permission == READ_EXTERNAL || permission == WRITE_EXTERNAL) -> {
         true
       }
       else -> {

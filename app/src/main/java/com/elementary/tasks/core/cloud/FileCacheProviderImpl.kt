@@ -7,5 +7,7 @@ import java.io.File
 class FileCacheProviderImpl(
   private val context: Context,
 ) : FileCacheProvider {
-  override fun getRootCacheDir(): File = context.externalCacheDir ?: context.cacheDir
+  // Must match NoteImageRepositoryImpl.getImagesFolder() in feature:feature-note - same
+  // directory name, so a note's images end up in one place regardless of source.
+  override fun getNoteImagesRootDir(): File = context.getDir("note_images", Context.MODE_PRIVATE)
 }

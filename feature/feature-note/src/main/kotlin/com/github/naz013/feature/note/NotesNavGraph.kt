@@ -453,14 +453,11 @@ private fun NoteEditEntry(
       onColorTabClick = { viewModel.onTabClicked(EditTab.COLOR) },
       onImageTabClick = { viewModel.onTabClicked(EditTab.IMAGE) },
       onImagePickFromGallery = {
-        permissionRequester.request(Permissions.READ_EXTERNAL, onGranted = galleryPicker)
+        galleryPicker()
         viewModel.collapseExpandedTab()
       },
       onImagePickFromCamera = {
-        permissionRequester.request(
-          listOf(Permissions.CAMERA, Permissions.WRITE_EXTERNAL, Permissions.READ_EXTERNAL),
-          onGranted = { cameraPicker() },
-        )
+        permissionRequester.request(Permissions.CAMERA, onGranted = { cameraPicker() })
         viewModel.collapseExpandedTab()
       },
       onImagePickFromUrl = {

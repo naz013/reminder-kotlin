@@ -76,7 +76,6 @@ internal class BiErrorForUiAdapter(
     when (permission) {
       Permissions.CALL_PHONE -> context.getString(R.string.call_phone)
       Permissions.CAMERA -> context.getString(R.string.builder_camera)
-      Permissions.READ_EXTERNAL -> context.getString(R.string.read_external_storage)
       Permissions.ACCESS_COARSE_LOCATION -> context.getString(R.string.coarse_location)
       Permissions.ACCESS_FINE_LOCATION -> context.getString(R.string.fine_location)
       Permissions.BACKGROUND_LOCATION -> context.getString(R.string.access_location_in_background)
