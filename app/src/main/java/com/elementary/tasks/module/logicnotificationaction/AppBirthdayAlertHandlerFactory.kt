@@ -4,6 +4,7 @@ import com.elementary.tasks.core.services.action.birthday.BirthdayDataProvider
 import com.elementary.tasks.core.services.action.birthday.process.BirthdayNotificationHandler
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.domain.Birthday
 import com.github.naz013.logic.birthday.BirthdayPreferences
 import com.github.naz013.logic.notificationaction.ActionHandler
@@ -30,6 +31,7 @@ class AppBirthdayAlertHandlerFactory(
   private val birthdayPreferences: BirthdayPreferences,
   private val wearNotification: WearNotification,
   private val modelDateTimeFormatter: ModelDateTimeFormatter,
+  private val buildInfo: BuildInfo,
 ) : BirthdayAlertHandlerFactory {
   override fun create(canPlaySound: Boolean): ActionHandler<Birthday> =
     BirthdayNotificationHandler(
@@ -42,5 +44,6 @@ class AppBirthdayAlertHandlerFactory(
       wearNotification = wearNotification,
       modelDateTimeFormatter = modelDateTimeFormatter,
       style = if (canPlaySound) LoudNotificationStyle else SilentNotificationStyle,
+      buildInfo = buildInfo,
     )
 }

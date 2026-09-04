@@ -1,14 +1,15 @@
 package com.elementary.tasks.core.services.action.birthday
 
 import androidx.core.app.NotificationCompat
-import com.elementary.tasks.core.utils.BuildParams
 import com.github.naz013.feature.reminder.util.LED
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.TextProvider
+import com.github.naz013.common.system.BuildInfo
 
 class BirthdayDataProvider(
   private val textProvider: TextProvider,
   private val prefs: Prefs,
+  private val buildInfo: BuildInfo,
 ) {
   fun priority(priority: Int): Int =
     when (priority) {
@@ -20,9 +21,9 @@ class BirthdayDataProvider(
     }
 
   fun getLedColor(): Int {
-    var ledColor = LED.getLED(prefs.ledColor, BuildParams.isPro)
-    if (BuildParams.isPro && !prefs.isBirthdayGlobalEnabled) {
-      ledColor = LED.getLED(prefs.birthdayLedColor, BuildParams.isPro)
+    var ledColor = LED.getLED(prefs.ledColor, buildInfo.isPro)
+    if (buildInfo.isPro && !prefs.isBirthdayGlobalEnabled) {
+      ledColor = LED.getLED(prefs.birthdayLedColor, buildInfo.isPro)
     }
     return ledColor
   }

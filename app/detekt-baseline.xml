@@ -173,7 +173,7 @@
     <ID>CommentWrapping:NoteEditViewModel.kt$NoteEditViewModel$/*ignored for PNG*/</ID>
     <ID>ComplexCondition:NoteEditScreen.kt$range == null || range.first &lt; 0 || range.last &gt;= text.length || range.first &gt; range.last</ID>
     <ID>ConstructorParameterNaming:ICalDecomposer.kt$ICalDecomposer$private val ICalendarApi: ICalendarApi</ID>
-    <ID>CyclomaticComplexMethod:AssetsUtil.kt$AssetsUtil$fun getTypeface( context: Context, code: Int, ): Typeface?</ID>
+    <ID>CyclomaticComplexMethod:AssetsUtil.kt$AssetsUtil$fun getTypeface( context: Context, code: Int, isPro: Boolean, ): Typeface?</ID>
     <ID>CyclomaticComplexMethod:BiFactory.kt$BiFactory$suspend fun create(biType: BiType): BuilderItem&lt;*&gt;</ID>
     <ID>CyclomaticComplexMethod:BiFactoryICal.kt$BiFactoryICal$fun create(biType: BiType): BuilderItem&lt;*&gt;</ID>
     <ID>CyclomaticComplexMethod:BiTypeForUiAdapter.kt$BiTypeForUiAdapter$fun getUiString(biType: BiType): String</ID>

@@ -1,21 +1,22 @@
 package com.elementary.tasks.core.services.action.reminder
 
 import androidx.core.app.NotificationCompat
-import com.elementary.tasks.core.utils.BuildParams
 import com.github.naz013.feature.reminder.util.LED
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.TextProvider
+import com.github.naz013.common.system.BuildInfo
 
 class ReminderDataProvider(
   private val textProvider: TextProvider,
   private val prefs: Prefs,
+  private val buildInfo: BuildInfo,
 ) {
   fun getLedColor(reminderColor: Int): Int? {
-    return if (BuildParams.isPro && prefs.isLedEnabled) {
+    return if (buildInfo.isPro && prefs.isLedEnabled) {
       if (reminderColor != -1) {
         reminderColor
       } else {
-        LED.getLED(prefs.ledColor, BuildParams.isPro)
+        LED.getLED(prefs.ledColor, buildInfo.isPro)
       }
     } else {
       return null
