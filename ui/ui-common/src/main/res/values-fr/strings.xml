@@ -1293,4 +1293,12 @@
     <string name="do_not_remember_last_text_color">Ne pas se souvenir de la dernière couleur de texte utilisée</string>
     <string name="builder_quick_start_arriving_place">Arriver à un lieu</string>
     <string name="builder_quick_start_arriving_place_delayed">Arriver à un lieu (démarrage différé)</string>
+    <string name="google_calendar_events_color">Couleur des événements du calendrier</string>
+    <string name="google_calendar_event">Événement du calendrier</string>
+    <string name="delete_calendar_event_title">Supprimer l\'événement du calendrier</string>
+    <string name="delete_calendar_event_message">Retirer cet événement uniquement de l\'application, ou aussi le supprimer du calendrier de l\'appareil ?</string>
+    <string name="delete_from_app_only">Supprimer uniquement de l\'application</string>
+    <string name="delete_from_app_and_calendar">Supprimer de l\'application et du calendrier</string>
+    <string name="all_day">Toute la journée</string>
+    <string name="channel_for_calendar_event_notifications">Canal pour les notifications d\'événements Google Agenda</string>
 </resources>

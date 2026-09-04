@@ -5,6 +5,12 @@ plugins {
 
 android {
   namespace = "com.github.naz013.feature.calendar"
+
+  testOptions {
+    unitTests {
+      isReturnDefaultValues = true
+    }
+  }
 }
 
 dependencies {
@@ -18,6 +24,9 @@ dependencies {
   implementation(project(":data:repository-api"))
   implementation(project(":data:holidays-api"))
   implementation(project(":data:work-api"))
+  implementation(project(":data:googlecalendar-api"))
+  implementation(project(":data:scheduler-api"))
+  implementation(project(":data:notification-api"))
   implementation(project(":ui:ui-common"))
   implementation(project(":ui:ui-reminder"))
   implementation(project(":ui:ui-birthday"))
@@ -33,6 +42,7 @@ dependencies {
   implementation(libs.androidx.navigation3.runtime)
   implementation(libs.androidx.navigation3.ui)
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+  implementation(libs.compose.material3.adaptive.navigation3)
   implementation(libs.kotlinx.serialization.core)
   implementation(libs.threetenbp)
   implementation(libs.commons.lang3)

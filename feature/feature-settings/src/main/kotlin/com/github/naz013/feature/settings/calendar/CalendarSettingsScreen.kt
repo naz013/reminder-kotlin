@@ -21,6 +21,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
+import com.github.naz013.ui.common.compose.foundation.dialog.MultiChoiceDialog
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 
@@ -32,9 +33,11 @@ internal fun CalendarSettingsScreen(
   onTodayColorClick: () -> Unit,
   onReminderColorClick: () -> Unit,
   onBirthdayColorClick: () -> Unit,
+  onCalendarEventColorClick: () -> Unit,
   onColorOptionSelected: (Int) -> Unit,
   onSelectCalendarClick: () -> Unit,
-  onGoogleCalendarOptionSelected: (Int) -> Unit,
+  onGoogleCalendarOptionToggled: (Int) -> Unit,
+  onGoogleCalendarSelectionConfirmed: () -> Unit,
   onCalendarResetClick: () -> Unit,
   onExportToggle: () -> Unit,
   onScanToggle: () -> Unit,
@@ -86,12 +89,19 @@ internal fun CalendarSettingsScreen(
       onClick = onBirthdayColorClick,
       trailing = { ColorSwatch(state.birthdayColor) },
     )
+    SettingsItem(
+      title = stringResource(R.string.google_calendar_events_color),
+      icon = painterResource(R.drawable.ic_fluent_calendar_star),
+      dividerBottom = true,
+      onClick = onCalendarEventColorClick,
+      trailing = { ColorSwatch(state.calendarEventColor) },
+    )
 
     SettingsSectionHeader(stringResource(R.string.google_calendar))
 
     SettingsItem(
       title = stringResource(R.string.choose_calendar),
-      subtitle = state.selectedCalendarName,
+      subtitle = state.selectedCalendarsLabel,
       icon = painterResource(R.drawable.ic_fluent_calendar_star),
       dividerBottom = true,
       onClick = onSelectCalendarClick,
@@ -163,11 +173,12 @@ internal fun CalendarSettingsScreen(
     }
 
     is CalendarSettingsDialog.SelectGoogleCalendar -> {
-      SingleChoiceDialog(
+      MultiChoiceDialog(
         title = stringResource(R.string.choose_calendar),
         options = dialog.calendars.map { it.name.orEmpty() },
-        selectedIndex = dialog.selectedPosition,
-        onOptionSelected = onGoogleCalendarOptionSelected,
+        selectedIndices = dialog.selectedPositions,
+        onOptionToggled = onGoogleCalendarOptionToggled,
+        onConfirm = onGoogleCalendarSelectionConfirmed,
         onDismiss = onDialogDismiss,
       )
     }

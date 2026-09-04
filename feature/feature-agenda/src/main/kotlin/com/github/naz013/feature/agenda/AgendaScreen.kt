@@ -54,6 +54,7 @@ import com.github.naz013.ui.agenda.AgendaMenuAction
 import com.github.naz013.ui.agenda.BirthdayAgendaRow
 import com.github.naz013.ui.agenda.ReminderAgendaRow
 import com.github.naz013.ui.agenda.UiAgendaBirthday
+import com.github.naz013.ui.agenda.UiAgendaGoogleCalendarEvent
 import com.github.naz013.ui.agenda.UiAgendaHeader
 import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.ui.agenda.UiAgendaReminder
@@ -335,6 +336,10 @@ private fun AgendaList(
             modifier = Modifier.animateItem(),
           )
         }
+
+        // This screen's data source (UiAgendaItemAdapter.convertV2) only ever produces
+        // reminders/birthdays - Google Calendar events are shown in the Calendar screens instead.
+        is UiAgendaGoogleCalendarEvent -> Unit
       }
     }
   }

@@ -39,6 +39,7 @@ fun EntryProviderScope<NavKey>.calendarEntries(
   onOpenReminderPreview: (id: String) -> Unit,
   onOpenNewBirthday: (epochDay: Long) -> Unit,
   onOpenBirthdayPreview: (id: String) -> Unit,
+  onOpenGoogleCalendarEventPreview: (id: String) -> Unit,
   onOpenSettings: (screenTitle: String) -> Unit,
 ) {
   entry<CalendarNavKey.Home>(metadata = CalendarSidePanelHostMetadata) {
@@ -50,6 +51,7 @@ fun EntryProviderScope<NavKey>.calendarEntries(
       onOpenReminderPreview = onOpenReminderPreview,
       onOpenNewBirthday = onOpenNewBirthday,
       onOpenBirthdayPreview = onOpenBirthdayPreview,
+      onOpenGoogleCalendarEventPreview = onOpenGoogleCalendarEventPreview,
       onOpenSettings = onOpenSettings,
     )
   }
@@ -62,6 +64,7 @@ fun EntryProviderScope<NavKey>.calendarEntries(
       onOpenReminderPreview = onOpenReminderPreview,
       onOpenNewBirthday = onOpenNewBirthday,
       onOpenBirthdayPreview = onOpenBirthdayPreview,
+      onOpenGoogleCalendarEventPreview = onOpenGoogleCalendarEventPreview,
       onOpenSettings = onOpenSettings,
     )
   }
@@ -76,6 +79,7 @@ private fun CalendarHostEntry(
   onOpenReminderPreview: (id: String) -> Unit,
   onOpenNewBirthday: (epochDay: Long) -> Unit,
   onOpenBirthdayPreview: (id: String) -> Unit,
+  onOpenGoogleCalendarEventPreview: (id: String) -> Unit,
   onOpenSettings: (screenTitle: String) -> Unit,
 ) {
   val hostViewModel = koinViewModel<CalendarHostViewModel> { parametersOf(initialDateMillis, forcedMode) }
@@ -104,6 +108,7 @@ private fun CalendarHostEntry(
           onOpenReminderPreview = onOpenReminderPreview,
           onOpenNewBirthday = onOpenNewBirthday,
           onOpenBirthdayPreview = onOpenBirthdayPreview,
+          onOpenGoogleCalendarEventPreview = onOpenGoogleCalendarEventPreview,
         )
       }
   }
@@ -184,6 +189,7 @@ private fun TimelineMode(
   onOpenReminderPreview: (id: String) -> Unit,
   onOpenNewBirthday: (epochDay: Long) -> Unit,
   onOpenBirthdayPreview: (id: String) -> Unit,
+  onOpenGoogleCalendarEventPreview: (id: String) -> Unit,
 ) {
   val daySpan = mode.daySpan
   // Keyed by span (so Day/3-day/7-day each get their own retained view-model instance) and by
@@ -203,6 +209,7 @@ private fun TimelineMode(
     when (event) {
       is TimelineViewModel.NavigationEvent.OpenReminderPreview -> onOpenReminderPreview(event.id)
       is TimelineViewModel.NavigationEvent.OpenBirthdayPreview -> onOpenBirthdayPreview(event.id)
+      is TimelineViewModel.NavigationEvent.OpenGoogleCalendarEventPreview -> onOpenGoogleCalendarEventPreview(event.id)
       is TimelineViewModel.NavigationEvent.OpenNewReminder -> onOpenNewReminder(event.dateMillis)
       is TimelineViewModel.NavigationEvent.OpenNewBirthday -> onOpenNewBirthday(event.date.toEpochDay())
     }

@@ -1294,4 +1294,12 @@
     <string name="do_not_remember_last_text_color">Son kullanılan metin rengini hatırlama</string>
     <string name="builder_quick_start_arriving_place">Bir yere varma</string>
     <string name="builder_quick_start_arriving_place_delayed">Bir yere varma (gecikmeli başlangıç)</string>
+    <string name="google_calendar_events_color">Takvim etkinlikleri rengi</string>
+    <string name="google_calendar_event">Takvim etkinliği</string>
+    <string name="delete_calendar_event_title">Takvim etkinliğini sil</string>
+    <string name="delete_calendar_event_message">Bu etkinlik yalnızca uygulamadan mı kaldırılsın, yoksa cihaz takviminden de silinsin mi?</string>
+    <string name="delete_from_app_only">Yalnızca uygulamadan sil</string>
+    <string name="delete_from_app_and_calendar">Uygulamadan ve takvimden sil</string>
+    <string name="all_day">Tüm gün</string>
+    <string name="channel_for_calendar_event_notifications">Google Takvim etkinlik bildirimleri için kanal</string>
 </resources>

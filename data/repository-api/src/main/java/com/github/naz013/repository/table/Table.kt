@@ -6,6 +6,7 @@ enum class Table(val tableName: String) {
   RecurPreset("RecurPreset"),
   UsedTime("UsedTime"),
   CalendarEvent("CalendarEvent"),
+  GoogleCalendarEvent("GoogleCalendarEvent"),
   ReminderGroup("ReminderGroup"),
   Reminder("Reminder"),
   ReminderV2("ReminderV2"),

@@ -5,7 +5,8 @@ interface CalendarSettingsPreferences {
   var todayColor: Int
   var reminderColor: Int
   var birthdayColor: Int
-  var googleCalendarReminderId: Long
+  var calendarEventColor: Int
+  var selectedGoogleCalendarIds: Set<Long>
   var addRemindersToGoogleCalendar: Boolean
   var scanGoogleCalendarEvents: Boolean
   var publicHolidaysEnabled: Boolean

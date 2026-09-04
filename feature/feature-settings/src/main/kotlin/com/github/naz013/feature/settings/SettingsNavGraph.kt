@@ -364,6 +364,7 @@ private fun CalendarEntry(
       onTodayColorClick = viewModel::onTodayColorClick,
       onReminderColorClick = viewModel::onReminderColorClick,
       onBirthdayColorClick = viewModel::onBirthdayColorClick,
+      onCalendarEventColorClick = viewModel::onCalendarEventColorClick,
       onColorOptionSelected = viewModel::onColorOptionSelected,
       onSelectCalendarClick = {
         permissionRequester.request(
@@ -371,7 +372,8 @@ private fun CalendarEntry(
           onGranted = { viewModel.onSelectGoogleCalendarClicked() },
         )
       },
-      onGoogleCalendarOptionSelected = viewModel::onGoogleCalendarOptionSelected,
+      onGoogleCalendarOptionToggled = viewModel::onGoogleCalendarOptionToggled,
+      onGoogleCalendarSelectionConfirmed = viewModel::onGoogleCalendarSelectionConfirmed,
       onCalendarResetClick = viewModel::onCalendarReset,
       onExportToggle = viewModel::onExportToggle,
       onScanToggle = viewModel::onScanToggle,

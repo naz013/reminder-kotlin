@@ -1293,4 +1293,12 @@
     <string name="do_not_remember_last_text_color">마지막 사용 텍스트 색상 기억 안함</string>
     <string name="builder_quick_start_arriving_place">장소 도착</string>
     <string name="builder_quick_start_arriving_place_delayed">장소 도착 (지연 시작)</string>
+    <string name="google_calendar_events_color">캘린더 일정 색상</string>
+    <string name="google_calendar_event">캘린더 일정</string>
+    <string name="delete_calendar_event_title">캘린더 일정 삭제</string>
+    <string name="delete_calendar_event_message">이 일정을 앱에서만 삭제하시겠습니까, 아니면 기기 캘린더에서도 삭제하시겠습니까?</string>
+    <string name="delete_from_app_only">앱에서만 삭제</string>
+    <string name="delete_from_app_and_calendar">앱과 캘린더에서 삭제</string>
+    <string name="all_day">종일</string>
+    <string name="channel_for_calendar_event_notifications">Google 캘린더 일정 알림용 채널</string>
 </resources>

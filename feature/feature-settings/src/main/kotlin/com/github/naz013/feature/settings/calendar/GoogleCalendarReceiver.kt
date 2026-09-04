@@ -25,8 +25,8 @@ class GoogleCalendarReceiver :
       Logger.w(TAG, "Google Calendar scanning is disabled in preferences.")
       return
     }
-    if (prefs.googleCalendarReminderId <= 0) {
-      Logger.w(TAG, "No Google Calendar reminder ID set in preferences.")
+    if (prefs.selectedGoogleCalendarIds.isEmpty()) {
+      Logger.w(TAG, "No Google Calendars selected in preferences.")
       return
     }
     workScheduler.enqueue(

@@ -9,6 +9,8 @@ import com.github.naz013.feature.calendar.monthview.LoadMonthHolidaysUseCase
 import com.github.naz013.feature.calendar.monthview.monthgrid.MonthGridFactory
 import com.github.naz013.feature.calendar.occurrence.GetOccurrencesByDateRangeUseCase
 import com.github.naz013.feature.calendar.occurrence.MigrateExistingEventOccurrencesUseCase
+import com.github.naz013.feature.calendar.preview.DismissGoogleCalendarEventUseCase
+import com.github.naz013.feature.calendar.preview.GoogleCalendarEventPreviewViewModel
 import com.github.naz013.feature.calendar.timeline.GetRangeEventItemsUseCase
 import com.github.naz013.feature.calendar.timeline.GetRangeHolidaysUseCase
 import com.github.naz013.feature.calendar.timeline.TimelineViewModel
@@ -28,11 +30,11 @@ val featureCalendarModule =
     factory { CalendarAgendaItemFactory(get(), get(), get()) }
 
     factory { GetHistoryByDateRangeUseCase(get()) }
-    factory { GetRangeEventItemsUseCase(get(), get(), get(), get(), get(), get()) }
+    factory { GetRangeEventItemsUseCase(get(), get(), get(), get(), get(), get(), get()) }
     factory { GetRangeHolidaysUseCase(get(), get()) }
 
     factory { MonthGridFactory(get()) }
-    factory { LoadMonthEventsUseCase(get(), get(), get(), get(), get()) }
+    factory { LoadMonthEventsUseCase(get(), get(), get(), get(), get(), get()) }
     factory { LoadMonthHolidaysUseCase(get(), get()) }
     viewModelOf(::CalendarViewModel)
 
@@ -47,4 +49,9 @@ val featureCalendarModule =
     factory { GetOccurrencesByDateRangeUseCase(get()) }
 
     factory { AddReminderToHistoryUseCase(get(), get(), get()) }
+
+    factory { DismissGoogleCalendarEventUseCase(get(), get(), get(), get(), get()) }
+    viewModel { (id: String) ->
+      GoogleCalendarEventPreviewViewModel(id, get(), get(), get(), get())
+    }
   }

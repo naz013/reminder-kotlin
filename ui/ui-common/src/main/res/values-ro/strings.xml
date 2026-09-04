@@ -1293,4 +1293,12 @@
     <string name="do_not_remember_last_text_color">Nu reține ultima culoare de text folosită</string>
     <string name="builder_quick_start_arriving_place">Sosirea într-un loc</string>
     <string name="builder_quick_start_arriving_place_delayed">Sosirea într-un loc (pornire întârziată)</string>
+    <string name="google_calendar_events_color">Culoare evenimente din calendar</string>
+    <string name="google_calendar_event">Eveniment din calendar</string>
+    <string name="delete_calendar_event_title">Șterge evenimentul din calendar</string>
+    <string name="delete_calendar_event_message">Elimini acest eveniment doar din aplicație sau îl ștergi și din calendarul dispozitivului?</string>
+    <string name="delete_from_app_only">Șterge doar din aplicație</string>
+    <string name="delete_from_app_and_calendar">Șterge din aplicație și din calendar</string>
+    <string name="all_day">Toată ziua</string>
+    <string name="channel_for_calendar_event_notifications">Canal pentru notificările evenimentelor Google Calendar</string>
 </resources>

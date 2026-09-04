@@ -8,6 +8,7 @@ import com.github.naz013.repository.dao.BirthdaysDao
 import com.github.naz013.repository.dao.CalendarEventsDao
 import com.github.naz013.repository.dao.EventHistoryDao
 import com.github.naz013.repository.dao.EventOccurrenceDao
+import com.github.naz013.repository.dao.GoogleCalendarEventDao
 import com.github.naz013.repository.dao.GoogleTaskListsDao
 import com.github.naz013.repository.dao.GoogleTasksDao
 import com.github.naz013.repository.dao.GroupV2Dao
@@ -31,6 +32,7 @@ import com.github.naz013.repository.entity.BirthdayEntity
 import com.github.naz013.repository.entity.CalendarEventEntity
 import com.github.naz013.repository.entity.EventHistoryEntity
 import com.github.naz013.repository.entity.EventOccurrenceEntity
+import com.github.naz013.repository.entity.GoogleCalendarEventEntity
 import com.github.naz013.repository.entity.GoogleTaskEntity
 import com.github.naz013.repository.entity.GoogleTaskListEntity
 import com.github.naz013.repository.entity.GroupV2Entity
@@ -82,6 +84,7 @@ import com.github.naz013.repository.migrations.MIGRATION_35_36
 import com.github.naz013.repository.migrations.MIGRATION_36_37
 import com.github.naz013.repository.migrations.MIGRATION_37_38
 import com.github.naz013.repository.migrations.MIGRATION_38_39
+import com.github.naz013.repository.migrations.MIGRATION_39_40
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_4_5
 import com.github.naz013.repository.migrations.MIGRATION_5_6
@@ -115,9 +118,10 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     TagAssignmentEntity::class,
     HolidayEntity::class,
     RoutineEntity::class,
-    RoutineExecutionEntity::class
+    RoutineExecutionEntity::class,
+    GoogleCalendarEventEntity::class
   ],
-  version = 39,
+  version = 40,
   exportSchema = false
 )
 @Suppress("TooManyFunctions") // one DAO accessor per entity - inherent to this class, not a smell
@@ -146,6 +150,7 @@ internal abstract class AppDb : RoomDatabase() {
   abstract fun holidayDao(): HolidayDao
   abstract fun routineDao(): RoutineDao
   abstract fun routineExecutionDao(): RoutineExecutionDao
+  abstract fun googleCalendarEventDao(): GoogleCalendarEventDao
 
   companion object {
 
@@ -193,7 +198,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_35_36,
             MIGRATION_36_37,
             MIGRATION_37_38,
-            MIGRATION_38_39
+            MIGRATION_38_39,
+            MIGRATION_39_40
           )
           .allowMainThreadQueries()
           .build()

@@ -2,6 +2,8 @@ package com.github.naz013.logic.notificationaction
 
 import com.github.naz013.logic.notificationaction.birthday.BirthdayActionProcessor
 import com.github.naz013.logic.notificationaction.birthday.BirthdayCancelActionFactory
+import com.github.naz013.logic.notificationaction.calendarevent.GoogleCalendarEventActionProcessor
+import com.github.naz013.logic.notificationaction.calendarevent.GoogleCalendarEventCancelActionFactory
 import com.github.naz013.logic.notificationaction.reminder.ReminderActionProcessor
 import com.github.naz013.logic.notificationaction.reminder.ReminderCompleteSnoozeFactory
 import com.github.naz013.logic.notificationaction.reminder.ReminderRepeatProcessor
@@ -63,4 +65,7 @@ val logicNotificationActionModule = module {
       get(),
     )
   }
+
+  factoryOf(::GoogleCalendarEventCancelActionFactory)
+  factoryOf(::GoogleCalendarEventActionProcessor)
 }

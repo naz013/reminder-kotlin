@@ -168,6 +168,7 @@ class UiAgendaItemAdapter(
         }
 
       is UiAgendaBirthday -> dateHeaderText(item.dateTime.toLocalDate(), today, tomorrow)
+      is UiAgendaGoogleCalendarEvent -> dateHeaderText(item.dateTime.toLocalDate(), today, tomorrow)
       is UiAgendaHeader -> item.text
     }
 

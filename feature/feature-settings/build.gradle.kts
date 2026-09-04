@@ -31,6 +31,7 @@ dependencies {
   implementation(project(":data:cloud-api"))
   implementation(project(":data:sync"))
   implementation(project(":data:scheduler-api"))
+  implementation(project(":data:notification-api"))
   implementation(project(":data:files-api"))
   implementation(project(":extensions:appwidgets-api"))
   implementation(project(":logic:logic-demo-data"))

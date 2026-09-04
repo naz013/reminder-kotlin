@@ -18,12 +18,14 @@ import com.github.naz013.feature.workflow.RunWorkflowUnacknowledgedRulesTask
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.GoogleCalendarEvent
 import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.feature.googletask.work.SaveNewTaskTask
 import com.github.naz013.feature.googletask.work.UpdateTaskTask
 import com.github.naz013.feature.routine.RoutineRecurrenceResetTask
+import com.github.naz013.feature.settings.calendar.work.ScanGoogleCalendarEventsTask
 import com.github.naz013.logging.Logger
 import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.workapi.PeriodicWorkRequest
@@ -94,6 +96,18 @@ class JobScheduler(
       ),
     )
     Logger.i(TAG, "Scheduled routine recurrence reset check.")
+  }
+
+  override fun scheduleGoogleCalendarScanFallbackCheck() {
+    workScheduler.enqueuePeriodic(
+      PeriodicWorkRequest(
+        taskKey = ScanGoogleCalendarEventsTask.TASK_KEY,
+        tag = EVENT_GOOGLE_CALENDAR_SCAN_FALLBACK,
+        repeatIntervalMillis = TimeUnit.HOURS.toMillis(24),
+        flexIntervalMillis = TimeUnit.HOURS.toMillis(1),
+      ),
+    )
+    Logger.i(TAG, "Scheduled Google Calendar scan fallback check.")
   }
 
   override fun scheduleBirthdayPermanent() {
@@ -317,6 +331,24 @@ class JobScheduler(
     systemServiceProvider.provideAlarmManager()?.cancel(pendingIntent)
   }
 
+  override fun scheduleGoogleCalendarEvent(event: GoogleCalendarEvent) {
+    val millis = dateTimeManager.toMillis(dateTimeManager.utcToLocal(event.startDateTime))
+    scheduleWithAlarm(
+      action = AlarmReceiver.ACTION_CALENDAR_EVENT,
+      bundle =
+        Bundle().apply {
+          putString(IntentKeys.INTENT_ID, event.uuId)
+        },
+      millis = millis,
+      requestCode = event.uniqueId,
+    )
+  }
+
+  override fun cancelGoogleCalendarEvent(requestCode: Int) {
+    Logger.i(TAG, "cancelGoogleCalendarEvent: requestCode=$requestCode")
+    cancelReminder(requestCode)
+  }
+
   override fun scheduleSaveNewTask(
     googleTask: GoogleTask,
     uuId: String,
@@ -356,6 +388,7 @@ class JobScheduler(
     private const val EVENT_WORKFLOW_RULES_CHECK = "event_workflow_rules_check"
     private const val EVENT_WORKFLOW_UNACKNOWLEDGED_RULES_CHECK = "event_workflow_unacknowledged_rules_check"
     private const val EVENT_ROUTINE_RECURRENCE_RESET_CHECK = "event_routine_recurrence_reset_check"
+    private const val EVENT_GOOGLE_CALENDAR_SCAN_FALLBACK = "event_google_calendar_scan_fallback"
     private const val TAG = "JobScheduler"
 
     private const val INTERVAL_MINUTE = 60 * 1000L

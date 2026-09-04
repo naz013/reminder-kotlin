@@ -115,6 +115,10 @@ class BottomNavInitViewModel(
         jobScheduler.scheduleRoutineRecurrenceResetCheck()
         prefs.routineRecurrenceResetScheduled = true
       }
+      if (!prefs.googleCalendarScanFallbackScheduled) {
+        jobScheduler.scheduleGoogleCalendarScanFallbackCheck()
+        prefs.googleCalendarScanFallbackScheduled = true
+      }
     }
   }
 

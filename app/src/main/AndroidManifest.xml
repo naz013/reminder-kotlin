@@ -211,6 +211,9 @@
             android:name=".core.services.BirthdayActionReceiver"
             android:exported="false" />
         <receiver
+            android:name=".core.services.GoogleCalendarEventActionReceiver"
+            android:exported="false" />
+        <receiver
             android:name=".core.services.PermanentBirthdayReceiver"
             android:exported="false" />
         <receiver

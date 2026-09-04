@@ -36,6 +36,8 @@ import com.github.naz013.feature.agenda.AgendaNavKey
 import com.github.naz013.feature.agenda.agendaEntries
 import com.github.naz013.feature.calendar.monthview.CalendarNavKey
 import com.github.naz013.feature.calendar.monthview.calendarEntries
+import com.github.naz013.feature.calendar.preview.GoogleCalendarEventPreviewNavKey
+import com.github.naz013.feature.calendar.preview.googleCalendarEventPreviewEntries
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicker
 import com.elementary.tasks.eventaction.rememberEventActionDispatcher
 import com.github.naz013.feature.home.HomeNavKey
@@ -367,6 +369,9 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
             backStack.navigateToDetailPane(BirthdaysNavKey.Edit(prefillDateEpochDay = epochDay))
           },
           onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
+          onOpenGoogleCalendarEventPreview = { id ->
+            backStack.navigateToDetailPane(GoogleCalendarEventPreviewNavKey.Preview(id))
+          },
           onOpenSettings = { title -> backStack.add(SettingsNavKey.Calendar(title)) },
         )
         agendaEntries(
@@ -400,6 +405,11 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
           onSmsClick = { target, message -> smsSender.send(target, message) },
           onAppClick = { target -> applicationLauncher.launch(target) },
           onUrlClick = { target -> urlLauncher.launch(target) },
+        )
+        googleCalendarEventPreviewEntries(
+          backStack = backStack,
+          isRenderedAsDetailPane = isRenderedAsDetailPane,
+          isRenderedAsSidePanel = isRenderedAsSidePanel,
         )
         remindersArchiveEntries(
           backStack = backStack,

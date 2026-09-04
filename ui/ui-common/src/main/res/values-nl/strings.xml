@@ -1291,4 +1291,12 @@
     <string name="do_not_remember_last_text_color">Laatst gebruikte tekstkleur niet onthouden</string>
     <string name="builder_quick_start_arriving_place">Aankomen op een locatie</string>
     <string name="builder_quick_start_arriving_place_delayed">Aankomen op een locatie (vertraagde start)</string>
+    <string name="google_calendar_events_color">Kleur voor agenda-items</string>
+    <string name="google_calendar_event">Agenda-item</string>
+    <string name="delete_calendar_event_title">Agenda-item verwijderen</string>
+    <string name="delete_calendar_event_message">Dit item alleen uit de app verwijderen, of ook uit de apparaatagenda verwijderen?</string>
+    <string name="delete_from_app_only">Alleen uit de app verwijderen</string>
+    <string name="delete_from_app_and_calendar">Uit app en agenda verwijderen</string>
+    <string name="all_day">Hele dag</string>
+    <string name="channel_for_calendar_event_notifications">Kanaal voor Google Agenda-meldingen</string>
 </resources>

@@ -17,6 +17,8 @@ class AppCalendarPreferences(
     get() = prefs.birthdayLedColor
   override val reminderColor: Int
     get() = prefs.reminderColor
+  override val calendarEventColor: Int
+    get() = prefs.calendarEventColor
 
   // Stored as the enum name (not ordinal) so reordering CalendarViewMode can't silently remap a
   // saved preference; an unknown/empty stored value falls back to MONTH.

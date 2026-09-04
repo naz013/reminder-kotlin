@@ -49,6 +49,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.agenda.UiAgendaBirthday
+import com.github.naz013.ui.agenda.UiAgendaGoogleCalendarEvent
 import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.ui.agenda.UiAgendaReminder
 import com.github.naz013.ui.common.R
@@ -446,6 +447,10 @@ private fun TimelineEventBlock(
       container = Color(item.color)
       content = Color(item.contrastColor)
     }
+    is UiAgendaGoogleCalendarEvent -> {
+      container = MaterialTheme.colorScheme.tertiaryContainer
+      content = MaterialTheme.colorScheme.onTertiaryContainer
+    }
     else -> {
       container = MaterialTheme.colorScheme.primaryContainer
       content = MaterialTheme.colorScheme.onPrimaryContainer
@@ -455,12 +460,14 @@ private fun TimelineEventBlock(
     when (item) {
       is UiAgendaReminder -> item.mainText.text
       is UiAgendaBirthday -> item.name
+      is UiAgendaGoogleCalendarEvent -> item.title
       else -> ""
     }
   val subtitle =
     when (item) {
       is UiAgendaReminder -> item.secondaryText?.text
       is UiAgendaBirthday -> item.ageFormatted
+      is UiAgendaGoogleCalendarEvent -> item.calendarName.ifEmpty { null }
       else -> null
     }
 

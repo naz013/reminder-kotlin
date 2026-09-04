@@ -103,7 +103,9 @@ object PrefsConstants {
 
   const val GOOGLE_CALENDAR_SYNC = "google_calendar_sync"
   const val GOOGLE_CALENDAR_ID = "google_calendar_id"
+  const val GOOGLE_CALENDAR_IDS = "google_calendar_ids"
   const val GOOGLE_CALENDAR_ADD_REMINDERS = "google_calendar_add_reminders"
+  const val GOOGLE_CALENDAR_EVENT_COLOR = "google_calendar_event_color"
 
   const val GENERAL_HAPTICS = "settings.general.haptics"
 
@@ -125,6 +127,7 @@ object PrefsConstants {
   const val WORKFLOW_RULES_SCHEDULED = "workflow_rules_scheduled"
   const val WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED = "workflow_unacknowledged_rules_scheduled"
   const val ROUTINE_RECURRENCE_RESET_SCHEDULED = "routine_recurrence_reset_scheduled"
+  const val GOOGLE_CALENDAR_SCAN_FALLBACK_SCHEDULED = "google_calendar_scan_fallback_scheduled"
 
   const val PUBLIC_HOLIDAYS_ENABLED = "public_holidays_enabled"
   const val PUBLIC_HOLIDAYS_COUNTRY = "public_holidays_country"
