@@ -1,6 +1,6 @@
 package com.github.naz013.feature.home.scheduleview
 
-import androidx.compose.ui.graphics.Color
+import com.github.naz013.common.ContextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.home.HeaderNavigationSection
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -17,7 +17,10 @@ import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.repository.WorkflowRuleRepository
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.toColor
 import com.github.naz013.ui.common.icon.DrawableCatalog
+import com.github.naz013.ui.common.theme.ThemeProvider
+import com.github.naz013.ui.common.theme.ThemeProvider.AppColorIndex
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import org.threeten.bp.LocalDate
@@ -37,7 +40,13 @@ class GetNavigationItemsUseCase(
   private val routineConfig: RoutineConfig,
   private val workflowConfig: WorkflowConfig,
   private val homePreferences: HomePreferences,
+  private val contextProvider: ContextProvider,
 ) {
+
+  /** Themed per-section tint for the header tile's icon chip - distinct hues so the grid reads as
+   * tactic #2 ("color contrast for hierarchy") rather than one flat accent for every tile. */
+  private fun sectionColor(code: Int) = ThemeProvider.themedColor(contextProvider.themedContext, code).toColor()
+
   suspend operator fun invoke(
     scope: CoroutineScope,
     day: LocalDateTime,
@@ -76,7 +85,7 @@ class GetNavigationItemsUseCase(
         HeaderNavigationItem(
           titleRes = R.string.calendar,
           iconRes = DrawableCatalog.Fluent.Calendar,
-          color = Color.Green,
+          color = sectionColor(AppColorIndex.BLUE),
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenCalendar,
           subtitle = dateTimeManager.formatDayMonth(LocalDate.now()),
         )
@@ -89,7 +98,7 @@ class GetNavigationItemsUseCase(
         HeaderNavigationItem(
           titleRes = R.string.agenda,
           iconRes = DrawableCatalog.Fluent.CalendarAgenda,
-          color = Color.Green,
+          color = sectionColor(AppColorIndex.DEEP_PURPLE),
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenAgenda,
           subtitle = "${reminderV2Repository.count(active = true, removed = false)}",
         )
@@ -101,7 +110,7 @@ class GetNavigationItemsUseCase(
         HeaderNavigationItem(
           titleRes = R.string.notes,
           iconRes = DrawableCatalog.Fluent.Note,
-          color = Color.Green,
+          color = sectionColor(AppColorIndex.AMBER),
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
           subtitle = "${noteRepository.countAll(isArchived = false)}",
         )
@@ -113,7 +122,7 @@ class GetNavigationItemsUseCase(
         HeaderNavigationItem(
           titleRes = R.string.birthdays,
           iconRes = DrawableCatalog.Fluent.FoodCake,
-          color = Color.Green,
+          color = sectionColor(AppColorIndex.PINK),
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenBirthdays,
           subtitle = "${birthdayRepository.countAll()}",
         )
@@ -125,7 +134,7 @@ class GetNavigationItemsUseCase(
         HeaderNavigationItem(
           titleRes = R.string.google_tasks,
           iconRes = DrawableCatalog.Builder.GoogleTaskList,
-          color = Color.Green,
+          color = sectionColor(AppColorIndex.GREEN),
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGoogleTasks,
           subtitle = "${googleTaskRepository.countAll()}",
         )
@@ -137,7 +146,7 @@ class GetNavigationItemsUseCase(
         HeaderNavigationItem(
           titleRes = R.string.workflow_automations,
           iconRes = DrawableCatalog.Fluent.Branch,
-          color = Color.Green,
+          color = sectionColor(AppColorIndex.INDIGO),
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenWorkflowGallery,
           subtitle = "${workflowRuleRepository.getEnabled().size}",
         )
@@ -149,7 +158,7 @@ class GetNavigationItemsUseCase(
         HeaderNavigationItem(
           titleRes = R.string.groups,
           iconRes = DrawableCatalog.Fluent.Group,
-          color = Color.Green,
+          color = sectionColor(AppColorIndex.TEAL),
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGroups,
           subtitle = "${groupV2Repository.countAll()}",
         )
@@ -161,7 +170,7 @@ class GetNavigationItemsUseCase(
         HeaderNavigationItem(
           titleRes = R.string.tags,
           iconRes = DrawableCatalog.Builder.Tag,
-          color = Color.Green,
+          color = sectionColor(AppColorIndex.CYAN),
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenTags,
           subtitle = "${tagRepository.getAll().size}",
         )
@@ -173,7 +182,7 @@ class GetNavigationItemsUseCase(
         HeaderNavigationItem(
           titleRes = R.string.routines,
           iconRes = DrawableCatalog.Builder.Timer,
-          color = Color.Green,
+          color = sectionColor(AppColorIndex.ORANGE),
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenRoutines,
           subtitle = "${routineRepository.getAll().size}",
         )

@@ -58,6 +58,7 @@ data class HomeEvent(
   val time: LocalTime,
   val type: EventType,
   val isSelected: Boolean = false,
+  val isOverdue: Boolean = false,
 ) {
   data class EventAction(
     val icon: Int,

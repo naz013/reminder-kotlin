@@ -59,6 +59,7 @@ class GetActiveEventsForTheDayUseCase(
     group: GroupV2?,
   ): HomeEvent? {
     val dueDateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) } ?: return null
+    val now = dateTimeManager.getCurrentDateTime()
 
     val color =
       group
@@ -73,11 +74,12 @@ class GetActiveEventsForTheDayUseCase(
       description = createSecondaryText(reminder),
       groupName = group?.title,
       color = color,
-      remaining = modelDateTimeFormatter.getRemaining(dueDateTime, dateTimeManager.getCurrentDateTime()),
+      remaining = modelDateTimeFormatter.getRemaining(dueDateTime, now),
       date = dueDateTime.toLocalDate(),
       time = dueDateTime.toLocalTime(),
       action = getActionFromReminderAction(reminder.action),
       type = HomeEvent.EventType.Reminder,
+      isOverdue = !dueDateTime.isAfter(now),
     )
   }
 
