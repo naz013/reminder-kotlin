@@ -191,6 +191,7 @@ fun getDateAndTime(): String = DateTimeFormatter.ofPattern("MMMM dd, yyyy hh:mm:
 fun getDate(): String = DateTimeFormatter.ofPattern("MMMM dd, yyyy").format(LocalDateTime.now())
 
 dependencies {
+  implementation(project(":core:crypto"))
   implementation(project(":core:domain"))
 
   implementation(project(":core:logging-api"))

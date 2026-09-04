@@ -3,7 +3,8 @@ package com.elementary.tasks.core.utils.params
 import android.content.Context
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
-import com.elementary.tasks.core.utils.SuperUtil
+import com.github.naz013.crypto.Base64Obfuscator
+import com.github.naz013.crypto.PinHasher
 import com.github.naz013.domain.font.FontParams
 import com.github.naz013.domain.home.HeaderNavigationSection
 import com.github.naz013.feature.reminder.util.LED
@@ -195,10 +196,10 @@ class Prefs(
     val stored = getString(PrefsConstants.PIN_CODE)
     if (stored.isEmpty()) return false
     if (PinHasher.matches(pin, stored)) return true
-    // Pre-migration PINs were stored as reversible Base64 (SuperUtil.encrypt), never hashed.
+    // Pre-migration PINs were stored via Base64Obfuscator (reversible), never hashed.
     // Base64 output never contains ':', so a hashed value can't reach this branch.
     if (stored.contains(":")) return false
-    val legacyPin = SuperUtil.decrypt(stored)
+    val legacyPin = Base64Obfuscator.decode(stored)
     if (legacyPin.isEmpty() || legacyPin != pin) return false
     setPinCode(pin)
     return true
@@ -334,12 +335,12 @@ class Prefs(
     set(value) = putInt(PrefsConstants.TRACK_TIME, value)
 
   var driveUser: String
-    get() = SuperUtil.decrypt(getString(PrefsConstants.DRIVE_USER, "none"))
-    set(value) = putString(PrefsConstants.DRIVE_USER, SuperUtil.encrypt(value))
+    get() = Base64Obfuscator.decode(getString(PrefsConstants.DRIVE_USER, "none"))
+    set(value) = putString(PrefsConstants.DRIVE_USER, Base64Obfuscator.encode(value))
 
   var tasksUser: String
-    get() = SuperUtil.decrypt(getString(PrefsConstants.TASKS_USER))
-    set(value) = putString(PrefsConstants.TASKS_USER, SuperUtil.encrypt(value))
+    get() = Base64Obfuscator.decode(getString(PrefsConstants.TASKS_USER))
+    set(value) = putString(PrefsConstants.TASKS_USER, Base64Obfuscator.encode(value))
 
   var isSbIconEnabled: Boolean
     get() = getBoolean(PrefsConstants.STATUS_BAR_ICON)

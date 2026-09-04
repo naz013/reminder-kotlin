@@ -1,16 +1,16 @@
-package com.elementary.tasks.core.utils.params
+package com.github.naz013.crypto
 
-import android.util.Base64
 import java.security.SecureRandom
+import java.util.Base64
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
 /**
- * PBKDF2 is deliberately used instead of the reversible Base64 "encryption" this used to have
- * (SuperUtil.encrypt/decrypt) - the PIN only ever needs to be verified, never read back, so it
- * must not be recoverable from the stored value.
+ * One-way salted hashing for short PINs. PBKDF2 is deliberately used instead of a reversible
+ * encoding - a PIN only ever needs to be verified, never read back, so it must not be
+ * recoverable from the stored value.
  */
-internal object PinHasher {
+object PinHasher {
   private const val ALGORITHM = "PBKDF2WithHmacSHA256"
   private const val ITERATIONS = 15_000
   private const val KEY_LENGTH_BITS = 256
@@ -34,7 +34,7 @@ internal object PinHasher {
     return SecretKeyFactory.getInstance(ALGORITHM).generateSecret(spec).encoded
   }
 
-  private fun encode(bytes: ByteArray): String = Base64.encodeToString(bytes, Base64.NO_WRAP)
+  private fun encode(bytes: ByteArray): String = Base64.getEncoder().encodeToString(bytes)
 
-  private fun decode(string: String): ByteArray = Base64.decode(string, Base64.NO_WRAP)
+  private fun decode(string: String): ByteArray = Base64.getDecoder().decode(string)
 }
