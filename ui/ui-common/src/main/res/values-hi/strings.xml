@@ -1303,4 +1303,16 @@
     <string name="delete_from_app_and_calendar">ऐप और कैलेंडर दोनों से हटाएं</string>
     <string name="all_day">पूरा दिन</string>
     <string name="channel_for_calendar_event_notifications">Google कैलेंडर इवेंट सूचनाओं के लिए चैनल</string>
+    <string name="onboarding_skip">छोड़ें</string>
+    <string name="onboarding_welcome_title">Reminder में आपका स्वागत है</string>
+    <string name="onboarding_welcome_subtitle">जो ज़रूरी है उसे न चूकें — रिमाइंडर, नोट्स, जन्मदिन और कार्य, सब एक ही जगह।</string>
+    <string name="onboarding_capabilities_title">सिर्फ रिमाइंडर से कहीं ज़्यादा</string>
+    <string name="onboarding_capabilities_subtitle">नोट्स बनाएं, जन्मदिन ट्रैक करें, और सब कुछ एक ही कैलेंडर में देखें — सब कुछ पहले से मौजूद है।</string>
+    <string name="onboarding_notes_caption">नोट्स</string>
+    <string name="onboarding_birthdays_caption">जन्मदिन</string>
+    <string name="onboarding_calendar_caption">कैलेंडर</string>
+    <string name="onboarding_get_started_title">जब आप तैयार हों</string>
+    <string name="onboarding_get_started_subtitle">अभी अपना पहला रिमाइंडर बनाएं, या ऐप को स्वयं एक्सप्लोर करें।</string>
+    <string name="onboarding_create_first_reminder">अपना पहला रिमाइंडर बनाएं</string>
+    <string name="onboarding_maybe_later">बाद में</string>
 </resources>

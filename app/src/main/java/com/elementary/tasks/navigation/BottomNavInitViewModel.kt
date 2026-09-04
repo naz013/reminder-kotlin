@@ -30,7 +30,7 @@ import kotlinx.coroutines.withContext
 sealed interface BottomNavInitState {
   data object Loading : BottomNavInitState
 
-  data class Ready(val requiresLogin: Boolean) : BottomNavInitState
+  data class Ready(val requiresLogin: Boolean, val shouldShowOnboarding: Boolean) : BottomNavInitState
 }
 
 class BottomNavInitViewModel(
@@ -62,6 +62,9 @@ class BottomNavInitViewModel(
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
+      // Read before checkDb() flips isDemoDataInserted - false here means this is the device's
+      // very first-ever cold start, which is what decides whether onboarding is eligible at all.
+      val isFreshInstall = !prefs.isDemoDataInserted
       remotePrefs.awaitFeatureFlags()
       presetInitProcessor.run()
       checkIfAppUpdated()
@@ -75,10 +78,24 @@ class BottomNavInitViewModel(
         notifier.sendShowReminderPermanent()
       }
       val requiresLogin = prefs.hasPinCode
+      val shouldShowOnboarding = shouldShowOnboarding(isFreshInstall)
       withContext(dispatcherProvider.main()) {
-        _state.value = BottomNavInitState.Ready(requiresLogin = requiresLogin)
+        _state.value =
+          BottomNavInitState.Ready(requiresLogin = requiresLogin, shouldShowOnboarding = shouldShowOnboarding)
       }
     }
+  }
+
+  // Existing installs (anyone who wasn't a fresh install) must never see onboarding - silently
+  // mark it seen for them instead of showing a tour to people who already know the app.
+  private fun shouldShowOnboarding(isFreshInstall: Boolean): Boolean {
+    if (!isFreshInstall) {
+      if (!prefs.hasSeenOnboarding) {
+        prefs.hasSeenOnboarding = true
+      }
+      return false
+    }
+    return !prefs.hasSeenOnboarding
   }
 
   private suspend fun checkDb() {

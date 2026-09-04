@@ -56,6 +56,7 @@ class BottomNavInitViewModelTest : BaseTest() {
   private var occurrenceMigrated = false
   private var noteMigrationDone = false
   private var demoDataInserted = false
+  private var hasSeenOnboarding = false
   private val savedVersions = mutableSetOf<String>()
 
   private lateinit var viewModel: BottomNavInitViewModel
@@ -78,6 +79,8 @@ class BottomNavInitViewModelTest : BaseTest() {
     every { prefs.noteMigrationDone = any() } answers { noteMigrationDone = firstArg() }
     every { prefs.isDemoDataInserted } answers { demoDataInserted }
     every { prefs.isDemoDataInserted = any() } answers { demoDataInserted = firstArg() }
+    every { prefs.hasSeenOnboarding } answers { hasSeenOnboarding }
+    every { prefs.hasSeenOnboarding = any() } answers { hasSeenOnboarding = firstArg() }
     every { prefs.getVersion(any()) } answers { savedVersions.contains(firstArg()) }
     every { prefs.saveVersionBoolean(any()) } answers { savedVersions.add(firstArg()) }
     every { prefs.isSbNotificationEnabled } returns false
@@ -152,7 +155,9 @@ class BottomNavInitViewModelTest : BaseTest() {
     val vm = createViewModel()
 
     verify(exactly = 1) { notifier.sendShowReminderPermanent() }
-    assertEquals(BottomNavInitState.Ready(requiresLogin = true), vm.state.value)
+    // setUp()'s initial createViewModel() call already flipped isDemoDataInserted to true, so
+    // this second viewModel no longer sees a fresh install.
+    assertEquals(BottomNavInitState.Ready(requiresLogin = true, shouldShowOnboarding = false), vm.state.value)
   }
 
   @Test
@@ -163,7 +168,7 @@ class BottomNavInitViewModelTest : BaseTest() {
     val vm = createViewModel()
 
     verify(exactly = 0) { notifier.sendShowReminderPermanent() }
-    assertEquals(BottomNavInitState.Ready(requiresLogin = false), vm.state.value)
+    assertEquals(BottomNavInitState.Ready(requiresLogin = false, shouldShowOnboarding = false), vm.state.value)
   }
 
   @Test
@@ -266,5 +271,37 @@ class BottomNavInitViewModelTest : BaseTest() {
     createViewModel()
 
     coVerify(exactly = 1) { insertDemoDataUseCase() } // still just the one call from setUp()
+  }
+
+  @Test
+  fun `shows onboarding on a fresh install that has not seen it yet`() {
+    demoDataInserted = false
+    hasSeenOnboarding = false
+
+    val vm = createViewModel()
+
+    assertTrue(vm.state.value.let { it as BottomNavInitState.Ready }.shouldShowOnboarding)
+  }
+
+  @Test
+  fun `does not show onboarding again on a fresh install once already seen`() {
+    demoDataInserted = false
+    hasSeenOnboarding = true
+
+    val vm = createViewModel()
+
+    assertFalse(vm.state.value.let { it as BottomNavInitState.Ready }.shouldShowOnboarding)
+  }
+
+  @Test
+  fun `auto-marks onboarding as seen for an existing install instead of showing it`() {
+    // demoDataInserted already true means this is not the device's first-ever cold start.
+    demoDataInserted = true
+    hasSeenOnboarding = false
+
+    val vm = createViewModel()
+
+    assertFalse(vm.state.value.let { it as BottomNavInitState.Ready }.shouldShowOnboarding)
+    assertTrue(hasSeenOnboarding)
   }
 }

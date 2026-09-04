@@ -1299,4 +1299,16 @@
     <string name="delete_from_app_and_calendar">حذف من التطبيق والتقويم</string>
     <string name="all_day">طوال اليوم</string>
     <string name="channel_for_calendar_event_notifications">قناة إشعارات أحداث تقويم Google</string>
+    <string name="onboarding_skip">تخطي</string>
+    <string name="onboarding_welcome_title">مرحبًا بك في Reminder</string>
+    <string name="onboarding_welcome_subtitle">لا تفوّت ما يهم — التذكيرات والملاحظات وأعياد الميلاد والمهام، كلها في مكان واحد.</string>
+    <string name="onboarding_capabilities_title">أكثر من مجرد تذكيرات</string>
+    <string name="onboarding_capabilities_subtitle">دوّن الملاحظات، وتابع أعياد الميلاد، وشاهد كل شيء في تقويم واحد — كل ذلك مدمج بالفعل.</string>
+    <string name="onboarding_notes_caption">الملاحظات</string>
+    <string name="onboarding_birthdays_caption">أعياد الميلاد</string>
+    <string name="onboarding_calendar_caption">التقويم</string>
+    <string name="onboarding_get_started_title">جاهز عندما تكون مستعدًا</string>
+    <string name="onboarding_get_started_subtitle">أنشئ تذكيرك الأول الآن، أو استكشف التطبيق بنفسك.</string>
+    <string name="onboarding_create_first_reminder">إنشاء تذكيرك الأول</string>
+    <string name="onboarding_maybe_later">ربما لاحقًا</string>
 </resources>

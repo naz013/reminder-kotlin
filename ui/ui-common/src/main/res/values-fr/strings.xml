@@ -1301,4 +1301,16 @@
     <string name="delete_from_app_and_calendar">Supprimer de l\'application et du calendrier</string>
     <string name="all_day">Toute la journée</string>
     <string name="channel_for_calendar_event_notifications">Canal pour les notifications d\'événements Google Agenda</string>
+    <string name="onboarding_skip">Passer</string>
+    <string name="onboarding_welcome_title">Bienvenue dans Rappel</string>
+    <string name="onboarding_welcome_subtitle">Ne manquez plus rien d\'important — rappels, notes, anniversaires et tâches, le tout au même endroit.</string>
+    <string name="onboarding_capabilities_title">Bien plus que des rappels</string>
+    <string name="onboarding_capabilities_subtitle">Prenez des notes, suivez les anniversaires et retrouvez tout sur un seul calendrier — tout est intégré.</string>
+    <string name="onboarding_notes_caption">Notes</string>
+    <string name="onboarding_birthdays_caption">Anniversaires</string>
+    <string name="onboarding_calendar_caption">Calendrier</string>
+    <string name="onboarding_get_started_title">Prêt quand vous l\'êtes</string>
+    <string name="onboarding_get_started_subtitle">Créez votre premier rappel maintenant, ou explorez l\'application par vous-même.</string>
+    <string name="onboarding_create_first_reminder">Créer votre premier rappel</string>
+    <string name="onboarding_maybe_later">Plus tard</string>
 </resources>

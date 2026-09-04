@@ -1301,4 +1301,16 @@
     <string name="delete_from_app_and_calendar">Excluir do aplicativo e do calendário</string>
     <string name="all_day">Dia inteiro</string>
     <string name="channel_for_calendar_event_notifications">Canal para notificações de eventos do Google Agenda</string>
+    <string name="onboarding_skip">Pular</string>
+    <string name="onboarding_welcome_title">Bem-vindo ao Lembrete</string>
+    <string name="onboarding_welcome_subtitle">Não perca o que importa — lembretes, notas, aniversários e tarefas, tudo em um só lugar.</string>
+    <string name="onboarding_capabilities_title">Muito mais que lembretes</string>
+    <string name="onboarding_capabilities_subtitle">Faça anotações, acompanhe aniversários e veja tudo em um só calendário — tudo já incluído.</string>
+    <string name="onboarding_notes_caption">Notas</string>
+    <string name="onboarding_birthdays_caption">Aniversários</string>
+    <string name="onboarding_calendar_caption">Calendário</string>
+    <string name="onboarding_get_started_title">Pronto quando você estiver</string>
+    <string name="onboarding_get_started_subtitle">Crie seu primeiro lembrete agora ou explore o aplicativo por conta própria.</string>
+    <string name="onboarding_create_first_reminder">Criar seu primeiro lembrete</string>
+    <string name="onboarding_maybe_later">Talvez mais tarde</string>
 </resources>

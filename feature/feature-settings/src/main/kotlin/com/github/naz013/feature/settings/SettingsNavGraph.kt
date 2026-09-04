@@ -492,6 +492,7 @@ private fun DeveloperEntry(
       state = state,
       modifier = Modifier.padding(padding),
       onResetBannersClick = viewModel::onResetBannersClick,
+      onResetOnboardingClick = viewModel::onResetOnboardingClick,
       onBirthdayDialogClick = viewModel::onBirthdayDialogClick,
       onReminderDialogClick = viewModel::onReminderDialogClick,
       onRecurrenceTestClick = viewModel::onRecurrenceTestClick,

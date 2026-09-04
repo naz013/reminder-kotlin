@@ -1299,4 +1299,16 @@
     <string name="delete_from_app_and_calendar">Uit app en agenda verwijderen</string>
     <string name="all_day">Hele dag</string>
     <string name="channel_for_calendar_event_notifications">Kanaal voor Google Agenda-meldingen</string>
+    <string name="onboarding_skip">Overslaan</string>
+    <string name="onboarding_welcome_title">Welkom bij Reminder</string>
+    <string name="onboarding_welcome_subtitle">Mis nooit meer iets belangrijks — herinneringen, notities, verjaardagen en taken, allemaal op één plek.</string>
+    <string name="onboarding_capabilities_title">Meer dan alleen herinneringen</string>
+    <string name="onboarding_capabilities_subtitle">Maak notities, houd verjaardagen bij en bekijk alles in één agenda — allemaal ingebouwd.</string>
+    <string name="onboarding_notes_caption">Notities</string>
+    <string name="onboarding_birthdays_caption">Verjaardagen</string>
+    <string name="onboarding_calendar_caption">Agenda</string>
+    <string name="onboarding_get_started_title">Klaar wanneer jij dat bent</string>
+    <string name="onboarding_get_started_subtitle">Maak nu je eerste herinnering aan, of verken de app zelf.</string>
+    <string name="onboarding_create_first_reminder">Maak je eerste herinnering aan</string>
+    <string name="onboarding_maybe_later">Misschien later</string>
 </resources>

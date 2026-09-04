@@ -241,6 +241,7 @@ dependencies {
   implementation(project(":feature:feature-tags"))
   implementation(project(":feature:feature-insights"))
   implementation(project(":feature:feature-workflow"))
+  implementation(project(":feature:feature-onboarding"))
   implementation(project(":feature:feature-settings"))
   implementation(project(":feature:feature-places"))
   implementation(project(":feature:feature-routine"))

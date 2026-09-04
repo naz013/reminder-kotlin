@@ -29,6 +29,7 @@ internal fun DeveloperScreen(
   state: DeveloperState,
   modifier: Modifier = Modifier,
   onResetBannersClick: () -> Unit,
+  onResetOnboardingClick: () -> Unit,
   onBirthdayDialogClick: () -> Unit,
   onReminderDialogClick: () -> Unit,
   onRecurrenceTestClick: () -> Unit,
@@ -58,6 +59,12 @@ internal fun DeveloperScreen(
       title = "Reset banners state on Home Screen",
       subtitle = "Shows the privacy, login and what's new banners again",
       onClick = onResetBannersClick,
+    )
+    HorizontalDivider()
+    DeveloperOption(
+      title = "Reset Onboarding State",
+      subtitle = "Shows the first-run onboarding flow again on the next app launch",
+      onClick = onResetOnboardingClick,
     )
     HorizontalDivider()
     DeveloperOption(

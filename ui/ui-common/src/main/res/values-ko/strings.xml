@@ -1301,4 +1301,16 @@
     <string name="delete_from_app_and_calendar">앱과 캘린더에서 삭제</string>
     <string name="all_day">종일</string>
     <string name="channel_for_calendar_event_notifications">Google 캘린더 일정 알림용 채널</string>
+    <string name="onboarding_skip">건너뛰기</string>
+    <string name="onboarding_welcome_title">Reminder에 오신 것을 환영합니다</string>
+    <string name="onboarding_welcome_subtitle">중요한 일을 놓치지 마세요 — 알림, 메모, 생일, 할 일을 한곳에서 관리하세요.</string>
+    <string name="onboarding_capabilities_title">알림 그 이상</string>
+    <string name="onboarding_capabilities_subtitle">메모를 작성하고, 생일을 기록하고, 하나의 캘린더에서 모두 확인하세요 — 모두 기본 제공됩니다.</string>
+    <string name="onboarding_notes_caption">메모</string>
+    <string name="onboarding_birthdays_caption">생일</string>
+    <string name="onboarding_calendar_caption">캘린더</string>
+    <string name="onboarding_get_started_title">준비되셨나요</string>
+    <string name="onboarding_get_started_subtitle">지금 첫 번째 알림을 만들거나 앱을 직접 둘러보세요.</string>
+    <string name="onboarding_create_first_reminder">첫 번째 알림 만들기</string>
+    <string name="onboarding_maybe_later">나중에</string>
 </resources>

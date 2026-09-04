@@ -13,4 +13,8 @@ class DeveloperSettingsPreferencesImpl(
   override var lastVersionCode: Long
     get() = prefs.lastVersionCode
     set(value) { prefs.lastVersionCode = value }
+
+  override var hasSeenOnboarding: Boolean
+    get() = prefs.hasSeenOnboarding
+    set(value) { prefs.hasSeenOnboarding = value }
 }

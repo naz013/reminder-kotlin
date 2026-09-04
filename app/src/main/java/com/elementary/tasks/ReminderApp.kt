@@ -65,6 +65,7 @@ import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DataDestination
 import com.github.naz013.navigation.Destination
 import com.github.naz013.navigation.navigationApiModule
+import com.github.naz013.onboarding.onboardingModule
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.repository.repositoryModule
 import com.github.naz013.reviews.ReviewSdk
@@ -190,6 +191,7 @@ class ReminderApp :
           tagsModule,
           insightsModule,
           localBackupModule,
+          onboardingModule,
           uiGoogleTaskModule,
           logicScheduleModule,
           logicReminderModule,
