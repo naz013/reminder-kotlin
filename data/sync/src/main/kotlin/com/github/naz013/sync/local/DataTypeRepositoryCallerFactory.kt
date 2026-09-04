@@ -31,7 +31,7 @@ internal class DataTypeRepositoryCallerFactory(
       DataType.RemindersV2 -> ReminderV2RepositoryCaller(reminderV2Repository)
       DataType.Notes, DataType.NotesV2 -> NoteRepositoryCaller(noteRepository)
       DataType.Birthdays -> BirthdayRepositoryCaller(birthdayRepository)
-      DataType.Groups -> NoopRepositoryCaller()
+      DataType.Groups -> GroupV2RepositoryCaller(groupV2Repository)
       DataType.GroupsV2 -> GroupV2RepositoryCaller(groupV2Repository)
       DataType.Places -> PlaceRepositoryCaller(placeRepository)
       DataType.Settings -> NoopRepositoryCaller()

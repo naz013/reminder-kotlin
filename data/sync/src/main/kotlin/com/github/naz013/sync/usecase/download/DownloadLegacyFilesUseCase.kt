@@ -36,17 +36,18 @@ internal class DownloadLegacyFilesUseCase(
 
             val id = getLocalUuIdUseCase(data)
 
-            // Check for conflicts before updating
+            // Legacy migration is one-shot: whether or not the item already exists locally,
+            // the legacy cloud file is stale afterwards and must be removed so it isn't
+            // redownloaded and reprocessed on every subsequent sync.
             val existingData = caller.getById(id)
-            if (existingData != null) {
+            if (existingData == null) {
+              caller.insertOrUpdate(data)
+              dataPostProcessor.process(dataType, data)
+              caller.updateSyncState(id, SyncState.Synced)
+              Logger.i(TAG, "Downloaded and saved file: ${cloudFile.name} from source: ${cloudFileApi.source}")
+            } else {
               Logger.d(TAG, "Existing data found for id: $id, skipping update.")
-              continue
             }
-
-            caller.insertOrUpdate(data)
-            dataPostProcessor.process(dataType, data)
-            caller.updateSyncState(id, SyncState.Synced)
-            Logger.i(TAG, "Downloaded and saved file: ${cloudFile.name} from source: ${cloudFileApi.source}")
 
             cloudFileApi.deleteFile(cloudFile.name)
           }

@@ -40,14 +40,15 @@ internal class DownloadSingleUseCase(
       return SyncResult.Skipped
     }
     val cloudFile = newestResult.cloudFile
-    val existingMetadata = remoteFileMetadataRepository.getBySource(
-      source = newestResult.cloudFileApi.source.value
-    ).firstOrNull { it.name == cloudFile.name }
-    if (existingMetadata != null) {
-      if (cloudFile.lastModified <= existingMetadata.lastModified) {
-        Logger.d(TAG, "Local file is up to date for dataType: $dataType, id: $id, skipping download.")
-        return SyncResult.Skipped
-      }
+
+    // Local changes not yet uploaded must not be clobbered by an older-relative-to-them cloud
+    // copy - skip and let the next sync re-evaluate once they've been uploaded.
+    val pendingUploadIds = caller.getIdsByState(
+      listOf(SyncState.WaitingForUpload, SyncState.FailedToUpload)
+    )
+    if (id in pendingUploadIds) {
+      Logger.w(TAG, "Skipping download for dataType: $dataType, id: $id, local changes are still pending upload.")
+      return SyncResult.Skipped
     }
 
     val data = downloadCloudFileUseCase(
@@ -55,14 +56,6 @@ internal class DownloadSingleUseCase(
       cloudFile = cloudFile,
       dataType = dataType
     )
-
-    // Check for conflicts before updating
-    val existingData = caller.getById(id)
-    if (existingData != null) {
-      Logger.d(TAG, "Existing data found for id: $id, overwriting with cloud version")
-      // Cloud version takes precedence for now
-      // Future: Implement proper conflict resolution strategy
-    }
 
     caller.insertOrUpdate(data)
     dataPostProcessor.process(dataType, data)

@@ -2,7 +2,8 @@ package com.github.naz013.files
 
 enum class DataType(
   val fileExtension: String,
-  val isLegacy: Boolean = false
+  val isLegacy: Boolean = false,
+  val isProOnly: Boolean = false
 ) {
   Reminders(".ta2", isLegacy = true),
   RemindersV2(".ta3"),
@@ -18,6 +19,6 @@ enum class DataType(
   Tags(".tg1"),
   TagAssignments(".tga1"),
   Routines(".rt1"),
-  WorkflowRules(".wr1"),
-  WorkflowTemplates(".wt1")
+  WorkflowRules(".wr1", isProOnly = true),
+  WorkflowTemplates(".wt1", isProOnly = true)
 }
