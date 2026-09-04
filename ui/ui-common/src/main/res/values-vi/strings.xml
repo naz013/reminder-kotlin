@@ -1299,4 +1299,16 @@
     <string name="delete_from_app_and_calendar">Xóa khỏi ứng dụng và lịch</string>
     <string name="all_day">Cả ngày</string>
     <string name="channel_for_calendar_event_notifications">Kênh thông báo sự kiện Google Lịch</string>
+    <string name="onboarding_skip">Bỏ qua</string>
+    <string name="onboarding_welcome_title">Chào mừng đến với Reminder</string>
+    <string name="onboarding_welcome_subtitle">Không bỏ lỡ điều quan trọng — nhắc nhở, ghi chú, sinh nhật và công việc, tất cả trong một nơi.</string>
+    <string name="onboarding_capabilities_title">Hơn cả một ứng dụng nhắc nhở</string>
+    <string name="onboarding_capabilities_subtitle">Ghi chú, theo dõi sinh nhật và xem mọi thứ trên một lịch duy nhất — tất cả đã có sẵn.</string>
+    <string name="onboarding_notes_caption">Ghi chú</string>
+    <string name="onboarding_birthdays_caption">Sinh nhật</string>
+    <string name="onboarding_calendar_caption">Lịch</string>
+    <string name="onboarding_get_started_title">Sẵn sàng khi bạn sẵn sàng</string>
+    <string name="onboarding_get_started_subtitle">Tạo nhắc nhở đầu tiên ngay bây giờ, hoặc tự khám phá ứng dụng.</string>
+    <string name="onboarding_create_first_reminder">Tạo nhắc nhở đầu tiên của bạn</string>
+    <string name="onboarding_maybe_later">Có thể để sau</string>
 </resources>

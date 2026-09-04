@@ -1299,4 +1299,16 @@
     <string name="delete_from_app_and_calendar">ลบออกจากแอปและปฏิทิน</string>
     <string name="all_day">ทั้งวัน</string>
     <string name="channel_for_calendar_event_notifications">ช่องทางการแจ้งเตือนกิจกรรม Google ปฏิทิน</string>
+    <string name="onboarding_skip">ข้าม</string>
+    <string name="onboarding_welcome_title">ยินดีต้อนรับสู่ Reminder</string>
+    <string name="onboarding_welcome_subtitle">ไม่พลาดสิ่งสำคัญ — การแจ้งเตือน บันทึก วันเกิด และงานต่างๆ ในที่เดียว</string>
+    <string name="onboarding_capabilities_title">มากกว่าการแจ้งเตือน</string>
+    <string name="onboarding_capabilities_subtitle">จดบันทึก ติดตามวันเกิด และดูทุกอย่างในปฏิทินเดียว — มีให้พร้อมใช้งานทั้งหมด</string>
+    <string name="onboarding_notes_caption">บันทึก</string>
+    <string name="onboarding_birthdays_caption">วันเกิด</string>
+    <string name="onboarding_calendar_caption">ปฏิทิน</string>
+    <string name="onboarding_get_started_title">พร้อมเมื่อคุณพร้อม</string>
+    <string name="onboarding_get_started_subtitle">สร้างการแจ้งเตือนแรกของคุณตอนนี้ หรือสำรวจแอปด้วยตัวเอง</string>
+    <string name="onboarding_create_first_reminder">สร้างการแจ้งเตือนแรกของคุณ</string>
+    <string name="onboarding_maybe_later">อาจจะทีหลัง</string>
 </resources>

@@ -1302,4 +1302,16 @@
     <string name="delete_from_app_and_calendar">Изтриване от приложението и календара</string>
     <string name="all_day">Цял ден</string>
     <string name="channel_for_calendar_event_notifications">Канал за известия за събития от Google Календар</string>
+    <string name="onboarding_skip">Пропускане</string>
+    <string name="onboarding_welcome_title">Добре дошли в Reminder</string>
+    <string name="onboarding_welcome_subtitle">Не пропускайте важното — напомняния, бележки, рождени дни и задачи, всичко на едно място.</string>
+    <string name="onboarding_capabilities_title">Повече от напомняния</string>
+    <string name="onboarding_capabilities_subtitle">Правете бележки, следете рождени дни и вижте всичко в един календар — всичко е вградено.</string>
+    <string name="onboarding_notes_caption">Бележки</string>
+    <string name="onboarding_birthdays_caption">Рождени дни</string>
+    <string name="onboarding_calendar_caption">Календар</string>
+    <string name="onboarding_get_started_title">Готови сме, когато сте и вие</string>
+    <string name="onboarding_get_started_subtitle">Създайте първото си напомняне сега или разгледайте приложението сами.</string>
+    <string name="onboarding_create_first_reminder">Създайте първото си напомняне</string>
+    <string name="onboarding_maybe_later">Може би по-късно</string>
 </resources>

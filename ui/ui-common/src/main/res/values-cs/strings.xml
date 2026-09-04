@@ -1301,4 +1301,16 @@
     <string name="delete_from_app_and_calendar">Odstranit z aplikace i kalendáře</string>
     <string name="all_day">Celý den</string>
     <string name="channel_for_calendar_event_notifications">Kanál pro oznámení událostí Google Kalendáře</string>
+    <string name="onboarding_skip">Přeskočit</string>
+    <string name="onboarding_welcome_title">Vítejte v aplikaci Reminder</string>
+    <string name="onboarding_welcome_subtitle">Nenechte si ujít, co je důležité — připomenutí, poznámky, narozeniny a úkoly na jednom místě.</string>
+    <string name="onboarding_capabilities_title">Víc než jen připomenutí</string>
+    <string name="onboarding_capabilities_subtitle">Pište si poznámky, sledujte narozeniny a mějte vše v jednom kalendáři — vše je součástí aplikace.</string>
+    <string name="onboarding_notes_caption">Poznámky</string>
+    <string name="onboarding_birthdays_caption">Narozeniny</string>
+    <string name="onboarding_calendar_caption">Kalendář</string>
+    <string name="onboarding_get_started_title">Připraveni, až budete vy</string>
+    <string name="onboarding_get_started_subtitle">Vytvořte si první připomenutí hned, nebo si aplikaci prozkoumejte sami.</string>
+    <string name="onboarding_create_first_reminder">Vytvořit první připomenutí</string>
+    <string name="onboarding_maybe_later">Možná později</string>
 </resources>

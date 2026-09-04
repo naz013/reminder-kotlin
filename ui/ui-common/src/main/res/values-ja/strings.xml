@@ -1301,4 +1301,16 @@
     <string name="delete_from_app_and_calendar">アプリとカレンダーの両方から削除</string>
     <string name="all_day">終日</string>
     <string name="channel_for_calendar_event_notifications">Google カレンダーの予定通知用チャンネル</string>
+    <string name="onboarding_skip">スキップ</string>
+    <string name="onboarding_welcome_title">Reminderへようこそ</string>
+    <string name="onboarding_welcome_subtitle">大切な予定を見逃さない — リマインダー、メモ、誕生日、タスクをひとつにまとめて管理できます。</string>
+    <string name="onboarding_capabilities_title">リマインダーだけじゃない</string>
+    <string name="onboarding_capabilities_subtitle">メモを取り、誕生日を管理し、すべてを一つのカレンダーで確認できます — すべて標準搭載です。</string>
+    <string name="onboarding_notes_caption">メモ</string>
+    <string name="onboarding_birthdays_caption">誕生日</string>
+    <string name="onboarding_calendar_caption">カレンダー</string>
+    <string name="onboarding_get_started_title">準備ができたら</string>
+    <string name="onboarding_get_started_subtitle">今すぐ最初のリマインダーを作成するか、自分でアプリを試してみましょう。</string>
+    <string name="onboarding_create_first_reminder">最初のリマインダーを作成</string>
+    <string name="onboarding_maybe_later">後で</string>
 </resources>

@@ -1301,4 +1301,16 @@
     <string name="delete_from_app_and_calendar">Elimina dall\'app e dal calendario</string>
     <string name="all_day">Tutto il giorno</string>
     <string name="channel_for_calendar_event_notifications">Canale per le notifiche degli eventi di Google Calendar</string>
+    <string name="onboarding_skip">Salta</string>
+    <string name="onboarding_welcome_title">Benvenuto in Reminder</string>
+    <string name="onboarding_welcome_subtitle">Non perdere ciò che conta — promemoria, note, compleanni e attività, tutto in un unico posto.</string>
+    <string name="onboarding_capabilities_title">Molto più che promemoria</string>
+    <string name="onboarding_capabilities_subtitle">Prendi appunti, tieni traccia dei compleanni e vedi tutto in un unico calendario — è già tutto incluso.</string>
+    <string name="onboarding_notes_caption">Note</string>
+    <string name="onboarding_birthdays_caption">Compleanni</string>
+    <string name="onboarding_calendar_caption">Calendario</string>
+    <string name="onboarding_get_started_title">Pronto quando lo sei tu</string>
+    <string name="onboarding_get_started_subtitle">Crea subito il tuo primo promemoria, oppure esplora l\'app da solo.</string>
+    <string name="onboarding_create_first_reminder">Crea il tuo primo promemoria</string>
+    <string name="onboarding_maybe_later">Forse più tardi</string>
 </resources>

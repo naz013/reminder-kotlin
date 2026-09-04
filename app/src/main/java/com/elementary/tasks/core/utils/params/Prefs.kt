@@ -594,6 +594,10 @@ class Prefs(
     get() = getBoolean(PrefsConstants.DEMO_DATA_INSERTED, false)
     set(value) = putBoolean(PrefsConstants.DEMO_DATA_INSERTED, value)
 
+  var hasSeenOnboarding: Boolean
+    get() = getBoolean(PrefsConstants.HAS_SEEN_ONBOARDING, false)
+    set(value) = putBoolean(PrefsConstants.HAS_SEEN_ONBOARDING, value)
+
   var workflowRulesScheduled: Boolean
     get() = getBoolean(PrefsConstants.WORKFLOW_RULES_SCHEDULED, false)
     set(value) = putBoolean(PrefsConstants.WORKFLOW_RULES_SCHEDULED, value)

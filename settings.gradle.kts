@@ -105,6 +105,7 @@ include(":feature:feature-workflow")
 include(":feature:feature-settings")
 include(":feature:feature-places")
 include(":feature:feature-routine")
+include(":feature:feature-onboarding")
 
 // extensions - cross-feature, flavor/runtime-gated additions app pulls in as a unit
 include(":extensions:appwidgets")

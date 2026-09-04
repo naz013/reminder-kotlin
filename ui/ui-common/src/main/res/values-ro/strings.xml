@@ -1301,4 +1301,16 @@
     <string name="delete_from_app_and_calendar">Șterge din aplicație și din calendar</string>
     <string name="all_day">Toată ziua</string>
     <string name="channel_for_calendar_event_notifications">Canal pentru notificările evenimentelor Google Calendar</string>
+    <string name="onboarding_skip">Omite</string>
+    <string name="onboarding_welcome_title">Bun venit în Reminder</string>
+    <string name="onboarding_welcome_subtitle">Nu rata ce contează — mementouri, notițe, zile de naștere și sarcini, toate într-un singur loc.</string>
+    <string name="onboarding_capabilities_title">Mai mult decât mementouri</string>
+    <string name="onboarding_capabilities_subtitle">Scrie notițe, urmărește zilele de naștere și vezi totul într-un singur calendar — totul este deja inclus.</string>
+    <string name="onboarding_notes_caption">Notițe</string>
+    <string name="onboarding_birthdays_caption">Zile de naștere</string>
+    <string name="onboarding_calendar_caption">Calendar</string>
+    <string name="onboarding_get_started_title">Gata când ești și tu</string>
+    <string name="onboarding_get_started_subtitle">Creează-ți primul memento acum, sau explorează aplicația singur.</string>
+    <string name="onboarding_create_first_reminder">Creează-ți primul memento</string>
+    <string name="onboarding_maybe_later">Poate mai târziu</string>
 </resources>

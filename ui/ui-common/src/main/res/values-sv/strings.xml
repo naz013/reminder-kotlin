@@ -1299,4 +1299,16 @@
     <string name="delete_from_app_and_calendar">Ta bort från appen och kalendern</string>
     <string name="all_day">Hela dagen</string>
     <string name="channel_for_calendar_event_notifications">Kanal för aviseringar om Google Kalender-händelser</string>
+    <string name="onboarding_skip">Hoppa över</string>
+    <string name="onboarding_welcome_title">Välkommen till Reminder</string>
+    <string name="onboarding_welcome_subtitle">Missa aldrig det som betyder något — påminnelser, anteckningar, födelsedagar och uppgifter, allt på ett ställe.</string>
+    <string name="onboarding_capabilities_title">Mer än bara påminnelser</string>
+    <string name="onboarding_capabilities_subtitle">Skriv anteckningar, håll koll på födelsedagar och se allt i en kalender — allt är inbyggt.</string>
+    <string name="onboarding_notes_caption">Anteckningar</string>
+    <string name="onboarding_birthdays_caption">Födelsedagar</string>
+    <string name="onboarding_calendar_caption">Kalender</string>
+    <string name="onboarding_get_started_title">Redo när du är det</string>
+    <string name="onboarding_get_started_subtitle">Skapa din första påminnelse nu, eller utforska appen själv.</string>
+    <string name="onboarding_create_first_reminder">Skapa din första påminnelse</string>
+    <string name="onboarding_maybe_later">Kanske senare</string>
 </resources>

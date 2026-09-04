@@ -1300,4 +1300,16 @@
     <string name="delete_from_app_and_calendar">Удалить из приложения и календаря</string>
     <string name="all_day">Весь день</string>
     <string name="channel_for_calendar_event_notifications">Канал для уведомлений о событиях Google Календаря</string>
+    <string name="onboarding_skip">Пропустить</string>
+    <string name="onboarding_welcome_title">Добро пожаловать в Напоминание</string>
+    <string name="onboarding_welcome_subtitle">Не пропускайте важное — напоминания, заметки, дни рождения и задачи в одном месте.</string>
+    <string name="onboarding_capabilities_title">Не только напоминания</string>
+    <string name="onboarding_capabilities_subtitle">Делайте заметки, отслеживайте дни рождения и смотрите всё в одном календаре — всё уже встроено.</string>
+    <string name="onboarding_notes_caption">Заметки</string>
+    <string name="onboarding_birthdays_caption">Дни рождения</string>
+    <string name="onboarding_calendar_caption">Календарь</string>
+    <string name="onboarding_get_started_title">Готовы начать?</string>
+    <string name="onboarding_get_started_subtitle">Создайте своё первое напоминание сейчас или изучите приложение самостоятельно.</string>
+    <string name="onboarding_create_first_reminder">Создать первое напоминание</string>
+    <string name="onboarding_maybe_later">Может быть позже</string>
 </resources>

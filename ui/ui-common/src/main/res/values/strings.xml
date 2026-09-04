@@ -1305,4 +1305,16 @@
     <string name="delete_from_app_and_calendar">Delete from app and calendar</string>
     <string name="all_day">All day</string>
     <string name="channel_for_calendar_event_notifications">Channel for Google Calendar event notifications</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_welcome_title">Welcome to Reminder</string>
+    <string name="onboarding_welcome_subtitle">Never miss what matters — reminders, notes, birthdays and tasks, all in one place.</string>
+    <string name="onboarding_capabilities_title">More than reminders</string>
+    <string name="onboarding_capabilities_subtitle">Take notes, track birthdays, and see everything on one calendar — all built in.</string>
+    <string name="onboarding_notes_caption">Notes</string>
+    <string name="onboarding_birthdays_caption">Birthdays</string>
+    <string name="onboarding_calendar_caption">Calendar</string>
+    <string name="onboarding_get_started_title">Ready when you are</string>
+    <string name="onboarding_get_started_subtitle">Create your first reminder now, or explore the app on your own.</string>
+    <string name="onboarding_create_first_reminder">Create your first reminder</string>
+    <string name="onboarding_maybe_later">Maybe later</string>
 </resources>

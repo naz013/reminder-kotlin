@@ -87,6 +87,8 @@ import com.github.naz013.group.groupsEntries
 import com.github.naz013.insights.insightsEntries
 import com.github.naz013.localbackup.LocalBackupNavKey
 import com.github.naz013.localbackup.localBackupEntries
+import com.github.naz013.onboarding.OnboardingNavKey
+import com.github.naz013.onboarding.onboardingEntries
 import com.github.naz013.feature.routine.RoutineNavKey
 import com.github.naz013.feature.routine.routineEntries
 import com.github.naz013.tags.TagsNavKey
@@ -130,9 +132,10 @@ import org.koin.compose.koinInject
  */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
+fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: Boolean = false) {
   val context = LocalContext.current
-  val backStack = rememberNavBackStack(HomeNavKey.Main, *initialKeys.toTypedArray())
+  val startKey = if (shouldShowOnboarding) OnboardingNavKey.Main else HomeNavKey.Main
+  val backStack = rememberNavBackStack(startKey, *initialKeys.toTypedArray())
   val appNavBridge = rememberAppNavBridge()
   val eventActionDispatcher = rememberEventActionDispatcher()
   val phoneCaller = rememberPhoneCaller()
@@ -461,6 +464,18 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList()) {
         )
         insightsEntries(backStack)
         localBackupEntries(backStack)
+        onboardingEntries(
+          backStack = backStack,
+          onFinished = {
+            backStack.clear()
+            backStack.add(HomeNavKey.Main)
+          },
+          onCreateFirstReminder = {
+            backStack.clear()
+            backStack.add(HomeNavKey.Main)
+            backStack.add(BuildReminderNavKey.Main())
+          },
+        )
       },
   )
 }

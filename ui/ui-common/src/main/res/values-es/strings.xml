@@ -1301,4 +1301,16 @@
     <string name="delete_from_app_and_calendar">Eliminar de la aplicación y del calendario</string>
     <string name="all_day">Todo el día</string>
     <string name="channel_for_calendar_event_notifications">Canal para notificaciones de eventos de Google Calendar</string>
+    <string name="onboarding_skip">Omitir</string>
+    <string name="onboarding_welcome_title">Bienvenido a Recordatorio</string>
+    <string name="onboarding_welcome_subtitle">No te pierdas lo importante — recordatorios, notas, cumpleaños y tareas, todo en un solo lugar.</string>
+    <string name="onboarding_capabilities_title">Mucho más que recordatorios</string>
+    <string name="onboarding_capabilities_subtitle">Toma notas, controla cumpleaños y ve todo en un solo calendario — todo ya está incluido.</string>
+    <string name="onboarding_notes_caption">Notas</string>
+    <string name="onboarding_birthdays_caption">Cumpleaños</string>
+    <string name="onboarding_calendar_caption">Calendario</string>
+    <string name="onboarding_get_started_title">Listo cuando tú lo estés</string>
+    <string name="onboarding_get_started_subtitle">Crea tu primer recordatorio ahora, o explora la aplicación por tu cuenta.</string>
+    <string name="onboarding_create_first_reminder">Crear tu primer recordatorio</string>
+    <string name="onboarding_maybe_later">Quizás más tarde</string>
 </resources>

@@ -102,6 +102,11 @@ internal class DeveloperViewModel(
     navigationEvent.value = Event(DeveloperEvent.BannersReset)
   }
 
+  fun onResetOnboardingClick() {
+    prefs.hasSeenOnboarding = false
+    navigationEvent.value = Event(DeveloperEvent.ShowMessage("Onboarding will show again on next app launch"))
+  }
+
   fun onReminderDialogClick() {
     state.update {
       it.copy(

@@ -1299,4 +1299,16 @@
     <string name="delete_from_app_and_calendar">Hapus dari aplikasi dan kalender</string>
     <string name="all_day">Sepanjang hari</string>
     <string name="channel_for_calendar_event_notifications">Saluran untuk notifikasi acara Google Kalender</string>
+    <string name="onboarding_skip">Lewati</string>
+    <string name="onboarding_welcome_title">Selamat datang di Reminder</string>
+    <string name="onboarding_welcome_subtitle">Jangan lewatkan hal penting — pengingat, catatan, ulang tahun, dan tugas, semua di satu tempat.</string>
+    <string name="onboarding_capabilities_title">Lebih dari sekadar pengingat</string>
+    <string name="onboarding_capabilities_subtitle">Buat catatan, lacak ulang tahun, dan lihat semuanya di satu kalender — semua sudah tersedia.</string>
+    <string name="onboarding_notes_caption">Catatan</string>
+    <string name="onboarding_birthdays_caption">Ulang Tahun</string>
+    <string name="onboarding_calendar_caption">Kalender</string>
+    <string name="onboarding_get_started_title">Siap kapan pun Anda siap</string>
+    <string name="onboarding_get_started_subtitle">Buat pengingat pertama Anda sekarang, atau jelajahi aplikasi sendiri.</string>
+    <string name="onboarding_create_first_reminder">Buat pengingat pertama Anda</string>
+    <string name="onboarding_maybe_later">Nanti saja</string>
 </resources>

@@ -1302,4 +1302,16 @@
     <string name="delete_from_app_and_calendar">Uygulamadan ve takvimden sil</string>
     <string name="all_day">Tüm gün</string>
     <string name="channel_for_calendar_event_notifications">Google Takvim etkinlik bildirimleri için kanal</string>
+    <string name="onboarding_skip">Atla</string>
+    <string name="onboarding_welcome_title">Hatırlatıcı\'ya hoş geldiniz</string>
+    <string name="onboarding_welcome_subtitle">Önemli olanı kaçırmayın — hatırlatıcılar, notlar, doğum günleri ve görevler tek bir yerde.</string>
+    <string name="onboarding_capabilities_title">Hatırlatıcılardan çok daha fazlası</string>
+    <string name="onboarding_capabilities_subtitle">Not alın, doğum günlerini takip edin ve her şeyi tek bir takvimde görün — hepsi hazır geliyor.</string>
+    <string name="onboarding_notes_caption">Notlar</string>
+    <string name="onboarding_birthdays_caption">Doğum Günleri</string>
+    <string name="onboarding_calendar_caption">Takvim</string>
+    <string name="onboarding_get_started_title">Siz hazır olduğunuzda hazırız</string>
+    <string name="onboarding_get_started_subtitle">İlk hatırlatıcınızı şimdi oluşturun veya uygulamayı kendiniz keşfedin.</string>
+    <string name="onboarding_create_first_reminder">İlk hatırlatıcınızı oluşturun</string>
+    <string name="onboarding_maybe_later">Belki sonra</string>
 </resources>

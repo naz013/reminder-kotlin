@@ -1302,4 +1302,16 @@
     <string name="delete_from_app_and_calendar">Видалити з додатка й календаря</string>
     <string name="all_day">Увесь день</string>
     <string name="channel_for_calendar_event_notifications">Канал сповіщень про події Google Календар</string>
+    <string name="onboarding_skip">Пропустити</string>
+    <string name="onboarding_welcome_title">Ласкаво просимо до Нагадування</string>
+    <string name="onboarding_welcome_subtitle">Не пропускайте важливе — нагадування, нотатки, дні народження та завдання, все в одному місці.</string>
+    <string name="onboarding_capabilities_title">Більше, ніж нагадування</string>
+    <string name="onboarding_capabilities_subtitle">Робіть нотатки, відстежуйте дні народження та бачте все в одному календарі — усе вже вбудовано.</string>
+    <string name="onboarding_notes_caption">Нотатки</string>
+    <string name="onboarding_birthdays_caption">Дні народження</string>
+    <string name="onboarding_calendar_caption">Календар</string>
+    <string name="onboarding_get_started_title">Готові, коли будете готові ви</string>
+    <string name="onboarding_get_started_subtitle">Створіть своє перше нагадування зараз або самостійно ознайомтеся з додатком.</string>
+    <string name="onboarding_create_first_reminder">Створити перше нагадування</string>
+    <string name="onboarding_maybe_later">Можливо, пізніше</string>
 </resources>

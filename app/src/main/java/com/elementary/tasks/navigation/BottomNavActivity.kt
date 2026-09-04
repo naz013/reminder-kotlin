@@ -93,7 +93,10 @@ class BottomNavActivity : BaseAuthActivity() {
             enableShortcuts()
           }
           Box {
-            AppNavGraph(initialKeys = resolveInitialNavKeys())
+            AppNavGraph(
+              initialKeys = resolveInitialNavKeys(),
+              shouldShowOnboarding = readyState?.shouldShowOnboarding == true,
+            )
             val alertState by inAppAlertViewModel.state.collectAsStateWithLifecycle()
             InAppAlertBanner(
               modifier = Modifier.align(Alignment.TopCenter),

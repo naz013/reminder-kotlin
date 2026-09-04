@@ -1297,4 +1297,16 @@
     <string name="delete_from_app_and_calendar">Aus App und Kalender löschen</string>
     <string name="all_day">Ganztägig</string>
     <string name="channel_for_calendar_event_notifications">Kanal für Google Kalender-Ereignisbenachrichtigungen</string>
+    <string name="onboarding_skip">Überspringen</string>
+    <string name="onboarding_welcome_title">Willkommen bei Erinnerung</string>
+    <string name="onboarding_welcome_subtitle">Verpasse nichts Wichtiges — Erinnerungen, Notizen, Geburtstage und Aufgaben, alles an einem Ort.</string>
+    <string name="onboarding_capabilities_title">Mehr als nur Erinnerungen</string>
+    <string name="onboarding_capabilities_subtitle">Mache Notizen, behalte Geburtstage im Blick und sieh alles in einem Kalender — alles bereits integriert.</string>
+    <string name="onboarding_notes_caption">Notizen</string>
+    <string name="onboarding_birthdays_caption">Geburtstage</string>
+    <string name="onboarding_calendar_caption">Kalender</string>
+    <string name="onboarding_get_started_title">Bereit, wenn du es bist</string>
+    <string name="onboarding_get_started_subtitle">Erstelle jetzt deine erste Erinnerung oder erkunde die App auf eigene Faust.</string>
+    <string name="onboarding_create_first_reminder">Erste Erinnerung erstellen</string>
+    <string name="onboarding_maybe_later">Vielleicht später</string>
 </resources>

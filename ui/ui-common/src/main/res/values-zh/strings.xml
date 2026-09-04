@@ -1302,4 +1302,16 @@
     <string name="delete_from_app_and_calendar">从应用和日历中删除</string>
     <string name="all_day">全天</string>
     <string name="channel_for_calendar_event_notifications">Google 日历事件通知渠道</string>
+    <string name="onboarding_skip">跳过</string>
+    <string name="onboarding_welcome_title">欢迎使用提醒事项</string>
+    <string name="onboarding_welcome_subtitle">不错过重要的事 — 提醒、备忘录、生日和任务，全部集中在一处。</string>
+    <string name="onboarding_capabilities_title">不仅仅是提醒</string>
+    <string name="onboarding_capabilities_subtitle">记笔记、追踪生日，并在一个日历中查看所有内容 — 一切均已内置。</string>
+    <string name="onboarding_notes_caption">备忘录</string>
+    <string name="onboarding_birthdays_caption">生日</string>
+    <string name="onboarding_calendar_caption">日历</string>
+    <string name="onboarding_get_started_title">准备好了吗</string>
+    <string name="onboarding_get_started_subtitle">现在就创建你的第一个提醒，或自行探索应用。</string>
+    <string name="onboarding_create_first_reminder">创建你的第一个提醒</string>
+    <string name="onboarding_maybe_later">以后再说</string>
 </resources>

@@ -12,6 +12,7 @@ import com.elementary.tasks.core.location.LocationTracker
 import com.elementary.tasks.core.notes.AppNoteFontProvider
 import com.elementary.tasks.core.notes.AppNoteNotifier
 import com.elementary.tasks.core.notes.AppNotePreferences
+import com.elementary.tasks.core.onboarding.AppOnboardingPreferences
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.event.AutoBackupEventTask
 import com.elementary.tasks.core.services.event.BirthdayEventTask
@@ -32,6 +33,7 @@ import com.github.naz013.logic.birthday.BirthdayNotifier
 import com.github.naz013.logic.birthday.BirthdayPreferences
 import com.github.naz013.logic.reminder.RecurEventManager
 import com.github.naz013.notification.NotificationApi
+import com.github.naz013.onboarding.OnboardingPreferences
 import com.github.naz013.repository.ReminderSettingsRepository
 import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.ui.note.NoteFontProvider
@@ -86,6 +88,7 @@ val utilModule = module {
   factory { DigestSettingsGateImpl(get(), get()) as DigestSettingsGate }
   factory { AppCalendarPreferences(get()) as CalendarPreferences }
   factory { AppHomePreferences(get()) as HomePreferences }
+  factory { AppOnboardingPreferences(get()) as OnboardingPreferences }
 
   factory { (listener: LocationTracker.Listener) ->
     LocationTracker(listener, get(), get(), get())
