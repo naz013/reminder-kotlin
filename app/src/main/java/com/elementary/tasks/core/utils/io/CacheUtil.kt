@@ -53,8 +53,4 @@ class CacheUtil(
       inputStream.close()
     }
   }
-
-  companion object {
-    private const val PREFS_NAME = "cache_prefs"
-  }
 }
