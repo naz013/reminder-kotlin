@@ -184,10 +184,13 @@ internal class BirthdaysViewModel(
   fun deleteSelectedBirthdays(ids: Set<String>) {
     if (ids.isEmpty()) return
     val batchKey = UUID.randomUUID().toString()
+    // Clear selection before marking pending: markPending's pendingIds update can synchronously
+    // empty listState (via the reactive pipeline above), and updateSelection is a no-op once
+    // listState is no longer Ready - clearing first avoids a stuck selectedCount.
+    onSelectionCancel()
     pendingDeleteTracker.markPending(batchKey = batchKey, ids = ids) {
       ids.forEach { deleteBirthdayUseCase(it) }
     }
-    onSelectionCancel()
     navigationEvent.emit(
       NavigationEvent.ShowUndoDelete(
         batchKey = batchKey,
