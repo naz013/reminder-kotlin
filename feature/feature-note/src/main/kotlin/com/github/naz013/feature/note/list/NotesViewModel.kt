@@ -14,6 +14,7 @@ import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.PendingDeleteTracker
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.feature.note.R
@@ -51,6 +52,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.UUID
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 internal class NotesViewModel(
@@ -97,6 +99,7 @@ internal class NotesViewModel(
   private val searchQuery = MutableStateFlow("")
   private val sortOrder = MutableStateFlow(notePreferences.noteOrder)
   private val selectedTagId = MutableStateFlow<String?>(null)
+  private val pendingDeleteTracker = PendingDeleteTracker()
 
   init {
     analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
@@ -123,6 +126,9 @@ internal class NotesViewModel(
             val ids = tagAssignmentRepository.getItemIdsForTag(tagId, TaggedItemType.NOTE).toSet()
             notes.filter { it.note?.key in ids }
           }
+        }
+        .combine(pendingDeleteTracker.pendingIds) { notes, pendingIds ->
+          notes.filterNot { it.note?.key in pendingIds }
         }
         .collect { applyList(it) }
     }
@@ -226,19 +232,23 @@ internal class NotesViewModel(
   }
 
   fun deleteSelectedNotes(ids: Set<String>) {
-    viewModelScope.launch(dispatcherProvider.default()) {
+    if (ids.isEmpty()) return
+    val batchKey = UUID.randomUUID().toString()
+    pendingDeleteTracker.markPending(batchKey = batchKey, ids = ids) {
       ids.forEach { deleteNoteUseCase(it) }
-
-      withContext(dispatcherProvider.main()) {
-        onSelectionCancel()
-      }
-
       if (!isArchived) {
         withContext(dispatcherProvider.main()) {
           appWidgetUpdater.updateNotesWidget()
         }
       }
     }
+    onSelectionCancel()
+    navigationEvent.emit(
+      NavigationEvent.ShowUndoDelete(
+        batchKey = batchKey,
+        message = textProvider.getText(R.string.notes_deleted_count, ids.size),
+      )
+    )
   }
 
   fun onArchiveSelectedClick() {
@@ -386,14 +396,26 @@ internal class NotesViewModel(
   }
 
   fun deleteNote(id: String) {
-    viewModelScope.launch(dispatcherProvider.default()) {
+    pendingDeleteTracker.markPending(batchKey = id, ids = setOf(id)) {
       deleteNoteUseCase(id)
-
       if (!isArchived) {
         withContext(dispatcherProvider.main()) {
           appWidgetUpdater.updateNotesWidget()
         }
       }
+    }
+    navigationEvent.emit(
+      NavigationEvent.ShowUndoDelete(batchKey = id, message = textProvider.getString(R.string.note_deleted))
+    )
+  }
+
+  fun undoDeleteNote(batchKey: String) {
+    pendingDeleteTracker.undo(batchKey)
+  }
+
+  fun commitDeleteNote(batchKey: String) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      pendingDeleteTracker.commit(batchKey)
     }
   }
 
@@ -468,6 +490,11 @@ internal class NotesViewModel(
     data class ConfirmMergeSelected(
       val ids: List<String>,
       val title: String,
+    ) : NavigationEvent
+
+    data class ShowUndoDelete(
+      val batchKey: String,
+      val message: String,
     ) : NavigationEvent
 
     data class Error(val message: String) : NavigationEvent

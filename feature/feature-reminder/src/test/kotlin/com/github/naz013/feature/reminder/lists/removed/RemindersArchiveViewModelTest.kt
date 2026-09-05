@@ -1,7 +1,9 @@
 package com.github.naz013.feature.reminder.lists.removed
 
+import com.github.naz013.common.TextProvider
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.reminder.UiReminderList
 import com.github.naz013.ui.reminder.UiReminderListActions
 import com.github.naz013.ui.reminder.UiReminderListAdapter
@@ -31,6 +33,7 @@ class RemindersArchiveViewModelTest : BaseTest() {
   private val uiReminderListAdapter = mockk<UiReminderListAdapter>()
   private val deleteReminderUseCase = mockk<DeleteReminderUseCase>(relaxed = true)
   private val deleteAllReminderUseCase = mockk<DeleteAllReminderUseCase>(relaxed = true)
+  private val textProvider = mockk<TextProvider>(relaxed = true)
 
   private lateinit var viewModel: RemindersArchiveViewModel
 
@@ -49,6 +52,7 @@ class RemindersArchiveViewModelTest : BaseTest() {
       reminderV2Repository = reminderV2Repository,
       groupV2Repository = groupV2Repository,
       dispatcherProvider = mockDispatcherProvider(),
+      textProvider = textProvider,
       uiReminderListAdapter = uiReminderListAdapter,
       deleteReminderUseCase = deleteReminderUseCase,
       deleteAllReminderUseCase = deleteAllReminderUseCase,
@@ -159,36 +163,84 @@ class RemindersArchiveViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `deleteReminder deletes the found reminder`() =
+  fun `deleteReminder hides the reminder immediately and posts ShowUndoDelete without deleting yet`() =
     runTest {
+      every { textProvider.getText(R.string.reminder_deleted) } returns "Reminder deleted"
       val target = reminderV2("1")
       coEvery { reminderV2Repository.getById("1") } returns target
 
       viewModel.deleteReminder("1")
 
+      coVerify(exactly = 0) { deleteReminderUseCase(any()) }
+      assertEquals(
+        RemindersArchiveViewModel.NavigationEvent.ShowUndoDelete(batchKey = "1", message = "Reminder deleted"),
+        viewModel.event.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `commitDelete deletes the found reminder after the undo window`() =
+    runTest {
+      val target = reminderV2("1")
+      coEvery { reminderV2Repository.getById("1") } returns target
+      viewModel.deleteReminder("1")
+
+      viewModel.commitDelete("1")
+
       coVerify(exactly = 1) { deleteReminderUseCase(target) }
     }
 
   @Test
-  fun `deleteReminder does nothing when the reminder is not found`() =
+  fun `commitDelete does nothing when the reminder is not found`() =
     runTest {
       coEvery { reminderV2Repository.getById("missing") } returns null
-
       viewModel.deleteReminder("missing")
+
+      viewModel.commitDelete("missing")
 
       coVerify(exactly = 0) { deleteReminderUseCase(any()) }
     }
 
   @Test
-  fun `deleteAll re-fetches the reminders by id, deletes them and emits ArchiveEmptied`() =
+  fun `undoDelete cancels a pending single delete`() =
+    runTest {
+      val target = reminderV2("1")
+      coEvery { reminderV2Repository.getById("1") } returns target
+      viewModel.deleteReminder("1")
+
+      viewModel.undoDelete("1")
+      viewModel.commitDelete("1")
+
+      coVerify(exactly = 0) { deleteReminderUseCase(any()) }
+    }
+
+  @Test
+  fun `deleteAll hides the reminders immediately and posts ShowUndoDelete without deleting yet`() =
+    runTest {
+      every { textProvider.getText(R.string.reminders_deleted_count, 2) } returns "2 reminders deleted"
+      val remindersV2 = listOf(reminderV2("1"), reminderV2("2"))
+      every { reminderV2Repository.observeByRemovedStatus(removed = true) } returns flowOf(remindersV2)
+      val vm = createViewModel()
+
+      vm.deleteAll()
+
+      coVerify(exactly = 0) { deleteAllReminderUseCase(any()) }
+      val event = vm.event.value?.peekContent() as RemindersArchiveViewModel.NavigationEvent.ShowUndoDelete
+      assertEquals("2 reminders deleted", event.message)
+    }
+
+  @Test
+  fun `commitDelete after deleteAll re-fetches the reminders by id, deletes them and emits ArchiveEmptied`() =
     runTest {
       val remindersV2 = listOf(reminderV2("1"), reminderV2("2"))
       every { reminderV2Repository.observeByRemovedStatus(removed = true) } returns flowOf(remindersV2)
       coEvery { reminderV2Repository.getById("1") } returns remindersV2[0]
       coEvery { reminderV2Repository.getById("2") } returns remindersV2[1]
       val vm = createViewModel()
-
       vm.deleteAll()
+      val batchKey = (vm.event.value?.peekContent() as RemindersArchiveViewModel.NavigationEvent.ShowUndoDelete).batchKey
+
+      vm.commitDelete(batchKey)
 
       coVerify(exactly = 1) { deleteAllReminderUseCase(remindersV2) }
       val event = vm.event.value?.peekContent()

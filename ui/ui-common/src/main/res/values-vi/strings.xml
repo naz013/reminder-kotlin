@@ -1357,4 +1357,11 @@
     <string name="birthdays_delete_selected_permanently">Xóa vĩnh viễn %1$d sinh nhật?</string>
     <string name="agenda_delete_selected_permanently">Xóa vĩnh viễn %1$d mục?</string>
     <string name="selected_count">Đã chọn %1$d</string>
+    <string name="undo">Hoàn tác</string>
+    <string name="note_deleted">Đã xóa ghi chú</string>
+    <string name="notes_deleted_count">Đã xóa %1$d ghi chú</string>
+    <string name="birthday_deleted">Đã xóa ngày sinh nhật</string>
+    <string name="birthdays_deleted_count">Đã xóa %1$d ngày sinh nhật</string>
+    <string name="reminder_deleted">Đã xóa lời nhắc</string>
+    <string name="reminders_deleted_count">Đã xóa %1$d lời nhắc</string>
 </resources>

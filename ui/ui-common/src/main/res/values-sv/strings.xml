@@ -1357,4 +1357,11 @@
     <string name="birthdays_delete_selected_permanently">Ta bort %1$d födelsedagar permanent?</string>
     <string name="agenda_delete_selected_permanently">Ta bort %1$d objekt permanent?</string>
     <string name="selected_count">%1$d valda</string>
+    <string name="undo">Ångra</string>
+    <string name="note_deleted">Anteckning raderad</string>
+    <string name="notes_deleted_count">%1$d anteckningar raderade</string>
+    <string name="birthday_deleted">Födelsedag raderad</string>
+    <string name="birthdays_deleted_count">%1$d födelsedagar raderade</string>
+    <string name="reminder_deleted">Påminnelse raderad</string>
+    <string name="reminders_deleted_count">%1$d påminnelser raderade</string>
 </resources>

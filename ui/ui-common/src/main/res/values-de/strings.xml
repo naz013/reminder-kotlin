@@ -1355,4 +1355,11 @@
     <string name="birthdays_delete_selected_permanently">%1$d Geburtstage dauerhaft löschen?</string>
     <string name="agenda_delete_selected_permanently">%1$d Elemente dauerhaft löschen?</string>
     <string name="selected_count">%1$d ausgewählt</string>
+    <string name="undo">Rückgängig</string>
+    <string name="note_deleted">Notiz gelöscht</string>
+    <string name="notes_deleted_count">%1$d Notizen gelöscht</string>
+    <string name="birthday_deleted">Geburtstag gelöscht</string>
+    <string name="birthdays_deleted_count">%1$d Geburtstage gelöscht</string>
+    <string name="reminder_deleted">Erinnerung gelöscht</string>
+    <string name="reminders_deleted_count">%1$d Erinnerungen gelöscht</string>
 </resources>

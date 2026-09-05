@@ -9,6 +9,7 @@ import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.PendingDeleteTracker
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logic.birthday.BirthdayQueryFilter
@@ -39,6 +40,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
+import java.util.UUID
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 internal class BirthdaysViewModel(
@@ -63,6 +65,7 @@ internal class BirthdaysViewModel(
   private val searchQuery = MutableStateFlow("")
   private val selectedSmartList = MutableStateFlow<SmartListFilter?>(null)
   private val selectedTagId = MutableStateFlow<String?>(null)
+  private val pendingDeleteTracker = PendingDeleteTracker()
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -86,6 +89,9 @@ internal class BirthdaysViewModel(
             val ids = tagAssignmentRepository.getItemIdsForTag(tagId, TaggedItemType.BIRTHDAY).toSet()
             birthdays.filter { it.uuId in ids }
           }
+        }
+        .combine(pendingDeleteTracker.pendingIds) { birthdays, pendingIds ->
+          birthdays.filterNot { it.uuId in pendingIds }
         }
         .collect { applyList(it) }
     }
@@ -176,13 +182,18 @@ internal class BirthdaysViewModel(
   }
 
   fun deleteSelectedBirthdays(ids: Set<String>) {
-    viewModelScope.launch(dispatcherProvider.default()) {
+    if (ids.isEmpty()) return
+    val batchKey = UUID.randomUUID().toString()
+    pendingDeleteTracker.markPending(batchKey = batchKey, ids = ids) {
       ids.forEach { deleteBirthdayUseCase(it) }
-
-      withContext(dispatcherProvider.main()) {
-        onSelectionCancel()
-      }
     }
+    onSelectionCancel()
+    navigationEvent.emit(
+      NavigationEvent.ShowUndoDelete(
+        batchKey = batchKey,
+        message = textProvider.getText(R.string.birthdays_deleted_count, ids.size),
+      )
+    )
   }
 
   fun onMenuAction(
@@ -210,8 +221,21 @@ internal class BirthdaysViewModel(
   fun onDeleteConfirmed() {
     val id = _state.value.confirmDeleteId ?: return
     _state.update { it.copy(confirmDeleteId = null) }
-    viewModelScope.launch(dispatcherProvider.default()) {
+    pendingDeleteTracker.markPending(batchKey = id, ids = setOf(id)) {
       deleteBirthdayUseCase(id)
+    }
+    navigationEvent.emit(
+      NavigationEvent.ShowUndoDelete(batchKey = id, message = textProvider.getText(R.string.birthday_deleted))
+    )
+  }
+
+  fun undoDelete(batchKey: String) {
+    pendingDeleteTracker.undo(batchKey)
+  }
+
+  fun commitDelete(batchKey: String) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      pendingDeleteTracker.commit(batchKey)
     }
   }
 
@@ -220,6 +244,7 @@ internal class BirthdaysViewModel(
     data class OpenEdit(val id: String) : NavigationEvent
     data object OpenNewBirthday : NavigationEvent
     data class ConfirmDeleteSelected(val ids: Set<String>, val title: String) : NavigationEvent
+    data class ShowUndoDelete(val batchKey: String, val message: String) : NavigationEvent
   }
 
   companion object {

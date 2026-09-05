@@ -197,14 +197,41 @@ class BirthdaysViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onDeleteConfirmed deletes the birthday and hides the confirmation`() =
+  fun `onDeleteConfirmed hides the confirmation without deleting yet and posts ShowUndoDelete`() =
     runTest {
+      every { textProvider.getText(R.string.birthday_deleted) } returns "Birthday deleted"
       viewModel.onMenuAction(uiBirthday(id = "7"), AgendaMenuAction.DELETE)
 
       viewModel.onDeleteConfirmed()
 
-      coVerify(exactly = 1) { deleteBirthdayUseCase("7") }
+      coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
       assertEquals(null, viewModel.state.first().confirmDeleteId)
+      assertEquals(
+        BirthdaysViewModel.NavigationEvent.ShowUndoDelete(batchKey = "7", message = "Birthday deleted"),
+        viewModel.navigationEvent.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `undoDelete cancels the pending delete`() =
+    runTest {
+      viewModel.onMenuAction(uiBirthday(id = "7"), AgendaMenuAction.DELETE)
+      viewModel.onDeleteConfirmed()
+
+      viewModel.undoDelete("7")
+
+      coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
+    }
+
+  @Test
+  fun `commitDelete deletes the birthday after the undo window`() =
+    runTest {
+      viewModel.onMenuAction(uiBirthday(id = "7"), AgendaMenuAction.DELETE)
+      viewModel.onDeleteConfirmed()
+
+      viewModel.commitDelete("7")
+
+      coVerify(exactly = 1) { deleteBirthdayUseCase("7") }
     }
 
   @Test
@@ -314,16 +341,33 @@ class BirthdaysViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `deleteSelectedBirthdays deletes each birthday and clears selection`() =
+  fun `deleteSelectedBirthdays clears selection and posts ShowUndoDelete without deleting yet`() =
     runTest {
+      every { textProvider.getText(R.string.birthdays_deleted_count, 2) } returns "2 birthdays deleted"
       val vm = readyViewModelWithTwoBirthdays()
       vm.onItemLongClick("1")
       vm.onItemClick(uiBirthday(id = "2"))
 
       vm.deleteSelectedBirthdays(setOf("1", "2"))
 
+      coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
+      assertEquals(0, vm.state.first().selectedCount)
+      val event = vm.navigationEvent.value?.peekContent() as BirthdaysViewModel.NavigationEvent.ShowUndoDelete
+      assertEquals("2 birthdays deleted", event.message)
+    }
+
+  @Test
+  fun `commitDelete after a bulk delete deletes each birthday`() =
+    runTest {
+      val vm = readyViewModelWithTwoBirthdays()
+      vm.onItemLongClick("1")
+      vm.onItemClick(uiBirthday(id = "2"))
+      vm.deleteSelectedBirthdays(setOf("1", "2"))
+      val batchKey = (vm.navigationEvent.value?.peekContent() as BirthdaysViewModel.NavigationEvent.ShowUndoDelete).batchKey
+
+      vm.commitDelete(batchKey)
+
       coVerify(exactly = 1) { deleteBirthdayUseCase("1") }
       coVerify(exactly = 1) { deleteBirthdayUseCase("2") }
-      assertEquals(0, vm.state.first().selectedCount)
     }
 }

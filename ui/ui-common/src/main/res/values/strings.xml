@@ -1363,4 +1363,11 @@
     <string name="birthdays_delete_selected_permanently">Delete %1$d birthdays permanently?</string>
     <string name="agenda_delete_selected_permanently">Delete %1$d items permanently?</string>
     <string name="selected_count">%1$d selected</string>
+    <string name="undo">Undo</string>
+    <string name="note_deleted">Note deleted</string>
+    <string name="notes_deleted_count">%1$d notes deleted</string>
+    <string name="birthday_deleted">Birthday deleted</string>
+    <string name="birthdays_deleted_count">%1$d birthdays deleted</string>
+    <string name="reminder_deleted">Reminder deleted</string>
+    <string name="reminders_deleted_count">%1$d reminders deleted</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.github.naz013.feature.birthday
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
@@ -27,6 +28,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.compose.foundation.navigation.sidePanelSupporting
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberUndoSnackbarDispatcher
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.github.naz013.common.Permissions
@@ -77,6 +79,9 @@ private fun ListEntry(
 ) {
   val viewModel = koinViewModel<BirthdaysViewModel>()
   val dialogDispatcher = rememberDialogDispatcher()
+  val snackbarHostState = remember { SnackbarHostState() }
+  val undoSnackbarDispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
+  val undoActionLabel = stringResource(R.string.undo)
 
   val selectedItemId =
     backStack.lastOrNull()?.let { key ->
@@ -112,12 +117,22 @@ private fun ListEntry(
           onPositive = { viewModel.deleteSelectedBirthdays(event.ids) },
         )
       }
+
+      is BirthdaysViewModel.NavigationEvent.ShowUndoDelete -> {
+        undoSnackbarDispatcher.showUndoSnackbar(
+          message = event.message,
+          actionLabel = undoActionLabel,
+          onUndo = { viewModel.undoDelete(event.batchKey) },
+          onTimeout = { viewModel.commitDelete(event.batchKey) },
+        )
+      }
     }
   }
 
   val state by viewModel.state.collectAsState(BirthdaysScreenState())
   BirthdaysScreen(
     state = state,
+    snackbarHostState = snackbarHostState,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onSmartListSelected = viewModel::onSmartListSelected,

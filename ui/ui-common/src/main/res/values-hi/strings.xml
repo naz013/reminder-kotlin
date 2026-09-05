@@ -1361,4 +1361,11 @@
     <string name="birthdays_delete_selected_permanently">%1$d जन्मदिन को स्थायी रूप से हटाएं?</string>
     <string name="agenda_delete_selected_permanently">%1$d आइटम को स्थायी रूप से हटाएं?</string>
     <string name="selected_count">%1$d चयनित</string>
+    <string name="undo">पूर्ववत करें</string>
+    <string name="note_deleted">नोट हटा दिया गया</string>
+    <string name="notes_deleted_count">%1$d नोट हटाए गए</string>
+    <string name="birthday_deleted">जन्मदिन हटा दिया गया</string>
+    <string name="birthdays_deleted_count">%1$d जन्मदिन हटाए गए</string>
+    <string name="reminder_deleted">रिमाइंडर हटा दिया गया</string>
+    <string name="reminders_deleted_count">%1$d रिमाइंडर हटाए गए</string>
 </resources>

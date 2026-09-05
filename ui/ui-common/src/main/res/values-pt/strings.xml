@@ -1359,4 +1359,11 @@
     <string name="birthdays_delete_selected_permanently">Excluir %1$d aniversários permanentemente?</string>
     <string name="agenda_delete_selected_permanently">Excluir %1$d itens permanentemente?</string>
     <string name="selected_count">%1$d selecionados</string>
+    <string name="undo">Desfazer</string>
+    <string name="note_deleted">Nota excluída</string>
+    <string name="notes_deleted_count">%1$d notas excluídas</string>
+    <string name="birthday_deleted">Aniversário excluído</string>
+    <string name="birthdays_deleted_count">%1$d aniversários excluídos</string>
+    <string name="reminder_deleted">Lembrete excluído</string>
+    <string name="reminders_deleted_count">%1$d lembretes excluídos</string>
 </resources>

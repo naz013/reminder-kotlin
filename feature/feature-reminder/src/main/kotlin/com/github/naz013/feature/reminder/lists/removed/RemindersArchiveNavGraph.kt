@@ -1,11 +1,13 @@
 package com.github.naz013.feature.reminder.lists.removed
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
@@ -15,6 +17,7 @@ import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlace
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberUndoSnackbarDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -47,6 +50,9 @@ private fun ListEntry(
 
   val dialogDispatcher = rememberDialogDispatcher()
   val toastDispatcher = rememberToastDispatcher()
+  val snackbarHostState = remember { SnackbarHostState() }
+  val undoSnackbarDispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
+  val undoActionLabel = stringResource(R.string.undo)
 
   viewModel.event.ObserveEvent { event ->
     when (event) {
@@ -76,12 +82,22 @@ private fun ListEntry(
       RemindersArchiveViewModel.NavigationEvent.ArchiveEmptied -> {
         toastDispatcher.showToast(messageRes = R.string.archive_was_emptied)
       }
+
+      is RemindersArchiveViewModel.NavigationEvent.ShowUndoDelete -> {
+        undoSnackbarDispatcher.showUndoSnackbar(
+          message = event.message,
+          actionLabel = undoActionLabel,
+          onUndo = { viewModel.undoDelete(event.batchKey) },
+          onTimeout = { viewModel.commitDelete(event.batchKey) },
+        )
+      }
     }
   }
 
   val state by viewModel.state.collectAsState(RemindersArchiveScreenState())
   RemindersArchiveScreen(
     state = state,
+    snackbarHostState = snackbarHostState,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onDeleteAllClick = viewModel::onDeleteAllClick,

@@ -1359,4 +1359,11 @@
     <string name="birthdays_delete_selected_permanently">Ștergere %1$d zile de naștere permanent?</string>
     <string name="agenda_delete_selected_permanently">Ștergere %1$d elemente permanent?</string>
     <string name="selected_count">%1$d selectate</string>
+    <string name="undo">Anulează</string>
+    <string name="note_deleted">Notă ștearsă</string>
+    <string name="notes_deleted_count">%1$d notițe șterse</string>
+    <string name="birthday_deleted">Zi de naștere ștearsă</string>
+    <string name="birthdays_deleted_count">%1$d zile de naștere șterse</string>
+    <string name="reminder_deleted">Memento șters</string>
+    <string name="reminders_deleted_count">%1$d mementouri șterse</string>
 </resources>

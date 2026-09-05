@@ -1357,4 +1357,11 @@
     <string name="birthdays_delete_selected_permanently">حذف %1$d أعياد الميلاد نهائيًا؟</string>
     <string name="agenda_delete_selected_permanently">حذف %1$d عناصر نهائيًا؟</string>
     <string name="selected_count">تم تحديد %1$d</string>
+    <string name="undo">تراجع</string>
+    <string name="note_deleted">تم حذف الملاحظة</string>
+    <string name="notes_deleted_count">تم حذف %1$d ملاحظات</string>
+    <string name="birthday_deleted">تم حذف عيد الميلاد</string>
+    <string name="birthdays_deleted_count">تم حذف %1$d أعياد ميلاد</string>
+    <string name="reminder_deleted">تم حذف التذكير</string>
+    <string name="reminders_deleted_count">تم حذف %1$d تذكيرات</string>
 </resources>

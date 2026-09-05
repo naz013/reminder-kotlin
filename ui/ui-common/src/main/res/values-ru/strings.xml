@@ -1358,4 +1358,11 @@
     <string name="birthdays_delete_selected_permanently">Удалить %1$d дней рождения навсегда?</string>
     <string name="agenda_delete_selected_permanently">Удалить %1$d элементов навсегда?</string>
     <string name="selected_count">Выбрано %1$d</string>
+    <string name="undo">Отменить</string>
+    <string name="note_deleted">Заметка удалена</string>
+    <string name="notes_deleted_count">Удалено заметок: %1$d</string>
+    <string name="birthday_deleted">День рождения удалён</string>
+    <string name="birthdays_deleted_count">Удалено дней рождения: %1$d</string>
+    <string name="reminder_deleted">Напоминание удалено</string>
+    <string name="reminders_deleted_count">Удалено напоминаний: %1$d</string>
 </resources>

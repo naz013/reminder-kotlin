@@ -17,6 +17,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -45,6 +47,7 @@ private val HEADER_ELEVATION = 3.dp
 @Composable
 fun RemindersArchiveScreen(
   state: RemindersArchiveScreenState,
+  snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
   onBackClick: () -> Unit,
   onSearchQueryChange: (String) -> Unit,
   onDeleteAllClick: () -> Unit,
@@ -61,6 +64,7 @@ fun RemindersArchiveScreen(
 
   Scaffold(
     modifier = modifier,
+    snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
       Surface(color = MaterialTheme.colorScheme.background, shadowElevation = headerElevation) {
         Column {

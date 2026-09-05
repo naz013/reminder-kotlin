@@ -1360,4 +1360,11 @@
     <string name="birthdays_delete_selected_permanently">%1$d doğum günü kalıcı olarak silinsin mi?</string>
     <string name="agenda_delete_selected_permanently">%1$d öğe kalıcı olarak silinsin mi?</string>
     <string name="selected_count">%1$d seçildi</string>
+    <string name="undo">Geri al</string>
+    <string name="note_deleted">Not silindi</string>
+    <string name="notes_deleted_count">%1$d not silindi</string>
+    <string name="birthday_deleted">Doğum günü silindi</string>
+    <string name="birthdays_deleted_count">%1$d doğum günü silindi</string>
+    <string name="reminder_deleted">Hatırlatıcı silindi</string>
+    <string name="reminders_deleted_count">%1$d hatırlatıcı silindi</string>
 </resources>

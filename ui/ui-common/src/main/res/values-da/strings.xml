@@ -1357,4 +1357,11 @@
     <string name="birthdays_delete_selected_permanently">Slet %1$d fødselsdage permanent?</string>
     <string name="agenda_delete_selected_permanently">Slet %1$d emner permanent?</string>
     <string name="selected_count">%1$d valgt</string>
+    <string name="undo">Fortryd</string>
+    <string name="note_deleted">Note slettet</string>
+    <string name="notes_deleted_count">%1$d noter slettet</string>
+    <string name="birthday_deleted">Fødselsdag slettet</string>
+    <string name="birthdays_deleted_count">%1$d fødselsdage slettet</string>
+    <string name="reminder_deleted">Påmindelse slettet</string>
+    <string name="reminders_deleted_count">%1$d påmindelser slettet</string>
 </resources>

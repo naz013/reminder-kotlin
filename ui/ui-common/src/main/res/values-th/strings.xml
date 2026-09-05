@@ -1357,4 +1357,11 @@
     <string name="birthdays_delete_selected_permanently">ลบ %1$d วันเกิดอย่างถาวร?</string>
     <string name="agenda_delete_selected_permanently">ลบ %1$d รายการอย่างถาวร?</string>
     <string name="selected_count">เลือก %1$d รายการแล้ว</string>
+    <string name="undo">เลิกทำ</string>
+    <string name="note_deleted">ลบโน้ตแล้ว</string>
+    <string name="notes_deleted_count">ลบโน้ตแล้ว %1$d รายการ</string>
+    <string name="birthday_deleted">ลบวันเกิดแล้ว</string>
+    <string name="birthdays_deleted_count">ลบวันเกิดแล้ว %1$d รายการ</string>
+    <string name="reminder_deleted">ลบการแจ้งเตือนแล้ว</string>
+    <string name="reminders_deleted_count">ลบการแจ้งเตือนแล้ว %1$d รายการ</string>
 </resources>

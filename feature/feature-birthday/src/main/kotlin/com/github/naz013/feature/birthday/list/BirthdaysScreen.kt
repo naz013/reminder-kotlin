@@ -29,6 +29,8 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -70,6 +72,7 @@ private val BIRTHDAY_SMART_LIST_FILTERS = listOf(SmartListFilter.TODAY, SmartLis
 @Composable
 internal fun BirthdaysScreen(
   state: BirthdaysScreenState,
+  snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
   onBackClick: () -> Unit,
   onSearchQueryChange: (String) -> Unit,
   onSmartListSelected: (SmartListFilter?) -> Unit,
@@ -98,6 +101,7 @@ internal fun BirthdaysScreen(
 
   Scaffold(
     modifier = modifier,
+    snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
       if (isSelectionMode) {
         BirthdaysSelectionTopBar(
