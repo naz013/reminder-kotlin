@@ -1,6 +1,12 @@
 package com.github.naz013.feature.reminder.lists.removed
 
 import com.github.naz013.common.TextProvider
+import com.github.naz013.domain.reminder.v2.ReminderSchedule
+import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.logic.reminder.usecase.DeleteAllReminderUseCase
+import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
+import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.common.R
@@ -8,12 +14,6 @@ import com.github.naz013.ui.reminder.UiReminderList
 import com.github.naz013.ui.reminder.UiReminderListActions
 import com.github.naz013.ui.reminder.UiReminderListAdapter
 import com.github.naz013.ui.reminder.UiReminderListState
-import com.github.naz013.domain.reminder.v2.ReminderSchedule
-import com.github.naz013.domain.reminder.v2.ReminderV2
-import com.github.naz013.logic.reminder.usecase.DeleteAllReminderUseCase
-import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
-import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.repository.ReminderV2Repository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -238,7 +238,8 @@ class RemindersArchiveViewModelTest : BaseTest() {
       coEvery { reminderV2Repository.getById("2") } returns remindersV2[1]
       val vm = createViewModel()
       vm.deleteAll()
-      val batchKey = (vm.event.value?.peekContent() as RemindersArchiveViewModel.NavigationEvent.ShowUndoDelete).batchKey
+      val batchKey =
+        (vm.event.value?.peekContent() as RemindersArchiveViewModel.NavigationEvent.ShowUndoDelete).batchKey
 
       vm.commitDelete(batchKey)
 

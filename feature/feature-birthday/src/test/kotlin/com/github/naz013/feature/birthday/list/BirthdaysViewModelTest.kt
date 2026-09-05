@@ -363,7 +363,8 @@ class BirthdaysViewModelTest : BaseTest() {
       vm.onItemLongClick("1")
       vm.onItemClick(uiBirthday(id = "2"))
       vm.deleteSelectedBirthdays(setOf("1", "2"))
-      val batchKey = (vm.navigationEvent.value?.peekContent() as BirthdaysViewModel.NavigationEvent.ShowUndoDelete).batchKey
+      val batchKey =
+        (vm.navigationEvent.value?.peekContent() as BirthdaysViewModel.NavigationEvent.ShowUndoDelete).batchKey
 
       vm.commitDelete(batchKey)
 
