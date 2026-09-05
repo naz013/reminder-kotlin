@@ -1,6 +1,7 @@
 package com.github.naz013.feature.note
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -39,7 +40,9 @@ import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.ToastDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.UndoSnackbarDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberUndoSnackbarDispatcher
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.permission.PermissionRequester
@@ -71,6 +74,8 @@ private class NotesNavHandlers(
   val backStack: MutableList<NavKey>,
   val dialogDispatcher: DialogDispatcher,
   val toastDispatcher: ToastDispatcher,
+  val undoSnackbarDispatcher: UndoSnackbarDispatcher,
+  val undoActionLabel: String,
   val noteIntentSender: NoteIntentSender,
   val permissionRequester: PermissionRequester,
   val onOpenNoteSettings: (String) -> Unit,
@@ -141,6 +146,15 @@ private fun handleNotesNavigationEvent(
       )
     }
 
+    is NotesViewModel.NavigationEvent.ShowUndoDelete -> {
+      handlers.undoSnackbarDispatcher.showUndoSnackbar(
+        message = event.message,
+        actionLabel = handlers.undoActionLabel,
+        onUndo = { handlers.viewModel.undoDeleteNote(event.batchKey) },
+        onTimeout = { handlers.viewModel.commitDeleteNote(event.batchKey) },
+      )
+    }
+
     is NotesViewModel.NavigationEvent.Error -> {
       handlers.toastDispatcher.showToast(message = event.message)
     }
@@ -158,6 +172,8 @@ private fun NotesListEntry(
   val permissionRequester = rememberPermissionRequesterRationale()
   val dialogDispatcher = rememberDialogDispatcher()
   val toastDispatcher = rememberToastDispatcher()
+  val snackbarHostState = remember { SnackbarHostState() }
+  val undoSnackbarDispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
   val noteIntentSender = rememberNoteIntentSender(applicationId)
   val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
   val noteColorEngine = koinInject<NoteColorEngine>()
@@ -167,6 +183,8 @@ private fun NotesListEntry(
     backStack = backStack,
     dialogDispatcher = dialogDispatcher,
     toastDispatcher = toastDispatcher,
+    undoSnackbarDispatcher = undoSnackbarDispatcher,
+    undoActionLabel = stringResource(R.string.undo),
     noteIntentSender = noteIntentSender,
     permissionRequester = permissionRequester,
     onOpenNoteSettings = onOpenNoteSettings,
@@ -177,6 +195,7 @@ private fun NotesListEntry(
   NotesScreen(
     modifier = Modifier.fillMaxSize(),
     state = state,
+    snackbarHostState = snackbarHostState,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onSortOrderSelected = viewModel::onSortOrderSelected,
@@ -211,6 +230,8 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>, applicationId: Str
   val permissionRequester = rememberPermissionRequesterRationale()
   val dialogDispatcher = rememberDialogDispatcher()
   val toastDispatcher = rememberToastDispatcher()
+  val snackbarHostState = remember { SnackbarHostState() }
+  val undoSnackbarDispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
   val noteIntentSender = rememberNoteIntentSender(applicationId)
   val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
   val noteColorEngine = koinInject<NoteColorEngine>()
@@ -220,6 +241,8 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>, applicationId: Str
     backStack = backStack,
     dialogDispatcher = dialogDispatcher,
     toastDispatcher = toastDispatcher,
+    undoSnackbarDispatcher = undoSnackbarDispatcher,
+    undoActionLabel = stringResource(R.string.undo),
     noteIntentSender = noteIntentSender,
     permissionRequester = permissionRequester,
     onOpenNoteSettings = {},
@@ -230,6 +253,7 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>, applicationId: Str
   NotesScreen(
     modifier = Modifier.fillMaxSize(),
     state = state,
+    snackbarHostState = snackbarHostState,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onSortOrderSelected = viewModel::onSortOrderSelected,

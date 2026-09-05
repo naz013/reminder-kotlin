@@ -1359,4 +1359,11 @@
     <string name="birthdays_delete_selected_permanently">%1$d개의 생일을 영구 삭제하시겠습니까?</string>
     <string name="agenda_delete_selected_permanently">%1$d개의 항목을 영구 삭제하시겠습니까?</string>
     <string name="selected_count">%1$d개 선택됨</string>
+    <string name="undo">실행 취소</string>
+    <string name="note_deleted">메모가 삭제되었습니다</string>
+    <string name="notes_deleted_count">메모 %1$d개가 삭제되었습니다</string>
+    <string name="birthday_deleted">생일이 삭제되었습니다</string>
+    <string name="birthdays_deleted_count">생일 %1$d개가 삭제되었습니다</string>
+    <string name="reminder_deleted">리마인더가 삭제되었습니다</string>
+    <string name="reminders_deleted_count">리마인더 %1$d개가 삭제되었습니다</string>
 </resources>

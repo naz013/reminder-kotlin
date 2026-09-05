@@ -1359,4 +1359,11 @@
     <string name="birthdays_delete_selected_permanently">Eliminare %1$d compleanni definitivamente?</string>
     <string name="agenda_delete_selected_permanently">Eliminare %1$d elementi definitivamente?</string>
     <string name="selected_count">%1$d selezionati</string>
+    <string name="undo">Annulla</string>
+    <string name="note_deleted">Nota eliminata</string>
+    <string name="notes_deleted_count">%1$d note eliminate</string>
+    <string name="birthday_deleted">Compleanno eliminato</string>
+    <string name="birthdays_deleted_count">%1$d compleanni eliminati</string>
+    <string name="reminder_deleted">Promemoria eliminato</string>
+    <string name="reminders_deleted_count">%1$d promemoria eliminati</string>
 </resources>

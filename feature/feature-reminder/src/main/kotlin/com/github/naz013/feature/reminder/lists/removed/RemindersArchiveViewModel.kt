@@ -7,9 +7,11 @@ import com.github.naz013.ui.reminder.UiReminderList
 import com.github.naz013.ui.reminder.UiReminderListAdapter
 import com.github.naz013.logic.reminder.filter.ReminderV2QueryFilterInstance
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.PendingDeleteTracker
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
@@ -17,6 +19,7 @@ import com.github.naz013.logic.reminder.usecase.DeleteAllReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.ui.common.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,12 +30,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class RemindersArchiveViewModel(
   private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
   private val dispatcherProvider: DispatcherProvider,
+  private val textProvider: TextProvider,
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val deleteAllReminderUseCase: DeleteAllReminderUseCase,
@@ -46,6 +51,7 @@ class RemindersArchiveViewModel(
   val event: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   private val searchQueryFlow = MutableStateFlow("")
+  private val pendingDeleteTracker = PendingDeleteTracker()
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -55,6 +61,9 @@ class RemindersArchiveViewModel(
         .debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS }
         .flatMapLatest { query ->
           reminderV2Repository.observeByRemovedStatus(removed = true).map { it to query }
+        }
+        .combine(pendingDeleteTracker.pendingIds) { (reminders, query), pendingIds ->
+          reminders.filterNot { it.uuId in pendingIds } to query
         }
         .collect { (reminders, query) -> applyReminders(reminders, query) }
     }
@@ -88,28 +97,44 @@ class RemindersArchiveViewModel(
   }
 
   fun deleteReminder(id: String) {
-    Logger.i(TAG, "Deleting reminder: $id")
-    viewModelScope.launch(dispatcherProvider.main()) {
-      withContext(dispatcherProvider.io()) {
-        reminderV2Repository.getById(id)?.also {
-          deleteReminderUseCase(it)
-        }
-      } ?: run {
-        Logger.e(TAG, "Cannot delete reminder with id = $id. Not found.")
-      }
+    pendingDeleteTracker.markPending(batchKey = id, ids = setOf(id)) {
+      reminderV2Repository.getById(id)?.also {
+        deleteReminderUseCase(it)
+        Logger.i(TAG, "Deleted reminder: $id")
+      } ?: Logger.e(TAG, "Cannot delete reminder with id = $id. Not found.")
     }
+    event.emit(
+      NavigationEvent.ShowUndoDelete(batchKey = id, message = textProvider.getText(R.string.reminder_deleted))
+    )
   }
 
   fun deleteAll() {
-    viewModelScope.launch(dispatcherProvider.main()) {
-      val toDeleteIds = _state.value.filteredReminders.map { it.uuId }
-      if (toDeleteIds.isEmpty()) return@launch
+    val toDeleteIds = _state.value.filteredReminders.map { it.uuId }.toSet()
+    if (toDeleteIds.isEmpty()) return
+    val batchKey = UUID.randomUUID().toString()
+    pendingDeleteTracker.markPending(batchKey = batchKey, ids = toDeleteIds) {
       Logger.i(TAG, "Deleting all reminders: ${toDeleteIds.size}")
-      withContext(dispatcherProvider.io()) {
-        val toDelete = toDeleteIds.mapNotNull { reminderV2Repository.getById(it) }
-        deleteAllReminderUseCase(toDelete)
+      val toDelete = toDeleteIds.mapNotNull { reminderV2Repository.getById(it) }
+      deleteAllReminderUseCase(toDelete)
+      withContext(dispatcherProvider.main()) {
+        event.emit(NavigationEvent.ArchiveEmptied)
       }
-      event.emit(NavigationEvent.ArchiveEmptied)
+    }
+    event.emit(
+      NavigationEvent.ShowUndoDelete(
+        batchKey = batchKey,
+        message = textProvider.getText(R.string.reminders_deleted_count, toDeleteIds.size),
+      )
+    )
+  }
+
+  fun undoDelete(batchKey: String) {
+    pendingDeleteTracker.undo(batchKey)
+  }
+
+  fun commitDelete(batchKey: String) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      pendingDeleteTracker.commit(batchKey)
     }
   }
 
@@ -158,6 +183,11 @@ class RemindersArchiveViewModel(
     data object ConfirmDeleteAll : NavigationEvent
 
     data object ArchiveEmptied : NavigationEvent
+
+    data class ShowUndoDelete(
+      val batchKey: String,
+      val message: String,
+    ) : NavigationEvent
   }
 
   companion object {

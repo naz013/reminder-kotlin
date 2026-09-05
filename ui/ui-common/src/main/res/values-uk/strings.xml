@@ -1360,4 +1360,11 @@
     <string name="birthdays_delete_selected_permanently">Видалити %1$d днів народження назавжди?</string>
     <string name="agenda_delete_selected_permanently">Видалити %1$d елементів назавжди?</string>
     <string name="selected_count">Вибрано %1$d</string>
+    <string name="undo">Скасувати</string>
+    <string name="note_deleted">Нотатку видалено</string>
+    <string name="notes_deleted_count">Видалено нотаток: %1$d</string>
+    <string name="birthday_deleted">День народження видалено</string>
+    <string name="birthdays_deleted_count">Видалено днів народження: %1$d</string>
+    <string name="reminder_deleted">Нагадування видалено</string>
+    <string name="reminders_deleted_count">Видалено нагадувань: %1$d</string>
 </resources>

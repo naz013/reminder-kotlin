@@ -1357,4 +1357,11 @@
     <string name="birthdays_delete_selected_permanently">Hapus %1$d ulang tahun secara permanen?</string>
     <string name="agenda_delete_selected_permanently">Hapus %1$d item secara permanen?</string>
     <string name="selected_count">%1$d dipilih</string>
+    <string name="undo">Urungkan</string>
+    <string name="note_deleted">Catatan dihapus</string>
+    <string name="notes_deleted_count">%1$d catatan dihapus</string>
+    <string name="birthday_deleted">Ulang tahun dihapus</string>
+    <string name="birthdays_deleted_count">%1$d ulang tahun dihapus</string>
+    <string name="reminder_deleted">Pengingat dihapus</string>
+    <string name="reminders_deleted_count">%1$d pengingat dihapus</string>
 </resources>

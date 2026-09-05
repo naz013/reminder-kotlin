@@ -1360,4 +1360,11 @@
     <string name="birthdays_delete_selected_permanently">Изтриване на %1$d рождени дни окончателно?</string>
     <string name="agenda_delete_selected_permanently">Изтриване на %1$d елемента окончателно?</string>
     <string name="selected_count">Избрани %1$d</string>
+    <string name="undo">Отмяна</string>
+    <string name="note_deleted">Бележката е изтрита</string>
+    <string name="notes_deleted_count">%1$d бележки са изтрити</string>
+    <string name="birthday_deleted">Рожденият ден е изтрит</string>
+    <string name="birthdays_deleted_count">%1$d рождени дни са изтрити</string>
+    <string name="reminder_deleted">Напомнянето е изтрито</string>
+    <string name="reminders_deleted_count">%1$d напомняния са изтрити</string>
 </resources>

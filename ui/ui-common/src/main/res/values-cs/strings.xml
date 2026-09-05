@@ -1359,4 +1359,11 @@
     <string name="birthdays_delete_selected_permanently">Trvale smazat %1$d narozenin?</string>
     <string name="agenda_delete_selected_permanently">Trvale smazat %1$d položek?</string>
     <string name="selected_count">Vybráno %1$d</string>
+    <string name="undo">Zpět</string>
+    <string name="note_deleted">Poznámka smazána</string>
+    <string name="notes_deleted_count">Smazáno poznámek: %1$d</string>
+    <string name="birthday_deleted">Narozeniny smazány</string>
+    <string name="birthdays_deleted_count">Smazáno narozenin: %1$d</string>
+    <string name="reminder_deleted">Připomenutí smazáno</string>
+    <string name="reminders_deleted_count">Smazáno připomenutí: %1$d</string>
 </resources>

@@ -28,6 +28,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -71,6 +73,7 @@ private val GRID_CARD_HEIGHT = 180.dp
 internal fun NotesScreen(
   modifier: Modifier = Modifier,
   state: NotesScreenState,
+  snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
   onBackClick: (() -> Unit)?,
   onSearchQueryChange: (String) -> Unit,
   onSortOrderSelected: (String) -> Unit,
@@ -95,6 +98,7 @@ internal fun NotesScreen(
 
   Scaffold(
     modifier = modifier,
+    snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
       if (isSelectionMode) {
         NotesSelectionTopBar(

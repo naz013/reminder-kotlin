@@ -1,5 +1,6 @@
 package com.github.naz013.feature.birthday
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.common.Permissions
 import com.github.naz013.feature.birthday.create.EditBirthdayScreen
 import com.github.naz013.feature.birthday.create.EditBirthdayState
 import com.github.naz013.feature.birthday.create.EditBirthdayViewModel
@@ -27,10 +29,10 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.compose.foundation.navigation.sidePanelSupporting
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberUndoSnackbarDispatcher
+import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
-import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -77,6 +79,9 @@ private fun ListEntry(
 ) {
   val viewModel = koinViewModel<BirthdaysViewModel>()
   val dialogDispatcher = rememberDialogDispatcher()
+  val snackbarHostState = remember { SnackbarHostState() }
+  val undoSnackbarDispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
+  val undoActionLabel = stringResource(R.string.undo)
 
   val selectedItemId =
     backStack.lastOrNull()?.let { key ->
@@ -112,12 +117,22 @@ private fun ListEntry(
           onPositive = { viewModel.deleteSelectedBirthdays(event.ids) },
         )
       }
+
+      is BirthdaysViewModel.NavigationEvent.ShowUndoDelete -> {
+        undoSnackbarDispatcher.showUndoSnackbar(
+          message = event.message,
+          actionLabel = undoActionLabel,
+          onUndo = { viewModel.undoDelete(event.batchKey) },
+          onTimeout = { viewModel.commitDelete(event.batchKey) },
+        )
+      }
     }
   }
 
   val state by viewModel.state.collectAsState(BirthdaysScreenState())
   BirthdaysScreen(
     state = state,
+    snackbarHostState = snackbarHostState,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onSmartListSelected = viewModel::onSmartListSelected,
