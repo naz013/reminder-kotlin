@@ -1365,4 +1365,6 @@
     <string name="birthdays_deleted_count">Удалено дней рождения: %1$d</string>
     <string name="reminder_deleted">Напоминание удалено</string>
     <string name="reminders_deleted_count">Удалено напоминаний: %1$d</string>
+    <string name="cd_move_item_up">Переместить вверх</string>
+    <string name="cd_move_item_down">Переместить вниз</string>
 </resources>

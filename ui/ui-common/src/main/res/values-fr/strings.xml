@@ -1366,4 +1366,6 @@
     <string name="birthdays_deleted_count">%1$d anniversaires supprimés</string>
     <string name="reminder_deleted">Rappel supprimé</string>
     <string name="reminders_deleted_count">%1$d rappels supprimés</string>
+    <string name="cd_move_item_up">Déplacer vers le haut</string>
+    <string name="cd_move_item_down">Déplacer vers le bas</string>
 </resources>

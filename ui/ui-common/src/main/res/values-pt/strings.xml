@@ -1366,4 +1366,6 @@
     <string name="birthdays_deleted_count">%1$d aniversários excluídos</string>
     <string name="reminder_deleted">Lembrete excluído</string>
     <string name="reminders_deleted_count">%1$d lembretes excluídos</string>
+    <string name="cd_move_item_up">Mover para cima</string>
+    <string name="cd_move_item_down">Mover para baixo</string>
 </resources>

@@ -1364,4 +1364,6 @@
     <string name="birthdays_deleted_count">تم حذف %1$d أعياد ميلاد</string>
     <string name="reminder_deleted">تم حذف التذكير</string>
     <string name="reminders_deleted_count">تم حذف %1$d تذكيرات</string>
+    <string name="cd_move_item_up">نقل للأعلى</string>
+    <string name="cd_move_item_down">نقل للأسفل</string>
 </resources>

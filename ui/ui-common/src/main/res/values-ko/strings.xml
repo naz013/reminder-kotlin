@@ -1366,4 +1366,6 @@
     <string name="birthdays_deleted_count">생일 %1$d개가 삭제되었습니다</string>
     <string name="reminder_deleted">리마인더가 삭제되었습니다</string>
     <string name="reminders_deleted_count">리마인더 %1$d개가 삭제되었습니다</string>
+    <string name="cd_move_item_up">위로 이동</string>
+    <string name="cd_move_item_down">아래로 이동</string>
 </resources>

@@ -1367,4 +1367,6 @@
     <string name="birthdays_deleted_count">已删除 %1$d 个生日</string>
     <string name="reminder_deleted">提醒已删除</string>
     <string name="reminders_deleted_count">已删除 %1$d 条提醒</string>
+    <string name="cd_move_item_up">上移</string>
+    <string name="cd_move_item_down">下移</string>
 </resources>

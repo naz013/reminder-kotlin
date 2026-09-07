@@ -1370,4 +1370,6 @@
     <string name="birthdays_deleted_count">%1$d birthdays deleted</string>
     <string name="reminder_deleted">Reminder deleted</string>
     <string name="reminders_deleted_count">%1$d reminders deleted</string>
+    <string name="cd_move_item_up">Move up</string>
+    <string name="cd_move_item_down">Move down</string>
 </resources>

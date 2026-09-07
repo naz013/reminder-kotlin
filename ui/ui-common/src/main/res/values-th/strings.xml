@@ -1364,4 +1364,6 @@
     <string name="birthdays_deleted_count">ลบวันเกิดแล้ว %1$d รายการ</string>
     <string name="reminder_deleted">ลบการแจ้งเตือนแล้ว</string>
     <string name="reminders_deleted_count">ลบการแจ้งเตือนแล้ว %1$d รายการ</string>
+    <string name="cd_move_item_up">เลื่อนขึ้น</string>
+    <string name="cd_move_item_down">เลื่อนลง</string>
 </resources>

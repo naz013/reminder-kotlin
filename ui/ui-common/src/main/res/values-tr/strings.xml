@@ -1367,4 +1367,6 @@
     <string name="birthdays_deleted_count">%1$d doğum günü silindi</string>
     <string name="reminder_deleted">Hatırlatıcı silindi</string>
     <string name="reminders_deleted_count">%1$d hatırlatıcı silindi</string>
+    <string name="cd_move_item_up">Yukarı taşı</string>
+    <string name="cd_move_item_down">Aşağı taşı</string>
 </resources>

@@ -23,6 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
@@ -98,7 +101,10 @@ private fun InAppAlertBannerContent(state: InAppAlertBannerState) {
     modifier =
     Modifier
       .inAppAlertBannerWidth()
-      .padding(horizontal = 12.dp, vertical = 8.dp),
+      .padding(horizontal = 12.dp, vertical = 8.dp)
+      // The banner mirrors a just-fired alarm with no system notification sound/vibration of its
+      // own to draw attention - without this, a TalkBack user has no signal it appeared at all.
+      .semantics { liveRegion = LiveRegionMode.Assertive },
     shape = MaterialTheme.shapes.large,
     color = MaterialTheme.colorScheme.surfaceContainerHigh,
     tonalElevation = 6.dp,
