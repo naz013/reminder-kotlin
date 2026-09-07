@@ -103,7 +103,8 @@ internal fun SingleNoteWidgetConfigScreen(
       onColorSelected = { index ->
         onTextColorSelected(index)
       },
-      modifier = Modifier.fillMaxWidth().height(36.dp).padding(top = 4.dp),
+      contentDescription = stringResource(R.string.text_color),
+      modifier = Modifier.fillMaxWidth().height(48.dp).padding(top = 4.dp),
       hapticFeedbackEnabled = state.hapticFeedbackEnabled,
     )
 
@@ -148,7 +149,8 @@ internal fun SingleNoteWidgetConfigScreen(
       onColorSelected = { index ->
         onOverlayColorSelected(index)
       },
-      modifier = Modifier.fillMaxWidth().height(36.dp).padding(top = 4.dp),
+      contentDescription = stringResource(R.string.foreground_color),
+      modifier = Modifier.fillMaxWidth().height(48.dp).padding(top = 4.dp),
       hapticFeedbackEnabled = state.hapticFeedbackEnabled,
     )
 

@@ -1,8 +1,8 @@
 package com.github.naz013.feature.reminder.build.valuedialog.editor
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -75,7 +75,7 @@ import com.github.naz013.ui.common.livedata.ObserveNonNull
 
 private val LIST_MAX_HEIGHT = 400.dp
 private val ROW_HEIGHT = 40.dp
-private const val CHECK_ANIMATION_MS = 150
+private val ROW_BUTTON_SIZE = 48.dp
 
 /** Semantics test tag for a shopping-list row's checkbox, parameterized by [itemId] (`ShopItem
  *  .uuId`) since a list can have several rows and the checkbox itself carries no text/content
@@ -247,6 +247,10 @@ private fun ShopItemRow(
   val focusRequester = remember { FocusRequester() }
   val keyboardController = LocalSoftwareKeyboardController.current
   val hapticFeedback = LocalHapticFeedback.current
+  // "Fast" speed per guidelines - this row's check-toggle icon swap is exactly the small-component
+  // case the fast tier is meant for (switches, buttons), not a partial- or full-screen animation.
+  val checkSpatialSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastSpatialSpec()
+  val checkEffectsSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastEffectsSpec()
 
   LaunchedEffect(item.showInput) {
     if (item.showInput) {
@@ -301,14 +305,14 @@ private fun ShopItemRow(
           onCheckClick()
         },
         modifier = Modifier
-          .size(40.dp)
+          .size(ROW_BUTTON_SIZE)
           .semantics { contentDescription = checkToggleDescription }
           .testTag(shopItemCheckTestTag(item.uuId)),
       ) {
         AnimatedVisibility(
           visible = item.isChecked,
-          enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
-          exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+          enter = scaleIn(checkSpatialSpec) + fadeIn(checkEffectsSpec),
+          exit = scaleOut(checkSpatialSpec) + fadeOut(checkEffectsSpec),
         ) {
           Icon(
             painter = painterResource(R.drawable.ic_fluent_checkbox_checked),
@@ -318,8 +322,8 @@ private fun ShopItemRow(
         }
         AnimatedVisibility(
           visible = !item.isChecked,
-          enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
-          exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+          enter = scaleIn(checkSpatialSpec) + fadeIn(checkEffectsSpec),
+          exit = scaleOut(checkSpatialSpec) + fadeOut(checkEffectsSpec),
         ) {
           Icon(
             painter = painterResource(R.drawable.ic_fluent_checkbox_unchecked),
@@ -379,7 +383,7 @@ private fun ShopItemRow(
         IconButton(
           onClick = onRemoveClick,
           modifier = Modifier
-            .size(40.dp)
+            .size(ROW_BUTTON_SIZE)
             .testTag(shopItemRemoveTestTag(item.uuId)),
         ) {
           Icon(

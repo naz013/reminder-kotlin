@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,15 +28,14 @@ internal fun ReminderFullscreenMapScreen(
       CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     } else {
       mapContent()
-      ExtendedFloatingActionButton(
+      SmallExtendedFloatingActionButton(
         onClick = onMoveToPlaceClick,
         icon = { Icon(painterResource(R.drawable.ic_fluent_place), contentDescription = null) },
         text = { Text(stringResource(R.string.move_to_place)) },
-        modifier =
-          Modifier
-            .align(Alignment.BottomCenter)
-            .navigationBarsPadding()
-            .padding(bottom = 16.dp),
+        modifier = Modifier
+          .align(Alignment.BottomCenter)
+          .navigationBarsPadding()
+          .padding(bottom = 16.dp),
       )
     }
   }

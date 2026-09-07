@@ -32,7 +32,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.feature.note.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.SelectionOverlay
 import com.github.naz013.ui.common.compose.foundation.SelectionTopBar
@@ -368,14 +368,14 @@ private fun NotesEmptyState(
       painter = painterResource(R.drawable.ic_fluent_note),
       contentDescription = null,
       modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+      tint = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     Text(
       text = stringResource(
         if (isArchived) R.string.notes_archive_is_empty else R.string.no_notes,
       ),
       style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
       modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
     )
   }
@@ -400,7 +400,7 @@ private fun NotesTopBar(
       if (onBackClick != null) {
         MenuIconButton(
           icon = AppIcons.Builder.ArrowLeft,
-          contentDescription = null,
+          contentDescription = stringResource(R.string.cd_back),
           onClick = onBackClick,
         )
       }
@@ -420,9 +420,7 @@ private fun NotesTopBar(
         OverflowMenuButton(onArchiveClick = onArchiveClick, onSettingsClick = onSettingsClick)
       }
     },
-    colors = TopAppBarDefaults.topAppBarColors(
-      containerColor = MaterialTheme.colorScheme.background,
-    ),
+    colors = TopAppbarColor,
   )
 }
 

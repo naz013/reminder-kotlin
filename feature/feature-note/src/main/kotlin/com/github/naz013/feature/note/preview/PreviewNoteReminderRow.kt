@@ -1,8 +1,8 @@
 package com.github.naz013.feature.note.preview
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
@@ -29,13 +29,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.github.naz013.feature.note.R
 import com.github.naz013.feature.note.preview.reminders.UiNoteAttachedReminder
 import kotlinx.coroutines.delay
 
 private val REMINDER_CARD_WIDTH = 300.dp
-private const val REMINDER_ANIMATION_DURATION_MS = 250
 private const val REMINDER_STAGGER_DELAY_MS = 40L
 private const val REMINDER_MAX_STAGGER_DELAY_MS = 200L
 
@@ -47,6 +47,10 @@ internal fun PreviewNoteReminderRow(
   modifier: Modifier = Modifier,
 ) {
   if (reminders.isEmpty()) return
+  // "Fast" speed per guidelines - each card's staggered entrance is a per-list-item animation
+  // (closer to a small component than a partial-screen surface like a bottom sheet).
+  val reminderSpatialSpec: FiniteAnimationSpec<IntOffset> = MaterialTheme.motionScheme.fastSpatialSpec()
+  val reminderEffectsSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastEffectsSpec()
   LazyRow(
     modifier = modifier.fillMaxWidth(),
     contentPadding = PaddingValues(end = 16.dp),
@@ -61,10 +65,8 @@ internal fun PreviewNoteReminderRow(
       AnimatedVisibility(
         visibleState = visibleState,
         enter =
-        fadeIn(animationSpec = tween(REMINDER_ANIMATION_DURATION_MS)) +
-          slideInVertically(
-            animationSpec = tween(REMINDER_ANIMATION_DURATION_MS),
-          ) { fullHeight -> fullHeight / 4 },
+        fadeIn(animationSpec = reminderEffectsSpec) +
+          slideInVertically(animationSpec = reminderSpatialSpec) { fullHeight -> fullHeight / 4 },
       ) {
         PreviewNoteReminderCard(
           reminder = reminder,

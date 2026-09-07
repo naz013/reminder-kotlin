@@ -11,9 +11,9 @@ import com.github.naz013.ui.common.compose.foundation.component.ColorPickerCard
 
 /** [com.github.naz013.ui.common.compose.foundation.component.ColorSlider] renders on a bare
  * `Canvas` with a raw `pointerInput` gesture (no `clickable` modifier, so it has no semantics
- * `OnClick` action at all) and no text/content-description of its own - an instrumented test can't
- * `performClick()` it, but can locate it by this tag and drive a `performTouchInput { click(...) }`
- * at a position computed from the node's own reported width. */
+ * `OnClick` action - only a TalkBack-facing `setProgress` adjustable action) - an instrumented test
+ * can't `performClick()` it, but can locate it by this tag and drive a `performTouchInput {
+ * click(...) }` at a position computed from the node's own reported width. */
 const val routineColorSliderTestTag = "routine_color_slider"
 
 /**

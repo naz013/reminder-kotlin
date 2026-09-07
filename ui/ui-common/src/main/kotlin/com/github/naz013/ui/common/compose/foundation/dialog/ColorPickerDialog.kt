@@ -108,9 +108,11 @@ private fun ColorPickerDialog(
         onColorSelected = { index ->
           previewIndex = index
         },
+        contentDescription = data.title ?: data.titleRes?.let { stringResource(it) }
+          ?: stringResource(R.string.acc_select_color),
         modifier = Modifier
           .fillMaxWidth()
-          .height(40.dp),
+          .height(48.dp),
         hapticFeedbackEnabled = data.hapticFeedbackEnabled,
       )
     },

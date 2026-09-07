@@ -170,7 +170,7 @@ internal fun PreviewReminderScreen(
 
         if (state.attachments.isNotEmpty()) {
           item { SectionHeader(text = stringResource(R.string.builder_attachments)) }
-          items(state.attachments, key = { it.uri.toString() + it.name }) { file -> AttachmentRow(file) }
+          item { DetailsCard(rows = state.attachments.map { file -> { AttachmentRow(file) } }) }
         }
 
         if (state.subTasks.isNotEmpty()) {
@@ -722,6 +722,7 @@ private fun MapSection(
       .padding(horizontal = 16.dp)
       .height(200.dp)
       .clip(MaterialTheme.shapes.medium),
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
   ) {
     mapContent()
   }
@@ -738,6 +739,7 @@ private fun NoteRow(
       .fillMaxWidth()
       .padding(horizontal = 16.dp, vertical = 8.dp)
       .clickable(onClick = onClick),
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
   ) {
     Column(modifier = Modifier.padding(12.dp)) {
       if (note.text.isNotEmpty()) {
@@ -769,6 +771,7 @@ private fun GoogleTaskRow(
       .fillMaxWidth()
       .padding(horizontal = 16.dp, vertical = 8.dp)
       .clickable(onClick = onClick),
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
   ) {
     Column(modifier = Modifier.padding(12.dp)) {
       Text(text = task.text, style = MaterialTheme.typography.titleMedium)
@@ -796,7 +799,8 @@ private fun CalendarEventRow(
   Card(
     modifier = Modifier
       .fillMaxWidth()
-      .padding(horizontal = 16.dp, vertical = 8.dp)
+      .padding(horizontal = 16.dp, vertical = 8.dp),
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
   ) {
     Column(modifier = Modifier.padding(12.dp)) {
       Text(text = event.title, style = MaterialTheme.typography.titleMedium)

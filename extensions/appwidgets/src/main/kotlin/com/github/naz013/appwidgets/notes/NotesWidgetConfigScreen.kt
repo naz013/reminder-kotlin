@@ -61,7 +61,8 @@ internal fun NotesWidgetConfigScreen(
         onColorSelected = { index ->
           onBackgroundColorSelected(index)
         },
-        modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
+        contentDescription = stringResource(R.string.background),
+        modifier = Modifier.fillMaxWidth().height(48.dp).padding(8.dp),
         hapticFeedbackEnabled = state.hapticFeedbackEnabled,
       )
     }

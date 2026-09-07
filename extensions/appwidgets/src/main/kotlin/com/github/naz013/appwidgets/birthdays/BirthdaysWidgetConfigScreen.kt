@@ -64,7 +64,8 @@ internal fun BirthdaysWidgetConfigScreen(
         onColorSelected = { index ->
           onHeaderColorSelected(index)
         },
-        modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
+        contentDescription = stringResource(R.string.background),
+        modifier = Modifier.fillMaxWidth().height(48.dp).padding(8.dp),
         hapticFeedbackEnabled = state.hapticFeedbackEnabled,
       )
     }

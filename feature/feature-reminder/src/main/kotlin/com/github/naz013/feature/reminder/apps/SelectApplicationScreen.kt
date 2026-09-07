@@ -2,7 +2,6 @@ package com.github.naz013.feature.reminder.apps
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -78,28 +77,25 @@ internal fun SelectApplicationScreen(
     },
   ) { padding ->
     Column(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(padding),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding),
     ) {
       SearchBar(
         query = state.searchQuery,
         onQueryChange = viewModel::onSearchQueryChange,
         placeholder = stringResource(R.string.search),
-        modifier =
-          Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(horizontal = 16.dp, vertical = 8.dp),
       )
 
       when (val listState = state.listState) {
         is AppListState.Loading -> {
           Box(
-            modifier =
-              Modifier
-                .fillMaxSize()
-                .weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
             contentAlignment = Alignment.Center,
           ) {
             CircularProgressIndicator()
@@ -108,19 +104,17 @@ internal fun SelectApplicationScreen(
 
         is AppListState.Empty -> {
           SelectApplicationEmptyState(
-            modifier =
-              Modifier
-                .fillMaxSize()
-                .weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
           )
         }
 
         is AppListState.Ready -> {
           LazyColumn(
-            modifier =
-              Modifier
-                .fillMaxSize()
-                .weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
           ) {
@@ -141,17 +135,14 @@ private fun ApplicationListItem(
   modifier: Modifier = Modifier,
 ) {
   Card(
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .clickable(onClick = onClick),
+    onClick = onClick,
+    modifier = modifier.fillMaxWidth(),
   ) {
     Row(
       verticalAlignment = Alignment.CenterVertically,
-      modifier =
-        Modifier
-          .fillMaxWidth()
-          .padding(horizontal = 16.dp, vertical = 8.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
       if (app.icon != null) {
         Image(
@@ -167,10 +158,9 @@ private fun ApplicationListItem(
         style = MaterialTheme.typography.titleMedium,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        modifier =
-          Modifier
-            .weight(1f)
-            .padding(start = 16.dp),
+        modifier = Modifier
+          .weight(1f)
+          .padding(start = 16.dp),
       )
     }
   }

@@ -1442,3 +1442,609 @@ real design/engineering time rather than a token swap — giving it semantics (a
 screen readers can operate it) and raising its touch-target height to 48dp is the highest-value fix in the
 whole group since it silently affects every widget setup screen the app ships, but it's also the one most
 likely to need a follow-up design pass rather than a same-PR mechanical fix.
+
+## 14. Shared-scaffold fixes — landed
+
+First implementation pass following the §6–§13 audits, targeting the two highest-leverage findings: both
+were a single shared `Scaffold`/`TopAppBar` wrapper with a `contentDescription = null` back button and a
+`TopAppBar` color hardcoded instead of the shared `TopAppbarColor` token, each silently affecting dozens of
+screens at once. Verified via `./gradlew :feature:feature-settings:compileDebugKotlin
+:extensions:appwidgets:compileDebugKotlin :app:compileProDebugKotlin` (all green).
+
+**`SettingsScaffold.kt`** (`feature-settings`) — this scaffold's leading icon isn't always a back arrow: a
+`navigationIcon: Int` parameter lets callers swap in a close (X) icon via `settingsNavigationIcon(screenTitle,
+renderAsDetailPane)` when there's nothing to "go back" to (opened directly with a caller-supplied title, or
+rendered as a two-pane detail pane). Fixing the content description correctly meant matching that same
+conditional, not just hardcoding one string:
+- Added `settingsNavigationContentDescription(screenTitle, renderAsDetailPane)`, a `@Composable` twin of
+  `settingsNavigationIcon` returning `acc_close` or `cd_back` for the same inputs.
+- Added a `navigationContentDescription: String = stringResource(R.string.cd_back)` parameter to
+  `SettingsScaffold`, wired into the `MenuIconButton`'s `contentDescription` (previously `null`).
+- Replaced `TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)` with
+  `colors = TopAppbarColor` (the shared `ui-common` token, which also correctly sets `titleContentColor`).
+- Updated all 11 call sites across the app that pass a non-default `navigationIcon =
+  settingsNavigationIcon(...)` to also pass the matching `navigationContentDescription =
+  settingsNavigationContentDescription(...)`, so the two stay in sync per screen:
+  `SettingsNavGraph.kt` (7 sites: Backup, General, Calendar, AI Digest, Note, Developer, Troubleshooting),
+  `SecurityNavGraph.kt` (Security), `OtherNavGraph.kt` (Other Settings), and `app`'s
+  `SettingsCrossFeatureEntries.kt` (2 sites: Reminders Settings, Birthday Settings). Call sites that never
+  override `navigationIcon` (Settings Hub, Manage Presets, the 3 PIN screens, Location, Map Style, Cloud
+  Backup, Permissions, OSS Licenses, Privacy Policy, Terms, Gemini Functions, Header Items) needed no
+  per-file change — they pick up the new default automatically.
+- **Not fixed by this change**: `CloudServicesScreen.kt`, `WhatsNewScreen.kt`, and `ProVersionScreen.kt`
+  don't use `SettingsScaffold` at all (§12) and were already correct on this specific finding, but still
+  carry their own duplicated-gradient-header gaps (§12 finding #3) — untouched here.
+
+**`HolidayCountryScreen.kt`** (`feature-settings/calendar/country`) — this screen independently duplicated
+both bugs outside `SettingsScaffold` (§11 finding) with its own hand-rolled `Scaffold`/`TopAppBar`. Since
+it's a plain back-only screen (no detail-pane title override, no save action), the fix was to delete the
+hand-rolled top bar entirely and switch to `SettingsScaffold`, rather than patch the two bugs in place —
+one fewer ad hoc `Scaffold` to keep in sync with the shared token/description conventions going forward.
+Removed the now-unused `Scaffold`/`TopAppBar`/`TopAppBarDefaults`/`MenuIconButton`/`ExperimentalMaterial3Api`
+imports. Verified via `./gradlew :feature:feature-settings:compileDebugKotlin` and
+`:feature:feature-settings:detekt` (no findings in this file).
+
+**`WidgetConfigScaffold.kt`** (`extensions/appwidgets`) — simpler case: the leading icon here is always a
+fixed dismiss/X icon (`ic_fluent_dismiss`), not a conditional back-arrow, so the fix is a straight content
+description (`stringResource(R.string.acc_close)` — "Close" is the semantically correct label for a dismiss
+icon, not "Move back") plus the same `colors = TopAppbarColor` swap. Resolves the same-shaped bug for all 7
+widget-config screens at once (Single Note, Notes, Calendar, Events, Birthdays, Combined Buttons, Google
+Tasks) since every one of them is built on this one shared composable. `ui.common.R.string.acc_close`
+resolves through the existing `com.github.naz013.appwidgets.R` import — this repo builds with
+`android.nonTransitiveRClass = false`, so a dependency module's resources are already visible on a
+downstream module's own `R` class without a separate import.
+
+**Screens now carrying a partial fix** (back-button label + app-bar color token corrected; other
+per-screen findings from §6–§13 — hardcoded shapes, alpha-blended de-emphasis, deprecated components, etc.
+— are unchanged and still open): Settings Hub, General Settings, Backup Settings, Reminders Settings,
+Manage Presets, Calendar Settings, Birthday Settings, Note Settings, Location Settings, Map Style, Security
+Settings, Add/Change/Disable PIN, Cloud Backup Settings, Other Settings, Permissions, Open Source Licenses,
+Privacy Policy, Terms of Service, Gemini Functions, AI Digest Settings, Header Items Settings,
+Troubleshooting, Select Holiday Country (25 Settings screens via `SettingsScaffold`), plus Single
+Note/Notes/Calendar/Events/Birthdays/Combined Buttons/Google Tasks Widget Config (7 screens via
+`WidgetConfigScaffold`) — 32 screens total. Tracked as "In progress" rather than "Done" in
+`m3-expressive-screen-inventory.md` since this is one fix out of several still open per screen.
+
+## 15. Gradient-hero header/card dedup — landed
+
+Fixed §12 finding #3: `CloudServicesScreen.kt`, `WhatsNewScreen.kt`, and `ProVersionScreen.kt` each
+hand-rolled an identical status-bar-padded header `Row` (leading spacer, `TooltipIconButton`-wrapped
+`IconButton`) and an identical translucent content-card `Surface`, both repeated verbatim three times with
+the same two M3 gaps in each copy.
+
+**New shared composables** (`ui-common`, `com.github.naz013.ui.common.compose.foundation.component`,
+alongside the `AnimatedGradientBackground` they're meant to be used on top of):
+- **`GradientScreenHeader.kt`** — the back/close action row. Takes `onBackClick`, `contentDescription`, and
+  an optional `icon` (defaults to the back arrow; `ProVersionScreen` overrides it to the dismiss icon when
+  `renderAsDetailPane`). Fixes the sub-48dp touch target directly: the old per-screen copies hardcoded
+  `Modifier.size(40.dp)` on the `IconButton`, overriding its spec-correct 48dp default — the shared version
+  drops that override and lets `IconButton` size itself correctly.
+- **`GradientHeroCard.kt`** — the translucent content card. Takes an optional `verticalArrangement` (each
+  screen's card needed a different one — `Arrangement.spacedBy(16.dp)`/`spacedBy(12.dp)`/default) and a
+  `ColumnScope` content lambda. Uses a new `AppShapes.largeIncreased = RoundedCornerShape(20.dp)` token
+  (added to `ui-common`'s `Shape.kt`) instead of the bare `RoundedCornerShape(20.dp)` literal that was
+  previously repeated at 4 call sites (`CloudServicesScreen.kt` alone had two) — 20dp is already the
+  spec-correct "large increased" step on the shape scale (guidelines §4.1), so this only names it, it
+  doesn't change the value. The card-fill and back-button-chip alpha blends (`surface.copy(alpha = 0.85f)`,
+  `background.withAlpha(0.25f)`) are legitimately intentional here — a translucent scrim/card is the
+  correct effect over an animated gradient, not a token-bypass mistake like the `SettingsScaffold`/
+  `WidgetConfigScaffold` cases in §14 — so they're kept as alpha blends, just centralized as single private
+  constants inside the two new composables instead of being retyped at 6 call sites across 3 files.
+
+All three screens (`CloudServicesScreen.kt`, `WhatsNewScreen.kt`, `ProVersionScreen.kt`) were rewritten to
+call `GradientScreenHeader`/`GradientHeroCard` instead of hand-rolling the `Row`/`Surface` inline, dropping
+now-unused `Row`/`IconButton`/`Icon`/`TooltipIconButton`/`CircleShape`/`RoundedCornerShape`/`clip`/
+`background`/`withAlpha`/`size`/`statusBarsPadding`/`width` imports per file. Verified via
+`./gradlew :ui:ui-common:compileDebugKotlin :feature:feature-settings:compileDebugKotlin
+:app:compileProDebugKotlin` (all green) and `:ui:ui-common:detekt :feature:feature-settings:detekt` (zero
+findings in any of the 5 touched/new files).
+
+**Screens fixed**: Cloud Services, What's New, Pro Version — the 3 screens in the Settings group that were
+explicitly called out in §14 as *not* covered by the `SettingsScaffold` fix (they don't use that scaffold).
+Combined with §14, all Settings-group screens with a shared-chrome gap identified in §11/§12 now have that
+specific gap fixed; per-screen findings (deprecated components, ad hoc `FontWeight`, etc.) from §6–§13 are
+unaffected and still open.
+
+**Suggested next step**: no more shared-scaffold-level fixes remain identified in the Settings group audit.
+Remaining work is per-screen (see each group's "Suggested fix order" in §6–§13) — e.g. Reminders' heaviest
+`FontWeight`/motion gaps in `ReminderActionScreen.kt`, or the Widget Config group's `ColorSlider`
+accessibility gap (no semantics, sub-48dp touch target, shared by all 7 widget-config screens) flagged in
+§13 as the single highest-reach a11y gap in the whole audit.
+
+## 16. `ColorSlider` accessibility fix — landed
+
+Fixed §13 finding #5: `ui-common`'s `ColorSlider.kt` — a hand-rolled `Canvas` + `pointerInput` drag/tap
+color-swatch strip — had no accessibility semantics at all (invisible to TalkBack/switch-access) and a
+sub-48dp touch target at every call site.
+
+**Correction to §13/§9 while investigating**: the original audit described the widget-config screens'
+`ColorSlider` as "a *second*, independent hand-rolled color-picker component... a materially different,
+lower-quality implementation, not the same component reused" as the one `ColorPickerCard.kt` uses for
+Groups/Tags/Places (§9's genuinely-spec-correct callout). That's not the case — there is exactly one
+`ColorSlider` composable in `ui-common`, and it's shared much more widely than either audit section
+realized: the 7 widget-config screens, `ColorPickerCard.kt` (Groups/Tags/Places, and transitively
+`RoutineColorPicker.kt`), `ColorPickerDialog.kt`, the map style picker (`MapPickerCards.kt`), and 4 call
+sites in the note editor's background/gradient color panels (`NoteEditPanels.kt`) all render through this
+one component. That widens this fix's reach well beyond the Widget Config group §13 scoped it to.
+
+**The fix** (`ColorSlider.kt`):
+- Added a `contentDescription: String` parameter (default: the existing, already-localized
+  `R.string.acc_select_color` = "Select color") and a `Modifier.semantics { }` block giving the strip an
+  adjustable, "slider-equivalent" accessibility role: `contentDescription`, a `progressBarRangeInfo` sized
+  to the swatch count (so TalkBack announces the current position), and a `setProgress` action so swiping
+  up/down while focused moves the selection — there was previously no semantics node here at all, not even
+  a click action, since a bare `Canvas` + `pointerInput` is invisible to accessibility services by default.
+- The sub-48dp touch target isn't fixable from inside the component: height is entirely caller-supplied via
+  `modifier` (`.height(36.dp)`/`.height(40.dp)` at every call site, below the 48×48dp minimum), and an
+  outer `.height()` constraint can't be widened by anything the component adds internally. Fixed by bumping
+  every call site's explicit height to `48.dp` instead.
+
+**Call sites updated** (14 total, all passing a `contentDescription` where a meaningfully specific one was
+already available nearby, falling back to the generic default otherwise):
+- **Widget Config** (7 screens, `extensions/appwidgets`): `CalendarWidgetConfigScreen.kt`,
+  `EventsWidgetConfigScreen.kt`, `CombinedWidgetConfigScreen.kt`, `BirthdaysWidgetConfigScreen.kt`,
+  `TasksWidgetConfigScreen.kt`, `NotesWidgetConfigScreen.kt` — each already had a `Text(stringResource(
+  R.string.background))` label directly above its `ColorSlider`, reused as `contentDescription`.
+  `SingleNoteWidgetConfigScreen.kt` has two sliders, similarly labeled `R.string.text_color` and
+  `R.string.foreground_color`.
+- **`ColorPickerCard.kt`** (`ui-common`, backs Groups/Tags/Places and `RoutineColorPicker.kt`) — passes its
+  existing `title` parameter straight through as `contentDescription`, so the card's own visible label and
+  its accessibility label always match.
+- **`ColorPickerDialog.kt`** (`ui-common`) — reuses the dialog's own `title`/`titleRes`, falling back to the
+  generic default if the caller passed neither.
+- **`MapPickerCards.kt`**'s `MarkerStyleCard` (`ui-map`) — no adjacent label existed, so this one got a new
+  reference to the existing `R.string.style_of_marker` string (already used elsewhere in the same picker
+  flow) rather than the generic default.
+- **`NoteEditPanels.kt`** (`feature-note`, 4 sliders): the two gradient sliders reuse their existing
+  adjacent `R.string.gradient_start_color`/`R.string.gradient_end_color` labels; the plain background-color
+  slider (`ColorPanel`) and the solid-fill slider (`SolidColorControls`) had no adjacent label, so both keep
+  the generic default.
+
+No new string resources were added — every `contentDescription` override reuses a string that was already
+defined and already fully localized across all 26 locales, which is why this fix didn't need the usual
+"append to every `values-*/strings.xml`" step from `CLAUDE.md`'s string-resource convention.
+
+Verified via `./gradlew :ui:ui-common:compileDebugKotlin :ui:ui-map:compileDebugKotlin
+:ui:ui-routine:compileDebugKotlin :feature:feature-note:compileDebugKotlin
+:extensions:appwidgets:compileDebugKotlin :app:compileProDebugKotlin` (all green) and detekt on every
+touched module — zero new findings; the handful detekt reported were pre-existing debt on untouched lines
+(confirmed by diffing line numbers against the actual edits) plus two already-known pre-existing issues
+(`SingleNoteWidgetConfigScreen.kt`'s import ordering, `RoutineColorPicker.kt`'s `routineColorSliderTestTag`
+naming) neither of which this change touches.
+
+**Not fixed**: the drag/tap gesture itself still isn't independently focusable per-swatch (TalkBack gets
+one adjustable node for the whole strip, not N discrete "select red"/"select blue" targets) — a fuller fix
+would restructure the component from one `Canvas` into N individually-`selectable()` composables, which is
+a larger rework than this pass scoped. The current fix is a genuine, real improvement (nothing → an
+operable adjustable control with a real label) but not full parity with a native M3 `Slider`/segmented
+control's accessibility behavior.
+
+**Suggested next step**: no further shared-component-level a11y gaps are currently identified. Remaining
+work is per-screen per each group's "Suggested fix order" in §6–§13 — e.g. Reminders' `FontWeight`/motion
+gaps in `ReminderActionScreen.kt`, or Calendar's sub-48dp `TimelinePager.kt` event blocks (§10).
+
+## 17. `ReminderActionScreen.kt` type/elevation/color-token fixes — landed
+
+Fixed 3 of §6's findings on this screen (cross-cutting #3 and #4, plus the screen-specific card-elevation
+note) — the manual `FontWeight` overrides, the alpha-blended de-emphasis, and the off-scale card elevation.
+The alarm/ringing screen was flagged as this app's single strongest "hero moment" candidate, so it was the
+natural first place to try real emphasized type. `MapEditorScreen.kt`'s and `SubTasksValueEditor.kt`'s
+literal `tween()` motion gap (cross-cutting #6) is a *different* screen's finding, not this one's — despite
+how the "Suggested next step" line above reads, `ReminderActionScreen.kt` itself has no animation code at
+all to fix; motion in this group remains open for those two files.
+
+**Precedent check before touching anything**: §3's note that `MaterialTheme.typography.xxxEmphasized`
+adoption was still "Phase 2/3 work" turned out to be stale — `AgendaScreen.kt` and
+`ChronologicalHomeScreen.kt` already use `titleMediumEmphasized`/`bodyMediumEmphasized`/
+`headlineMediumEmphasized`/etc. in production, so the token exists and has real precedent in this exact
+Material3 version; this fix follows that established pattern rather than introducing a new one.
+
+**The fixes** (`ReminderActionScreen.kt`, all 5 header-content composables plus `ActionsSection`'s main
+button):
+- **9 manual `FontWeight` overrides → emphasized style tokens** — every `style = bodyLarge, fontWeight =
+  FontWeight.Medium`/`style = titleMedium, fontWeight = FontWeight.Bold` pair (contact/email/app/link
+  header name + detail lines) became a single `style = bodyLargeEmphasized`/`titleMediumEmphasized`
+  reference; `SimpleHeaderContent`'s `headlineSmall + FontWeight.Bold` became `headlineSmallEmphasized`;
+  `ActionsSection`'s main button label's `titleMedium + FontWeight.SemiBold` became `titleMediumEmphasized`.
+  `LinkHeaderContent` had the identical `bodyLarge + FontWeight.Medium` pattern too — not named explicitly
+  in §6's finding #3 list, but fixed for the same reason ("match the sibling row" already used to justify
+  §6 finding #4). The now-fully-unused `FontWeight` import was removed.
+- **3 ad hoc `.copy(alpha = 0.7f/0.6f)` de-emphasis call sites → plain `onSurfaceVariant`** — the contact
+  phone number, the email address, and the email subject line (which also keeps its `FontStyle.Italic` —
+  removing the ad hoc alpha doesn't touch the separate italic distinction). Matches finding #4 exactly.
+- **Off-scale `CardDefaults.cardElevation(defaultElevation = 2.dp)` removed from both cards** (the header
+  card and the todo-list card) — 2dp sits between the filled-card default (0dp) and elevated-card default
+  (1dp) on the M3 elevation scale (guidelines §5) and isn't one of the 6 defined levels. Both cards already
+  set an explicit `containerColor` (a "filled card" pattern that conventionally relies on color contrast
+  rather than elevation for hierarchy), so removing the override entirely restores `CardDefaults`' own
+  spec-correct 0dp default rather than picking a different magic number.
+
+Verified via `./gradlew :feature:feature-reminder:compileDebugKotlin :app:compileProDebugKotlin` (both
+green) and `:feature:feature-reminder:detekt` — the one new-looking hit
+(`CyclomaticComplexMethod` on the top-level `ReminderActionScreen` composable) and every `Indentation` hit
+in the file were confirmed pre-existing by diffing detekt's reported line numbers against the actual edited
+hunks — none land inside a changed line; they're all in this file's untouched `when(event)` block, pre-
+existing `Modifier` chain formatting, or the four `@Preview` composables (also untouched).
+
+**Not fixed**: `ReminderActionScreen.kt`'s single landscape/portrait split (orientation-based, not the five
+official breakpoints) and `SelectApplicationScreen.kt`/`PreviewReminderScreen.kt`'s hand-built list rows
+and inconsistent surface-container roles remain open per §6. The group's actual motion gap
+(`MapEditorScreen.kt`, `SubTasksValueEditor.kt`) is untouched by this pass.
+
+**Suggested next step**: `MapEditorScreen.kt`'s literal `tween()` sheet-drag animation and missing
+640dp bottom-sheet max-width, or `SubTasksValueEditor.kt`'s sub-48dp check/remove `IconButton`s (§6's
+own strongest accessibility implementation in the group, bar this one gap) are the remaining concrete
+items in the Reminders group's fix order.
+
+## 18. `BirthdayActionScreen.kt` type/elevation/shape/color-token fixes — landed
+
+§8 documented `BirthdayActionScreen.kt` as structurally near-identical to `ReminderActionScreen.kt`
+(same `DeviceScreenConfiguration` portrait/landscape split, same header-card shape, same `SplitButton`
+usage) and noted it "inherits that screen's exact findings" — its own suggested fix order explicitly called
+for fixing both together "so the two alarm screens stay visually consistent." This section applies §17's
+exact fix to this twin screen, plus one extra token swap §8 called out specifically for this file.
+
+**The fixes** (`BirthdayActionScreen.kt`, its single `ContactHeaderContent` plus `ActionsSection`'s main
+button — this screen has one header variant, not `ReminderActionScreen.kt`'s five):
+- **6 manual `FontWeight` overrides → emphasized style tokens**: the name (`titleLarge` → `titleLargeEmphasized`),
+  birthday date and age lines (`bodyLarge`/`bodyMedium` → their `Emphasized` equivalents), and the main
+  action button label (`titleMedium` → `titleMediumEmphasized`) — same "weight" trigger as §17.
+- **1 redundant `fontWeight = FontWeight.Normal` deleted outright**, not swapped — `FontWeight.Normal` is
+  already the baseline default weight, so the override was a no-op to begin with; unlike the other 6 sites,
+  there was no actual weight to preserve by moving to an emphasized token; the "contact name if different
+  from text" line just needed the dead parameter removed.
+- **1 ad hoc `.copy(alpha = 0.7f)` de-emphasis site → plain `onSurfaceVariant`** (the phone number line) —
+  same as §17's finding #4 treatment.
+- **Off-scale `defaultElevation = 2.dp` removed** from the one header card, same reasoning as §17.
+- **`RoundedCornerShape(12.dp)` → `AppShapes.tile`** on the same header card — §8's own suggested fix order
+  named this swap specifically (`BirthdayActionScreen.kt:233`, bundled with the elevation fix). `AppShapes.tile`
+  is already defined as exactly `RoundedCornerShape(12.dp)`, so this is a pure token-naming change with zero
+  visual difference — unlike §17's `ReminderActionScreen.kt`, which wasn't flagged for this same swap (its
+  12dp corner radii weren't called out as a finding there, so left as-is to keep this pass scoped to what
+  each screen's audit actually flagged).
+
+The unused `FontWeight` and `RoundedCornerShape` imports were removed; `AppShapes` was added.
+
+Verified via `./gradlew :feature:feature-birthday:compileDebugKotlin :app:compileProDebugKotlin` (both
+green) and `:feature:feature-birthday:detekt` — this file carries substantially more pre-existing
+`Indentation`/`ImportOrdering` debt than `ReminderActionScreen.kt` did (the whole file, including both
+`@Preview` composables, already had it), but every single reported line was confirmed pre-existing the same
+way as §17: diffed against the actual edited hunks, none land inside a changed line.
+
+**Not fixed**: same as §17 — the orientation-based (not breakpoint-based) portrait/landscape split remains
+open, and this screen has no motion code to fix either. The pre-existing `Indentation`/`ImportOrdering`
+debt found throughout the file during verification is untouched (out of scope for this pass, and far larger
+than what §8 itself flagged as a finding — not something to silently bundle in).
+
+With §17 and §18 both landed, the two alarm/ringing screens are visually consistent again on every point §8
+flagged them as twins on.
+
+## 19. `MapEditorScreen.kt` motion/max-width/scrim-token fixes — landed
+
+Fixed the remaining §6 finding on this file: cross-cutting #6 (literal `tween()` sheet drag/dismiss/settle
+animations) plus its own two screen-specific notes (no 640dp bottom-sheet max-width, hardcoded scrim
+color). This is the hand-rolled bottom-sheet clone used by the Arriving/Leaving map value editor — it can't
+use the real `AppModalBottomSheet` because it needs to keep the embedded Google Map in the same composition
+rather than a separate `Popup` window, so it reimplements drag/dismiss/scrim by hand.
+
+**The fixes** (`MapEditorScreen.kt`):
+- **2 `tween(200)` calls → `MaterialTheme.motionScheme.defaultSpatialSpec()`** — guidelines §6 classifies
+  spring speed by tier: "fast" for small components (switches, buttons), "**default**" for partial-screen
+  animations, and its own worked example for the default tier is literally "bottom sheet." Since that's
+  exactly what this hand-rolled sheet is standing in for, this uses `defaultSpatialSpec()`, not
+  `fastSpatialSpec()` — worth calling out because an earlier note on this same finding (§6's cross-cutting
+  #6 text) suggested "fast" without checking the guidelines' own tier table first; the guidelines are the
+  more authoritative source here and this fix follows them rather than that earlier loose paraphrase.
+  `MaterialTheme.motionScheme` is `@Composable`-only, so the spec is resolved once into a
+  `val sheetMotionSpec: AnimationSpec<Float>` in the composable body and captured by the local
+  `dismiss()`/`settle()` functions (which aren't themselves `@Composable`), rather than calling
+  `MaterialTheme.motionScheme` from inside them directly, which wouldn't compile.
+- **640dp bottom-sheet max-width added** — `Modifier.fillMaxWidth().widthIn(max = 640.dp)` on the sheet's
+  outer `Column` (guidelines §9.5's standard M3 bottom-sheet spec), so the sheet stops stretching
+  edge-to-edge on Expanded/Large/XL breakpoints. No extra centering logic needed: the `Column` already sits
+  inside `Alignment.BottomCenter` in the parent `BoxWithConstraints`, which centers on the child's actual
+  measured width — once that width is capped at 640dp instead of the full screen, centering falls out for
+  free.
+- **Scrim color token** — `Color.Black.copy(alpha = scrimAlpha)` → `MaterialTheme.colorScheme.scrim.copy(alpha
+  = scrimAlpha)`, per the finding's own direction. The now-unused `Color` and `tween` imports were removed.
+
+The 28dp top-corner radius (`RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)`) was confirmed
+spec-correct by §6 already (bottom sheets are specced at exactly 28dp) and left as a literal rather than
+forced into a token, matching that finding's own conclusion — not everything flagged in an audit needs a
+change, only the parts actually called out as wrong.
+
+Verified via `./gradlew :feature:feature-reminder:compileDebugKotlin :app:compileProDebugKotlin` (both
+green) and `:feature:feature-reminder:detekt` — one `ImportOrdering` hit, confirmed pre-existing (the same
+unsorted `com.github.naz013.*` import block pattern already seen in §17/§18's files, untouched by this
+diff).
+
+**Not fixed**: `SubTasksValueEditor.kt`'s `tween(CHECK_ANIMATION_MS)` (4 call sites, cross-cutting #6's
+other named file) and its sub-48dp check/remove `IconButton`s are a different file, untouched by this pass.
+
+**Suggested next step**: `SubTasksValueEditor.kt` is the last item explicitly named in §6's cross-cutting
+findings without a landed fix — its check/uncheck scale+fade animation is the "fast effects spring"
+counterpart to this section's "default spatial spring" (small-component motion vs. partial-screen motion,
+per the same guidelines §6 tier table), and its sub-48dp `IconButton`s are a real accessibility gap on what
+§6 called this group's otherwise-strongest accessibility implementation.
+
+## 20. `SubTasksValueEditor.kt` motion/touch-target fixes — landed
+
+Fixed the last unaddressed §6 finding: cross-cutting #6's second named file (`tween(CHECK_ANIMATION_MS)`,
+4 call sites) plus the screen-specific note that its check/remove `IconButton`s are sized to 40dp, below
+the 48×48dp minimum touch target guidelines §8/§1.4 call out. §6 called this row otherwise this group's
+*strongest* accessibility implementation (per-row custom `CustomAccessibilityAction`s exposing a
+TalkBack-reachable equivalent for the drag-to-reorder gesture, merged semantics content descriptions,
+haptic feedback, test tags) — this fix closes its one real gap without touching any of that.
+
+**The fixes** (`SubTasksValueEditor.kt`, `ShopItemRow`):
+- **4 `tween(CHECK_ANIMATION_MS)` calls → `MaterialTheme.motionScheme` specs, split by category** — the
+  checked/unchecked icon swap uses both `scaleIn`/`scaleOut` (a transform → spatial) and `fadeIn`/`fadeOut`
+  (an opacity change → effects), so each got its own spec rather than reusing one for both:
+  `scaleIn(checkSpatialSpec)`/`scaleOut(checkSpatialSpec)` from `fastSpatialSpec()`, and
+  `fadeIn(checkEffectsSpec)`/`fadeOut(checkEffectsSpec)` from `fastEffectsSpec()`. "Fast" is the correct
+  tier here per guidelines §6's own table (small components — switches, buttons — not §19's "default"
+  partial-screen tier), matching what the earlier loose note on this finding already got right (unlike its
+  guess on §19's sheet-drag speed). Both specs are resolved once per row into `val`s at the top of
+  `ShopItemRow` and reused across both `AnimatedVisibility` blocks, rather than re-reading
+  `MaterialTheme.motionScheme` 4 times. The now-unused `CHECK_ANIMATION_MS` constant and `tween` import
+  were removed.
+- **Both `IconButton`s' `Modifier.size(40.dp)` → a new `ROW_BUTTON_SIZE = 48.dp` constant** — the check
+  toggle and the remove button. Bumping the remove button's outer size also happens to fix its icon's
+  effective rendering size as a side effect: it wraps its `Icon` in `.fillMaxSize().padding(12.dp)`, so a
+  40dp box rendered a cramped 16dp icon; at 48dp the icon renders at the standard 24dp. `ROW_HEIGHT` (a
+  different, unrelated 40dp constant used only for the drag-reorder step-size calculation, not a touch
+  target) was deliberately left untouched — conflating the two would have been a scope-creep mistake.
+
+Verified via `./gradlew :feature:feature-reminder:compileDebugKotlin :app:compileProDebugKotlin` (both
+green). Detekt flagged one real-looking hit worth explaining: `CyclomaticComplexMethod` on `ShopItemRow`
+(complexity 16 vs. threshold 15) — none of this pass's edits added any branching (all four replacements
+were argument swaps, no new `if`/`when`/loops), so before trusting that assumption this was verified
+empirically rather than by inspection alone: `git stash` set the file back to its pre-edit state, detekt
+was re-run, and it reported the identical complexity-16 finding on the untouched original — confirming this
+is pre-existing debt, not a regression, before the stash was popped back.
+
+**Not fixed**: this closes every item §6 named specifically by file. What's left in the Reminders group is
+`SelectApplicationScreen.kt`/`PreviewReminderScreen.kt`'s hand-built list rows and inconsistent
+surface-container roles, and the deprecated baseline `ExtendedFloatingActionButton` on
+`ReminderFullscreenMapScreen.kt` — both lower-priority per §6's own suggested fix order, and neither touched
+across §17-§20.
+
+With §17 through §20 landed, every cross-cutting and screen-specific finding from §6 that was fixable
+without a larger structural rework (list-row componentization, breakpoint-based layout) now has a landed
+fix.
+
+## 21. `SelectApplicationScreen.kt`/`PreviewReminderScreen.kt` list-row and surface-container fixes — landed
+
+Fixed §6's last-remaining screen-specific finding for the Reminders group: hand-built list rows and
+`PreviewReminderScreen.kt`'s surface-container roles with "no obvious rule for which container level each
+section should get." Deliberately did **not** introduce Material3's `ListItem()` composable — nothing else
+in this app uses it (the codebase's own convention for a clickable row is a hand-rolled `Card` + `Row`, e.g.
+`ui-common`'s `AgendaListItem`/`BuilderListItemCard`), so switching just these two files to a different row
+primitive would trade one inconsistency for another. Instead, each file's rows were brought in line with
+patterns *already established elsewhere in the same file or module*.
+
+**`SelectApplicationScreen.kt`** (`ApplicationListItem`): `Modifier.clickable` wrapping the `Card` → the
+`Card`'s own `onClick` param, matching `BuilderListItemCard.kt`'s idiom for a clickable list row (merges
+click semantics into the `Card`'s own node instead of layering a separate `clickable` modifier over it).
+Removed the now-unused `clickable` import.
+
+**`PreviewReminderScreen.kt`**:
+- **Surface-container roles normalized** — `NoteRow`, `GoogleTaskRow`, `CalendarEventRow`, and
+  `MapSection`'s `Card`s now explicitly set `containerColor = MaterialTheme.colorScheme.surfaceContainer`,
+  matching what `DetailsCard`/`SubTasksSection` already used. This establishes the two-tier rule §6 found
+  missing: `HeaderCard` (the hero summary card) keeps `surfaceContainerLow`, every other card on the screen
+  now consistently uses `surfaceContainer` — no more silent default-`surface` fallback on 4 of 7 card
+  sections.
+- **`AttachmentRow`s de-duplicated into the file's own grouped-card pattern** — previously rendered as bare
+  `Row`s directly as individual `LazyColumn` `items()`, unlike every other multi-row section on this screen
+  (`DetailsCard`/`SubTasksSection` group their rows inside one `Card` with `HorizontalDivider`s between).
+  Reused the existing `DetailsCard(rows: List<@Composable () -> Unit>)` composable directly —
+  `state.attachments.map { file -> { AttachmentRow(file) } }` — the same pattern `detailRows(state)` already
+  uses for the main details list, rather than inventing a new grouping composable. `CalendarEventRow` was
+  deliberately left as its own individual `Card` per event (not grouped) since each row carries its own
+  Open/Delete action buttons — grouping multiple action rows into one card was a plausible but separate
+  design change, not something this finding called for.
+
+Verified via `./gradlew :feature:feature-reminder:compileDebugKotlin :app:compileProDebugKotlin` (both
+green) and `:feature:feature-reminder:detekt`. Detekt reported two `MaxLineLength` hits in
+`PreviewReminderScreen.kt` (lines 473, 687 post-edit); both fall on lines untouched by this diff (the
+offline-only detail row and the sub-task check icon's `iconColor` ternary) — pre-existing debt whose line
+numbers shifted from the 8 lines this pass inserted, not new findings. No findings at all were reported
+against `SelectApplicationScreen.kt`.
+
+**Not fixed**: the deprecated baseline `ExtendedFloatingActionButton` on `ReminderFullscreenMapScreen.kt`
+(§6's one remaining named item, a straightforward component swap) remains open. `TodoEditScreen.kt`'s
+duplicated `OfflineOnlyRow` (worth deduplicating into `ui-common` regardless of any M3 fix) also remains
+open — it's a code-sharing cleanup, not an M3-compliance gap.
+
+**Suggested next step**: with §6's audit now fully worked through except the FAB swap and the
+`OfflineOnlyRow` dedup, a natural next step is either of those two small, well-scoped Reminders items, or
+moving to a different screen group entirely — Notes, Groups/Tags/Places, Calendar/Google Tasks, or
+Workflow/Routines (§7-§13) — none of which have had fixes landed yet beyond incidental touches from the
+shared-component work in §15-§16.
+
+## 22. `ReminderFullscreenMapScreen.kt` deprecated baseline extended FAB — landed
+
+Fixed §6's one remaining named item: the "move to place" button used the baseline
+`ExtendedFloatingActionButton` (56dp pill shape), which guidelines §9.1's deprecation table flags directly —
+"Baseline or surface-color extended FAB → Small extended FAB." This isn't a hand-rolled approximation the
+app needs to build; M3 1.5.0-alpha27 (the version already on this project's classpath) ships a real
+`SmallExtendedFloatingActionButton` composable with the same `text`/`icon`/`onClick`/`modifier` parameters as
+the baseline one, so this was confirmed against the actual library source (extracted from the Gradle cache's
+sources jar, not assumed from memory) before touching the file — its default shape resolves to
+`FloatingActionButtonDefaults.smallExtendedFabShape` (`ExtendedFabSmallTokens.ContainerShape`), distinct from
+the baseline's `extendedFabShape` (`ExtendedFabPrimaryTokens.ContainerShape`), which is exactly the "now
+boxier" shape change the guidelines describe.
+
+**The fix**: swapped the composable name only — `ExtendedFloatingActionButton` →
+`SmallExtendedFloatingActionButton` — and its import. Every existing call-site argument (`onClick`, `icon`,
+`text`, `modifier`) carried over unchanged since the two composables share the same parameter names; no
+other behavior (position, padding, navigation-bar inset handling) changed.
+
+Verified via `./gradlew :feature:feature-reminder:compileDebugKotlin :app:compileProDebugKotlin` (both
+green) and `:feature:feature-reminder:detekt`. Detekt reported `Indentation` findings on lines 36-39 of the
+file; `git diff` confirms those exact lines (the `modifier =` block) are untouched by this change — the
+composable-name swap and its import are the only lines this diff touches — so this is pre-existing debt, not
+a regression, without needing a stash-based check this time since the diff itself is the proof.
+
+**Not fixed**: `TodoEditScreen.kt`'s duplicated `OfflineOnlyRow` — a code-sharing cleanup, not an
+M3-compliance gap, and the only item left unaddressed from §6's full findings list.
+
+**Suggested next step**: §6's Reminders audit is now fully closed out — every cross-cutting pattern and
+every screen-specific finding either has a landed fix or (for the `OfflineOnlyRow` dedup) was explicitly
+scoped out as non-M3 cleanup. The natural next step is moving to a different screen group — Notes,
+Groups/Tags/Places, Calendar/Google Tasks, or Workflow/Routines (§7-§13) — none of which have had dedicated
+fixes land yet beyond incidental touches from the shared-component work in §15-§16.
+
+## 23. `TodoEditScreen.kt`/`BuildReminderScreen.kt` duplicated `OfflineOnlyRow` dedup — landed
+
+Fixed §13's flagged code-sharing gap (not an M3-compliance defect on its own, but explicitly called out
+alongside the rest of the Reminders findings): `TodoEditScreen.kt` and `BuildReminderScreen.kt` each had
+their own private `OfflineOnlyRow` composable. On closer comparison the two were **not** byte-identical as
+originally described ("verbatim") — `BuildReminderScreen.kt`'s version had extra padding on the row and
+icon, plus a `start = 56.dp` indent on the description text that aligns it under the label rather than the
+icon; `TodoEditScreen.kt`'s version had none of that, so its description sat flush left under the icon
+instead of the label. `BuildReminderScreen.kt`'s version is the deliberately-aligned one (56dp exactly
+accounts for the row's 8dp padding + icon's 8dp start padding + 24dp icon width + 16dp spacer), so it was
+kept as the canonical version rather than splitting the difference or picking arbitrarily.
+
+**The fix**: extracted `OfflineOnlyRow` into a new file,
+`com.github.naz013.feature.reminder.compose.OfflineOnlyRow.kt`, marked `internal` per this repo's
+module-visibility convention (used by two packages within the same `feature-reminder` module, no other
+module needs it — doesn't belong in `ui-common`). Both `BuildReminderScreen.kt` and `TodoEditScreen.kt` now
+import it instead of declaring their own copy; both call sites were otherwise unchanged. As a byproduct,
+`TodoEditScreen.kt`'s screen now renders with the same (better) description-text alignment
+`BuildReminderScreen.kt` already had — a real visual fix, not just a code-sharing one, since deduplication
+necessarily meant picking one behavior.
+
+Removed now-unused imports from both files: `TodoEditScreen.kt` lost `Icon`, `Spacer`, `Switch`,
+`Alignment`, `Row`, and `width` (all only used by the now-removed local composable); `BuildReminderScreen.kt`
+kept its `Icon`/`Spacer`/`Switch` imports since it still uses them elsewhere.
+
+Verified via `./gradlew :feature:feature-reminder:compileDebugKotlin :app:compileProDebugKotlin` (clean,
+zero warnings) and `:feature:feature-reminder:detekt`. Detekt's `Indentation` findings in both files and the
+pre-existing `ImportOrdering` finding in `TodoEditScreen.kt` were confirmed pre-existing by diffing against
+`git show HEAD` at the shifted line numbers (content identical, only offset by the lines this pass
+added/removed) — the same pre-existing debt this file already carried before touching it. The new
+`OfflineOnlyRow.kt` file itself has zero detekt findings. `NoUnusedImports` briefly fired on the first pass
+(the `Row`/`width` imports weren't caught until this check) and was fixed before the final verification run.
+
+This was the last item named across §6 (Reminders) and §13. Every finding from that audit pass now either
+has a landed fix or was explicitly scoped out as out of range for M3 compliance work.
+
+**Suggested next step**: move to a different screen group entirely — Notes, Groups/Tags/Places,
+Calendar/Google Tasks, or Workflow/Routines (§7-§13) — none of which have had dedicated fixes land yet beyond
+incidental touches from the shared-component work in §15-§16.
+
+## 24. `NotesScreen.kt` back-button/app-bar-token/alpha-blend fixes — landed
+
+§8 audited Notes and Birthdays together; this is the first fix landed for the Notes half specifically
+(Birthdays' alarm screen was already fixed in §18). `NotesScreen.kt` carries three of that audit's
+cross-cutting findings at once, all cheap and zero-judgment per §8's own "suggested fix order," so all three
+landed together in one pass rather than three separate ones: it's a single file, and splitting a
+three-line-touch across three PRs would have been process overhead for no real benefit.
+
+**The fixes** (`NotesScreen.kt`):
+- **Cross-cutting #1: back-button `contentDescription = null` → `stringResource(R.string.cd_back)`** — in
+  `NotesTopBar`, shared by both Notes List and Notes Archive (`NotesArchiveEntry` reuses this exact
+  composable per §8's own note), so one fix covers both inventory rows. Matches the sibling fix already
+  pattern-established for the Reminders group (§14 onward) and the exact string other `feature-note` screens
+  (`NoteEditScreen.kt`, `PreviewNoteScreen.kt`, `ImagePreviewScreen.kt`) already used correctly.
+- **Cross-cutting #2: hand-rolled `TopAppBarDefaults.topAppBarColors(containerColor = background)` →
+  `ui-common`'s shared `TopAppbarColor` token** — the hand-rolled version was missing the paired
+  `titleContentColor = onBackground` half of the token, so this is a real (if currently invisible) drift
+  risk, not just a style nit. Removed the now-unused `TopAppBarDefaults` import (its only use in this file).
+- **Cross-cutting #3: `NotesEmptyState`'s `onSurface.copy(alpha = 0.3f)` / `0.5f` → `onSurfaceVariant`** —
+  the icon tint and caption color, matching the equivalent fix already applied program-wide for this exact
+  construct (Reminders' §6 flagged the same pattern; guidelines §2.2/§2.4 prefer the role token over a
+  hand-blended alpha so future contrast-level changes reach it automatically).
+
+**Not fixed** (deliberately, in this pass): `NotesScreen.kt:570`'s `SelectableOptionRow` `fontWeight = if
+(selected) FontWeight.SemiBold else FontWeight.Normal` (cross-cutting #4) — §8 itself calls this the more
+defensible case for a manual weight swap (state-driven "context" trigger per guidelines §3.1, not the
+"already-bold-so-swap-for-consistency" trigger), and per the Reminders precedent (§17) this kind of type-role
+swap only landed when doing a screen's full type-token pass, not as an isolated one-liner. Also out of scope
+here: `NoteEditFloatingBar.kt`/`PreviewNoteReminderRow.kt`'s motion and shape/elevation findings (cross-cutting
+#5-#7) — different files, not touched by this pass.
+
+Verified via `./gradlew :feature:feature-note:compileDebugKotlin :app:compileProDebugKotlin` (clean, zero
+warnings) and `:feature:feature-note:detekt`. Detekt reported `ArgumentListWrapping`/`MaxLineLength` (lines
+588-591, `SortMenuButton`'s long `Triple(...)` option list) and `Wrapping` (line 340, a destructuring lambda
+in `noteMenuItems`) — `git diff` confirms none of those lines were touched by this change, so all are
+pre-existing debt.
+
+**Suggested next step**: `NoteEditScreen.kt`/`NoteEditFloatingBar.kt` next — its off-scale
+`shadowElevation`/`tonalElevation = 4.dp` and literal `tween()`/hand-tuned `spring()` calls (cross-cutting
+#6-#7) are well-scoped, mechanical-ish fixes; or `PreviewNoteReminderRow.kt`'s `tween(250)` (also
+cross-cutting #7). The Birthdays half of §8 (`BirthdaysScreen.kt`'s scroll-shadow app bar and bare
+`Icons.Default.FilterList`, `EditBirthdayScreen.kt`/`PreviewBirthdayScreen.kt`'s back/close content-description
+split) remains untouched by this Notes-scoped pass.
+
+## 25. `NoteEditFloatingBar.kt` elevation/motion fixes — landed
+
+Fixed §8's cross-cutting #6 and #7 findings for `NoteEditFloatingBar.kt`: the off-scale
+`shadowElevation`/`tonalElevation = 4.dp` on the bar's `Surface`, and its literal `tween()` plus two
+hand-tuned `spring(dampingRatio = ..., stiffness = ...)` calls.
+
+**Elevation**: 4dp isn't one of the defined M3 resting levels (guidelines §5: 0/1/3/6/8/12dp). Guidelines
+§5's own table lists "toolbar" explicitly under level 2 (3dp) — and §8's own audit text already names this
+component as functionally a hand-rolled version of the M3 Expressive floating toolbar — so `3.dp` (not
+`6.dp`, level 3, which the table reserves for FABs/dialogs/pickers/search) is the correct target, not an
+arbitrary pick. Both `shadowElevation` and `tonalElevation` were changed to `3.dp`.
+
+**Motion**: replaced both hand-tuned `spring()` calls (the bar's own press-scale feedback, and its one-time
+entrance `scaleIn`) plus the `tween(FLOATING_BAR_ANIMATION_DURATION_MS / 2)` fade with
+`MaterialTheme.motionScheme` specs. Classified as **fast** tier (not §19's "default" tier used for the
+sheet-drag fix): guidelines §6 names bottom sheet/expanded nav rail as the default-tier example and
+switches/buttons as the fast-tier example — this bar is a small floating control (closer in scale to a
+button/FAB than a partial-screen surface), so fast fits better. Since the press-feedback scale and the
+entrance scale are both spatial (size/scale) changes, they share one `fastSpatialSpec()` value
+(`barSpatialSpec`) rather than resolving `motionScheme` twice; the fade is a separate `fastEffectsSpec()`
+value (`barEffectsSpec`), since opacity is an effects change, not spatial. Removed the now-unused
+`FLOATING_BAR_ANIMATION_DURATION_MS` constant and the `Spring`/`spring`/`tween` imports; added
+`FiniteAnimationSpec`/`MaterialTheme`.
+
+Verified via `./gradlew :feature:feature-note:compileDebugKotlin :app:compileProDebugKotlin` (clean, zero
+warnings) and `:feature:feature-note:detekt` — zero findings against this file (the module-wide detekt task
+still fails overall on unrelated pre-existing debt, as established in prior sections).
+
+**Not fixed**: the larger "evaluate the real M3 Expressive floating toolbar component" question §8 raised
+for this file remains explicitly out of scope — that's a component-replacement research task, not a
+mechanical elevation/motion fix, and was never part of what this pass was asked to do.
+
+**Suggested next step**: `PreviewNoteReminderRow.kt`'s `tween(250)` (cross-cutting #7, the last untouched
+motion finding in the Notes half of §8) or `NotesScreen.kt:570`'s `SelectableOptionRow` `FontWeight` (§24's
+deliberately-deferred cross-cutting #4). The Birthdays half of §8 remains entirely untouched.
+
+## 26. `PreviewNoteReminderRow.kt` motion fix — landed
+
+Fixed §8's last untouched motion finding (cross-cutting #7) in the Notes half of the audit: each attached
+reminder card's staggered entrance used two separate `tween(REMINDER_ANIMATION_DURATION_MS)` calls (both at
+250ms) — a `fadeIn` and a `slideInVertically`.
+
+Replaced both with `MaterialTheme.motionScheme` specs, split by property type like every prior motion fix in
+this series: `fadeIn` (opacity) → `fastEffectsSpec()`, `slideInVertically` (position) → `fastSpatialSpec()`.
+Classified **fast**, not §19's "default" tier — this is a single card's per-item entrance inside a
+horizontally-scrolling row, closer in scale to the small-component examples guidelines §6 names (switches,
+buttons) than to a partial-screen surface like a bottom sheet. Both specs are resolved once per
+`PreviewNoteReminderRow` call (hoisted above the `LazyRow`, not recomputed per item inside `itemsIndexed`),
+matching the "resolve once, reuse across call sites" pattern already established in §20/§25. Removed the
+now-unused `REMINDER_ANIMATION_DURATION_MS` constant and the `tween` import; added
+`FiniteAnimationSpec`/`IntOffset` (the latter because `slideInVertically`'s spec is
+`FiniteAnimationSpec<IntOffset>`, not `<Float>` — confirmed against `MotionScheme`'s actual generic
+`fun <T> fastSpatialSpec(): FiniteAnimationSpec<T>` signature rather than assumed).
+
+Verified via `./gradlew :feature:feature-note:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-note:detekt` — zero findings against this file.
+
+This closes out every cross-cutting and screen-specific finding §8 raised for the **Notes** half of the
+group (List/Archive: §24; Editor's floating bar: §25; Editor's attached-reminder row: this section) except
+the one deliberately-deferred `SelectableOptionRow` `FontWeight` swap (§24's note on cross-cutting #4). The
+**Birthdays** half of §8 (`BirthdaysScreen.kt`'s scroll-shadow app bar and bare `Icons.Default.FilterList`,
+`EditBirthdayScreen.kt`/`PreviewBirthdayScreen.kt`'s back/close content-description split,
+`PreviewBirthdayScreen.kt`'s own `tween()` calls) remains entirely untouched — a separate audit group from
+what this pass was scoped to.
+
+**Suggested next step**: either the deferred `SelectableOptionRow` `FontWeight` swap to fully close the Notes
+half, or move to the Birthdays half of §8, or a different screen group entirely (Groups/Tags/Places,
+Calendar/Google Tasks, Workflow/Routines — §9-§13).

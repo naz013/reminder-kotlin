@@ -18,9 +18,17 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.progressBarRangeInfo
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.setProgress
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppTheme
+import kotlin.math.roundToInt
 
 private val SelectorStrokeWidth = 2.dp
 private const val UnselectedItemVerticalInset = 0.1f
@@ -32,6 +40,7 @@ fun ColorSlider(
   selectedIndex: Int,
   onColorSelected: (Int) -> Unit,
   modifier: Modifier = Modifier,
+  contentDescription: String = stringResource(R.string.acc_select_color),
   selectorColor: Color = MaterialTheme.colorScheme.onSurface,
   enabled: Boolean = true,
   hapticFeedbackEnabled: Boolean = true,
@@ -40,35 +49,60 @@ fun ColorSlider(
 
   val currentOnColorSelected by rememberUpdatedState(onColorSelected)
   val currentSelectedIndex by rememberUpdatedState(selectedIndex)
-  val gestureModifier =
-    if (enabled && colors.isNotEmpty()) {
-      Modifier.pointerInput(colors.size) {
-        fun selectAt(x: Float) {
-          val itemWidth = size.width / colors.size.toFloat()
-          val index = (x / itemWidth).toInt().coerceIn(0, colors.size - 1)
-          if (hapticFeedbackEnabled && currentSelectedIndex != index) {
-            hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentTick)
-          }
-          currentOnColorSelected(index)
+  val gestureModifier = if (enabled && colors.isNotEmpty()) {
+    Modifier.pointerInput(colors.size) {
+      fun selectAt(x: Float) {
+        val itemWidth = size.width / colors.size.toFloat()
+        val index = (x / itemWidth).toInt().coerceIn(0, colors.size - 1)
+        if (hapticFeedbackEnabled && currentSelectedIndex != index) {
+          hapticFeedback.performHapticFeedback(HapticFeedbackType.SegmentTick)
         }
-        awaitEachGesture {
-          val down = awaitFirstDown(requireUnconsumed = false)
-          selectAt(down.position.x)
-          val pointerId = down.id
-          while (true) {
-            val event = awaitPointerEvent()
-            val change = event.changes.firstOrNull { it.id == pointerId } ?: break
-            if (!change.pressed) break
-            change.consume()
-            selectAt(change.position.x)
-          }
+        currentOnColorSelected(index)
+      }
+      awaitEachGesture {
+        val down = awaitFirstDown(requireUnconsumed = false)
+        selectAt(down.position.x)
+        val pointerId = down.id
+        while (true) {
+          val event = awaitPointerEvent()
+          val change = event.changes.firstOrNull { it.id == pointerId } ?: break
+          if (!change.pressed) break
+          change.consume()
+          selectAt(change.position.x)
         }
       }
-    } else {
-      Modifier
     }
+  } else {
+    Modifier
+  }
 
-  Canvas(modifier = modifier.then(gestureModifier)) {
+  // Gives TalkBack/switch-access an adjustable ("slider-equivalent") role: focusing the strip
+  // announces the content description and current position, and swiping up/down invokes
+  // setProgress to move between swatches - there's otherwise no clickable/scrollable semantics
+  // at all on a bare Canvas + pointerInput like this one.
+  val semanticsModifier = Modifier.semantics {
+    this.contentDescription = contentDescription
+    if (colors.isNotEmpty()) {
+      progressBarRangeInfo = ProgressBarRangeInfo(
+        current = currentSelectedIndex.toFloat(),
+        range = 0f..(colors.size - 1).coerceAtLeast(0).toFloat(),
+        steps = (colors.size - 2).coerceAtLeast(0),
+      )
+    }
+    if (enabled && colors.isNotEmpty()) {
+      setProgress { targetValue ->
+        val newIndex = targetValue.roundToInt().coerceIn(0, colors.size - 1)
+        if (newIndex != currentSelectedIndex) {
+          currentOnColorSelected(newIndex)
+        }
+        true
+      }
+    }
+  }
+
+  Canvas(modifier = modifier
+    .then(gestureModifier)
+    .then(semanticsModifier)) {
     if (colors.isEmpty()) return@Canvas
     val itemWidth = size.width / colors.size
     val verticalInset = size.height * UnselectedItemVerticalInset
@@ -111,24 +145,25 @@ fun ColorSlider(
 @Preview(showBackground = true)
 @Composable
 private fun ColorSliderPreview() {
-  val colors =
-    listOf(
-      Color(0xFFF44336),
-      Color(0xFFE91E63),
-      Color(0xFF9C27B0),
-      Color(0xFF673AB7),
-      Color(0xFF3F51B5),
-      Color(0xFF2196F3),
-      Color(0xFF4CAF50),
-      Color(0xFFFFEB3B),
-      Color(0xFFFF9800),
-    )
+  val colors = listOf(
+    Color(0xFFF44336),
+    Color(0xFFE91E63),
+    Color(0xFF9C27B0),
+    Color(0xFF673AB7),
+    Color(0xFF3F51B5),
+    Color(0xFF2196F3),
+    Color(0xFF4CAF50),
+    Color(0xFFFFEB3B),
+    Color(0xFFFF9800),
+  )
   AppTheme {
     ColorSlider(
       colors = colors,
       selectedIndex = 3,
       onColorSelected = {},
-      modifier = Modifier.fillMaxWidth().height(40.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .height(48.dp),
     )
   }
 }

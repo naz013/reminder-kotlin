@@ -7,17 +7,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.appwidgets.R
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 
@@ -43,7 +42,7 @@ internal fun WidgetConfigScaffold(
         navigationIcon = {
           MenuIconButton(
             icon = painterResource(R.drawable.ic_fluent_dismiss),
-            contentDescription = null,
+            contentDescription = stringResource(R.string.acc_close),
             onClick = onBackClick,
             modifier = Modifier.padding(4.dp)
           )
@@ -55,7 +54,7 @@ internal fun WidgetConfigScaffold(
             onClick = onSaveClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->

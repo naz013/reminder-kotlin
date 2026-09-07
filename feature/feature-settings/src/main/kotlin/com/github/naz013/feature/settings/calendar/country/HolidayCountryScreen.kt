@@ -14,13 +14,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,15 +26,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.naz013.feature.settings.SettingsScaffold
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
-import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HolidayCountryScreen(
   onBackClick: () -> Unit,
@@ -56,21 +51,10 @@ internal fun HolidayCountryScreen(
 
   BackHandler(onBack = onBackClick)
 
-  Scaffold(
+  SettingsScaffold(
+    title = stringResource(R.string.public_holidays_country),
+    onBackClick = onBackClick,
     modifier = modifier,
-    topBar = {
-      TopAppBar(
-        title = { Text(stringResource(R.string.public_holidays_country)) },
-        navigationIcon = {
-          MenuIconButton(
-            icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
-            onClick = onBackClick,
-          )
-        },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
-      )
-    },
   ) { padding ->
     Column(
       modifier = Modifier.fillMaxSize().padding(padding),

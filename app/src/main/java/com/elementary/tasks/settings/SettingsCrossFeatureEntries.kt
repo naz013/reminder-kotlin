@@ -34,6 +34,7 @@ import com.github.naz013.feature.reminder.settings.RemindersSettingsViewModel
 import com.github.naz013.feature.settings.SettingsNavKey
 import com.github.naz013.feature.settings.SettingsScaffold
 import com.github.naz013.feature.settings.location.LocationNavKey
+import com.github.naz013.feature.settings.settingsNavigationContentDescription
 import com.github.naz013.feature.settings.settingsNavigationIcon
 import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.insights.InsightsNavKey
@@ -51,7 +52,6 @@ import org.koin.compose.viewmodel.koinViewModel
  * `feature-settings`'s `settingsEntries()` takes them as slots supplied from here, the
  * composition root that already depends on every feature module.
  */
-
 @Composable
 fun RemindersCrossFeatureEntry(
   key: SettingsNavKey.Reminders,
@@ -70,12 +70,11 @@ fun RemindersCrossFeatureEntry(
   // every resume rather than only on user actions within this screen.
   val lifecycleOwner = LocalLifecycleOwner.current
   DisposableEffect(viewModel, lifecycleOwner) {
-    val observer =
-      LifecycleEventObserver { _, event ->
-        if (event == Lifecycle.Event.ON_RESUME) {
-          viewModel.refresh()
-        }
+    val observer = LifecycleEventObserver { _, event ->
+      if (event == Lifecycle.Event.ON_RESUME) {
+        viewModel.refresh()
       }
+    }
     lifecycleOwner.lifecycle.addObserver(observer)
     onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
   }
@@ -93,17 +92,18 @@ fun RemindersCrossFeatureEntry(
           onTimeSelected = { viewModel.onTimeSelected(event.target, it) },
         )
       }
+
       RemindersSettingsEvent.OpenExactAlarmSettings -> {
-        val intent =
-          Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-            data = Uri.fromParts("package", context.packageName, null)
-          }
+        val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+          data = Uri.fromParts("package", context.packageName, null)
+        }
         try {
           context.startActivity(intent)
         } catch (e: ActivityNotFoundException) {
           Logger.e("SettingsCrossFeatureEntries", "No activity found for ACTION_REQUEST_SCHEDULE_EXACT_ALARM", e)
         }
       }
+
       RemindersSettingsEvent.ShowPermanentNotification -> PermanentReminderReceiver.show(context)
       RemindersSettingsEvent.HidePermanentNotification -> PermanentReminderReceiver.hide(context)
       RemindersSettingsEvent.HapticFeedback -> {
@@ -115,6 +115,7 @@ fun RemindersCrossFeatureEntry(
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.reminders_),
     navigationIcon = settingsNavigationIcon(key.screenTitle, renderAsDetailPane),
+    navigationContentDescription = settingsNavigationContentDescription(key.screenTitle, renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SettingsHighlightScope {
@@ -200,6 +201,7 @@ fun BirthdayCrossFeatureEntry(
           onTimeSelected = { viewModel.onTimeSelected(it) },
         )
       }
+
       is BirthdaySettingsEvent.UpdatePermanentNotificationVisibility -> {
         val action = if (event.visible) PermanentBirthdayReceiver.ACTION_SHOW else PermanentBirthdayReceiver.ACTION_HIDE
         context.sendBroadcast(Intent(context, PermanentBirthdayReceiver::class.java).setAction(action))
@@ -210,6 +212,7 @@ fun BirthdayCrossFeatureEntry(
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.birthdays),
     navigationIcon = settingsNavigationIcon(key.screenTitle, renderAsDetailPane),
+    navigationContentDescription = settingsNavigationContentDescription(key.screenTitle, renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SettingsHighlightScope {

@@ -2,15 +2,15 @@ package com.github.naz013.feature.settings
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -20,6 +20,7 @@ fun SettingsScaffold(
   onBackClick: () -> Unit,
   modifier: Modifier = Modifier,
   navigationIcon: Int = R.drawable.ic_builder_arrow_left,
+  navigationContentDescription: String = stringResource(R.string.cd_back),
   content: @Composable (PaddingValues) -> Unit,
 ) {
   Scaffold(
@@ -30,11 +31,11 @@ fun SettingsScaffold(
         navigationIcon = {
           MenuIconButton(
             icon = painterResource(navigationIcon),
-            contentDescription = null,
+            contentDescription = navigationContentDescription,
             onClick = onBackClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
     content = content,
@@ -50,3 +51,12 @@ fun SettingsScaffold(
  */
 fun settingsNavigationIcon(screenTitle: String? = null, renderAsDetailPane: Boolean = false): Int =
   if (screenTitle != null || renderAsDetailPane) R.drawable.ic_builder_clear else R.drawable.ic_builder_arrow_left
+
+/** Content description matching [settingsNavigationIcon]'s icon choice for the same arguments. */
+@Composable
+fun settingsNavigationContentDescription(screenTitle: String? = null, renderAsDetailPane: Boolean = false): String =
+  if (screenTitle != null || renderAsDetailPane) {
+    stringResource(R.string.acc_close)
+  } else {
+    stringResource(R.string.cd_back)
+  }
