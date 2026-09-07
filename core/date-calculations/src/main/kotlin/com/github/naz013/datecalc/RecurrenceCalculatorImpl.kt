@@ -17,12 +17,11 @@ internal class RecurrenceCalculatorImpl : RecurrenceCalculator {
     val monthOfYear = monthOfYear + 1
     var nextDateTime = eventDateTime.withDayOfMonth(1).withMonth(monthOfYear).plusYears(interval)
     val lastDayOfTargetMonth = nextDateTime.toLocalDate().lengthOfMonth()
-    val targetDay =
-      when {
-        dayOfMonth == 0 -> lastDayOfTargetMonth
-        dayOfMonth > lastDayOfTargetMonth -> lastDayOfTargetMonth
-        else -> dayOfMonth
-      }
+    val targetDay = when {
+      dayOfMonth == 0 -> lastDayOfTargetMonth
+      dayOfMonth > lastDayOfTargetMonth -> lastDayOfTargetMonth
+      else -> dayOfMonth
+    }
     nextDateTime = nextDateTime.withDayOfMonth(targetDay)
     return nextDateTime
   }
@@ -73,12 +72,11 @@ internal class RecurrenceCalculatorImpl : RecurrenceCalculator {
     val interval = if (interval <= 0) 1L else interval
     var nextDateTime = eventDateTime.withDayOfMonth(1).plusMonths(interval)
     val lastDayOfNextMonth = nextDateTime.toLocalDate().lengthOfMonth()
-    val targetDay =
-      when {
-        dayOfMonth <= 0 -> lastDayOfNextMonth
-        dayOfMonth > lastDayOfNextMonth -> lastDayOfNextMonth
-        else -> dayOfMonth
-      }
+    val targetDay = when {
+      dayOfMonth <= 0 -> lastDayOfNextMonth
+      dayOfMonth > lastDayOfNextMonth -> lastDayOfNextMonth
+      else -> dayOfMonth
+    }
     nextDateTime = nextDateTime.withDayOfMonth(targetDay)
     return nextDateTime
   }
@@ -113,7 +111,8 @@ internal class RecurrenceCalculatorImpl : RecurrenceCalculator {
     return nextDateTime
   }
 
-  override fun getStartTimerDateTime(countdownTimeInMillis: Long): LocalDateTime = LocalDateTime.now().plusMillis(countdownTimeInMillis)
+  override fun getStartTimerDateTime(countdownTimeInMillis: Long): LocalDateTime =
+    LocalDateTime.now().plusMillis(countdownTimeInMillis)
 
   override fun getNextTimerDateTime(
     eventDateTime: LocalDateTime,
@@ -146,23 +145,21 @@ internal class RecurrenceCalculatorImpl : RecurrenceCalculator {
     excludedToTime: LocalTime?,
     afterOrEqualDateTime: LocalDateTime,
   ): LocalDateTime {
-    var nextDateTime =
-      getNextTimerDateTime(
-        eventDateTime,
+    var nextDateTime = getNextTimerDateTime(
+      eventDateTime,
+      interval,
+      excludedHours,
+      excludedFromTime,
+      excludedToTime,
+    )
+    while (nextDateTime.isBefore(afterOrEqualDateTime)) {
+      nextDateTime = getNextTimerDateTime(
+        nextDateTime,
         interval,
         excludedHours,
         excludedFromTime,
         excludedToTime,
       )
-    while (nextDateTime.isBefore(afterOrEqualDateTime)) {
-      nextDateTime =
-        getNextTimerDateTime(
-          nextDateTime,
-          interval,
-          excludedHours,
-          excludedFromTime,
-          excludedToTime,
-        )
     }
     return nextDateTime
   }

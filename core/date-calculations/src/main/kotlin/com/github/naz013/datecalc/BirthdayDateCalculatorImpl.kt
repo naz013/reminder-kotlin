@@ -15,19 +15,20 @@ internal class BirthdayDateCalculatorImpl : BirthdayDateCalculator {
     showedYear: Int,
     nowDateTime: LocalDateTime,
   ): LocalDateTime {
-    var dateTime = LocalDateTime.of(safeDateFor(nowDateTime.year, birthDate.monthValue, birthDate.dayOfMonth), birthdayTime)
+    var dateTime = LocalDateTime.of(
+      safeDateFor(nowDateTime.year, birthDate.monthValue, birthDate.dayOfMonth),
+      birthdayTime
+    )
     if (dateTime.isBefore(nowDateTime) && !ignoreYear) {
-      dateTime =
-        LocalDateTime.of(
-          safeDateFor(nowDateTime.year + 1, birthDate.monthValue, birthDate.dayOfMonth),
-          birthdayTime,
-        )
+      dateTime = LocalDateTime.of(
+        safeDateFor(nowDateTime.year + 1, birthDate.monthValue, birthDate.dayOfMonth),
+        birthdayTime,
+      )
     } else if (dateTime.isBefore(nowDateTime) && ignoreYear && showedYear >= dateTime.year) {
-      dateTime =
-        LocalDateTime.of(
-          safeDateFor(nowDateTime.year + 1, birthDate.monthValue, birthDate.dayOfMonth),
-          birthdayTime,
-        )
+      dateTime = LocalDateTime.of(
+        safeDateFor(nowDateTime.year + 1, birthDate.monthValue, birthDate.dayOfMonth),
+        birthdayTime,
+      )
     }
     return dateTime
   }
