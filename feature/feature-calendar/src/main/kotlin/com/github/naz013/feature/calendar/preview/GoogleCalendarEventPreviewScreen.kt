@@ -13,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
 
@@ -45,7 +45,11 @@ internal fun GoogleCalendarEventPreviewScreen(
         navigationIcon = {
           MenuIconButton(
             icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
-            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
+            contentDescription = if (renderAsDetailPane) {
+              stringResource(R.string.acc_close)
+            } else {
+              stringResource(R.string.cd_back)
+            },
             onClick = onBackClick,
           )
         },
@@ -56,7 +60,7 @@ internal fun GoogleCalendarEventPreviewScreen(
             onClick = onDeleteClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->

@@ -21,7 +21,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -298,7 +297,7 @@ private fun HolidayChip(
       modifier =
         Modifier
           .fillMaxWidth()
-          .clip(RoundedCornerShape(6.dp))
+          .clip(MaterialTheme.shapes.extraSmall)
           .background(containerColor)
           .clickable { expanded = true }
           .padding(horizontal = 4.dp, vertical = 3.dp),
@@ -479,7 +478,7 @@ private fun TimelineEventBlock(
         .height(HOUR_HEIGHT)
         .heightIn(min = EVENT_BLOCK_MIN_HEIGHT)
         .padding(horizontal = 1.dp, vertical = 1.dp)
-        .clip(RoundedCornerShape(6.dp))
+        .clip(MaterialTheme.shapes.extraSmall)
         .background(container)
         .clickable { expanded = true }
         .padding(horizontal = 6.dp, vertical = 3.dp),

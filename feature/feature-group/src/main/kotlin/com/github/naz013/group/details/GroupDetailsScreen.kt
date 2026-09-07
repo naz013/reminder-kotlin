@@ -16,7 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,19 +24,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.toColor
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.common.text.UiTextElement
 import com.github.naz013.ui.common.text.UiTextFormat
 import com.github.naz013.ui.notification.settings.NotificationOverrideSubtitles
@@ -78,7 +78,11 @@ internal fun GroupDetailsScreen(
         navigationIcon = {
           MenuIconButton(
             icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
-            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
+            contentDescription = if (renderAsDetailPane) {
+              stringResource(R.string.acc_close)
+            } else {
+              stringResource(R.string.cd_back)
+            },
             onClick = onBackClick,
           )
         },
@@ -95,13 +99,15 @@ internal fun GroupDetailsScreen(
             onDeleteClick = onDeleteClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
     if (state.isLoading) {
       Box(
-        modifier = Modifier.fillMaxSize().padding(padding),
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(padding),
         contentAlignment = Alignment.Center,
       ) {
         CircularProgressIndicator()
@@ -109,7 +115,9 @@ internal fun GroupDetailsScreen(
       return@Scaffold
     }
 
-    LazyColumn(modifier = Modifier.fillMaxSize().padding(padding)) {
+    LazyColumn(modifier = Modifier
+      .fillMaxSize()
+      .padding(padding)) {
       item { NotificationOverridesSection(state.notificationSubtitles) }
 
       item { adsContent() }
@@ -133,11 +141,10 @@ internal fun GroupDetailsScreen(
 @Composable
 private fun GroupColorDot(color: Int) {
   Box(
-    modifier =
-      Modifier
-        .size(COLOR_DOT_SIZE)
-        .clip(CircleShape)
-        .background(color.toColor()),
+    modifier = Modifier
+      .size(COLOR_DOT_SIZE)
+      .clip(CircleShape)
+      .background(color.toColor()),
   )
 }
 
@@ -148,22 +155,27 @@ private fun OverflowMenu(
   onDeleteClick: () -> Unit,
 ) {
   var expanded by remember { mutableStateOf(false) }
-  val items =
-    buildList {
-      add(PopupMenuItem(id = OverflowAction.EDIT.ordinal, title = stringResource(R.string.edit), iconRes = R.drawable.ic_fluent_edit))
-      if (canDelete) {
-        add(
-          PopupMenuItem(
-            id = OverflowAction.DELETE.ordinal,
-            title = stringResource(R.string.delete),
-            iconRes = R.drawable.ic_fluent_delete,
-          ),
-        )
-      }
+  val items = buildList {
+    add(
+      PopupMenuItem(
+        id = OverflowAction.EDIT.ordinal,
+        title = stringResource(R.string.edit),
+        iconRes = DrawableCatalog.Fluent.Edit
+      )
+    )
+    if (canDelete) {
+      add(
+        PopupMenuItem(
+          id = OverflowAction.DELETE.ordinal,
+          title = stringResource(R.string.delete),
+          iconRes = DrawableCatalog.Fluent.Delete,
+        ),
+      )
     }
+  }
   Box {
     MenuIconButton(
-      icon = painterResource(R.drawable.ic_fluent_more_vertical),
+      icon = AppIcons.Fluent.MoreVertical,
       contentDescription = stringResource(R.string.more_options),
       onClick = { expanded = true },
     )
@@ -189,10 +201,9 @@ private fun SectionHeader(text: String) {
   Text(
     text = text,
     style = MaterialTheme.typography.titleMedium,
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp),
   )
 }
 
@@ -279,7 +290,9 @@ private fun RemindersEmptyState() {
     text = stringResource(R.string.group_has_no_active_reminders),
     style = MaterialTheme.typography.bodyMedium,
     color = MaterialTheme.colorScheme.onSurfaceVariant,
-    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp, vertical = 12.dp),
   )
 }
 
@@ -288,39 +301,36 @@ private fun RemindersEmptyState() {
 private fun GroupDetailsScreenPreview() {
   AppTheme {
     GroupDetailsScreen(
-      state =
-        GroupDetailsState(
-          isLoading = false,
-          title = "Work",
-          color = 0xFF2196F3.toInt(),
-          canDelete = true,
-          notificationSubtitles =
-            NotificationOverrideSubtitles(
-              priority = "High",
-              repeatNotification = "Inherited: On",
-              delayMinutes = "Inherited: 0 minutes",
-              category = "Inherited: Reminder",
-              vibrate = "Inherited: On",
-              vibrationPattern = "Inherited: Default",
-              bypassDnd = "Off",
-              wakeScreen = "Inherited: Off",
-              lockScreenVisibility = "Inherited: Hide sensitive content",
-            ),
-          reminders =
-            listOf(
-              UiReminderList(
-                id = "1",
-                noteId = null,
-                dueDateTime = null,
-                mainText = UiTextElement(text = "Buy milk", textFormat = UiTextFormat(fontSize = 16f)),
-                secondaryText = UiTextElement(text = "Today, 18:00", textFormat = UiTextFormat(fontSize = 14f)),
-                tertiaryText = null,
-                tags = emptyList(),
-                actions = UiReminderListActions(),
-                state = UiReminderListState(isActive = true),
-              ),
-            ),
+      state = GroupDetailsState(
+        isLoading = false,
+        title = "Work",
+        color = 0xFF2196F3.toInt(),
+        canDelete = true,
+        notificationSubtitles = NotificationOverrideSubtitles(
+          priority = "High",
+          repeatNotification = "Inherited: On",
+          delayMinutes = "Inherited: 0 minutes",
+          category = "Inherited: Reminder",
+          vibrate = "Inherited: On",
+          vibrationPattern = "Inherited: Default",
+          bypassDnd = "Off",
+          wakeScreen = "Inherited: Off",
+          lockScreenVisibility = "Inherited: Hide sensitive content",
         ),
+        reminders = listOf(
+          UiReminderList(
+            id = "1",
+            noteId = null,
+            dueDateTime = null,
+            mainText = UiTextElement(text = "Buy milk", textFormat = UiTextFormat(fontSize = 16f)),
+            secondaryText = UiTextElement(text = "Today, 18:00", textFormat = UiTextFormat(fontSize = 14f)),
+            tertiaryText = null,
+            tags = emptyList(),
+            actions = UiReminderListActions(),
+            state = UiReminderListState(isActive = true),
+          ),
+        ),
+      ),
       onBackClick = {},
       onEditClick = {},
       onDeleteClick = {},

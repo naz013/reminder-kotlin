@@ -27,15 +27,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.SelectionOverlay
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.toColor
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.group.UiGroupList
 
 private val COLOR_DOT_SIZE = 14.dp
@@ -51,11 +52,10 @@ internal fun GroupListItem(
   modifier: Modifier = Modifier,
 ) {
   Card(
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .clip(MaterialTheme.shapes.medium)
-        .combinedClickable(onClick = onClick, onLongClick = onLongClick),
+    modifier = modifier
+      .fillMaxWidth()
+      .clip(MaterialTheme.shapes.medium)
+      .combinedClickable(onClick = onClick, onLongClick = onLongClick),
     colors = CardDefaults.cardColors(
       containerColor = if (group.isHighlighted) MaterialTheme.colorScheme.primaryContainer else CardDefaults.cardColors().containerColor,
     ),
@@ -63,17 +63,20 @@ internal fun GroupListItem(
   ) {
     Row(
       verticalAlignment = Alignment.CenterVertically,
-      modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp, top = 12.dp, bottom = 12.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 16.dp, end = 4.dp, top = 12.dp, bottom = 12.dp),
     ) {
       Box(
-        modifier =
-          Modifier
-            .size(COLOR_DOT_SIZE)
-            .clip(CircleShape)
-            .background(group.color.toColor()),
+        modifier = Modifier
+          .size(COLOR_DOT_SIZE)
+          .clip(CircleShape)
+          .background(group.color.toColor()),
       )
       Column(
-        modifier = Modifier.weight(1f).padding(start = 16.dp),
+        modifier = Modifier
+          .weight(1f)
+          .padding(start = 16.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
       ) {
         if (group.isDefaultGroup) {
@@ -111,7 +114,7 @@ private fun BoxScope.GroupOverflowMenu(
 ) {
   var menuExpanded by remember { mutableStateOf(false) }
   MenuIconButton(
-    icon = painterResource(R.drawable.ic_fluent_more_vertical),
+    icon = AppIcons.Fluent.MoreVertical,
     contentDescription = stringResource(R.string.more_options),
     onClick = { menuExpanded = true },
   )
@@ -146,20 +149,19 @@ private fun groupMenuItems(
   canDelete: Boolean,
   canSetAsDefault: Boolean,
 ): List<PopupMenuItem> {
-  val actions =
-    listOfNotNull(
-      if (canSetAsDefault) {
-        GroupMenuAction.MAKE_DEFAULT to R.string.make_default
-      } else {
-        null
-      },
-      GroupMenuAction.EDIT to R.string.edit,
-      if (canDelete) {
-        GroupMenuAction.DELETE to R.string.delete
-      } else {
-        null
-      },
-    )
+  val actions = listOfNotNull(
+    if (canSetAsDefault) {
+      GroupMenuAction.MAKE_DEFAULT to R.string.make_default
+    } else {
+      null
+    },
+    GroupMenuAction.EDIT to R.string.edit,
+    if (canDelete) {
+      GroupMenuAction.DELETE to R.string.delete
+    } else {
+      null
+    },
+  )
   return actions.map { (action, titleRes) ->
     PopupMenuItem(
       id = action.ordinal,
@@ -171,7 +173,7 @@ private fun groupMenuItems(
 
 private fun GroupMenuAction.iconResOrNull(): Int? =
   when (this) {
-    GroupMenuAction.EDIT -> R.drawable.ic_fluent_edit
-    GroupMenuAction.DELETE -> R.drawable.ic_fluent_delete
-    GroupMenuAction.MAKE_DEFAULT -> R.drawable.ic_fluent_star
+    GroupMenuAction.EDIT -> DrawableCatalog.Fluent.Edit
+    GroupMenuAction.DELETE -> DrawableCatalog.Fluent.Delete
+    GroupMenuAction.MAKE_DEFAULT -> DrawableCatalog.Fluent.Star
   }

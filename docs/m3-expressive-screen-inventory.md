@@ -62,8 +62,12 @@ was swapped for the real `SmallExtendedFloatingActionButton` in
 Reminder Editor and Todo Editor's duplicated `OfflineOnlyRow` composable was deduplicated into a shared
 internal `feature-reminder` composable in
 [§23](m3-expressive-adoption.md#23-todoeditscreenktbuildreminderscreenkt-duplicated-offlineonlyrow-dedup--landed)
-(both rows were already "In progress" from §20). This closes out every finding from the Reminders audit.
-The other rows below stay "Audited" (not "In progress") until a fix actually lands.
+(both rows were already "In progress" from §20). Reminders Archive moves to "In progress" too: its
+back-button content description was fixed in
+[§28](m3-expressive-adoption.md#28-remindersarchivescreenkt-back-button-fix--landed) — §20/§23 had wrongly
+claimed this closed out every §6 finding, but this screen's bug (and its scroll-shadow app bar, still open)
+had actually been missed; §28 corrects that. The other rows below stay "Audited" (not "In progress") until a
+fix actually lands.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
@@ -74,7 +78,7 @@ The other rows below stay "Audited" (not "In progress") until a fix actually lan
 | Map Value Editor | Compose | `feature/feature-reminder/.../feature/reminder/build/valuedialog/editor/MapEditorScreen.kt` | In progress |
 | Reminder Preview | Compose | `feature/feature-reminder/.../feature/reminder/preview/PreviewReminderScreen.kt` | In progress |
 | Reminder Fullscreen Map | Compose | `feature/feature-reminder/.../feature/reminder/preview/ReminderFullscreenMapScreen.kt` | In progress |
-| Reminders Archive | Compose | `feature/feature-reminder/.../feature/reminder/lists/removed/RemindersArchiveScreen.kt` | Audited |
+| Reminders Archive | Compose | `feature/feature-reminder/.../feature/reminder/lists/removed/RemindersArchiveScreen.kt` | In progress |
 | Reminder Action (alarm/ringing) | Compose (Activity-hosted) | Screen: `feature/feature-reminder/.../feature/reminder/dialog/ReminderActionScreen.kt`; Activity: `app/src/main/java/com/elementary/tasks/reminder/dialog/ReminderActionActivity.kt` | In progress |
 | Todo Editor | Compose | `feature/feature-reminder/.../feature/reminder/todo/TodoEditScreen.kt` | In progress |
 
@@ -108,12 +112,21 @@ Audited — see [`m3-expressive-adoption.md` §8](m3-expressive-adoption.md#8-no
 Birthday Action moved to "In progress": its `FontWeight`/alpha-blend/off-scale-elevation/off-scale-shape
 gaps (the twin of Reminder Action's §17 fix) were fixed in
 [§18](m3-expressive-adoption.md#18-birthdayactionscreenkt-typeelevationshapecolor-token-fixes--landed).
+Birthdays List, Birthday Editor, and Birthday Preview all move to "In progress" too: their back/close
+content descriptions, app-bar color tokens, `BirthdaysList`'s bare `Icons.Default.FilterList`/alpha-blend
+empty state, and `PreviewBirthdayScreen.kt`'s literal motion were fixed in
+[§27](m3-expressive-adoption.md#27-birthdays-half-of-8--backclose-app-bar-token-alpha-blend-bare-icon-and-motion-fixes--landed).
+That section also flagged a real gap in the earlier Reminders work: `RemindersArchiveScreen.kt`'s identical
+back-button bug and scroll-shadow app bar were never actually fixed despite §20/§23 claiming §6 was "fully
+closed." The back-button half of that gap was fixed in
+[§28](m3-expressive-adoption.md#28-remindersarchivescreenkt-back-button-fix--landed) (see the Reminders
+section above); the scroll-shadow app bar remains open there, same as it does here.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Birthdays List | Compose | `feature/feature-birthday/.../feature/birthday/list/BirthdaysScreen.kt` | Audited |
-| Birthday Editor | Compose | `feature/feature-birthday/.../feature/birthday/create/EditBirthdayScreen.kt` | Audited |
-| Birthday Preview | Compose | `feature/feature-birthday/.../feature/birthday/preview/PreviewBirthdayScreen.kt` | Audited |
+| Birthdays List | Compose | `feature/feature-birthday/.../feature/birthday/list/BirthdaysScreen.kt` | In progress |
+| Birthday Editor | Compose | `feature/feature-birthday/.../feature/birthday/create/EditBirthdayScreen.kt` | In progress |
+| Birthday Preview | Compose | `feature/feature-birthday/.../feature/birthday/preview/PreviewBirthdayScreen.kt` | In progress |
 | Birthday Action (alarm/ringing) | Compose (Activity-hosted) | Screen: `feature/feature-birthday/.../feature/birthday/dialog/BirthdayActionScreen.kt`; Activity: `app/src/main/java/com/elementary/tasks/birthdays/dialog/BirthdayActionActivity.kt` | In progress |
 
 ## Groups / Tags / Places
@@ -122,41 +135,76 @@ Audited — see [`m3-expressive-adoption.md` §9](m3-expressive-adoption.md#9-gr
 §9 praised the shared `ColorPickerCard`/`ColorSlider` chrome as genuinely spec-correct on everything but
 the slider's own accessibility semantics, which turned out to be a real gap fixed since in
 [§16](m3-expressive-adoption.md#16-colorslider-accessibility-fix--landed) — moving every screen below that
-renders a color picker (list-level quick recolor included) to "In progress."
+renders a color picker (list-level quick recolor included) to "In progress." All 8 rows are now "In
+progress" for three more reasons: [§29](m3-expressive-adoption.md#29-groupstagsplaces-screens-backsave-button-content-description-fixes--landed)
+fixed the back/close/save `contentDescription = null` bug §9 found on every one of these screens,
+[§30](m3-expressive-adoption.md#30-groupstagsplaces-empty-states-migrated-onto-shared-emptystatekt--landed)
+migrated the 4 duplicated alpha-blended empty states (`Groups List`, `Tags Manage`, `Tag Details`,
+`Places List`) onto `ui-common`'s shared `EmptyState.kt`, fixing its `onSurfaceVariant` gap along the way,
+and [§31](m3-expressive-adoption.md#31-groupstagsplaces-topappbars-pointed-at-shared-topappbarcolor-token--landed)
+pointed all 8 screens' `TopAppBar`s at the shared `TopAppbarColor` token instead of a hand-rolled
+`TopAppBarDefaults.topAppBarColors` call.
+[§32](m3-expressive-adoption.md#32-groupstagsplaces-list-row-type-role-split-unified-on-titlemedium--landed)
+then unified `GroupListItem`/`TagListItem`/`PlaceListItemCard`'s 3-way list-row type-role split on
+`titleMedium`, and
+[§33](m3-expressive-adoption.md#33-groupstagsplaces-drawablecatalogappicons-convention-cleanup--landed)
+finished the `DrawableCatalog`/`AppIcons` convention cleanup (a repo-hygiene rule, not an M3 spec gap) —
+**§9 is now fully closed**, save for two individually-legitimate, explicitly-lower-priority inconsistencies
+(delete-placement, list-item container-color) §9 itself flagged as "worth a look if touched again," not
+confirmed defects.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
 | Groups List | Compose | `feature/feature-group/.../group/list/GroupsScreen.kt` | In progress |
-| Group Details | Compose | `feature/feature-group/.../group/details/GroupDetailsScreen.kt` | Audited |
+| Group Details | Compose | `feature/feature-group/.../group/details/GroupDetailsScreen.kt` | In progress |
 | Group Editor | Compose | `feature/feature-group/.../group/create/EditGroupScreen.kt` | In progress |
 | Tags Manage | Compose | `feature/feature-tags/.../tags/compose/TagsScreen.kt` | In progress |
 | Tag Editor | Compose | `feature/feature-tags/.../tags/compose/TagEditScreen.kt` | In progress |
-| Tag Details | Compose | `feature/feature-tags/.../tags/details/TagDetailsScreen.kt` | Audited |
-| Places List | Compose | `feature/feature-places/.../feature/places/list/PlacesScreen.kt` | Audited |
+| Tag Details | Compose | `feature/feature-tags/.../tags/details/TagDetailsScreen.kt` | In progress |
+| Places List | Compose | `feature/feature-places/.../feature/places/list/PlacesScreen.kt` | In progress |
 | Place Editor | Compose | `feature/feature-places/.../feature/places/create/EditPlaceScreen.kt` | In progress |
 
 ## Calendar
 
 Audited — see [`m3-expressive-adoption.md` §10](m3-expressive-adoption.md#10-calendar--google-tasks-screens--audit).
+All 3 rows moved to "In progress":
+[§34](m3-expressive-adoption.md#34-calendargoogle-tasks-screens-back-button-content-description-fixes--landed)
+fixed the back/close `contentDescription = null` bug §10 found on every screen in this group, and
+[§35](m3-expressive-adoption.md#35-calendargoogle-tasks-topappbars-pointed-at-shared-topappbarcolor-token--landed)
+pointed every `TopAppBar` at the shared `TopAppbarColor` token (including the 2 Calendar screens' distinct
+`Color.Transparent` variant, confirmed visually equivalent since neither screen layers its own background
+under the app bar). [§37](m3-expressive-adoption.md#37-timelinepagerkt-off-scale-corner-radius-fix--landed)
+fixed `TimelinePager.kt`'s (the composable behind Calendar Timeline's grid) two off-scale
+`RoundedCornerShape(6.dp)` chip corners, moved onto `MaterialTheme.shapes.extraSmall`. §10's other
+findings — missing `detailScreenContentWidth()` on 3 Google Tasks screens, the ad hoc alpha-blend
+de-emphasis pattern, and the Calendar Month/Timeline breakpoint-adaptation gap — are still open.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Calendar (Month) | Compose | `feature/feature-calendar/.../feature/calendar/monthview/CalendarScreen.kt` | Audited |
-| Calendar Timeline (Day / 3-day / 7-day) | Compose | `feature/feature-calendar/.../feature/calendar/timeline/TimelineScreen.kt` | Audited |
-| Google Calendar Event Preview | Compose | `feature/feature-calendar/.../feature/calendar/preview/GoogleCalendarEventPreviewScreen.kt` | Audited |
+| Calendar (Month) | Compose | `feature/feature-calendar/.../feature/calendar/monthview/CalendarScreen.kt` | In progress |
+| Calendar Timeline (Day / 3-day / 7-day) | Compose | `feature/feature-calendar/.../feature/calendar/timeline/TimelineScreen.kt` | In progress |
+| Google Calendar Event Preview | Compose | `feature/feature-calendar/.../feature/calendar/preview/GoogleCalendarEventPreviewScreen.kt` | In progress |
 
 ## Google Tasks
 
 Audited — see [`m3-expressive-adoption.md` §10](m3-expressive-adoption.md#10-calendar--google-tasks-screens--audit).
-Task List Editor moved to "In progress": its list-color picker renders through the shared `ColorSlider`,
-fixed for accessibility in [§16](m3-expressive-adoption.md#16-colorslider-accessibility-fix--landed).
+Task List Editor was already "In progress": its list-color picker renders through the shared `ColorSlider`,
+fixed for accessibility in [§16](m3-expressive-adoption.md#16-colorslider-accessibility-fix--landed). The
+other 4 rows join it now for the same two reasons as Calendar's:
+[§34](m3-expressive-adoption.md#34-calendargoogle-tasks-screens-back-button-content-description-fixes--landed)
+fixed their back-button bug, and
+[§35](m3-expressive-adoption.md#35-calendargoogle-tasks-topappbars-pointed-at-shared-topappbarcolor-token--landed)
+pointed all 5 screens' `TopAppBar`s at the shared `TopAppbarColor` token. On top of that,
+[§36](m3-expressive-adoption.md#36-google-tasks-deprecated-baseline-fab-fixes--landed) replaced the
+deprecated baseline `ExtendedFloatingActionButton` on `Google Task Lists`, `Task List`, and `Task Preview`
+with `SmallExtendedFloatingActionButton`.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Google Task Lists | Compose | `feature/feature-googletask/.../feature/googletask/GoogleTasksScreen.kt` | Audited |
-| Task List (tasks in a list) | Compose | `feature/feature-googletask/.../feature/googletask/TaskListScreen.kt` | Audited |
-| Task Preview | Compose | `feature/feature-googletask/.../feature/googletask/preview/PreviewGoogleTaskScreen.kt` | Audited |
-| Task Editor | Compose | `feature/feature-googletask/.../feature/googletask/task/EditGoogleTaskScreen.kt` | Audited |
+| Google Task Lists | Compose | `feature/feature-googletask/.../feature/googletask/GoogleTasksScreen.kt` | In progress |
+| Task List (tasks in a list) | Compose | `feature/feature-googletask/.../feature/googletask/TaskListScreen.kt` | In progress |
+| Task Preview | Compose | `feature/feature-googletask/.../feature/googletask/preview/PreviewGoogleTaskScreen.kt` | In progress |
+| Task Editor | Compose | `feature/feature-googletask/.../feature/googletask/task/EditGoogleTaskScreen.kt` | In progress |
 | Task List Editor | Compose | `feature/feature-googletask/.../feature/googletask/tasklist/EditGoogleTaskListScreen.kt` | In progress |
 
 ## Workflow (automation rules)

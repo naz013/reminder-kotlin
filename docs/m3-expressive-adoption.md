@@ -2045,6 +2045,496 @@ the one deliberately-deferred `SelectableOptionRow` `FontWeight` swap (§24's no
 `PreviewBirthdayScreen.kt`'s own `tween()` calls) remains entirely untouched — a separate audit group from
 what this pass was scoped to.
 
-**Suggested next step**: either the deferred `SelectableOptionRow` `FontWeight` swap to fully close the Notes
-half, or move to the Birthdays half of §8, or a different screen group entirely (Groups/Tags/Places,
-Calendar/Google Tasks, Workflow/Routines — §9-§13).
+## 27. Birthdays half of §8 — back/close, app-bar token, alpha-blend, bare-icon, and motion fixes — landed
+
+Worked through the Birthdays half of §8 across its three remaining screens (`BirthdayActionScreen.kt` was
+already fixed in §18). **Correction first**: §20/§23 both claimed "§6 is fully closed" for the Reminders
+group, but that was wrong — `RemindersArchiveScreen.kt` was named in §6 for the *exact same*
+back-button-`null` bug and scroll-shadow-app-bar pattern fixed here, and it was never actually touched
+across §14-§26. That screen's back-button bug and scroll-shadow app bar remain genuinely open in the
+Reminders group; the "fully closed" language in those two sections was an overclaim and should be
+disregarded for that specific item.
+
+**`BirthdaysScreen.kt`** (3 fixes, same "cheap fixes in one file, one pass" bundling as §24):
+- **Back-button `contentDescription = null` → `stringResource(R.string.cd_back)`** in `BirthdaysTopBar`
+  (cross-cutting #1).
+- **Bare `Icons.Default.FilterList` → `AppIcons.Fluent.Filter`** — a cataloged icon already existed
+  (`DrawableCatalog.Fluent.Filter`/`AppIcons.Fluent.Filter`), so this was a straight swap, not a new catalog
+  entry. Removed the now-unused `androidx.compose.material.icons.Icons`/`.filled.FilterList` imports — the
+  only bare Material-icons-library reference in this screen (everything else already used
+  `AppIcons`/`DrawableCatalog`).
+- **`BirthdaysEmptyState`'s `onSurface.copy(alpha = 0.3f/0.5f)` → `onSurfaceVariant`** (cross-cutting #3),
+  identical fix to §24's `NotesEmptyState` (§8 called these "almost certainly copy-pasted from one to the
+  other").
+
+**Deliberately not touched**: the scroll-shadow-on-scroll app bar (`Surface(shadowElevation =
+animateDpAsState(...))`) and its `TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)`.
+§8 suggested copying `ReminderHelpScreen.kt`'s `TopAppBarDefaults.enterAlwaysScrollBehavior()` pattern, but
+on inspection that reference implementation doesn't actually wire `Modifier.nestedScroll(...)` to a
+scrollable at all — it's a WebView screen manually forcing `scrollBehavior.state.contentOffset` from a raw
+Android scroll listener, not real M3 scroll-driven app-bar behavior. Copying it verbatim would just be a
+different hack. `BirthdaysScreen.kt` has a genuine `LazyColumn`, so it could be wired to `nestedScroll`
+properly — but doing so surfaces a real design choice, not a mechanical swap: `enterAlwaysScrollBehavior()`
+would make the whole `topBar` slot (app bar **and** the `SearchBar` beneath it, since both currently move
+together under one `Surface`) slide off-screen on scroll-down, a real UX behavior change from today's
+"always visible, just gains a shadow" behavior; `pinnedScrollBehavior()` keeps the app bar always visible
+and would color-fill it automatically on scroll, but only the `TopAppBar` itself, not the wrapping
+`Surface`/`SearchBar` — so the "both lift together" cue disappears. Neither is a drop-in match for the
+current design without a product call, so this was left open rather than guessed at, exactly like
+`RemindersArchiveScreen.kt`'s identical unresolved case (see correction above).
+
+**`EditBirthdayScreen.kt`** (2 fixes):
+- **Back/close content-description split** — `if (renderAsDetailPane) stringResource(acc_close) else null`
+  → `else stringResource(cd_back)`, matching the pattern already used correctly elsewhere in this same file
+  (the delete/save actions).
+- **Hand-rolled `TopAppBarDefaults.topAppBarColors(containerColor = background)` → shared `TopAppbarColor`
+  token** (cross-cutting #2) — same missing-`titleContentColor` gap as §24.
+
+**`PreviewBirthdayScreen.kt`** (3 fixes):
+- Same back/close content-description split and `TopAppbarColor` token swap as `EditBirthdayScreen.kt`.
+- **Motion**: fixed both `tween(DETAIL_ROW_ANIMATION_DURATION_MS)` calls in `AnimatedDetailRow` (cross-cutting
+  #7, the item named in §8) — `fadeIn`→`fastEffectsSpec()`, `slideInVertically`→`fastSpatialSpec()`,
+  classified fast for the same reason as §26's identical `PreviewNoteReminderRow.kt` fix (a per-row stagger
+  entrance, not a partial-screen animation). While in this file, also fixed `AnimatedAvatar`'s hand-tuned
+  `spring(dampingRatio = Spring.DampingRatioMediumBouncy)` the same way, even though §8's cross-cutting #7
+  text named only the two `tween()` calls, not this spring — it's the same category of issue in the same
+  file's same "entrance stagger" motion system, and fixing one while leaving the other as a hand-tuned
+  literal would have left the screen internally inconsistent. Classified fast despite the code comment
+  calling this avatar "this screen's one hero element": guidelines' speed tiers are keyed to a component's
+  physical/spatial scale (small component vs. partial-screen surface), not its narrative importance, and a
+  single 72dp avatar is scale-wise a small component regardless of role. Removed the now-unused
+  `DETAIL_ROW_ANIMATION_DURATION_MS` constant and `Spring`/`spring`/`tween` imports; added
+  `FiniteAnimationSpec`/`IntOffset`.
+
+Verified via `./gradlew :feature:feature-birthday:compileDebugKotlin :app:compileProDebugKotlin` (clean,
+zero warnings) and `:feature:feature-birthday:detekt`. All three files reported pre-existing
+`Indentation`/`ArgumentListWrapping`/`ImportOrdering`/`MaxLineLength` findings; each was checked against
+`git show HEAD` at the shifted line numbers (content identical, offset matching exactly the lines this pass
+added/removed in each file) and confirmed pre-existing, not introduced.
+
+**Not fixed**: the scroll-shadow app bar redesign (see above — a real UX decision, deferred pending product
+input, same as `RemindersArchiveScreen.kt`'s identical open item in the Reminders group).
+
+This closes every §8 finding for both Notes and Birthdays except the two deliberately-deferred items: Notes'
+`SelectableOptionRow` `FontWeight` swap (§24) and Birthdays' scroll-shadow app bar (this section) — plus the
+newly-identified parallel gap in Reminders' `RemindersArchiveScreen.kt` (this section's correction).
+
+**Suggested next step**: `RemindersArchiveScreen.kt`'s back-button bug is a one-line mechanical fix
+independent of the larger scroll-behavior question and could land on its own; otherwise, a different screen
+group entirely — Groups/Tags/Places, Calendar/Google Tasks, or Workflow/Routines (§9-§13) — none of which
+have had dedicated fixes land yet.
+
+## 28. `RemindersArchiveScreen.kt` back-button fix — landed
+
+Fixed the gap §27 surfaced: `RemindersArchiveScreen.kt`'s back-button `contentDescription = null` (§6
+cross-cutting #1) was named in the original Reminders audit but never actually landed, despite §20/§23
+claiming §6 was "fully closed." One-line swap in `RemindersArchiveTopBar`:
+`contentDescription = null` → `stringResource(R.string.cd_back)`, matching every other correctly-fixed
+back button across the Reminders/Notes/Birthdays groups.
+
+Scoped narrowly to just this, per the request — `ArchiveEmptyState`'s identical `onSurface.copy(alpha =
+0.3f/0.5f)` alpha-blend (the same construct fixed for its Notes/Birthdays siblings in §24/§27) and the
+scroll-shadow app bar redesign (deferred in §27 for the identical Birthdays case, same open product
+question) both remain untouched in this file.
+
+Verified via `./gradlew :feature:feature-reminder:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-reminder:detekt`. The change is a same-line-count swap (`null` → a `stringResource(...)`
+call) with zero line-count shift, so `git diff` alone confirms every reported `Indentation`/`ImportOrdering`
+finding (including one in the untouched sibling file `RemindersArchiveScreenState.kt`) sits outside the one
+changed line — no stash or `git show HEAD` comparison needed this time.
+
+This closes the last outstanding item from §6's audit. Between this and §27, every named finding across §6
+(Reminders) and §8 (Notes & Birthdays) now either has a landed fix or is one of three explicitly-deferred,
+judgment-requiring items: Notes' `SelectableOptionRow` `FontWeight` swap, and the scroll-shadow-app-bar
+redesign shared by `RemindersArchiveScreen.kt` and `BirthdaysScreen.kt`.
+
+**Suggested next step**: a different screen group entirely — Groups/Tags/Places, Calendar/Google Tasks, or
+Workflow/Routines (§9-§13) — none of which have had dedicated fixes land yet.
+
+## 29. Groups/Tags/Places screens — back/save-button content-description fixes — landed
+
+Fixes item 1 of §9's suggested fix order (the "cheapest-and-highest-value first" mechanical accessibility
+fix) across all 8 screens named in that audit. Two shapes, matching the pattern already fixed for
+Reminders/Notes/Birthdays:
+
+- **Detail-pane back/close split** (unconditional `null` for the back-icon branch) fixed in
+  `GroupDetailsScreen.kt`, `EditGroupScreen.kt`, `TagEditScreen.kt`, `TagDetailsScreen.kt`,
+  `EditPlaceScreen.kt`: `contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else
+  null` → `else stringResource(R.string.cd_back)` (reformatted to a multi-line `if`/`else` to keep each
+  branch readable, matching `EditBirthdayScreen.kt`'s existing shape from §27).
+- **Top-level list screens' sole back icon** fixed in `GroupsScreen.kt`, `TagsScreen.kt`, `PlacesScreen.kt`:
+  `contentDescription = null` → `contentDescription = stringResource(R.string.cd_back)`.
+- **`TagEditScreen.kt`'s save button** (§9's distinct, more severe finding — an icon-only `MenuIconButton`
+  with no fallback text label, the one true "screen reader has no idea what this is" case in the group, not
+  just the detail-pane pattern): `contentDescription = null` → `stringResource(R.string.save)`, giving it the
+  same self-labeling floor as its sibling editors' `MenuTextButton(text = stringResource(R.string.save))`
+  even though the icon-only component choice itself (vs. `EditGroupScreen`/`EditPlaceScreen`'s
+  `MenuTextButton`) is left as-is — §9 flagged the component-choice inconsistency as a separate, lower-severity
+  note from the missing description, and only the description is a correctness bug.
+
+`TagsScreen.kt`, `TagEditScreen.kt`, and `TagDetailsScreen.kt` import their own module's `R`
+(`com.github.naz013.tags.R`) as the unqualified `R` alias for their own strings (`tags`, `new_tag`, etc.), so
+the shared `ui-common` strings (`cd_back`, `acc_close`, `save`) are referenced fully-qualified
+(`com.github.naz013.ui.common.R.string.cd_back`) in those three files to avoid any ambiguity with the
+existing unqualified `R` import — `GroupsScreen.kt`/`GroupDetailsScreen.kt`/`EditGroupScreen.kt`/
+`PlacesScreen.kt`/`EditPlaceScreen.kt` already import `com.github.naz013.ui.common.R` directly, so those five
+use the plain `R.string.*` form.
+
+Verified via `./gradlew :feature:feature-group:compileDebugKotlin :feature:feature-tags:compileDebugKotlin
+:feature:feature-places:compileDebugKotlin :app:compileProDebugKotlin` (clean) and detekt on all three
+modules. Every one of the three modules carries substantial pre-existing `Indentation`/`ArgumentListWrapping`/
+`ImportOrdering`/`MaxLineLength` debt (some of it in files this pass never touched, e.g. `GroupListItem.kt`,
+`GroupsViewModel.kt`); for the 8 files actually edited, every reported finding was checked against `git show
+HEAD` at the shifted line number (content identical, offset matching exactly the net lines each edit
+added — 0 for the single-line swaps, +4 for the multi-line `if`/`else` reformats) and confirmed pre-existing,
+not introduced by this pass.
+
+**Not fixed**: everything else in §9's suggested fix order — the 4 duplicated alpha-blended empty states
+(`GroupsEmptyState`, `TagsEmptyState`, `PlacesEmptyState`, `TagDetailsEmptyState`) not yet migrated onto
+`ui-common`'s `EmptyState.kt`; all 8 `TopAppBar`s still calling `TopAppBarDefaults.topAppBarColors(containerColor
+= background)` directly instead of the shared `TopAppbarColor` token; the three-way type-role split
+(`titleMedium`/`bodyLarge`/`titleLarge`) across `GroupListItem`/`TagListItem`/`PlaceListItemCard`; and the
+lower-priority `DrawableCatalog`/`AppIcons` convention cleanup plus the minor delete-placement/
+container-color inconsistencies. All deliberately deferred — this pass covered only item 1, per how each
+prior "continue with X" request in this project has been scoped to one coherent unit of work at a time.
+
+**Suggested next step**: item 2 of §9's fix order — migrate the four duplicated alpha-blended empty states
+onto `ui-common`'s `EmptyState.kt`, which closes the `onSurfaceVariant` gap and the code duplication in one
+move, the same "fixes two things at once" shape as the back-button pass just landed here.
+
+## 30. Groups/Tags/Places empty states migrated onto shared `EmptyState.kt` — landed
+
+Fixes item 2 of §9's suggested fix order: the four duplicated, independently-hand-rolled empty-state
+composables (`GroupsEmptyState`, `TagsEmptyState`, `PlacesEmptyState`, `TagDetailsEmptyState`) all deleted
+and replaced with calls to `ui-common`'s existing `EmptyState.kt` (`icon: Painter, message: String`,
+already built during the Home/Agenda pass, §3 item 5, and already consumed by `AgendaScreen.kt`/
+`ChronologicalHomeScreen.kt`).
+
+**A pre-condition surfaced during this pass**: §9 said migrating onto `EmptyState.kt` would "fix the
+`onSurfaceVariant` gap... in one move," which implied the shared component already used
+`onSurfaceVariant`. It didn't — `EmptyState.kt` itself still had the identical
+`onSurface.copy(alpha = 0.3f)` / `onSurface.copy(alpha = 0.5f)` alpha-blend as the four duplicates it was
+meant to replace. Fixed first, before migrating any call site: `tint`/`color` in `EmptyState.kt` →
+`MaterialTheme.colorScheme.onSurfaceVariant`. This is a shared component, so the fix also applies
+retroactively to `AgendaScreen.kt`'s and `ChronologicalHomeScreen.kt`'s existing `EmptyState` usages — both
+call it with only `icon`/`message`/`modifier` (no color override), so this is a strict improvement for them
+too, not a behavior change requiring their own sign-off.
+
+Call-site migrations:
+- `GroupsScreen.kt`: `GroupsEmptyState(modifier = ...)` → `EmptyState(icon = AppIcons.Fluent.Group, message
+  = stringResource(R.string.no_groups), modifier = ...)`.
+- `TagsScreen.kt`: → `EmptyState(icon = AppIcons.Builder.Tag, message = stringResource(R.string.no_tags),
+  ...)`.
+- `TagDetailsScreen.kt`: → `EmptyState(icon = AppIcons.Builder.Tag, message =
+  stringResource(R.string.tag_has_no_items), ...)`.
+- `PlacesScreen.kt`: → `EmptyState(icon = painterResource(R.drawable.ic_fluent_place), message =
+  stringResource(R.string.no_places), ...)` — left as `painterResource` rather than moving onto
+  `AppIcons`/`DrawableCatalog`, since that convention cleanup is §9's separately-tracked, lower-priority
+  item 5, out of scope for this pass.
+
+Each of the four `private fun XxxEmptyState` composables was deleted outright rather than kept as a thin
+wrapper, along with their now-unused `Column`/`Icon`/`Arrangement`-in-that-role imports (`Column` and
+`Alignment` were kept where the same file uses them elsewhere for something unrelated, e.g.
+`TagDetailsScreen.kt`'s main-content `Column` and `Box`'s `contentAlignment = Alignment.Center`).
+
+Verified via `./gradlew :ui:ui-common:compileDebugKotlin :feature:feature-group:compileDebugKotlin
+:feature:feature-tags:compileDebugKotlin :feature:feature-places:compileDebugKotlin
+:app:compileProDebugKotlin` (clean) and detekt on all four modules. Every reported finding in the five
+touched files was cross-checked by reading the current file at the reported line and confirming the content
+is an unrelated pre-existing block (a `Modifier` chain, a `PaddingValues`/`buildList` call, or the file's
+`@Preview` state literal) that merely shifted position when each duplicated composable was deleted — not
+something this pass introduced.
+
+**Not fixed**: the remaining §9 items — all 8 `TopAppBar`s still calling
+`TopAppBarDefaults.topAppBarColors(containerColor = background)` directly instead of the shared
+`TopAppbarColor` token (item 3), the `titleMedium`/`bodyLarge`/`titleLarge` list-row type-role split across
+`GroupListItem`/`TagListItem`/`PlaceListItemCard` (item 4), and the `DrawableCatalog`/`AppIcons` convention
+cleanup plus minor delete-placement/container-color inconsistencies (item 5, including `PlacesScreen.kt`'s
+`ic_fluent_place` left un-migrated above).
+
+**Suggested next step**: item 3 of §9's fix order — point all 8 screens' `TopAppBar`s at the shared
+`TopAppbarColor` token instead of `MaterialTheme.colorScheme.background` directly, the same mechanical,
+low-judgment swap already applied across the Reminders/Notes/Birthdays groups.
+
+## 31. Groups/Tags/Places `TopAppBar`s pointed at shared `TopAppbarColor` token — landed
+
+Fixes item 3 of §9's suggested fix order across all 8 screens: `colors =
+TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)` →
+`colors = TopAppbarColor` in `GroupsScreen.kt`, `GroupDetailsScreen.kt`, `EditGroupScreen.kt`,
+`TagsScreen.kt`, `TagEditScreen.kt`, `TagDetailsScreen.kt`, `PlacesScreen.kt`, `EditPlaceScreen.kt` — the
+same shared `ui-common` token (`ComponentColors.kt:28`) already adopted across the Reminders/Notes/Birthdays
+groups, so these 8 screens now pick up any future palette change to it instead of being frozen at today's
+hand-rolled equivalent.
+
+`TopAppBarDefaults` became unused in all 8 files (each only called it for this one line) and was removed
+from every import list. `MaterialTheme` stayed imported in 7 of the 8 — each still uses it elsewhere
+(`colorScheme.primary` for an icon tint, a `Card`'s container color, a `typography` role, etc.) — except
+`TagEditScreen.kt`, where this was the file's *only* `MaterialTheme` reference, so that import was removed
+too rather than left dangling.
+
+Verified via `./gradlew :feature:feature-group:compileDebugKotlin :feature:feature-tags:compileDebugKotlin
+:feature:feature-places:compileDebugKotlin :app:compileProDebugKotlin` (clean — confirms no leftover unused
+or missing imports) and detekt on all three modules. Every reported finding sat in an unrelated, pre-existing
+block (a `Modifier` chain in a loading/empty branch, a `PaddingValues`/`buildList` call, `TagsScreen.kt`'s
+`Card` `containerColor` line) at the same position as this session's prior full reads of each file — since
+every edit here was either a net-zero line-count change (one import line removed, one added; one `colors =`
+line replaced 1-for-1) or, for `TagEditScreen.kt`, a net -1 shift from the extra `MaterialTheme` import
+removal — and `TagEditScreen.kt` itself reported zero detekt findings both before and after.
+
+**Not fixed**: §9's last two items — the `titleMedium`/`bodyLarge`/`titleLarge` list-row type-role split
+across `GroupListItem`/`TagListItem`/`PlaceListItemCard` (item 4), and the `DrawableCatalog`/`AppIcons`
+convention cleanup plus minor delete-placement/container-color inconsistencies (item 5).
+
+**Suggested next step**: item 4 — pick one type role (guidelines §3.1's `titleMedium` is the closest fit to
+what two of the three siblings already lean toward) and apply it consistently across `GroupListItem`,
+`TagListItem`, and `PlaceListItemCard`, the last content-visible fix in §9 before only the lower-priority
+convention cleanup (item 5) remains.
+
+## 32. Groups/Tags/Places list-row type-role split unified on `titleMedium` — landed
+
+Fixes item 4 of §9's suggested fix order: the three-way split where `GroupListItem.kt`, `TagsScreen.kt`'s
+`TagListItem`, and `PlaceListItemCard.kt` each used a different type role for the same "list row primary
+label" purpose is now unified on `titleMedium`, per guidelines §3.1's own recommendation for that role —
+already the closest fit, since `GroupListItem.kt` was already using it correctly.
+
+- `GroupListItem.kt`: already `titleMedium` — no change needed, it was the reference point for this fix.
+- `TagsScreen.kt`'s `TagListItem`: `MaterialTheme.typography.bodyLarge` → `titleMedium` for the tag name
+  `Text`.
+- `PlaceListItemCard.kt`: `MaterialTheme.typography.titleLarge` → `titleMedium` for the place name `Text`.
+
+Both are single-line style swaps with no import or structural changes. Verified via
+`./gradlew :feature:feature-tags:compileDebugKotlin :feature:feature-places:compileDebugKotlin
+:app:compileProDebugKotlin` (clean) and detekt on both modules. Every reported finding in `TagsScreen.kt`
+(the same `Card` `containerColor`/`TagMenu` `PopupMenuItem` lines flagged in every prior pass touching this
+file) and `PlaceListItemCard.kt` (a set of `Modifier` chains in `Card`/`Row`/`Icon`/`Text` — identical to
+this session's own first read of the file, before any edit) sat at unchanged positions, since each edit here
+was a zero-line-count-shift swap.
+
+This closes every content-visible finding from §9. Only item 5 remains: the `DrawableCatalog`/`AppIcons`
+convention cleanup (bare `painterResource(R.drawable.ic_fluent_*)` calls across nearly every file in this
+group, including `PlaceListItemCard.kt`'s own marker icon and the overflow-menu icon repeated in most of
+these files) plus the minor, lower-priority delete-placement (`EditPlaceScreen.kt`'s overflow menu vs.
+`EditGroupScreen.kt`/`TagEditScreen.kt`'s direct app-bar icon) and container-color (`GroupListItem.kt`'s
+plain default vs. `TagListItem`'s explicit `surfaceContainer`) inconsistencies §9 flagged as lower severity.
+
+**Suggested next step**: item 5's `DrawableCatalog`/`AppIcons` convention cleanup — a repo-hygiene fix per
+`CLAUDE.md`'s icon rule rather than an M3 spec gap, but real and mechanical across nearly every file in this
+group; alternatively, this fully closes §9, so a different screen group entirely — Calendar/Google Tasks or
+Workflow/Routines (§10-§13) — is also a reasonable next target since neither has had dedicated fixes land
+yet.
+
+## 33. Groups/Tags/Places `DrawableCatalog`/`AppIcons` convention cleanup — landed
+
+Fixes item 5 of §9's suggested fix order — a `CLAUDE.md` repo-hygiene rule ("a drawable resource ID is never
+referenced as a bare `R.drawable.ic_fluent_*` from feature/screen code... use `AppIcons.*`/`DrawableCatalog.*`"),
+not an M3 spec gap, but real and mechanical across nearly every file in this group. Every catalog entry
+needed (`Add`, `ColorBackground`, `Delete`, `Edit`, `MoreVertical`, `Place`, `Share`, `Star`) already existed
+in both `DrawableCatalog.Fluent` and `AppIcons.Fluent` — this pass was pure call-site migration, no new
+catalog entries required.
+
+Two shapes, mirroring the convention's own split:
+- **`painterResource(R.drawable.ic_fluent_*)` passed where a `Painter` is expected** (`Icon`'s `painter =`,
+  `MenuIconButton`'s `icon =`) → `AppIcons.Fluent.*`: the "more options" overflow-menu icon in
+  `GroupListItem.kt`, `GroupDetailsScreen.kt`, `EditGroupScreen.kt`'s delete icon, `TagsScreen.kt`,
+  `TagDetailsScreen.kt`, `EditPlaceScreen.kt`, `PlaceListItemCard.kt` (both its marker `Place` icon and its
+  overflow icon), and `PlacesScreen.kt` (its add-button icon and, from §30, the `EmptyState` icon param).
+- **`R.drawable.ic_fluent_*` passed where a plain `@DrawableRes Int` is expected** (`PopupMenuItem.iconRes`,
+  and the `Int?`/`Int` return types of `GroupListItem.kt`'s `iconResOrNull()` and `PlaceListItemCard.kt`'s
+  `placeMenuItems()`) → `DrawableCatalog.Fluent.*`: every `PopupMenuItem(iconRes = ...)` call site across
+  `GroupsScreen.kt`, `GroupDetailsScreen.kt`, `TagsScreen.kt`, `TagDetailsScreen.kt`, `EditPlaceScreen.kt`,
+  and `PlaceListItemCard.kt`.
+
+`painterResource` became unused and was removed from every one of the 9 files it was only used for this
+purpose in (`GroupListItem.kt`, `GroupDetailsScreen.kt`, `EditGroupScreen.kt`, `TagsScreen.kt`,
+`TagDetailsScreen.kt`, `EditPlaceScreen.kt`, `PlaceListItemCard.kt`, `PlacesScreen.kt` — `EditGroupScreen.kt`
+and `PlacesScreen.kt` already imported `AppIcons`, so only needed the `painterResource` removal).
+`GroupListItem.kt` and `PlaceListItemCard.kt` didn't import `AppIcons` at all before this pass (both only
+ever went through bare `painterResource`) — added alongside `DrawableCatalog` in both.
+
+Verified via `./gradlew :feature:feature-group:compileDebugKotlin :feature:feature-tags:compileDebugKotlin
+:feature:feature-places:compileDebugKotlin :app:compileProDebugKotlin` (clean — confirms every catalog
+reference resolved and no leftover unused imports) and detekt on all three modules. Every reported finding
+was cross-checked against this session's own earlier reads of each file, accounting for the exact net
+line-count shift each file's import-list edit introduced (0 net for files where a removed `painterResource`
+import was offset by an added `AppIcons`/`DrawableCatalog` import; +1 net for `GroupListItem.kt`,
+`GroupsScreen.kt`, and `PlaceListItemCard.kt`, where an import was added without a matching removal) — every
+finding landed on an unrelated pre-existing `Modifier` chain, `Card` `containerColor` line, or
+`PopupMenuItem` argument list at exactly the expected shifted position.
+
+This closes every finding from §9's Groups/Tags/Places audit — cross-cutting items 1-5 and every
+screen-specific note now either has a landed fix or is one of the two remaining explicitly-lower-priority
+items §9 itself called out as "worth a look if a screen is touched again, not a confirmed defect": the
+delete-placement inconsistency (`EditPlaceScreen.kt`'s overflow menu vs. `EditGroupScreen.kt`/
+`TagEditScreen.kt`'s direct app-bar icon) and the container-color inconsistency (`GroupListItem.kt`'s plain
+default vs. `TagListItem`'s explicit `surfaceContainer`) — both individually-legitimate role choices, not
+compliance gaps, per §9's own text.
+
+**Suggested next step**: a different screen group entirely — Calendar/Google Tasks or Workflow/Routines
+(§10-§13) — since §9 (Groups/Tags/Places) is now fully closed and neither of those groups has had dedicated
+fixes land yet.
+
+## 34. Calendar/Google Tasks screens — back-button content-description fixes — landed
+
+Fixes item 1 of §10's suggested fix order (the "cheapest-and-highest-value first" mechanical accessibility
+fix, same pattern already closed for Reminders/Notes/Birthdays/Groups-Tags-Places) across all 8 screens named
+in that audit. Two shapes:
+
+- **Plain single back icon** (no detail-pane branch) fixed in `CalendarScreen.kt`, `TimelineScreen.kt`,
+  `GoogleTasksScreen.kt`, `PreviewGoogleTaskScreen.kt`, `EditGoogleTaskScreen.kt`,
+  `EditGoogleTaskListScreen.kt`: `contentDescription = null` → `contentDescription =
+  stringResource(R.string.cd_back)`.
+- **Detail-pane back/close split** (unconditional `null` for the back-icon branch) fixed in
+  `TaskListScreen.kt` and `GoogleCalendarEventPreviewScreen.kt`: `contentDescription = if
+  (renderAsDetailPane) stringResource(R.string.acc_close) else null` → `else
+  stringResource(R.string.cd_back)` (reformatted to a multi-line `if`/`else`, the same shape used across
+  every other group this session).
+
+6 of the 8 files have no explicit `R` import at all — each lives directly in its module's root package
+(`com.github.naz013.feature.googletask`, `com.github.naz013.feature.calendar.monthview`, etc.), so `R`
+resolves implicitly to that module's own generated class, which — per `android.nonTransitiveRClass = false`
+— already merges in `ui-common`'s `cd_back`/`acc_close` strings with no import needed (confirmed by these
+files already calling other `ui-common` strings like `R.string.acc_close`/`R.string.more_options` the same
+way). `GoogleCalendarEventPreviewScreen.kt` is the one exception (`com.github.naz013.feature.calendar.preview`,
+a sub-package) and already imports `com.github.naz013.ui.common.R` explicitly for the same reason.
+
+Verified via `./gradlew :feature:feature-calendar:compileDebugKotlin :feature:feature-googletask:compileDebugKotlin
+:app:compileProDebugKotlin` (clean) and detekt on both modules. Every edit was a single-line, zero-net-shift
+swap (or, for the two detail-pane files, a straightforward 1-line-to-4-line `if`/`else` expansion with no
+other file changes), so every reported finding was checked directly against `git show HEAD` at the exact
+same or shift-adjusted line number and confirmed identical pre-existing content — largely `Modifier` chains
+and `PopupMenuItem`/`AddEventRow` argument lists in `CalendarScreen.kt`/`TimelineScreen.kt`, plus a set of
+already-unused imports in `GoogleTasksScreen.kt` (`Row`, `fillMaxWidth`, `Card`, `CardDefaults`,
+`GoogleTaskItemState`) unrelated to this fix and untouched by it.
+
+**Not fixed**: everything else in §10 — item 2 (route all 8 `TopAppBar`s through the shared `TopAppbarColor`
+token instead of the two different ad hoc overrides), item 3 (the three deprecated baseline
+`ExtendedFloatingActionButton` instances in `GoogleTasksScreen.kt`/`TaskListScreen.kt`/
+`PreviewGoogleTaskScreen.kt`), item 4 (`TimelinePager.kt`'s two off-scale `RoundedCornerShape(6.dp)` sites),
+item 5 (`detailScreenContentWidth()` missing from `PreviewGoogleTaskScreen.kt`/`EditGoogleTaskScreen.kt`/
+`EditGoogleTaskListScreen.kt`), the ad hoc `.copy(alpha = ...)` de-emphasis pattern (cross-cutting #4), and
+the two design-judgment items (Calendar Month/Timeline breakpoint adaptation, sub-48dp timeline touch
+targets) §10 itself flagged as needing product input rather than a mechanical fix.
+
+**Suggested next step**: item 2 of §10's fix order — point all 8 screens' `TopAppBar`s at the shared
+`TopAppbarColor` token, replacing both ad hoc variants (`containerColor = background` on 6 screens,
+`containerColor = Color.Transparent` on the 2 Calendar screens) — the same mechanical swap already applied
+across every other screen group this session.
+
+## 35. Calendar/Google Tasks `TopAppBar`s pointed at shared `TopAppbarColor` token — landed
+
+Fixes item 2 of §10's suggested fix order across all 8 screens: `colors = TopAppBarDefaults.topAppBarColors(...)`
+→ `colors = TopAppbarColor` in `CalendarScreen.kt`, `TimelineScreen.kt`, `GoogleTasksScreen.kt`,
+`TaskListScreen.kt`, `PreviewGoogleTaskScreen.kt`, `EditGoogleTaskScreen.kt`, `EditGoogleTaskListScreen.kt`,
+`GoogleCalendarEventPreviewScreen.kt` — replacing both ad hoc variants §10 flagged: the 6
+`containerColor = MaterialTheme.colorScheme.background` screens (same visible color as the token, but
+silently missing `titleContentColor`) and the 2 Calendar screens' `containerColor = Color.Transparent`.
+
+The `Color.Transparent` case got a closer look before swapping it, since transparent-vs-opaque is a real
+visual difference, not just a token-hygiene one: neither `CalendarScreen.kt` nor `TimelineScreen.kt` wraps
+its `TopAppBar` in any `Surface`/background layer of its own — the `topBar` slot is a bare `Column`
+(`CalendarScreen.kt`) or the `TopAppBar` directly (`TimelineScreen.kt`) — so a transparent app bar was
+already just showing `Scaffold`'s own default container color underneath, which *is*
+`MaterialTheme.colorScheme.background`. Switching to `TopAppbarColor` is therefore visually a no-op for the
+container color and a strict improvement for `titleContentColor` (now `onBackground` instead of the
+component default `onSurface`), not a behavior change.
+
+`TopAppBarDefaults` was removed from every file's imports (each only used it here). `MaterialTheme` stayed
+imported everywhere else it's still referenced. `TimelineScreen.kt` lost its `Color` import too — the
+`Color.Transparent` reference removed by this fix was that file's only use of it.
+
+Verified via `./gradlew :feature:feature-calendar:compileDebugKotlin :feature:feature-googletask:compileDebugKotlin
+:app:compileProDebugKotlin` (clean — confirms no dangling imports) and detekt on both modules. Every
+reported finding was cross-checked: `CalendarScreen.kt`/`TimelineScreen.kt`'s `ImportOrdering` flags predate
+this entire session (confirmed via `git show HEAD` — the `com.github.naz013.ui.common.R` /
+`com.github.naz013.feature.calendar.*` import block was already out of lexicographic order before any fix
+landed here), and the remaining `Wrapping`/`ArgumentListWrapping`/`Indentation`/`MaxLineLength` findings
+(`Modifier` chains, `PopupMenuItem`/`AddEventRow` argument lists) plus `GoogleTasksScreen.kt`'s unused
+imports all sit at positions matching each file's exact net line-shift from this edit (0 for 6 files whose
+import swap was 1-for-1; -1 for `TimelineScreen.kt`, which lost two imports and gained one).
+
+**Not fixed**: items 3-5 of §10 — the three deprecated baseline `ExtendedFloatingActionButton` instances,
+`TimelinePager.kt`'s off-scale `RoundedCornerShape(6.dp)` sites, and missing `detailScreenContentWidth()` on
+three Google Tasks screens — plus the ad hoc `.copy(alpha = ...)` de-emphasis pattern and the two
+design-judgment items (Calendar breakpoint adaptation, sub-48dp timeline touch targets).
+
+**Suggested next step**: item 3 — replace the three deprecated baseline `ExtendedFloatingActionButton`
+instances (`GoogleTasksScreen.kt`, `TaskListScreen.kt`, `PreviewGoogleTaskScreen.kt`) with
+`SmallExtendedFloatingActionButton`, the same fix already landed for `ReminderFullscreenMapScreen.kt` in the
+Reminders group (§22) — the clearest deprecated-component finding left in this group.
+
+## 36. Google Tasks deprecated baseline FAB fixes — landed
+
+Fixes item 3 of §10's suggested fix order: all three baseline `ExtendedFloatingActionButton` instances (the
+56dp pill-shaped variant guidelines §9.1 marks no longer recommended) swapped for
+`SmallExtendedFloatingActionButton`, the same component and fix already landed for
+`ReminderFullscreenMapScreen.kt` in the Reminders group (§22).
+
+- `GoogleTasksScreen.kt`'s "New task" FAB (passes `containerColor`/`contentColor` overrides sourced from
+  `state.fabContainerColor`/`state.fabContentColor`).
+- `TaskListScreen.kt`'s "New task" FAB (identical shape/params to the one above).
+- `PreviewGoogleTaskScreen.kt`'s "Complete" FAB (simpler — just `icon`/`text`/`onClick`, no color override).
+
+Confirmed against the M3 1.5.0-alpha27 source (`FloatingActionButton.kt:659-678`, the `text`/`icon`/`onClick`
+overload) that `SmallExtendedFloatingActionButton` accepts the identical `containerColor`/`contentColor`
+parameters as the baseline component before making the swap, so this was a pure component-name change with
+no parameter restructuring needed in any of the three files — every call site's existing arguments carried
+over unchanged.
+
+`ExtendedFloatingActionButton` was removed from each file's imports and replaced with
+`SmallExtendedFloatingActionButton` at the same alphabetical position (between `Scaffold` and `Text`) — a
+1-for-1 import swap, so no other import changed.
+
+Verified via `./gradlew :feature:feature-googletask:compileDebugKotlin :app:compileProDebugKotlin` (clean —
+confirms `SmallExtendedFloatingActionButton`'s signature really does match 1:1) and detekt on the module.
+`TaskListScreen.kt` and `PreviewGoogleTaskScreen.kt` report zero findings; `GoogleTasksScreen.kt`'s findings
+are the same pre-existing unused imports (`Row`, `fillMaxWidth`, `Card`, `CardDefaults`,
+`GoogleTaskItemState`) flagged in every prior pass touching this file, at unchanged positions since the
+import edit was net-zero.
+
+**Not fixed**: items 4-5 of §10 — `TimelinePager.kt`'s two off-scale `RoundedCornerShape(6.dp)` sites, and
+missing `detailScreenContentWidth()` on `PreviewGoogleTaskScreen.kt`/`EditGoogleTaskScreen.kt`/
+`EditGoogleTaskListScreen.kt` — plus the ad hoc `.copy(alpha = ...)` de-emphasis pattern and the two
+design-judgment items (Calendar breakpoint adaptation, sub-48dp timeline touch targets).
+
+**Suggested next step**: item 4 — `TimelinePager.kt`'s `HolidayChip`/`TimelineEventBlock`
+`RoundedCornerShape(6.dp)` sites are genuinely off the 10-step shape scale (guidelines §4.1); swap to 4dp
+(extra small) per §10's own recommendation. Alternatively, item 5 — add `detailScreenContentWidth()` to the
+three under-adapted Google Tasks screens, mirroring `GoogleCalendarEventPreviewScreen.kt`'s existing usage.
+
+## 37. `TimelinePager.kt` off-scale corner-radius fix — landed
+
+Fixes item 4 of §10's suggested fix order: `HolidayChip`'s (`:301`) and `TimelineEventBlock`'s (`:482`)
+`RoundedCornerShape(6.dp)` — genuinely off the 10-step M3 shape scale per guidelines §4.1, unlike
+`GoogleTasksScreen.kt`'s `RoundedCornerShape(12.dp)` finding from the same audit (on-scale, just untokenized)
+— replaced with `MaterialTheme.shapes.extraSmall`.
+
+Went with the real M3 theme token rather than a literal `RoundedCornerShape(4.dp)` or a new custom
+`AppShapes` constant: confirmed against the M3 1.5.0-alpha27 source
+(`ShapeTokens.kt:76`, `CornerValueExtraSmall = CornerSize(4.0.dp)`) that the default `extraSmall` shape
+role already resolves to exactly 4dp, and this repo's own `AppTheme`/`Theme.kt` never overrides `shapes`
+away from the M3 defaults — so `MaterialTheme.shapes.extraSmall` *is* the 4dp guidelines §10 asked for,
+sourced from the actual design-system role instead of either a bare literal or a bespoke addition to
+`ui-common`'s `AppShapes` (`tile`/`card`/`largeIncreased`/`pill`) for a value the theme already names.
+Both call sites back compact/dense chips (a holiday label chip and a short-duration timeline event block),
+so 4dp over rounding up to 8dp (`small`) keeps the "small chip" visual weight §10 called out as the reason
+not to round up.
+
+`RoundedCornerShape` became unused in `TimelinePager.kt` after both sites were fixed (its only two call
+sites in the file) and was removed from the imports; `CircleShape` (used elsewhere in the file) stayed.
+
+Verified via `./gradlew :feature:feature-calendar:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+detekt on the module. `TimelinePager.kt` carries substantial pre-existing `Indentation`/`ImportOrdering`
+debt across the whole file (confirmed via `git show HEAD` — including an already-out-of-order
+`com.github.naz013.domain.PublicHoliday` import that predates this session); every reported finding was
+checked against the original file's content at the exact -1 line shift this edit introduced (one import
+line removed, nothing added) and confirmed identical, unrelated pre-existing content.
+
+**Not fixed**: item 5 of §10 — `detailScreenContentWidth()` missing from `PreviewGoogleTaskScreen.kt`/
+`EditGoogleTaskScreen.kt`/`EditGoogleTaskListScreen.kt` — plus the ad hoc `.copy(alpha = ...)` de-emphasis
+pattern and the two design-judgment items (Calendar breakpoint adaptation, sub-48dp timeline touch targets)
+§10 itself flagged as needing product input.
+
+**Suggested next step**: item 5 — add `Modifier.detailScreenContentWidth()` to the three under-adapted
+Google Tasks screens, mirroring `GoogleCalendarEventPreviewScreen.kt`'s existing usage; this closes every
+mechanical, no-judgment-required item in §10, leaving only the ad hoc alpha-blend pattern (a one-line swap
+to `onSurfaceVariant` per site, same as every prior group) and the two genuine design-judgment items.

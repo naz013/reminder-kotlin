@@ -704,7 +704,8 @@ private fun GradientColorControls(
         Brush.linearGradient(
           listOf(
             colors.getOrElse(startIndex) { contentColor },
-            colors.getOrElse(endIndex) { contentColor })
+            colors.getOrElse(endIndex) { contentColor }
+          )
         )
       ),
   )

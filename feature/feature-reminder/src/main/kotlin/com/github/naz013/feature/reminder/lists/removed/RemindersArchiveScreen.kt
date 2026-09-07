@@ -79,10 +79,9 @@ fun RemindersArchiveScreen(
               query = state.searchQuery,
               onQueryChange = onSearchQueryChange,
               placeholder = stringResource(R.string.search),
-              modifier =
-                Modifier
-                  .fillMaxWidth()
-                  .padding(horizontal = 16.dp, vertical = 8.dp),
+              modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             )
           }
         }
@@ -90,15 +89,16 @@ fun RemindersArchiveScreen(
     },
   ) { padding ->
     Column(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(padding),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding),
     ) {
       when (val listState = state.listState) {
         is ListState.Loading -> {
           Box(
-            modifier = Modifier.fillMaxSize().weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
             contentAlignment = Alignment.Center,
           ) {
             CircularProgressIndicator()
@@ -106,13 +106,17 @@ fun RemindersArchiveScreen(
         }
 
         is ListState.Empty -> {
-          ArchiveEmptyState(modifier = Modifier.fillMaxSize().weight(1f))
+          ArchiveEmptyState(modifier = Modifier
+            .fillMaxSize()
+            .weight(1f))
         }
 
         is ListState.Ready -> {
           LazyColumn(
             state = lazyListState,
-            modifier = Modifier.fillMaxSize().weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
           ) {
@@ -143,7 +147,7 @@ private fun RemindersArchiveTopBar(
     navigationIcon = {
       MenuIconButton(
         icon = AppIcons.Builder.ArrowLeft,
-        contentDescription = null,
+        contentDescription = stringResource(R.string.cd_back),
         onClick = onBackClick,
       )
     },

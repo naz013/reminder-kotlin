@@ -8,15 +8,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.AppPullToRefreshBox
@@ -71,7 +71,11 @@ internal fun TaskListScreen(
         navigationIcon = {
           MenuIconButton(
             icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
-            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
+            contentDescription = if (renderAsDetailPane) {
+              stringResource(R.string.acc_close)
+            } else {
+              stringResource(R.string.cd_back)
+            },
             onClick = onBackClick,
           )
         },
@@ -96,11 +100,11 @@ internal fun TaskListScreen(
             },
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
     floatingActionButton = {
-      ExtendedFloatingActionButton(
+      SmallExtendedFloatingActionButton(
         onClick = onAddTaskClick,
         containerColor = state.fabContainerColor ?: FloatingActionButtonDefaults.containerColor,
         contentColor = state.fabContentColor ?: MaterialTheme.colorScheme.onPrimaryContainer,
@@ -112,10 +116,9 @@ internal fun TaskListScreen(
     AppPullToRefreshBox(
       isRefreshing = state.isSyncing,
       onRefresh = onRefresh,
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(padding),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding),
     ) {
       // A single LazyColumn is used even for the empty state (rather than swapping in a plain
       // Column) so there is always a scrollable descendant to dispatch nested-scroll drag events
@@ -179,34 +182,32 @@ private fun taskListMenuItems(canDelete: Boolean): List<PopupMenuItem> =
 private fun TaskListScreenPreview() {
   AppTheme {
     TaskListScreen(
-      state =
-        TaskListState(
-          title = "Groceries",
-          tasks =
-            listOf(
-              GoogleTaskItemState(
-                id = "1",
-                text = "Buy milk",
-                notes = null,
-                dueDate = "Tomorrow",
-                isCompleted = false,
-                taskListColor = Color(0xFF4CAF50).toArgb(),
-                reminderId = null,
-              ),
-              GoogleTaskItemState(
-                id = "2",
-                text = "Buy bread",
-                notes = "Whole grain",
-                dueDate = null,
-                isCompleted = true,
-                taskListColor = Color(0xFF4CAF50).toArgb(),
-                reminderId = null,
-              ),
-            ),
-          fabContainerColor = Color(0xFF4CAF50),
-          fabContentColor = Color.White,
-          canDelete = true,
+      state = TaskListState(
+        title = "Groceries",
+        tasks = listOf(
+          GoogleTaskItemState(
+            id = "1",
+            text = "Buy milk",
+            notes = null,
+            dueDate = "Tomorrow",
+            isCompleted = false,
+            taskListColor = Color(0xFF4CAF50).toArgb(),
+            reminderId = null,
+          ),
+          GoogleTaskItemState(
+            id = "2",
+            text = "Buy bread",
+            notes = "Whole grain",
+            dueDate = null,
+            isCompleted = true,
+            taskListColor = Color(0xFF4CAF50).toArgb(),
+            reminderId = null,
+          ),
         ),
+        fabContainerColor = Color(0xFF4CAF50),
+        fabContentColor = Color.White,
+        canDelete = true,
+      ),
       onBackClick = {},
       onEditListClick = {},
       onDeleteListClick = {},

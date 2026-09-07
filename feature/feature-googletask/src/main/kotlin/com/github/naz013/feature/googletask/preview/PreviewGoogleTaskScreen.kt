@@ -12,14 +12,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.tag.TagChipRow
 import com.github.naz013.ui.tag.TagChipState
@@ -59,7 +59,7 @@ internal fun PreviewGoogleTaskScreen(
         navigationIcon = {
           MenuIconButton(
             icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_back),
             onClick = onBackClick,
           )
         },
@@ -75,13 +75,13 @@ internal fun PreviewGoogleTaskScreen(
             onClick = onDeleteClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
     floatingActionButton = {
       val task = state.task
       if (task != null && !task.isCompleted) {
-        ExtendedFloatingActionButton(
+        SmallExtendedFloatingActionButton(
           onClick = onCompleteClick,
           icon = { Icon(painterResource(R.drawable.ic_fluent_checkmark), contentDescription = null) },
           text = { Text(stringResource(R.string.complete)) },
@@ -92,10 +92,9 @@ internal fun PreviewGoogleTaskScreen(
     val task = state.task
     if (task == null) {
       Box(
-        modifier =
-          Modifier
-            .fillMaxSize()
-            .padding(padding),
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(padding),
         contentAlignment = Alignment.Center,
       ) {
         CircularProgressIndicator()
@@ -104,11 +103,10 @@ internal fun PreviewGoogleTaskScreen(
     }
 
     Column(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(padding)
-          .verticalScroll(rememberScrollState()),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding)
+        .verticalScroll(rememberScrollState()),
     ) {
       DetailRow(
         icon = R.drawable.ic_fluent_text,
@@ -166,10 +164,9 @@ internal fun PreviewGoogleTaskScreen(
 private fun TagsRow(tags: List<TagChipState>) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
   ) {
     Icon(
       painter = painterResource(R.drawable.ic_builder_group),
@@ -193,10 +190,9 @@ private fun DetailRow(
 ) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp, top = topPadding),
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(start = 16.dp, end = 16.dp, top = topPadding),
   ) {
     Icon(
       painter = painterResource(icon),
@@ -208,10 +204,9 @@ private fun DetailRow(
       text = text,
       style = textStyle,
       color = textColor,
-      modifier =
-        Modifier
-          .weight(1f)
-          .padding(start = 16.dp),
+      modifier = Modifier
+        .weight(1f)
+        .padding(start = 16.dp),
     )
   }
 }
@@ -221,22 +216,20 @@ private fun DetailRow(
 private fun PreviewGoogleTaskScreenPreview() {
   AppTheme {
     PreviewGoogleTaskScreen(
-      state =
-        PreviewGoogleTaskState(
-          task =
-            GoogleTaskPreviewState(
-              id = "1",
-              text = "Buy milk",
-              notes = "2 liters, whole",
-              dueDate = "Tomorrow",
-              createdDate = "Today",
-              completedDate = null,
-              isCompleted = false,
-              taskListName = "Groceries",
-              taskListColor = Color(0xFF4CAF50).toArgb(),
-            ),
-          tags = listOf(TagChipState(id = "1", name = "Errands", color = Color(0xFF4CAF50))),
+      state = PreviewGoogleTaskState(
+        task = GoogleTaskPreviewState(
+          id = "1",
+          text = "Buy milk",
+          notes = "2 liters, whole",
+          dueDate = "Tomorrow",
+          createdDate = "Today",
+          completedDate = null,
+          isCompleted = false,
+          taskListName = "Groceries",
+          taskListColor = Color(0xFF4CAF50).toArgb(),
         ),
+        tags = listOf(TagChipState(id = "1", name = "Errands", color = Color(0xFF4CAF50))),
+      ),
       onBackClick = {},
       onEditClick = {},
       onDeleteClick = {},

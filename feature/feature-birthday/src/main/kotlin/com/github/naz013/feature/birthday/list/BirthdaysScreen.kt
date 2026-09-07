@@ -17,8 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -309,12 +307,12 @@ private fun BirthdaysEmptyState(modifier: Modifier = Modifier) {
       painter = painterResource(R.drawable.ic_fluent_food_cake),
       contentDescription = null,
       modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+      tint = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     Text(
       text = stringResource(R.string.no_events),
       style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
       modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
     )
   }
@@ -359,7 +357,7 @@ private fun BirthdaysTopBar(
     navigationIcon = {
       MenuIconButton(
         icon = AppIcons.Builder.ArrowLeft,
-        contentDescription = null,
+        contentDescription = stringResource(R.string.cd_back),
         onClick = onBackClick,
       )
     },
@@ -374,7 +372,7 @@ private fun BirthdaysTopBar(
         badge = { if (hasActiveFilters) Badge() },
       ) {
         MenuIconButton(
-          icon = Icons.Default.FilterList,
+          icon = AppIcons.Fluent.Filter,
           contentDescription = stringResource(R.string.filter),
           onClick = onFilterClick,
         )

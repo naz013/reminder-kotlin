@@ -23,7 +23,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -40,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.component.FormItem
@@ -82,7 +82,11 @@ internal fun EditBirthdayScreen(
         navigationIcon = {
           MenuIconButton(
             icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
-            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
+            contentDescription = if (renderAsDetailPane) {
+              stringResource(R.string.acc_close)
+            } else {
+              stringResource(R.string.cd_back)
+            },
             enabled = !state.isLoading,
             onClick = onBackClick,
           )
@@ -102,18 +106,17 @@ internal fun EditBirthdayScreen(
             onClick = onSaveClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
     Column(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .background(MaterialTheme.colorScheme.background)
-          .padding(padding)
-          .verticalScroll(rememberScrollState())
-          .padding(16.dp),
+      modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .padding(padding)
+        .verticalScroll(rememberScrollState())
+        .padding(16.dp),
     ) {
       OutlinedTextField(
         value = state.name,
@@ -129,10 +132,9 @@ internal fun EditBirthdayScreen(
       )
 
       Card(
-        modifier =
-          Modifier
-            .fillMaxWidth()
-            .padding(top = 16.dp),
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(top = 16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
       ) {
         Column {
@@ -191,10 +193,9 @@ internal fun EditBirthdayScreen(
 
       if (state.contactName != null) {
         Card(
-          modifier =
-            Modifier
-              .fillMaxWidth()
-              .padding(top = 16.dp),
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
           colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
         ) {
           Row(
@@ -207,7 +208,9 @@ internal fun EditBirthdayScreen(
                 bitmap = photo.asImageBitmap(),
                 contentDescription = stringResource(R.string.acc_contact_photo),
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.size(36.dp).clip(CircleShape),
+                modifier = Modifier
+                  .size(36.dp)
+                  .clip(CircleShape),
               )
             } else {
               Icon(
@@ -265,13 +268,12 @@ internal fun EditBirthdayScreen(
 private fun EditBirthdayScreenPreview() {
   AppTheme {
     EditBirthdayScreen(
-      state =
-        EditBirthdayState(
-          name = "Test User",
-          dateText = "25 May, 2000",
-          hasId = true,
-          canDelete = true,
-        ),
+      state = EditBirthdayState(
+        name = "Test User",
+        dateText = "25 May, 2000",
+        hasId = true,
+        canDelete = true,
+      ),
       onBackClick = {},
       onSaveClick = {},
       onDeleteMenuClick = {},

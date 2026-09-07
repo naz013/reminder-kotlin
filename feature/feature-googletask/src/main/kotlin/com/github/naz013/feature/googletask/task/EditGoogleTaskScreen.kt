@@ -22,7 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
@@ -71,7 +71,7 @@ internal fun EditGoogleTaskScreen(
         navigationIcon = {
           MenuIconButton(
             icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_back),
             enabled = !state.isLoading,
             onClick = onBackClick,
           )
@@ -99,18 +99,17 @@ internal fun EditGoogleTaskScreen(
             onClick = onSaveClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
     Column(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .background(MaterialTheme.colorScheme.background)
-          .padding(padding)
-          .verticalScroll(rememberScrollState())
-          .padding(16.dp),
+      modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .padding(padding)
+        .verticalScroll(rememberScrollState())
+        .padding(16.dp),
     ) {
       OutlinedTextField(
         value = state.title,
@@ -121,9 +120,8 @@ internal fun EditGoogleTaskScreen(
           if (state.titleError) Text(stringResource(R.string.must_be_not_empty))
         },
         enabled = !state.isLoading,
-        modifier =
-          Modifier
-            .fillMaxWidth(),
+        modifier = Modifier
+          .fillMaxWidth(),
       )
 
       OutlinedTextField(
@@ -131,9 +129,8 @@ internal fun EditGoogleTaskScreen(
         onValueChange = onNotesChange,
         label = { Text(stringResource(R.string.details)) },
         enabled = !state.isLoading,
-        modifier =
-          Modifier
-            .fillMaxWidth(),
+        modifier = Modifier
+          .fillMaxWidth(),
       )
 
       FieldCard(
@@ -228,18 +225,16 @@ private fun FieldCard(
   modifier: Modifier = Modifier,
 ) {
   Card(
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .padding(top = 16.dp),
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(top = 16.dp),
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
   ) {
     Column(
-      modifier =
-        Modifier
-          .fillMaxWidth()
-          .clickable(enabled = enabled, onClick = onClick)
-          .padding(12.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .clickable(enabled = enabled, onClick = onClick)
+        .padding(12.dp),
     ) {
       Text(text = label, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
       Text(
@@ -265,19 +260,17 @@ private fun TwoOptionDialog(
       Column {
         Text(
           text = firstOptionText,
-          modifier =
-            Modifier
-              .fillMaxWidth()
-              .clickable(onClick = onFirstOptionClick)
-              .padding(vertical = 12.dp),
+          modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onFirstOptionClick)
+            .padding(vertical = 12.dp),
         )
         Text(
           text = secondOptionText,
-          modifier =
-            Modifier
-              .fillMaxWidth()
-              .clickable(onClick = onSecondOptionClick)
-              .padding(vertical = 12.dp),
+          modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onSecondOptionClick)
+            .padding(vertical = 12.dp),
         )
       }
     },
@@ -300,14 +293,14 @@ private fun ListPickerDialog(
           val selected = option.id == dialog.selectedId
           Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier =
-              Modifier
-                .fillMaxWidth()
-                .selectable(
-                  selected = selected,
-                  onClick = { onOptionSelected(option.id) },
-                  role = Role.RadioButton,
-                ).padding(vertical = 8.dp),
+            modifier = Modifier
+              .fillMaxWidth()
+              .selectable(
+                selected = selected,
+                onClick = { onOptionSelected(option.id) },
+                role = Role.RadioButton,
+              )
+              .padding(vertical = 8.dp),
           ) {
             RadioButton(selected = selected, onClick = null)
             Text(text = option.title, modifier = Modifier.padding(start = 8.dp))
@@ -326,18 +319,17 @@ private fun ListPickerDialog(
 private fun EditGoogleTaskScreenPreview() {
   AppTheme {
     EditGoogleTaskScreen(
-      state =
-        EditGoogleTaskState(
-          title = "Buy milk",
-          notes = "2 liters, whole",
-          dateText = "Tomorrow",
-          isDateSelected = true,
-          timeText = "10:00",
-          isTimeSelected = true,
-          listName = "Groceries",
-          canMove = true,
-          canDelete = true,
-        ),
+      state = EditGoogleTaskState(
+        title = "Buy milk",
+        notes = "2 liters, whole",
+        dateText = "Tomorrow",
+        isDateSelected = true,
+        timeText = "10:00",
+        isTimeSelected = true,
+        listName = "Groceries",
+        canMove = true,
+        canDelete = true,
+      ),
       onBackClick = {},
       onSaveClick = {},
       onDeleteMenuClick = {},

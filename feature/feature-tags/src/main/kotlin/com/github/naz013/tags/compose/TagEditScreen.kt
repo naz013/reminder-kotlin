@@ -4,12 +4,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -18,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.tags.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.ColorPickerCard
 
@@ -44,7 +43,11 @@ internal fun TagEditScreen(
         navigationIcon = {
           MenuIconButton(
             icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
-            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
+            contentDescription = if (renderAsDetailPane) {
+              stringResource(com.github.naz013.ui.common.R.string.acc_close)
+            } else {
+              stringResource(com.github.naz013.ui.common.R.string.cd_back)
+            },
             onClick = onBackClick
           )
         },
@@ -58,11 +61,11 @@ internal fun TagEditScreen(
           }
           MenuIconButton(
             icon = AppIcons.Fluent.Checkmark,
-            contentDescription = null,
+            contentDescription = stringResource(com.github.naz013.ui.common.R.string.save),
             onClick = onSaveClick
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+        colors = TopAppbarColor
       )
     }
   ) { padding ->

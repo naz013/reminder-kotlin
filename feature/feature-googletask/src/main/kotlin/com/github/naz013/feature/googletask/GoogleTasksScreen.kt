@@ -20,14 +20,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppPullToRefreshBox
 import com.github.naz013.ui.googletask.GoogleTaskItemState
@@ -72,7 +72,7 @@ internal fun GoogleTasksScreen(
         navigationIcon = {
           MenuIconButton(
             icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_back),
             onClick = onBackClick,
           )
         },
@@ -85,12 +85,12 @@ internal fun GoogleTasksScreen(
             )
           }
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
     floatingActionButton = {
       if (state.isLoggedIn) {
-        ExtendedFloatingActionButton(
+        SmallExtendedFloatingActionButton(
           onClick = onAddTaskClick,
           containerColor = state.fabContainerColor ?: FloatingActionButtonDefaults.containerColor,
           contentColor = state.fabContentColor ?: MaterialTheme.colorScheme.onPrimaryContainer,
@@ -103,10 +103,9 @@ internal fun GoogleTasksScreen(
     if (!state.isLoggedIn) {
       NotLoggedInContent(
         onConnectClick = onConnectClick,
-        modifier =
-          Modifier
-            .fillMaxSize()
-            .padding(padding),
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(padding),
       )
       return@Scaffold
     }
@@ -114,10 +113,9 @@ internal fun GoogleTasksScreen(
     AppPullToRefreshBox(
       isRefreshing = state.isLoading,
       onRefresh = onRefresh,
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(padding),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding),
     ) {
       // A single LazyColumn is used even for the empty state (rather than swapping in a plain
       // Column) so there is always a scrollable descendant to dispatch nested-scroll drag events
@@ -175,11 +173,10 @@ private fun TaskListTile(
 ) {
   val color = Color(entry.color)
   Box(
-    modifier =
-      modifier
-        .background(color = color.copy(alpha = 0.12f), shape = RoundedCornerShape(12.dp))
-        .clickable(onClick = onClick)
-        .padding(horizontal = 16.dp, vertical = 10.dp),
+    modifier = modifier
+      .background(color = color.copy(alpha = 0.12f), shape = RoundedCornerShape(12.dp))
+      .clickable(onClick = onClick)
+      .padding(horizontal = 16.dp, vertical = 10.dp),
   ) {
     Text(
       text = entry.title,
@@ -219,9 +216,8 @@ private fun NotLoggedInContent(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier =
-      modifier
-        .background(MaterialTheme.colorScheme.background),
+    modifier = modifier
+      .background(MaterialTheme.colorScheme.background),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Center,
   ) {
