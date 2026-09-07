@@ -126,9 +126,11 @@ internal fun SubTasksValueEditor(
   var dragOffset by remember { mutableFloatStateOf(0f) }
   val rowHeightPx = with(LocalDensity.current) { ROW_HEIGHT.toPx() }
 
-  LazyColumn(modifier = Modifier
-    .fillMaxWidth()
-    .heightIn(max = LIST_MAX_HEIGHT)) {
+  LazyColumn(
+    modifier = Modifier
+      .fillMaxWidth()
+      .heightIn(max = LIST_MAX_HEIGHT)
+  ) {
     items(grouped.active, key = { it.value.uuId }) { indexed ->
       val itemId = indexed.value.uuId
       // TalkBack has no way to perform the drag handle's gesture, so it needs an equivalent
@@ -267,8 +269,18 @@ private fun ShopItemRow(
           .size(20.dp)
           .semantics {
             customActions = listOfNotNull(
-              onMoveUp?.let { action -> CustomAccessibilityAction(moveUpLabel) { action(); true } },
-              onMoveDown?.let { action -> CustomAccessibilityAction(moveDownLabel) { action(); true } },
+              onMoveUp?.let { action ->
+                CustomAccessibilityAction(moveUpLabel) {
+                  action()
+                  true
+                }
+              },
+              onMoveDown?.let { action ->
+                CustomAccessibilityAction(moveDownLabel) {
+                  action()
+                  true
+                }
+              }
             )
           },
       )
@@ -350,12 +362,11 @@ private fun ShopItemRow(
           },
         textStyle = MaterialTheme.typography.bodyLarge.copy(
           color = if (item.isChecked) MaterialTheme.colorScheme.onSurfaceVariant else LocalContentColor.current,
-          textDecoration =
-            if (item.isChecked) {
-              androidx.compose.ui.text.style.TextDecoration.LineThrough
-            } else {
-              null
-            },
+          textDecoration = if (item.isChecked) {
+            androidx.compose.ui.text.style.TextDecoration.LineThrough
+          } else {
+            null
+          },
         ),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
         singleLine = true,
@@ -395,9 +406,9 @@ private fun CompletedHeaderRow(
   val rotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f, label = "completedChevron")
   Row(
     modifier = modifier
-        .fillMaxWidth()
-        .clickable(onClick = onClick)
-        .padding(vertical = 8.dp),
+      .fillMaxWidth()
+      .clickable(onClick = onClick)
+      .padding(vertical = 8.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     Icon(
@@ -421,10 +432,10 @@ private fun CompletedHeaderRow(
 private fun AllDoneRow(modifier: Modifier = Modifier) {
   Row(
     modifier = modifier
-        .fillMaxWidth()
-        .padding(vertical = 6.dp)
-        .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
-        .padding(horizontal = 12.dp, vertical = 8.dp),
+      .fillMaxWidth()
+      .padding(vertical = 6.dp)
+      .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
+      .padding(horizontal = 12.dp, vertical = 8.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     Icon(
