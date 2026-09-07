@@ -1364,4 +1364,6 @@
     <string name="birthdays_deleted_count">%1$d ulang tahun dihapus</string>
     <string name="reminder_deleted">Pengingat dihapus</string>
     <string name="reminders_deleted_count">%1$d pengingat dihapus</string>
+    <string name="cd_move_item_up">Pindahkan ke atas</string>
+    <string name="cd_move_item_down">Pindahkan ke bawah</string>
 </resources>

@@ -1364,4 +1364,6 @@
     <string name="birthdays_deleted_count">Đã xóa %1$d ngày sinh nhật</string>
     <string name="reminder_deleted">Đã xóa lời nhắc</string>
     <string name="reminders_deleted_count">Đã xóa %1$d lời nhắc</string>
+    <string name="cd_move_item_up">Di chuyển lên</string>
+    <string name="cd_move_item_down">Di chuyển xuống</string>
 </resources>

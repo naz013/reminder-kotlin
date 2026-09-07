@@ -1366,4 +1366,6 @@
     <string name="birthdays_deleted_count">%1$d zile de naștere șterse</string>
     <string name="reminder_deleted">Memento șters</string>
     <string name="reminders_deleted_count">%1$d mementouri șterse</string>
+    <string name="cd_move_item_up">Mută în sus</string>
+    <string name="cd_move_item_down">Mută în jos</string>
 </resources>

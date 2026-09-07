@@ -1364,4 +1364,6 @@
     <string name="birthdays_deleted_count">%1$d verjaardagen verwijderd</string>
     <string name="reminder_deleted">Herinnering verwijderd</string>
     <string name="reminders_deleted_count">%1$d herinneringen verwijderd</string>
+    <string name="cd_move_item_up">Omhoog verplaatsen</string>
+    <string name="cd_move_item_down">Omlaag verplaatsen</string>
 </resources>

@@ -1366,4 +1366,6 @@
     <string name="birthdays_deleted_count">Smazáno narozenin: %1$d</string>
     <string name="reminder_deleted">Připomenutí smazáno</string>
     <string name="reminders_deleted_count">Smazáno připomenutí: %1$d</string>
+    <string name="cd_move_item_up">Přesunout nahoru</string>
+    <string name="cd_move_item_down">Přesunout dolů</string>
 </resources>

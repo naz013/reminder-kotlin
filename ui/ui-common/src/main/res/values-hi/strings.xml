@@ -1368,4 +1368,6 @@
     <string name="birthdays_deleted_count">%1$d जन्मदिन हटाए गए</string>
     <string name="reminder_deleted">रिमाइंडर हटा दिया गया</string>
     <string name="reminders_deleted_count">%1$d रिमाइंडर हटाए गए</string>
+    <string name="cd_move_item_up">ऊपर ले जाएं</string>
+    <string name="cd_move_item_down">नीचे ले जाएं</string>
 </resources>

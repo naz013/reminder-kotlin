@@ -57,7 +57,9 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -124,11 +126,26 @@ internal fun SubTasksValueEditor(
   var dragOffset by remember { mutableFloatStateOf(0f) }
   val rowHeightPx = with(LocalDensity.current) { ROW_HEIGHT.toPx() }
 
-  LazyColumn(modifier = Modifier
-    .fillMaxWidth()
-    .heightIn(max = LIST_MAX_HEIGHT)) {
+  LazyColumn(
+    modifier = Modifier
+      .fillMaxWidth()
+      .heightIn(max = LIST_MAX_HEIGHT)
+  ) {
     items(grouped.active, key = { it.value.uuId }) { indexed ->
       val itemId = indexed.value.uuId
+      // TalkBack has no way to perform the drag handle's gesture, so it needs an equivalent
+      // one-step reorder it can trigger instead - see the handle's `customActions` in [ShopItemRow].
+      val displayIndex = grouped.active.indexOfFirst { it.value.uuId == itemId }
+      val onMoveUp = if (displayIndex > 0) {
+        { viewModel.onReorder(grouped.active[displayIndex].index, grouped.active[displayIndex - 1].index) }
+      } else {
+        null
+      }
+      val onMoveDown = if (displayIndex != -1 && displayIndex < grouped.active.lastIndex) {
+        { viewModel.onReorder(grouped.active[displayIndex].index, grouped.active[displayIndex + 1].index) }
+      } else {
+        null
+      }
       ShopItemRow(
         item = indexed.value,
         hapticFeedbackEnabled = hapticFeedbackEnabled,
@@ -137,6 +154,8 @@ internal fun SubTasksValueEditor(
         onEnterPressed = { viewModel.onEnterPressed(indexed.index) },
         onDeletePressed = { viewModel.onDeletePressed(indexed.index) },
         onRemoveClick = { viewModel.onRemovePressed(indexed.index) },
+        onMoveUp = onMoveUp,
+        onMoveDown = onMoveDown,
         modifier = Modifier
           .animateItem()
           .graphicsLayer { translationY = if (draggedItemId == itemId) dragOffset else 0f },
@@ -220,6 +239,8 @@ private fun ShopItemRow(
   onRemoveClick: () -> Unit,
   modifier: Modifier = Modifier,
   dragHandleModifier: Modifier? = null,
+  onMoveUp: (() -> Unit)? = null,
+  onMoveDown: (() -> Unit)? = null,
 ) {
   var text by remember(item.uuId) { mutableStateOf(item.summary) }
   var isFocused by remember { mutableStateOf(false) }
@@ -236,11 +257,32 @@ private fun ShopItemRow(
 
   Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
     if (dragHandleModifier != null) {
+      val moveUpLabel = stringResource(R.string.cd_move_item_up)
+      val moveDownLabel = stringResource(R.string.cd_move_item_down)
       Icon(
         painter = AppIcons.Fluent.ReOrderDots,
         contentDescription = stringResource(R.string.todo_drag_to_reorder),
         tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = dragHandleModifier.size(20.dp),
+        // The drag gesture itself has no TalkBack-reachable equivalent, so a one-step move is
+        // exposed as a custom action instead - see the callers of [ShopItemRow].
+        modifier = dragHandleModifier
+          .size(20.dp)
+          .semantics {
+            customActions = listOfNotNull(
+              onMoveUp?.let { action ->
+                CustomAccessibilityAction(moveUpLabel) {
+                  action()
+                  true
+                }
+              },
+              onMoveDown?.let { action ->
+                CustomAccessibilityAction(moveDownLabel) {
+                  action()
+                  true
+                }
+              }
+            )
+          },
       )
     } else {
       Box(modifier = Modifier.size(20.dp))
@@ -320,12 +362,11 @@ private fun ShopItemRow(
           },
         textStyle = MaterialTheme.typography.bodyLarge.copy(
           color = if (item.isChecked) MaterialTheme.colorScheme.onSurfaceVariant else LocalContentColor.current,
-          textDecoration =
-            if (item.isChecked) {
-              androidx.compose.ui.text.style.TextDecoration.LineThrough
-            } else {
-              null
-            },
+          textDecoration = if (item.isChecked) {
+            androidx.compose.ui.text.style.TextDecoration.LineThrough
+          } else {
+            null
+          },
         ),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
         singleLine = true,
@@ -365,9 +406,9 @@ private fun CompletedHeaderRow(
   val rotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f, label = "completedChevron")
   Row(
     modifier = modifier
-        .fillMaxWidth()
-        .clickable(onClick = onClick)
-        .padding(vertical = 8.dp),
+      .fillMaxWidth()
+      .clickable(onClick = onClick)
+      .padding(vertical = 8.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     Icon(
@@ -391,10 +432,10 @@ private fun CompletedHeaderRow(
 private fun AllDoneRow(modifier: Modifier = Modifier) {
   Row(
     modifier = modifier
-        .fillMaxWidth()
-        .padding(vertical = 6.dp)
-        .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
-        .padding(horizontal = 12.dp, vertical = 8.dp),
+      .fillMaxWidth()
+      .padding(vertical = 6.dp)
+      .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
+      .padding(horizontal = 12.dp, vertical = 8.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     Icon(

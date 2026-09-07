@@ -1364,4 +1364,6 @@
     <string name="birthdays_deleted_count">%1$d födelsedagar raderade</string>
     <string name="reminder_deleted">Påminnelse raderad</string>
     <string name="reminders_deleted_count">%1$d påminnelser raderade</string>
+    <string name="cd_move_item_up">Flytta upp</string>
+    <string name="cd_move_item_down">Flytta ner</string>
 </resources>

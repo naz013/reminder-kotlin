@@ -27,6 +27,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -78,6 +81,7 @@ fun AgendaListItem(
       modifier
         .fillMaxWidth()
         .clip(AppShapes.card)
+        .semantics(mergeDescendants = true) {}
         .combinedClickable(onClick = onClick, onLongClick = onLongClick),
     colors = CardDefaults.cardColors(containerColor = containerColor),
     border = if (isHighlighted) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
@@ -89,7 +93,17 @@ fun AgendaListItem(
       leading?.let {
         Box(modifier = Modifier.padding(end = 12.dp)) { it() }
       }
-      Column(modifier = Modifier.weight(1f)) {
+      // Automatic descendant-text concatenation doesn't reliably collapse this column's several
+      // Text children into the Card's merged node (verified on-device), so the combined
+      // description is built explicitly instead. "More options"/selection stay outside this
+      // Column, so they remain independently reachable TalkBack stops exactly as before.
+      val accessibleDescription = (statusChips + mainText + listOfNotNull(secondaryText, tertiaryText) + tags)
+        .joinToString(separator = ". ")
+      Column(
+        modifier = Modifier
+          .weight(1f)
+          .clearAndSetSemantics { contentDescription = accessibleDescription },
+      ) {
         if (statusChips.isNotEmpty()) {
           AgendaChipRow(chips = statusChips, modifier = Modifier.padding(bottom = 4.dp))
         }

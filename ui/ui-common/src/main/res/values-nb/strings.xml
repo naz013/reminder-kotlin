@@ -1364,4 +1364,6 @@
     <string name="birthdays_deleted_count">%1$d bursdager slettet</string>
     <string name="reminder_deleted">Påminnelse slettet</string>
     <string name="reminders_deleted_count">%1$d påminnelser slettet</string>
+    <string name="cd_move_item_up">Flytt opp</string>
+    <string name="cd_move_item_down">Flytt ned</string>
 </resources>
