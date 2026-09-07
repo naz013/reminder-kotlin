@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -44,6 +43,7 @@ import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppPullToRefreshBox
+import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.github.naz013.ui.googletask.GoogleTaskRow
 import com.github.naz013.ui.tag.TagFilterRow
@@ -148,7 +148,11 @@ internal fun GoogleTasksScreen(
 
         if (state.tasks.isEmpty()) {
           item {
-            GoogleTasksEmptyState(modifier = Modifier.fillParentMaxSize())
+            EmptyState(
+              modifier = Modifier.fillParentMaxSize(),
+              icon = AppIcons.Fluent.TaskListAdd,
+              message = stringResource(R.string.no_google_tasks),
+            )
           }
         } else {
           items(state.tasks, key = { it.id }) { task ->
@@ -184,28 +188,6 @@ private fun TaskListTile(
       color = color,
       maxLines = 1,
       overflow = TextOverflow.Ellipsis,
-    )
-  }
-}
-
-@Composable
-internal fun GoogleTasksEmptyState(modifier: Modifier = Modifier) {
-  Column(
-    modifier = modifier,
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center,
-  ) {
-    Icon(
-      painter = painterResource(R.drawable.ic_fluent_task_list_add),
-      contentDescription = null,
-      modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-    )
-    Text(
-      text = stringResource(R.string.no_google_tasks),
-      style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-      modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
     )
   }
 }

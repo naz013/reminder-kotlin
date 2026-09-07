@@ -12,10 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.appwidgets.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
@@ -41,7 +41,7 @@ internal fun WidgetConfigScaffold(
         title = { Text(title) },
         navigationIcon = {
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_dismiss),
+            icon = AppIcons.Fluent.Dismiss,
             contentDescription = stringResource(R.string.acc_close),
             onClick = onBackClick,
             modifier = Modifier.padding(4.dp)

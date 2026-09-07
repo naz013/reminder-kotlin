@@ -2,6 +2,7 @@ package com.github.naz013.feature.googletask.task
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,6 +38,7 @@ import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
+import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
 import com.github.naz013.ui.tag.TagChipPicker
 import com.github.naz013.ui.tag.TagChipState
 
@@ -103,70 +105,76 @@ internal fun EditGoogleTaskScreen(
       )
     },
   ) { padding ->
-    Column(
+    Box(
       modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background)
-        .padding(padding)
-        .verticalScroll(rememberScrollState())
-        .padding(16.dp),
+        .padding(padding),
+      contentAlignment = Alignment.TopCenter,
     ) {
-      OutlinedTextField(
-        value = state.title,
-        onValueChange = onTitleChange,
-        label = { Text(stringResource(R.string.task)) },
-        isError = state.titleError,
-        supportingText = {
-          if (state.titleError) Text(stringResource(R.string.must_be_not_empty))
-        },
-        enabled = !state.isLoading,
+      Column(
         modifier = Modifier
-          .fillMaxWidth(),
-      )
-
-      OutlinedTextField(
-        value = state.notes,
-        onValueChange = onNotesChange,
-        label = { Text(stringResource(R.string.details)) },
-        enabled = !state.isLoading,
-        modifier = Modifier
-          .fillMaxWidth(),
-      )
-
-      FieldCard(
-        label = stringResource(R.string.select_date),
-        value = state.dateText ?: stringResource(R.string.no_date),
-        enabled = !state.isLoading,
-        onClick = onDateFieldClick,
-      )
-
-      if (state.isDateSelected) {
-        FieldCard(
-          label = stringResource(R.string.select_time),
-          value = state.timeText ?: stringResource(R.string.no_time),
+          .detailScreenContentWidth()
+          .verticalScroll(rememberScrollState())
+          .padding(16.dp),
+      ) {
+        OutlinedTextField(
+          value = state.title,
+          onValueChange = onTitleChange,
+          label = { Text(stringResource(R.string.task)) },
+          isError = state.titleError,
+          supportingText = {
+            if (state.titleError) Text(stringResource(R.string.must_be_not_empty))
+          },
           enabled = !state.isLoading,
-          onClick = onTimeFieldClick,
+          modifier = Modifier
+            .fillMaxWidth(),
         )
+
+        OutlinedTextField(
+          value = state.notes,
+          onValueChange = onNotesChange,
+          label = { Text(stringResource(R.string.details)) },
+          enabled = !state.isLoading,
+          modifier = Modifier
+            .fillMaxWidth(),
+        )
+
+        FieldCard(
+          label = stringResource(R.string.select_date),
+          value = state.dateText ?: stringResource(R.string.no_date),
+          enabled = !state.isLoading,
+          onClick = onDateFieldClick,
+        )
+
+        if (state.isDateSelected) {
+          FieldCard(
+            label = stringResource(R.string.select_time),
+            value = state.timeText ?: stringResource(R.string.no_time),
+            enabled = !state.isLoading,
+            onClick = onTimeFieldClick,
+          )
+        }
+
+        FieldCard(
+          label = stringResource(R.string.choose_list),
+          value = state.listName,
+          enabled = !state.isLoading,
+          onClick = onListFieldClick,
+        )
+
+        SettingsSectionHeader(stringResource(R.string.tags))
+
+        TagChipPicker(
+          allTags = state.allTags,
+          selectedTagIds = state.selectedTagIds,
+          onToggle = onTagToggle,
+          onManageTagsClick = onManageTagsClick,
+          modifier = Modifier.fillMaxWidth(),
+        )
+
+        adsContent()
       }
-
-      FieldCard(
-        label = stringResource(R.string.choose_list),
-        value = state.listName,
-        enabled = !state.isLoading,
-        onClick = onListFieldClick,
-      )
-
-      SettingsSectionHeader(stringResource(R.string.tags))
-
-      TagChipPicker(
-        allTags = state.allTags,
-        selectedTagIds = state.selectedTagIds,
-        onToggle = onTagToggle,
-        onManageTagsClick = onManageTagsClick,
-        modifier = Modifier.fillMaxWidth(),
-      )
-
-      adsContent()
     }
   }
 

@@ -175,9 +175,11 @@ pointed every `TopAppBar` at the shared `TopAppbarColor` token (including the 2 
 `Color.Transparent` variant, confirmed visually equivalent since neither screen layers its own background
 under the app bar). [§37](m3-expressive-adoption.md#37-timelinepagerkt-off-scale-corner-radius-fix--landed)
 fixed `TimelinePager.kt`'s (the composable behind Calendar Timeline's grid) two off-scale
-`RoundedCornerShape(6.dp)` chip corners, moved onto `MaterialTheme.shapes.extraSmall`. §10's other
-findings — missing `detailScreenContentWidth()` on 3 Google Tasks screens, the ad hoc alpha-blend
-de-emphasis pattern, and the Calendar Month/Timeline breakpoint-adaptation gap — are still open.
+`RoundedCornerShape(6.dp)` chip corners, moved onto `MaterialTheme.shapes.extraSmall`, and
+[§39](m3-expressive-adoption.md#39-calendargoogle-tasks-ad-hoc-alpha-blend-de-emphasis-fixes--landed) fixed
+`CalendarScreen.kt`'s other-month day number, moving its hand-blended `onSurface.copy(alpha = 0.35f)` onto
+`MaterialTheme.colorScheme.outlineVariant`. Only the Calendar Month/Timeline breakpoint-adaptation gap — a
+design-judgment item, not a mechanical fix — remains open from §10 for this group.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
@@ -197,7 +199,16 @@ fixed their back-button bug, and
 pointed all 5 screens' `TopAppBar`s at the shared `TopAppbarColor` token. On top of that,
 [§36](m3-expressive-adoption.md#36-google-tasks-deprecated-baseline-fab-fixes--landed) replaced the
 deprecated baseline `ExtendedFloatingActionButton` on `Google Task Lists`, `Task List`, and `Task Preview`
-with `SmallExtendedFloatingActionButton`.
+with `SmallExtendedFloatingActionButton`, and
+[§38](m3-expressive-adoption.md#38-detailscreencontentwidth-added-to-the-three-under-adapted-google-tasks-screens--landed)
+added `Modifier.detailScreenContentWidth()` to `Task Preview`, `Task Editor`, and `Task List Editor`,
+mirroring `GoogleCalendarEventPreviewScreen.kt`'s existing usage, and
+[§39](m3-expressive-adoption.md#39-calendargoogle-tasks-ad-hoc-alpha-blend-de-emphasis-fixes--landed)
+migrated `Google Task Lists`' (and its sibling `Task List`'s) shared `GoogleTasksEmptyState` onto
+`ui-common`'s `EmptyState`, replacing its hand-blended `onSurface.copy(alpha = ...)` icon/text tint —
+closing every mechanical, no-judgment-required item in §10. Only the two design-judgment items (Calendar
+Month/Timeline breakpoint adaptation, sub-48dp timeline touch targets) remain open from that audit, and
+neither is scoped to Google Tasks.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
@@ -210,28 +221,50 @@ with `SmallExtendedFloatingActionButton`.
 ## Workflow (automation rules)
 
 Audited — see [`m3-expressive-adoption.md` §7](m3-expressive-adoption.md#7-workflow--routines-screens--audit).
+All 4 rows moved to "In progress":
+[§40](m3-expressive-adoption.md#40-workflowroutines-screens-back-button-content-description-fixes--landed)
+fixed the back-button `contentDescription = null` bug §7 found on all 8 of 8 screens in this group (the
+worst hit rate of any group audited so far), and
+[§43](m3-expressive-adoption.md#43-workflowroutines-topappbars-pointed-at-shared-topappbarcolor-token--landed)
+pointed all 4 of these screens' `TopAppBar`s at the shared `TopAppbarColor` token. §7 has no remaining
+findings for this group; what's left (`RoutinePreviewScreen.kt`'s deprecated FAB/sub-48dp touch target,
+`RoutineExecutionScreen.kt`'s `FontWeight`/elevation gaps) is tracked under Routines below.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Workflow Gallery | Compose | `feature/feature-workflow/.../feature/workflow/WorkflowGalleryScreen.kt` | Audited |
-| Workflow Rules for Group | Compose | `feature/feature-workflow/.../feature/workflow/WorkflowRulesForGroupScreen.kt` | Audited |
-| Workflow Rules for Reminder | Compose | `feature/feature-workflow/.../feature/workflow/WorkflowRulesForReminderScreen.kt` | Audited |
-| Workflow Rule Builder | Compose | `feature/feature-workflow/.../feature/workflow/builder/WorkflowRuleBuilderScreen.kt` | Audited |
+| Workflow Gallery | Compose | `feature/feature-workflow/.../feature/workflow/WorkflowGalleryScreen.kt` | In progress |
+| Workflow Rules for Group | Compose | `feature/feature-workflow/.../feature/workflow/WorkflowRulesForGroupScreen.kt` | In progress |
+| Workflow Rules for Reminder | Compose | `feature/feature-workflow/.../feature/workflow/WorkflowRulesForReminderScreen.kt` | In progress |
+| Workflow Rule Builder | Compose | `feature/feature-workflow/.../feature/workflow/builder/WorkflowRuleBuilderScreen.kt` | In progress |
 
 ## Routines
 
 New feature area (module `feature-routine`) added since this doc was first written. Audited — see
 [`m3-expressive-adoption.md` §7](m3-expressive-adoption.md#7-workflow--routines-screens--audit). Routine
-Editor moved to "In progress": its color picker (`RoutineColorPicker` → shared `ColorPickerCard`/
+Editor was already "In progress": its color picker (`RoutineColorPicker` → shared `ColorPickerCard`/
 `ColorSlider`) was fixed for accessibility in
-[§16](m3-expressive-adoption.md#16-colorslider-accessibility-fix--landed).
+[§16](m3-expressive-adoption.md#16-colorslider-accessibility-fix--landed). The other 3 rows join it now:
+[§40](m3-expressive-adoption.md#40-workflowroutines-screens-back-button-content-description-fixes--landed)
+fixed their back-button bug too, and
+[§41](m3-expressive-adoption.md#41-routinepreviewscreenkt-deprecated-baseline-fab-fix--landed) replaced
+`RoutinePreviewScreen.kt`'s deprecated baseline `ExtendedFloatingActionButton` with
+`SmallExtendedFloatingActionButton`, and
+[§42](m3-expressive-adoption.md#42-routineslistscreenkts-routinesemptystate-migrated-onto-shared-emptystatekt--landed)
+migrated `RoutinesListScreen.kt`'s alpha-blended `RoutinesEmptyState` onto `ui-common`'s shared `EmptyState`,
+and
+[§43](m3-expressive-adoption.md#43-workflowroutines-topappbars-pointed-at-shared-topappbarcolor-token--landed)
+pointed `RoutinesListScreen.kt`'s and `RoutinePreviewScreen.kt`'s `TopAppBar`s at the shared `TopAppbarColor`
+token (`RoutineEditScreen.kt`/`RoutineExecutionScreen.kt` already used it correctly). §7 has no remaining
+findings that don't require touching `RoutineExecutionScreen.kt` or `RoutinePreviewScreen.kt` anyway — still
+open: `RoutinePreviewScreen.kt`'s 40dp check-toggle touch target (below the 48dp minimum), and
+`RoutineExecutionScreen.kt`'s `FontWeight.Bold` cluster and off-scale `shadowElevation = 4.dp` bottom bar.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Routines List | Compose | `feature/feature-routine/.../feature/routine/list/RoutinesListScreen.kt` | Audited |
+| Routines List | Compose | `feature/feature-routine/.../feature/routine/list/RoutinesListScreen.kt` | In progress |
 | Routine Editor | Compose | `feature/feature-routine/.../feature/routine/edit/RoutineEditScreen.kt` | In progress |
-| Routine Preview | Compose | `feature/feature-routine/.../feature/routine/preview/RoutinePreviewScreen.kt` | Audited |
-| Routine Execution | Compose | `feature/feature-routine/.../feature/routine/execution/RoutineExecutionScreen.kt` | Audited |
+| Routine Preview | Compose | `feature/feature-routine/.../feature/routine/preview/RoutinePreviewScreen.kt` | In progress |
+| Routine Execution | Compose | `feature/feature-routine/.../feature/routine/execution/RoutineExecutionScreen.kt` | In progress |
 
 ## Settings
 
@@ -289,20 +322,39 @@ progress."
 ## Backup / Insights (PRO)
 
 Audited — see [`m3-expressive-adoption.md` §13](m3-expressive-adoption.md#13-backup--insights--onboarding--widget-configuration-screens--audit).
+Both rows moved to "In progress":
+[§44](m3-expressive-adoption.md#44-localbackupscreenktinsightsscreenkt-back-button-content-description-fixes--landed)
+fixed the back-button `contentDescription = null` bug §13 found on both screens' standalone `Scaffold`s
+(the two `WidgetConfigScaffold.kt`'s own §14 fix didn't reach, since these two don't share that scaffold),
+and
+[§45](m3-expressive-adoption.md#45-localbackupscreenktinsightsscreenkt-topappbars-pointed-at-shared-topappbarcolor-token--landed)
+pointed both screens' `TopAppBar`s at the shared `TopAppbarColor` token, and
+[§46](m3-expressive-adoption.md#46-insightsscreenkt-alpha-blend-fixes--landed) fixed `InsightsScreen.kt`'s 7
+alpha-blended `.copy(alpha = ...)` call sites — 5 via a straight `onSurfaceVariant` role swap, and its
+`InsightsEmptyState` by migrating onto `ui-common`'s shared `EmptyState`. §13 has no remaining mechanical
+findings for either screen; still open (low-urgency, visual-only): both screens' baseline
+`CircularProgressIndicator`.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Local Backup (Export) | Compose | `extensions/localbackup/.../localbackup/compose/LocalBackupScreen.kt` | Audited |
-| Local Backup (Import) | Compose | same file, `LocalBackupNavKey.Import` | Audited |
-| Insights Dashboard | Compose | `feature/feature-insights/.../insights/compose/InsightsScreen.kt` | Audited |
+| Local Backup (Export) | Compose | `extensions/localbackup/.../localbackup/compose/LocalBackupScreen.kt` | In progress |
+| Local Backup (Import) | Compose | same file, `LocalBackupNavKey.Import` | In progress |
+| Insights Dashboard | Compose | `feature/feature-insights/.../insights/compose/InsightsScreen.kt` | In progress |
 
 ## Onboarding / Login
 
 Audited — see [`m3-expressive-adoption.md` §13](m3-expressive-adoption.md#13-backup--insights--onboarding--widget-configuration-screens--audit).
+`PinLoginScreen.kt` was already this audit's positive counter-example — both its close and fingerprint
+buttons already had correct content descriptions, so [§44](m3-expressive-adoption.md#44-localbackupscreenktinsightsscreenkt-back-button-content-description-fixes--landed)
+made no change here. Moved to "In progress":
+[§47](m3-expressive-adoption.md#47-widgetconfigscaffoldktpinloginscreenktpininputkt-drawablecatalog-cleanup--landed)
+routed `PinLoginScreen.kt`'s (fingerprint + close icons) and `PinInput.kt`'s (delete-key + per-digit dot
+icons) raw `painterResource(R.drawable.*)` lookups through the already-cataloged `AppIcons.Fluent.*`. Still
+open: `PinInput.kt`'s off-scale `2.dp` tonal elevation on `PinDigitButton`.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| PIN Login | Compose (Activity-hosted) | `ui/ui-common/.../ui/common/login/PinLoginScreen.kt`, `PinLoginActivity.kt` | Audited |
+| PIN Login | Compose (Activity-hosted) | `ui/ui-common/.../ui/common/login/PinLoginScreen.kt`, `PinLoginActivity.kt` | In progress |
 
 ## Widget Configuration (appwidgets module)
 
@@ -311,7 +363,10 @@ The shared `WidgetConfigScaffold.kt`'s back-button content description and app-b
 been fixed (see [§14](m3-expressive-adoption.md#14-shared-scaffold-fixes--landed)), and the shared
 `ColorSlider` every one of these 7 screens uses for its color pickers has since had its accessibility gap
 fixed too (see [§16](m3-expressive-adoption.md#16-colorslider-accessibility-fix--landed)) — both moving all
-7 screens below to "In progress." Each still has its own remaining open findings from §13 that neither fix
+7 screens below to "In progress." `WidgetConfigScaffold.kt`'s raw `painterResource(R.drawable.ic_fluent_dismiss)`
+was also routed through `AppIcons.Fluent.Dismiss` in
+[§47](m3-expressive-adoption.md#47-widgetconfigscaffoldktpinloginscreenktpininputkt-drawablecatalog-cleanup--landed).
+Each screen still has its own remaining open findings from §13 that none of these shared-component fixes
 touched.
 
 | Screen | Type | File(s) | Status |

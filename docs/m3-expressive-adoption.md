@@ -2538,3 +2538,388 @@ pattern and the two design-judgment items (Calendar breakpoint adaptation, sub-4
 Google Tasks screens, mirroring `GoogleCalendarEventPreviewScreen.kt`'s existing usage; this closes every
 mechanical, no-judgment-required item in §10, leaving only the ad hoc alpha-blend pattern (a one-line swap
 to `onSurfaceVariant` per site, same as every prior group) and the two genuine design-judgment items.
+
+## 38. `detailScreenContentWidth()` added to the three under-adapted Google Tasks screens — landed
+
+Fixes item 5 of §10's suggested fix order — the last mechanical, no-judgment-required item in the whole
+section. `PreviewGoogleTaskScreen.kt`, `EditGoogleTaskScreen.kt`, and `EditGoogleTaskListScreen.kt` each had
+their Scaffold content `Column` filling the full available width unconditionally, unlike
+`GoogleCalendarEventPreviewScreen.kt` — the reference pattern named in §10 — which already caps a
+structurally-identical "preview/edit a single item" screen to a comfortable reading width on tablet/desktop
+via `ui-common`'s `Modifier.detailScreenContentWidth()` (`DetailScreenContentWidth.kt:21-26`).
+
+Applied the identical shape used by the reference screen in all three files: the Scaffold's content lambda
+now wraps the existing scrolling `Column` in a `Box(modifier = Modifier.fillMaxSize()...padding(padding),
+contentAlignment = Alignment.TopCenter)`, and the inner `Column`'s own `.fillMaxSize()` (or, for
+`PreviewGoogleTaskScreen.kt`, its implicit full width) is replaced with `.detailScreenContentWidth()` —
+which itself already includes the `fillMaxWidth()`/`widthIn(max = 640.dp).fillMaxWidth()` the removed
+modifier used to provide, so no width capability is lost on Compact. `Box`/`Alignment` were already imported
+in `PreviewGoogleTaskScreen.kt`; added to the other two, alongside the new
+`com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth` import in all three
+files. Content inside each `Column` was re-indented by two spaces to nest correctly under the new `Box`; no
+logic or content changed.
+
+Verified via `./gradlew :feature:feature-googletask:compileDebugKotlin :app:compileProDebugKotlin` (clean)
+and `:feature:feature-googletask:detekt`. The 6 reported findings (5 unused-import findings in
+`GoogleTasksScreen.kt`, 1 top-level-constant-naming finding in `GoogleTasksNavGraph.kt`) are both in files
+this fix never touched — confirmed via `git status`/`git show HEAD` that neither file has any changes in
+this session — so all are pre-existing debt, unrelated to this fix.
+
+**Not fixed**: the ad hoc `.copy(alpha = ...)` de-emphasis pattern (cross-cutting #4) and the two
+design-judgment items §10 itself flagged as needing product input rather than a mechanical fix (Calendar
+Month/Timeline breakpoint adaptation, sub-48dp timeline touch targets). These are the only §10 findings left
+open.
+
+**Suggested next step**: §10's mechanical items are now fully closed. What remains needs either a product
+decision (the two design-judgment items) or is a cross-cutting pattern better tackled as its own pass across
+every screen that uses it rather than scoped to Calendar/Google Tasks alone (the alpha-blend de-emphasis
+pattern) — a good candidate would be starting that cross-cutting alpha-blend pass, or moving on to auditing
+the next unaudited screen group in `docs/m3-expressive-screen-inventory.md`.
+
+## 39. Calendar/Google Tasks ad hoc alpha-blend de-emphasis fixes — landed
+
+Fixes §10's cross-cutting #4, the last item in the section (both design-judgment items excepted) — three
+sites hand-blending `onSurface` down to a lower-emphasis tone instead of using the role token that already
+exists for it (guidelines §2.2/§2.4).
+
+- **`CalendarScreen.kt:247`** (`MonthDayCell`, other-month day number) —
+  `MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f)` → `MaterialTheme.colorScheme.outlineVariant`.
+  Went with `outlineVariant` rather than the `onSurfaceVariant` used everywhere else in this cleanup: §10's
+  own audit text called for "`outline`/`outlineVariant` for a very muted 'not this month' number" — this
+  number is a step more de-emphasized than ordinary secondary/caption text (which does use
+  `onSurfaceVariant`), and per guidelines' role table `outline` is for meaningful boundaries while `outline
+  variant` is the decorative, lower-contrast sibling — the better match for a muted, non-interactive glyph
+  that's deliberately supposed to recede.
+- **`GoogleTasksScreen.kt`'s `GoogleTasksEmptyState`** (empty-state icon and text, `onSurface.copy(alpha =
+  0.3f)` / `0.5f`) — rather than a bare role swap, migrated the whole composable onto `ui-common`'s shared
+  `EmptyState` (`EmptyState.kt:17-40`, already `onSurfaceVariant`-correct since §30's fix), matching the
+  precedent set for Groups/Tags/Places' four empty states in §30. `GoogleTasksEmptyState` was used from two
+  call sites — `GoogleTasksScreen.kt:151` and the sibling `TaskListScreen.kt:140` (same module, `internal`
+  visibility) — both now call `EmptyState(icon = AppIcons.Fluent.TaskListAdd, message =
+  stringResource(R.string.no_google_tasks))` directly, and the private composable was deleted outright. This
+  also incidentally fixes a `DrawableCatalog` convention violation the alpha-blend audit hadn't flagged: the
+  deleted composable referenced `painterResource(R.drawable.ic_fluent_task_list_add)` bare, whereas
+  `AppIcons.Fluent.TaskListAdd` (already cataloged) is the only sanctioned way to obtain that painter outside
+  `DrawableCatalog`/`AppIcons` themselves.
+
+Removing `GoogleTasksEmptyState` made `androidx.compose.foundation.layout.size` (only used for that
+composable's `Modifier.size(64.dp)`) genuinely unused in `GoogleTasksScreen.kt`; removed it. `EmptyState`
+imported newly in both `GoogleTasksScreen.kt` and `TaskListScreen.kt`.
+
+Verified via `./gradlew :feature:feature-googletask:compileDebugKotlin :feature:feature-calendar:compileDebugKotlin :app:compileProDebugKotlin`
+(clean) and detekt on both modules. `feature-googletask`'s findings, after removing the newly-unused `size`
+import, are identical (module-relative line numbers aside) to the pre-existing baseline confirmed earlier in
+§38 — 5 unused imports in `GoogleTasksScreen.kt` and 1 naming finding in `GoogleTasksNavGraph.kt`, neither
+file's *other* content touched by this fix. `feature-calendar`'s detekt run surfaces substantial pre-existing
+debt across many files unrelated to this change (`TimelinePager.kt`, `KoinModule.kt`, test files, etc.); the
+single line this fix touched (`CalendarScreen.kt:247`) is a like-for-like one-line swap with zero net
+line-count change, and every detekt finding actually located in `CalendarScreen.kt` (lines 3/194/196/288/294)
+was confirmed identical against `git show HEAD` at those same line numbers — none of them is the line this
+fix changed, and none is new.
+
+**Not fixed**: the two items §10 itself flagged as needing product/design input rather than a mechanical fix
+— the Calendar Month/Timeline breakpoint-adaptation gap, and sub-48dp timeline touch targets. With this,
+§10 (Calendar & Google Tasks) has no remaining mechanical findings; only those two design-judgment items are
+open.
+
+**Suggested next step**: §10 is now fully closed except for the two design-judgment items, which need
+product input rather than more audit-and-fix passes. A good next step is moving on to the next unaudited
+screen group in `docs/m3-expressive-screen-inventory.md`, or tackling the alpha-blend de-emphasis pattern
+as a cross-cutting pass over the screen groups already audited but not yet fixed for it (per the "Not fixed"
+notes accumulated across §16-§27's audits).
+
+## 40. Workflow/Routines screens — back-button content-description fixes — landed
+
+Every group in `docs/m3-expressive-screen-inventory.md` already has at least one landed "Audited" pass (this
+was checked directly against the file rather than assumed), so there is no literal "unaudited screen group"
+left. Workflow/Routines (§7) is the closest match to that intent: an audit exists but, unlike every other
+group, zero fixes had landed against it yet. Picked up its own suggested fix order's item 1 — the same
+cheapest-and-highest-value mechanical fix every other screen group started with.
+
+Fixes §7's cross-cutting #1: all 8 of 8 screens in this group passed `contentDescription = null` for their
+back arrow (§7's audit found this was total — 0 of 8 screens got it right, worse than the 4-of-10 and 4-of-9
+partial hit rates found in Reminders/Notes-Birthdays). `cd_back` already exists as a string resource, so
+this is the same one-line-per-file swap already applied to every other screen group:
+
+- **`WorkflowGalleryScreen.kt:50`** and **`RoutinesListScreen.kt:61`** / **`RoutineExecutionScreen.kt:62`**
+  (no `renderAsDetailPane` branch) — bare `contentDescription = null` → `stringResource(R.string.cd_back)`.
+- **`WorkflowRulesForGroupScreen.kt`**, **`WorkflowRulesForReminderScreen.kt`**,
+  **`builder/WorkflowRuleBuilderScreen.kt`**, **`RoutineEditScreen.kt`**, and
+  **`preview/RoutinePreviewScreen.kt`** (the `renderAsDetailPane`-aware screens) — the `null` branch of the
+  existing close/back ternary → `stringResource(R.string.cd_back)`, leaving the already-correct
+  `acc_close` branch untouched.
+
+`builder/WorkflowRuleBuilderScreen.kt` lives in the `feature.workflow.builder` sub-package and already
+imports `com.github.naz013.feature.workflow.R` explicitly for its own module's strings, so — matching that
+file's own existing style for the sibling `acc_close` reference two lines above — its fix uses the
+fully-qualified `com.github.naz013.ui.common.R.string.cd_back` rather than a second, colliding bare `R`
+import. Every other file lives in its module's root package (or already imports `com.github.naz013.ui.common.R`,
+for the two `feature-routine` files in sub-packages), so bare `R.string.cd_back` resolves there directly, the
+same as it has for every prior group's back-button fix this session.
+
+Verified via `./gradlew :feature:feature-workflow:compileDebugKotlin :feature:feature-routine:compileDebugKotlin :app:compileProDebugKotlin`
+(clean) and detekt on both modules. `feature-routine` surfaced 1 pre-existing finding
+(`RoutineNavGraph.kt` naming) and `feature-workflow` surfaced 5 (3 `ImportOrdering`, 1 naming, 1
+`MaxLineLength` in `WorkflowRuleBuilderScreen.kt:159`) — none in a file/line this fix touched except that
+last one, which sits 80 lines below the edited block; confirmed identical against `git show HEAD` at the
+same line number (this fix's edit was a like-for-like one-line content swap inside an existing multi-line
+`if`/`else`, zero net line-count change, so no line-shift accounting was needed).
+
+**Not fixed**: §7's remaining cross-cutting findings — the `TopAppBar` color-token inconsistency (6 of 8
+screens use a raw `TopAppBarDefaults.topAppBarColors(...)` instead of the shared `TopAppbarColor` token),
+the `FontWeight.Bold` cluster and off-scale `shadowElevation = 4.dp` bottom bar concentrated in
+`RoutineExecutionScreen.kt`, and `RoutinesListScreen.kt`'s alpha-blended `RoutinesEmptyState`. Also open:
+`RoutinePreviewScreen.kt`'s deprecated baseline `ExtendedFloatingActionButton` and its 40dp check-toggle
+touch target (below the 48dp minimum).
+
+**Suggested next step**: item 2 of §7's fix order — `RoutinePreviewScreen.kt`'s deprecated baseline
+`ExtendedFloatingActionButton` → `SmallExtendedFloatingActionButton`, the same mechanical swap already
+applied to three Google Tasks screens in §36. Alternatively, item 3 — `RoutinesListScreen.kt`'s
+`RoutinesEmptyState` migrated onto the shared `EmptyState.kt`, matching the precedent from §30/§39.
+
+## 41. `RoutinePreviewScreen.kt` deprecated baseline FAB fix — landed
+
+Fixes item 2 of §7's suggested fix order: `RoutinePreviewScreen.kt:77`'s baseline `ExtendedFloatingActionButton`
+(no color override, so the deprecated 56dp pill-shaped default guidelines §9.1 flags as no longer
+recommended) → `SmallExtendedFloatingActionButton`, the identical mechanical swap already applied to three
+Google Tasks screens in §36 — same import 1-for-1, same call-site rename, no other changes (the `icon`/
+`text`/`onClick` lambda arguments are unchanged, since both composables share that overload's signature).
+Import placed alphabetically between `Scaffold` and `Text`, matching §36's convention.
+
+Verified via `./gradlew :feature:feature-routine:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-routine:detekt` — the only finding is the same pre-existing `RoutineNavGraph.kt` naming
+issue already confirmed pre-existing in §40; nothing in `RoutinePreviewScreen.kt` itself was flagged.
+
+**Not fixed**: §7's remaining findings — the `TopAppBar` color-token inconsistency spanning both Workflow and
+Routines, `RoutineExecutionScreen.kt`'s `FontWeight.Bold` cluster and off-scale bottom-bar
+`shadowElevation`, `RoutinesListScreen.kt`'s alpha-blended `RoutinesEmptyState`, and
+`RoutinePreviewScreen.kt`'s own remaining gap — its 40dp check-toggle touch target, below the 48dp minimum
+(the same compact-checklist-row trade-off already flagged for `SubTasksValueEditor.kt` in the Reminders
+audit, §20).
+
+**Suggested next step**: item 3 of §7's fix order — `RoutinesListScreen.kt`'s hand-blended
+`RoutinesEmptyState` migrated onto the shared `EmptyState.kt`, matching the precedent from §30/§39.
+Alternatively, fold the `TopAppBar` color-token fix across both Workflow and Routines into one pass, the
+same shape as §35's Calendar/Google Tasks fix.
+
+## 42. `RoutinesListScreen.kt`'s `RoutinesEmptyState` migrated onto shared `EmptyState.kt` — landed
+
+Fixes item 3 of §7's suggested fix order: `RoutinesEmptyState`'s hand-blended `onSurface.copy(alpha = 0.3f)`
+(icon) / `0.5f` (text) → `ui-common`'s shared `EmptyState` (`EmptyState.kt:17-40`, `onSurfaceVariant`-correct
+since §30), the same migration pattern applied to Groups/Tags/Places' four empty states in §30 and Google
+Tasks' in §39. `RoutinesEmptyState` had exactly one call site (`RoutinesListScreen.kt:99`, the
+`RoutinesListDisplayState.Empty` branch) and was private to this file, so the fix is a direct call-site swap
+— `EmptyState(icon = AppIcons.Builder.Timer, message = stringResource(R.string.no_routines))` — followed by
+deleting the private composable outright. Unlike the Google Tasks case in §39, this screen already sourced
+its icon through `AppIcons.Builder.Timer` rather than a bare `painterResource(R.drawable.*)`, so there was no
+incidental `DrawableCatalog` convention fix riding along this time.
+
+Removing the composable made both `androidx.compose.material3.Icon` and `androidx.compose.foundation.layout.size`
+(each used only inside the deleted function — `size` for its `Modifier.size(64.dp)`) genuinely unused;
+removed both. `EmptyState` imported newly, placed alphabetically between the existing `AppDropdownMenu` and
+`PopupMenuItem` imports.
+
+Verified via `./gradlew :feature:feature-routine:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-routine:detekt` — the only finding is the same pre-existing `RoutineNavGraph.kt` naming
+issue already confirmed pre-existing in §40/§41; nothing in `RoutinesListScreen.kt` itself was flagged.
+
+**Not fixed**: §7's remaining findings — the `TopAppBar` color-token inconsistency spanning both Workflow and
+Routines, `RoutineExecutionScreen.kt`'s `FontWeight.Bold` cluster and off-scale bottom-bar
+`shadowElevation`, and `RoutinePreviewScreen.kt`'s 40dp check-toggle touch target (below the 48dp minimum).
+With this, every item in §7's suggested fix order through item 3 has landed; only items 4-5 remain, both
+explicitly deferred by §7's own audit text to "whichever future PR next touches this screen" rather than a
+dedicated sweep.
+
+**Suggested next step**: fold the `TopAppBar` color-token fix (cross-cutting #2) across both Workflow and
+Routines into one pass, the same shape as §35's Calendar/Google Tasks fix — it's the one remaining §7 finding
+that's still mechanical (no design judgment) and cross-cuts both feature modules. The `FontWeight`/elevation/
+touch-target items are lower priority per §7's own guidance to fold them into a future PR that touches those
+screens anyway, rather than a dedicated sweep.
+
+## 43. Workflow/Routines `TopAppBar`s pointed at shared `TopAppbarColor` token — landed
+
+Fixes §7's cross-cutting #2, the last mechanical (no-design-judgment) finding left in the section: 6 of the
+group's 8 screens hand-rolled `TopAppBarDefaults.topAppBarColors(containerColor =
+MaterialTheme.colorScheme.background)` instead of the shared `TopAppbarColor` token
+(`ui-common/compose/ComponentColors.kt:28-33`), which also pairs `titleContentColor =
+MaterialTheme.colorScheme.onBackground` — a value the 6 raw call sites silently fell back to
+`TopAppBarDefaults`'s own default (`onSurface`) for instead, same finding shape as every prior
+`TopAppbarColor` fix this session (§31, §35). `RoutineEditScreen.kt` and `RoutineExecutionScreen.kt` already
+used the token correctly and needed no change.
+
+Fixed: `WorkflowGalleryScreen.kt`, `WorkflowRulesForGroupScreen.kt`, `WorkflowRulesForReminderScreen.kt`,
+`builder/WorkflowRuleBuilderScreen.kt`, `RoutinesListScreen.kt`, and `preview/RoutinePreviewScreen.kt` — same
+mechanical swap in all six: `colors = TopAppBarDefaults.topAppBarColors(...)` → `colors = TopAppbarColor`,
+`TopAppBarDefaults` import removed, `TopAppbarColor` imported in its place (alphabetically between
+`AppTheme`/`AppIcons` and `foundation.MenuIconButton` in each file, matching this session's established
+placement convention). `builder/WorkflowRuleBuilderScreen.kt`'s `colors = ...` line was `MaterialTheme`'s
+*only* remaining use in that file — removing it made the `MaterialTheme` import itself genuinely unused,
+so it was removed too (the other five files all still use `MaterialTheme` elsewhere — `colorScheme.primary`,
+`typography.*`, etc. — and kept their import).
+
+Verified via `./gradlew :feature:feature-workflow:compileDebugKotlin :feature:feature-routine:compileDebugKotlin :app:compileProDebugKotlin`
+(clean) and detekt on both modules. All reported findings are in files/lines this fix didn't change:
+`WorkflowGalleryViewModel.kt`, `WorkflowRulesForGroupViewModel.kt`, `WorkflowRulesForReminderViewModel.kt`,
+`WorkflowNavGraph.kt`, and `RoutineNavGraph.kt` are untouched this session (confirmed via `git status`);
+`builder/WorkflowRuleBuilderScreen.kt`'s `MaxLineLength` finding sits at the same content, shifted by this
+edit's net -1 line delta, confirmed identical via `git show HEAD`. One additional finding surfaced —
+`RoutinePreviewScreen.kt`'s `androidx.compose.foundation.background` import flagged as unused — but `git show
+HEAD` confirms that import was *already* dead at `HEAD` (the file only ever referenced `.background` as part
+of unrelated property names, `MaterialTheme.colorScheme.background`/`state.backgroundColor`, never the
+`Modifier.background()` function itself); detekt simply didn't happen to surface it in this file's prior
+runs this session. Left it as pre-existing, unrelated debt rather than folding an incidental cleanup into
+this fix's diff.
+
+**Not fixed**: §7's two remaining findings, both explicitly deferred by §7's own audit text to "whichever
+future PR next touches this screen" rather than a dedicated sweep — `RoutineExecutionScreen.kt`'s
+`FontWeight.Bold` cluster and off-scale `shadowElevation = 4.dp` bottom bar, and
+`RoutinePreviewScreen.kt`'s 40dp check-toggle touch target (below the 48dp minimum). With this, §7 has no
+remaining findings that don't require touching one of those two screens anyway.
+
+**Suggested next step**: §7 is now fully closed except for the two screen-specific items §7 itself deferred
+to a future touch of `RoutineExecutionScreen.kt`/`RoutinePreviewScreen.kt`. A good next step is auditing the
+next screen group not yet covered in depth, or continuing the alpha-blend cross-cutting pass over groups
+already audited but not yet fixed for it (per the accumulated "Not fixed" notes across §16-§27).
+
+## 44. `LocalBackupScreen.kt`/`InsightsScreen.kt` back-button content-description fixes — landed
+
+Every group in `docs/m3-expressive-screen-inventory.md` already has at least one landed audit (checked
+directly, same as before picking Workflow/Routines for §40), so there's still no literal "unaudited" group.
+The closest match this time: Backup/Insights and Onboarding/Login, part of §13's combined audit alongside
+Widget Configuration — the latter already got two rounds of fixes (§14's shared-scaffold pass, §16's
+`ColorSlider` accessibility pass), but `LocalBackupScreen.kt` and `InsightsScreen.kt` (and `PinLoginScreen.kt`,
+though it has no bug here — see below) never had a dedicated fix land. Picked up §13's own suggested fix
+order's item 1, the same cheapest-and-highest-value mechanical fix every other group started with.
+
+Fixes §13's cross-cutting #1 for the two screens `WidgetConfigScaffold.kt`'s §14 fix didn't reach (it
+resolved 7 of the 9 affected screens sharing that one scaffold; these two are the remaining 2, each with
+its own standalone `Scaffold`): `LocalBackupScreen.kt:45` and `InsightsScreen.kt:59` both passed
+`contentDescription = null` for their back arrow — same one-line-per-file swap to `stringResource(R.string.cd_back)`
+applied to every prior group. `PinLoginScreen.kt`, this same audit's positive counter-example, already had
+correct content descriptions on both its close and fingerprint buttons and needed no change.
+
+Verified via `./gradlew :extensions:localbackup:compileDebugKotlin :feature:feature-insights:compileDebugKotlin :app:compileProDebugKotlin`
+(clean) and detekt on both modules. `feature-insights` detekt reports zero findings (confirmed via a forced
+`--rerun`, since the first pass showed `UP-TO-DATE` and skipped re-analysis). `extensions:localbackup`
+surfaced 2 findings in `LocalBackupScreen.kt` (unused `Icons`/`ArrowBack` imports) plus a batch of
+`ArgumentListWrapping`/`MaxLineLength` findings in two untouched test files — all confirmed pre-existing via
+`git show HEAD` (the two unused-import lines are byte-identical to HEAD; the test files were never touched
+this session).
+
+**Not fixed**: §13's remaining items — item 2 (`WidgetConfigScaffold.kt:45`, `PinLoginScreen.kt:65,88`, and
+`PinInput.kt:99,117`'s raw `painterResource(R.drawable.*)` instead of the already-cataloged `AppIcons.Fluent.*`),
+item 3 (`LocalBackupScreen.kt:47`/`InsightsScreen.kt:63`'s remaining `TopAppBarDefaults.topAppBarColors(...)`
+→ `TopAppbarColor`), item 4 (`InsightsScreen.kt`'s 7 `.copy(alpha = ...)` call sites → `onSurfaceVariant`),
+and item 6 (baseline `CircularProgressIndicator` → the newer Loading indicator, noted as low-urgency).
+`ColorSlider`'s accessibility gap (item 5) was already fixed in §16.
+
+**Suggested next step**: item 3 — the two remaining `TopAppBar` color-token bypasses in `LocalBackupScreen.kt`/
+`InsightsScreen.kt`, the same mechanical swap as §35/§43. Alternatively, item 2's `DrawableCatalog` cleanup
+across `WidgetConfigScaffold.kt`/`PinLoginScreen.kt`/`PinInput.kt`, matching §33's precedent.
+
+## 45. `LocalBackupScreen.kt`/`InsightsScreen.kt` `TopAppBar`s pointed at shared `TopAppbarColor` token — landed
+
+Fixes item 3 of §13's suggested fix order (cross-cutting #2): both screens' standalone `TopAppBar`s called
+`TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)` directly instead
+of the shared `TopAppbarColor` token — the same finding shape fixed for their `WidgetConfigScaffold.kt`
+sibling back in §14, and the same mechanical swap already applied repeatedly this session (§31, §35, §43).
+`colors = TopAppBarDefaults.topAppBarColors(...)` → `colors = TopAppbarColor` in both files;
+`TopAppBarDefaults` import removed, `TopAppbarColor` imported in its place (alphabetically after `AppTheme`,
+before `foundation.MenuIconButton`, matching this session's established placement). `MaterialTheme` stayed
+imported in both files — each still uses it elsewhere (`LocalBackupScreen.kt`'s `typography.bodyMedium`/
+`colorScheme.error`; `InsightsScreen.kt`'s `typography.titleMedium`/`colorScheme.surfaceContainer`/the
+alpha-blended `.copy()` calls that are item 4's still-open finding).
+
+Verified via `./gradlew :extensions:localbackup:compileDebugKotlin :feature:feature-insights:compileDebugKotlin :app:compileProDebugKotlin`
+(clean) and detekt on both modules (`--rerun` on `feature-insights`, matching §44's finding that this task
+can report a stale `UP-TO-DATE` and skip re-analysis otherwise). Findings are byte-identical to §44's
+confirmed-pre-existing baseline — the 2 unused imports in `LocalBackupScreen.kt` plus the
+`ArgumentListWrapping`/`MaxLineLength` findings in two untouched test files; `feature-insights` remains
+fully clean.
+
+**Not fixed**: §13's remaining items — item 2 (`WidgetConfigScaffold.kt`/`PinLoginScreen.kt`/`PinInput.kt`'s
+raw `painterResource(R.drawable.*)` lookups), item 4 (`InsightsScreen.kt`'s 7 `.copy(alpha = ...)` call
+sites), and item 6 (baseline `CircularProgressIndicator`, noted as low-urgency). `ColorSlider`'s
+accessibility gap (item 5) was already fixed in §16.
+
+**Suggested next step**: item 4 — `InsightsScreen.kt`'s 7 hand-blended `onSurface.copy(alpha =
+0.7f/0.5f/0.3f)` call sites (`StreakCard`, `RoutineInsightCard`, `InsightsEmptyState`) → `onSurfaceVariant`,
+the same role-swap already applied everywhere else this pattern has come up. Alternatively, item 2's
+`DrawableCatalog` cleanup across the three remaining files, matching §33's precedent.
+
+## 46. `InsightsScreen.kt` alpha-blend fixes — landed
+
+Fixes item 4 of §13's suggested fix order, its 7 hand-blended `onSurface.copy(alpha = ...)` call sites:
+
+- **`StreakCard`/`RoutineInsightCard`** (5 sites: streak-longest and fired-count/focus-time captions,
+  `onSurface.copy(alpha = 0.7f)`) — straight role swap to `MaterialTheme.colorScheme.onSurfaceVariant`, no
+  component change, matching every prior secondary-text alpha-blend fix this session.
+- **`InsightsEmptyState`** (2 sites: icon `onSurface.copy(alpha = 0.3f)`, message `onSurface.copy(alpha =
+  0.5f)`) — rather than a bare role swap, migrated the whole composable onto `ui-common`'s shared
+  `EmptyState` (`EmptyState.kt:17-40`, already `onSurfaceVariant`-correct since §30), the same precedent
+  applied to Google Tasks' (§39) and Routines' (§42) matching empty states — `InsightsEmptyState`'s shape
+  (64dp icon, `bodyLarge` message, identical padding) is byte-for-byte the same as the shared component. Its
+  one call site now reads `EmptyState(icon = AppIcons.Fluent.DataPie, message =
+  stringResource(R.string.no_insights_yet))`, and the private composable was deleted.
+
+Removing `InsightsEmptyState` made `androidx.compose.material3.Icon` and
+`androidx.compose.foundation.layout.size` (each used only inside the deleted function) genuinely unused;
+removed both. `EmptyState` imported newly, placed alphabetically after `foundation.MenuIconButton` (per this
+session's established `foundation.MenuIconButton` < `foundation.component.*` ordering — uppercase `M` sorts
+before lowercase `c`).
+
+Verified via `./gradlew :feature:feature-insights:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-insights:detekt --rerun` — fully clean, zero findings, same as §44/§45.
+
+**Not fixed**: §13's remaining items — item 2 (`WidgetConfigScaffold.kt`/`PinLoginScreen.kt`/`PinInput.kt`'s
+raw `painterResource(R.drawable.*)` lookups) and item 6 (baseline `CircularProgressIndicator` on
+`LocalBackupScreen.kt`/`InsightsScreen.kt`, noted as low-urgency). With this, every remaining mechanical item
+in §13 is item 2 alone — item 6 was explicitly flagged low-urgency/visual-only in the original audit.
+
+**Suggested next step**: item 2 — route `WidgetConfigScaffold.kt:45`, `PinLoginScreen.kt:65,88`, and
+`PinInput.kt:99,117` through the already-cataloged `AppIcons.Fluent.Dismiss`/`.Fingerprint`/`.TextAsterisk`
+instead of raw `painterResource(R.drawable.*)`, matching §33's `DrawableCatalog` cleanup precedent. This
+closes every mechanical item §13 flagged, leaving only the low-urgency `CircularProgressIndicator` swap.
+
+## 47. `WidgetConfigScaffold.kt`/`PinLoginScreen.kt`/`PinInput.kt` `DrawableCatalog` cleanup — landed
+
+Fixes item 2 of §13's suggested fix order, closing every mechanical item the section flagged (item 6, the
+baseline `CircularProgressIndicator` swap, was always noted as low-urgency/visual-only). All four call sites
+looked up an already-cataloged drawable directly instead of through `AppIcons`/`DrawableCatalog`, the same
+CLAUDE.md convention violation fixed for Groups/Tags/Places in §33:
+
+- **`WidgetConfigScaffold.kt:44`** — `painterResource(R.drawable.ic_fluent_dismiss)` → `AppIcons.Fluent.Dismiss`.
+- **`PinLoginScreen.kt:65`** (fingerprint icon) — `painterResource(R.drawable.ic_fluent_fingerprint)` →
+  `AppIcons.Fluent.Fingerprint`; **`PinLoginScreen.kt:88`** (close icon) —
+  `painterResource(R.drawable.ic_fluent_dismiss)` → `AppIcons.Fluent.Dismiss`.
+- **`PinInput.kt:99`** (delete-key icon) — `painterResource(R.drawable.ic_fluent_dismiss)` →
+  `AppIcons.Fluent.Dismiss`; **`PinInput.kt:117`** (`PinDots`' per-digit indicator) —
+  `painterResource(R.drawable.ic_fluent_text_asterisk)` → `AppIcons.Fluent.TextAsterisk`.
+
+`painterResource` became unused in all three files (each had it only at the sites just fixed) and was
+removed from their imports; `AppIcons` newly imported in all three, placed alphabetically (after
+`com.github.naz013.appwidgets.R` in `WidgetConfigScaffold.kt`; before `AppTheme` in the two `ui-common`
+files).
+
+Verified via `./gradlew :extensions:appwidgets:compileDebugKotlin :ui:ui-common:compileDebugKotlin
+:app:compileProDebugKotlin` (clean) and detekt on both modules. `extensions:appwidgets` detekt reports 4
+pre-existing findings, all in files this fix never touched (`ComposeResourceProvider.kt`,
+`AppWidgetPreviewUpdaterImpl.kt`, `SingleNoteWidgetConfigScreen.kt`,
+`SingleNoteWidgetConfigViewModel.kt`) — `WidgetConfigScaffold.kt` itself is clean.
+`ui:ui-common:detekt` crashes outright (`IllegalStateException` analyzing `PermissionRequester.kt`, a file
+this fix never touched) before it can report any findings at all — confirmed this crash is **pre-existing**
+and unrelated to this fix by stashing the two `PinLoginScreen.kt`/`PinInput.kt` edits, re-running detekt
+against the unmodified `HEAD` versions of those files, and reproducing the identical crash; popped the stash
+to restore the fix afterward. Since the module-wide crash makes a lint pass over the two touched files
+impossible right now, correctness here rests on the compile-clean result and manual review rather than a
+detekt confirmation — worth flagging as a separate, pre-existing tooling gap if `ui-common` needs detekt
+coverage restored.
+
+**Not fixed**: item 6 of §13 — baseline `CircularProgressIndicator` on `LocalBackupScreen.kt`/
+`InsightsScreen.kt`, explicitly noted as low-urgency (visual-only, no behavior change) since the original
+audit. With this, §13 has no remaining mechanical findings.
+
+**Suggested next step**: §13 is now fully closed except for the low-urgency `CircularProgressIndicator` swap.
+A good next step is auditing the next screen group not yet covered in depth, or continuing the alpha-blend
+cross-cutting pass over groups already audited but not yet fixed for it (per the accumulated "Not fixed"
+notes across §16-§27).

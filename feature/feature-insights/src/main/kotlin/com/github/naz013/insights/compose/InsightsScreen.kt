@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,12 +18,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +32,9 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.insights.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 
@@ -56,11 +55,11 @@ internal fun InsightsScreen(
         navigationIcon = {
           MenuIconButton(
             icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_back),
             onClick = onBackClick
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+        colors = TopAppbarColor
       )
     }
   ) { padding ->
@@ -72,7 +71,11 @@ internal fun InsightsScreen(
       }
 
       is InsightsListState.Empty -> {
-        InsightsEmptyState(modifier = Modifier.fillMaxSize().padding(padding))
+        EmptyState(
+          modifier = Modifier.fillMaxSize().padding(padding),
+          icon = AppIcons.Fluent.DataPie,
+          message = stringResource(R.string.no_insights_yet),
+        )
       }
 
       is InsightsListState.Ready -> {
@@ -173,12 +176,12 @@ private fun StreakCard(
       Text(
         text = stringResource(R.string.streak_longest, streak.longestStreakDays),
         style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        color = MaterialTheme.colorScheme.onSurfaceVariant
       )
       Text(
         text = stringResource(R.string.streak_fired_count, streak.firedCount),
         style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        color = MaterialTheme.colorScheme.onSurfaceVariant
       )
     }
   }
@@ -203,12 +206,12 @@ private fun RoutineInsightCard(
       Text(
         text = stringResource(R.string.streak_longest, insight.longestStreakDays),
         style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        color = MaterialTheme.colorScheme.onSurfaceVariant
       )
       Text(
         text = stringResource(R.string.routine_focus_time_total, insight.totalFocusTimeLabel),
         style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        color = MaterialTheme.colorScheme.onSurfaceVariant
       )
       if (insight.mostSkippedStepTitle != null && insight.mostSkippedCompletionPercent != null) {
         Text(
@@ -218,32 +221,10 @@ private fun RoutineInsightCard(
             insight.mostSkippedCompletionPercent
           ),
           style = MaterialTheme.typography.bodySmall,
-          color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+          color = MaterialTheme.colorScheme.onSurfaceVariant
         )
       }
     }
-  }
-}
-
-@Composable
-private fun InsightsEmptyState(modifier: Modifier = Modifier) {
-  Column(
-    modifier = modifier,
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center
-  ) {
-    Icon(
-      painter = AppIcons.Fluent.DataPie,
-      contentDescription = null,
-      modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-    )
-    Text(
-      text = stringResource(R.string.no_insights_yet),
-      style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-      modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp)
-    )
   }
 }
 

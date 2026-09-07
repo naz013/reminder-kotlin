@@ -35,6 +35,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
 import com.github.naz013.ui.tag.TagChipRow
 import com.github.naz013.ui.tag.TagChipState
 
@@ -102,47 +103,53 @@ internal fun PreviewGoogleTaskScreen(
       return@Scaffold
     }
 
-    Column(
+    Box(
       modifier = Modifier
         .fillMaxSize()
-        .padding(padding)
-        .verticalScroll(rememberScrollState()),
+        .padding(padding),
+      contentAlignment = Alignment.TopCenter,
     ) {
-      DetailRow(
-        icon = R.drawable.ic_fluent_text,
-        text = task.text,
-        iconTint = MaterialTheme.colorScheme.primary,
-        textStyle = MaterialTheme.typography.titleLarge,
-        textColor = MaterialTheme.colorScheme.primary,
-        topPadding = 24.dp,
-      )
-      task.notes?.let {
-        DetailRow(icon = R.drawable.ic_fluent_note, text = it)
-      }
-      DetailRow(
-        icon = R.drawable.ic_fluent_list,
-        text = task.taskListName,
-        iconTint = Color(task.taskListColor),
-        textColor = Color(task.taskListColor),
-      )
-      task.dueDate?.let {
-        DetailRow(icon = R.drawable.ic_builder_by_monthday, text = it)
-      }
-      task.createdDate?.let {
-        DetailRow(icon = R.drawable.ic_builder_google_calendar_add, text = it)
-      }
-      task.completedDate?.let {
-        DetailRow(icon = R.drawable.ic_fluent_calendar_checkmark, text = it)
-      }
-      DetailRow(
-        icon = R.drawable.ic_fluent_flag,
-        text = stringResource(if (task.isCompleted) R.string.completed else R.string.not_completed),
-      )
-      if (state.tags.isNotEmpty()) {
-        TagsRow(tags = state.tags)
-      }
+      Column(
+        modifier = Modifier
+          .detailScreenContentWidth()
+          .verticalScroll(rememberScrollState()),
+      ) {
+        DetailRow(
+          icon = R.drawable.ic_fluent_text,
+          text = task.text,
+          iconTint = MaterialTheme.colorScheme.primary,
+          textStyle = MaterialTheme.typography.titleLarge,
+          textColor = MaterialTheme.colorScheme.primary,
+          topPadding = 24.dp,
+        )
+        task.notes?.let {
+          DetailRow(icon = R.drawable.ic_fluent_note, text = it)
+        }
+        DetailRow(
+          icon = R.drawable.ic_fluent_list,
+          text = task.taskListName,
+          iconTint = Color(task.taskListColor),
+          textColor = Color(task.taskListColor),
+        )
+        task.dueDate?.let {
+          DetailRow(icon = R.drawable.ic_builder_by_monthday, text = it)
+        }
+        task.createdDate?.let {
+          DetailRow(icon = R.drawable.ic_builder_google_calendar_add, text = it)
+        }
+        task.completedDate?.let {
+          DetailRow(icon = R.drawable.ic_fluent_calendar_checkmark, text = it)
+        }
+        DetailRow(
+          icon = R.drawable.ic_fluent_flag,
+          text = stringResource(if (task.isCompleted) R.string.completed else R.string.not_completed),
+        )
+        if (state.tags.isNotEmpty()) {
+          TagsRow(tags = state.tags)
+        }
 
-      adsContent()
+        adsContent()
+      }
     }
   }
 

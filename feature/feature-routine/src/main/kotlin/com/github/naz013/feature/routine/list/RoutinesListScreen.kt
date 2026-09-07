@@ -6,17 +6,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,8 +25,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
+import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 import com.github.naz013.ui.common.icon.DrawableCatalog
@@ -58,7 +57,7 @@ internal fun RoutinesListScreen(
         navigationIcon = {
           MenuIconButton(
             icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_back),
             onClick = onBackClick,
           )
         },
@@ -71,7 +70,7 @@ internal fun RoutinesListScreen(
           )
           SortMenu(sortOrder = state.sortOrder, onSortOrderSelected = onSortOrderSelected)
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
@@ -96,7 +95,11 @@ internal fun RoutinesListScreen(
         }
 
         is RoutinesListDisplayState.Empty -> {
-          RoutinesEmptyState(modifier = Modifier.fillMaxSize())
+          EmptyState(
+            modifier = Modifier.fillMaxSize(),
+            icon = AppIcons.Builder.Timer,
+            message = stringResource(R.string.no_routines),
+          )
         }
 
         is RoutinesListDisplayState.Ready -> {
@@ -150,28 +153,6 @@ private fun SortMenu(
         ),
       ),
       onItemClick = { id -> onSortOrderSelected(RoutineSortOrder.entries[id]) },
-    )
-  }
-}
-
-@Composable
-private fun RoutinesEmptyState(modifier: Modifier = Modifier) {
-  Column(
-    modifier = modifier,
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
-  ) {
-    Icon(
-      painter = AppIcons.Builder.Timer,
-      contentDescription = null,
-      modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-    )
-    Text(
-      text = stringResource(R.string.no_routines),
-      style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-      modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
     )
   }
 }

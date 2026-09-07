@@ -1,6 +1,7 @@
 package com.github.naz013.feature.googletask.tasklist
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,7 @@ import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.component.ColorPickerCard
+import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,54 +82,60 @@ internal fun EditGoogleTaskListScreen(
       )
     },
   ) { padding ->
-    Column(
+    Box(
       modifier = Modifier
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.background)
-        .padding(padding)
-        .verticalScroll(rememberScrollState())
-        .padding(16.dp),
+        .padding(padding),
+      contentAlignment = Alignment.TopCenter,
     ) {
-      OutlinedTextField(
-        value = state.name,
-        onValueChange = onNameChange,
-        label = { Text(stringResource(R.string.name)) },
-        isError = state.nameError,
-        supportingText = {
-          if (state.nameError) Text(stringResource(R.string.must_be_not_empty))
-        },
-        enabled = !state.isLoading,
+      Column(
         modifier = Modifier
-          .fillMaxWidth(),
-      )
-
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-          .fillMaxWidth(),
+          .detailScreenContentWidth()
+          .verticalScroll(rememberScrollState())
+          .padding(16.dp),
       ) {
-        Text(
-          text = stringResource(R.string.make_default),
-          style = MaterialTheme.typography.bodyLarge,
-          modifier = Modifier.weight(1f),
+        OutlinedTextField(
+          value = state.name,
+          onValueChange = onNameChange,
+          label = { Text(stringResource(R.string.name)) },
+          isError = state.nameError,
+          supportingText = {
+            if (state.nameError) Text(stringResource(R.string.must_be_not_empty))
+          },
+          enabled = !state.isLoading,
+          modifier = Modifier
+            .fillMaxWidth(),
         )
-        Switch(
-          checked = state.isDefault,
-          onCheckedChange = { onDefaultToggle() },
-          enabled = !state.isLoading && !state.isDefaultLocked,
+
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          modifier = Modifier
+            .fillMaxWidth(),
+        ) {
+          Text(
+            text = stringResource(R.string.make_default),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f),
+          )
+          Switch(
+            checked = state.isDefault,
+            onCheckedChange = { onDefaultToggle() },
+            enabled = !state.isLoading && !state.isDefaultLocked,
+          )
+        }
+
+        ColorPickerCard(
+          colors = state.sliderColors,
+          selectedIndex = state.colorIndex,
+          onColorSelected = onColorSelected,
+          enabled = !state.isLoading,
+          hapticFeedbackEnabled = state.hapticFeedbackEnabled,
+          modifier = Modifier.padding(top = 16.dp),
         )
+
+        adsContent()
       }
-
-      ColorPickerCard(
-        colors = state.sliderColors,
-        selectedIndex = state.colorIndex,
-        onColorSelected = onColorSelected,
-        enabled = !state.isLoading,
-        hapticFeedbackEnabled = state.hapticFeedbackEnabled,
-        modifier = Modifier.padding(top = 16.dp),
-      )
-
-      adsContent()
     }
   }
 

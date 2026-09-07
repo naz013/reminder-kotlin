@@ -34,6 +34,7 @@ import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.AppPullToRefreshBox
+import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.github.naz013.ui.googletask.GoogleTaskRow
@@ -137,7 +138,11 @@ internal fun TaskListScreen(
         }
         if (state.tasks.isEmpty()) {
           item {
-            GoogleTasksEmptyState(modifier = Modifier.fillParentMaxSize())
+            EmptyState(
+              modifier = Modifier.fillParentMaxSize(),
+              icon = AppIcons.Fluent.TaskListAdd,
+              message = stringResource(R.string.no_google_tasks),
+            )
           }
         } else {
           items(state.tasks, key = { it.id }) { task ->

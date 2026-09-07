@@ -244,7 +244,7 @@ private fun MonthDayCell(
           color = when {
             cell.isToday -> MaterialTheme.colorScheme.onPrimary
             cell.isCurrentMonth -> MaterialTheme.colorScheme.onSurface
-            else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f)
+            else -> MaterialTheme.colorScheme.outlineVariant
           },
         )
       }
