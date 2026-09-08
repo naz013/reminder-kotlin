@@ -49,6 +49,7 @@ import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.common.Permissions
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppShapes
 import com.github.naz013.ui.common.compose.foundation.DeviceScreenConfiguration
 import com.github.naz013.ui.common.compose.foundation.SplitButton
@@ -56,6 +57,7 @@ import com.github.naz013.ui.common.compose.foundation.component.PopupMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.deviceScreenConfiguration
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -242,7 +244,7 @@ private fun BirthdayHeader(header: BirthdayActionScreenHeader) {
         contactPhoto = header.contactPhoto,
         birthdayDate = header.birthdayDate,
         age = header.age,
-        icon = R.drawable.ic_fluent_phone,
+        icon = DrawableCatalog.Fluent.Phone,
       )
     }
   }
@@ -407,7 +409,7 @@ private fun ActionsSection(
         rightContent = {
           Box {
             Icon(
-              painter = painterResource(id = R.drawable.ic_fluent_more_hor),
+              painter = AppIcons.Fluent.MoreHor,
               contentDescription = stringResource(R.string.more_options),
             )
             PopupMenu(

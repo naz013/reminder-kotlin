@@ -4962,3 +4962,426 @@ rather than a clean pass (Notes/Birthdays, Home/Events already-Done-via-§70/§7
 Calendar/Google Tasks, Backup/Insights/Onboarding/Widget Config) — each is a candidate for this same
 adoption-pass treatment if the user wants to continue promoting groups to "Done," or a different request
 entirely.
+
+## 82. Backup/Insights/Onboarding/Widget Configuration — full adoption pass, promoted to "Done"
+
+Per the user's explicit request to continue the "promote to Done" arc onto a group that had real gaps
+corrected during re-verification (§78) rather than a fully clean pass — unlike Groups/Tags/Places, Workflow/
+Routines, and Settings (§79-§81), this is the first "Done" promotion in the arc where the starting point
+wasn't already zero-defect. Covers all 13 rows across the doc's four sub-sections: Backup/Insights (PRO)
+(Local Backup Export/Import, Insights Dashboard), App Shell/Splash (Bottom Nav Splash), Onboarding/Login (PIN
+Login, Onboarding), and Widget Configuration (7 screens).
+
+Re-read every file fresh against the guidelines' §10 checklist, including several this group's five prior
+audit sections (§13, §14, §16, §44-§47, §55-§57, §65, §78) had never examined directly: `PinLoginActivity.kt`
+(Activity glue — no theming decisions, clean), `AnimatedGradientBackground.kt` (the shared gradient backdrop
+behind both Onboarding and the Splash screen), `AppLauncherIcon.kt`, and full-checklist reads of all 7 widget-
+config screens' bodies (prior passes only checked these for `modifier`-order and the specific findings §13/
+§65 named, not the guidelines' full per-screen rubric).
+
+**Fixed — off-scale elevation, flagged by both §11 and §13 but never landed**: `PinInput.kt`'s
+`PinDigitButton` used `tonalElevation = 2.dp`, which sits on neither of the two adjacent real elevation-scale
+steps (1dp "elevated button/card," 3dp "scrolled app bar") per guidelines §5. Changed to `1.dp` — the
+correct resting level for a hand-rolled elevated-button-shaped `Surface` like this one — leaving
+`shadowElevation = 1.dp` untouched since it was already on-scale. The button's raw-`Surface`-instead-of-real-
+`IconButton` component choice §13 also named is a separate, larger question not addressed here (see "left
+open" below).
+
+**Fixed — dead import, a leftover from the `AppIcons`/`MenuIconButton` migration**: `LocalBackupScreen.kt`
+still imported `androidx.compose.material.icons.Icons` and
+`androidx.compose.material.icons.automirrored.filled.ArrowBack`, unused ever since its back button was
+switched onto `AppIcons.Builder.ArrowLeft`/`MenuIconButton` (predates this doc's tracking). Confirmed via
+detekt (`NoUnusedImports`, a real pre-existing finding at line 7) before removing — a pure cleanup, zero
+behavior change.
+
+**Investigated, not fixed — `InsightsScreen.kt`'s `WeeklyTrendCard` bar-chart corners**: its
+`RoundedCornerShape(topStart = 4.dp, topEnd = 4.dp)` lands exactly on the "extra small" shape-scale step,
+which §13's original audit called out as a *positive* example, but guidelines §4.1 is explicit that a
+literal `RoundedCornerShape(Ndp)` is "a token-hygiene gap, even if the rendered radius happens to match the
+scale" — a real inconsistency between this doc's own historical judgment and its own stated rule, worth
+reconciling rather than ignoring. Attempted the equivalent fix to §79's `GroupListItem.kt` shape swap:
+`RoundedCornerShape(topStart = MaterialTheme.shapes.extraSmall.topStart, topEnd = ...topEnd)`. This does not
+compile — confirmed via `:feature:feature-insights:compileDebugKotlin` — because `RoundedCornerShape` only
+exposes public constructor overloads taking `Dp` or `Float` per corner, not `CornerSize` (which is what
+`CornerBasedShape.topStart`/`.topEnd` return); the `CornerBasedShape.top()` helper that derives a top-only
+variant from a full shape is `internal` to the M3 library, confirmed via the real
+`material3-android-1.5.0-alpha27-sources.jar`. Deriving a `Dp` from a `CornerSize` at this call site would
+require resolving it through `LocalDensity.current` against an assumed `Size` — real complexity for a value
+that's already hand-verified to be exactly correct. Reverted to the original literal; this stays a
+deliberate exception (matching §13's original judgment, now with the API constraint documented) rather than
+a re-opened gap.
+
+**Reviewed, confirmed as legitimate exceptions — no change**:
+- `AnimatedGradientBackground.kt`'s infinite gradient-drift animation uses a literal
+  `tween(durationMillis = durationMillis, easing = LinearEasing)` inside `infiniteRepeatable`/
+  `RepeatMode.Reverse` — guidelines §6's `motionScheme` spring specs are for discrete, bounded state
+  transitions (a value moving from A to B in response to interaction or content change), not an unbounded,
+  continuously-reversing ambient loop like this one; a spring doesn't have a natural "reverse forever"
+  shape. Not a motion-scheme gap.
+- `AppLauncherIcon.kt`'s hardcoded 8-stop hex gradient (`LAUNCHER_GRADIENT_COLORS`) has to pixel-match the
+  app's actual OS-level adaptive launcher icon asset (`ic_launcher_background`/`ic_launcher_foreground`),
+  the same already-documented, justified reason `painterResource(R.drawable.ic_launcher_foreground)` here is
+  exempt from `DrawableCatalog` — an external-asset constraint, not a themable color decision.
+- All 7 widget-config screens' `*WidgetMockPreview` composables (decorative "what this will look like on
+  your home screen" simulations) keep their raw `painterResource`/`dimensionResource` calls — the
+  already-established mock-preview exception from §65, re-confirmed on a fresh full read of every one of the
+  7 files rather than assumed still true.
+- No manual `FontWeight` override exists anywhere in this group's 13 screens to trigger an `*Emphasized`
+  typography-token swap (§3.1's "weight" trigger), and no prior audit named any of these screens as a
+  designated hero-moment candidate (the "audit named it directly" exception) — `PinLoginScreen.kt`'s
+  uppercased `headlineMedium` "ENTER PIN" and Onboarding's three page titles are the closest candidates by
+  visual prominence, but forcing emphasis in without an existing trigger would be introducing new visual
+  behavior, the same restraint applied in §79/§80.
+- None of the 13 screens add `detailScreenContentWidth()`-style breakpoint/max-width logic — all are
+  single-purpose forms, a pager, a splash, or a PIN pad, the class of screen guidelines §1.1 itself permits
+  skipping breakpoint logic for.
+- Every interactive control across the group (`Button`/`TextButton`/`RadioButton`/`Slider`/`IconButton`/
+  selectable `Row`) is a real M3 component with its own built-in state-layer/ripple handling — no ad hoc
+  highlight color anywhere.
+
+**Left open, not required for "Done," unchanged from prior audits**: `LocalBackupScreen.kt`/
+`InsightsScreen.kt`'s baseline `CircularProgressIndicator` — guidelines §9.3 recommends the newer
+`LoadingIndicator` for indeterminate <5s waits like these, but `LoadingIndicator`/`ContainedLoadingIndicator`
+are gated behind `@ExperimentalMaterial3ExpressiveApi` in the real M3 sources, and a repo-wide grep confirmed
+*nothing* in this codebase opts into that annotation yet — swapping it in here would make these two small
+screens the first place in the whole app to adopt a genuinely experimental M3 API, a materially bigger
+decision than a token/value fix and not this pass's call to make unilaterally. `PinDigitButton`'s raw
+`Surface` instead of a real M3 `IconButton`/`FilledIconButton` (component-choice, only its elevation *value*
+was in scope here). `EventsWidgetConfigScreen.kt` vs. `SingleNoteWidgetConfigScreen.kt`'s text-size dialog-
+vs-inline-slider inconsistency (already documented, a product call).
+
+Verified via `./gradlew :feature:feature-insights:compileDebugKotlin :ui:ui-common:compileDebugKotlin
+:extensions:localbackup:compileDebugKotlin :app:compileProDebugKotlin` (all clean) and
+`:feature:feature-insights:testDebugUnitTest :extensions:localbackup:testDebugUnitTest` (passing;
+`ui-common` and `extensions:appwidgets` have no changed test-relevant code this pass). Detekt via
+stash-and-rerun on `extensions:localbackup`: 17→15 weighted issues, exactly the one `NoUnusedImports` finding
+removed, zero new findings (the remaining 15, all pre-existing `ArgumentListWrapping`/`MaxLineLength` in test
+files, identical before and after). `:ui:ui-common:detekt` reproduces the same pre-existing
+`PermissionRequester.kt` crash already documented in §47/§78/§80/§81 (confirmed unrelated — this pass's only
+`ui-common` edit is `PinInput.kt`'s one-line elevation-value change); correctness there rests on the
+compile-clean result plus manual review, the same established limitation.
+
+**Promoted all 13 rows** from "In progress" to "Done" in `docs/m3-expressive-screen-inventory.md`: Local
+Backup (Export), Local Backup (Import), Insights Dashboard, Bottom Nav Splash, PIN Login, Onboarding, and all
+7 Widget Configuration screens (Single Note, Notes, Calendar, Events, Birthdays, Combined Buttons, Google
+Tasks).
+
+**Suggested next step**: three groups remain from the re-verification series that haven't had this "full
+adoption pass" treatment — Notes/Birthdays, Reminders, and Calendar/Google Tasks (Home/Events already
+reached "Done" via §70/§71). Any of the three is a candidate if the user wants to keep extending this arc,
+or a different request entirely.
+
+## 83. Reminders — full adoption pass, promoted to "Done"
+
+Per the user's request to continue with Reminders next. The largest and most structurally complex group in
+this arc by far: 10 screen-inventory rows (8 "In progress," Reminder Help/Recurrence Help already "Done" via
+§48), backed not just by the 10 files §72's re-verification already covered but by the ~20-file
+`build/valuedialog/editor/` package — the individual value-editor composables `BuildReminderScreen.kt`
+renders inside `ValueEditorSheet.kt` for every field type (text, date/time, duration, ICal params, LED
+color, vibration pattern, etc.). No prior audit of this group had ever read that package as a whole; §6's
+own file list explicitly named only `SubTasksValueEditor.kt` and `MapEditorScreen.kt` from it. Read every
+file in the package, plus `OfflineOnlyRow.kt` and `ReminderActionActivity.kt` (pure Activity glue, no
+theming decisions, clean).
+
+**§6's two oldest never-landed findings, finally fixed** — both traced back to the *original* audit and
+survived every subsequent fix section untouched:
+
+- **Off-scale `RoundedCornerShape(24.dp)`** (§6 cross-cutting finding #2, suggested fix "`AppShapes.pill`
+  would fix both call sites with one shared token") — `BuildReminderScreen.kt`'s `QuickStartButton` and
+  `TodoEditScreen.kt`'s "more options" `FilledTonalButton` both still had it, unchanged since §6 first found
+  it 70-odd sections ago. Fixed both to `AppShapes.pill` (28dp, the nearest real scale step) exactly as
+  originally suggested.
+- **`TopAppBar` `containerColor` sourced inconsistently** (§6 cross-cutting finding #5) — `SelectApplicationScreen.kt`
+  and `PreviewReminderScreen.kt` still called `TopAppBarDefaults.topAppBarColors(containerColor =
+  MaterialTheme.colorScheme.background)` directly instead of the shared `TopAppbarColor` token, unfixed
+  since §6. Both now use `TopAppbarColor`. The finding's third named file, `RemindersArchiveScreen.kt`'s
+  `Color.Transparent`, turned out to be a **false positive on re-inspection**: §64/§72 already migrated this
+  screen's header onto an animated `Surface(color = headerContainerColor)` wrapper (the scroll-driven
+  color-fill pattern), and the inner `TopAppBar`'s `Color.Transparent` is the deliberate, required companion
+  to that wrapper — painting the `TopAppBar` opaque would fight the `Surface`'s own animated color. §6's
+  finding predates that later fix and is now stale for this file; left untouched, correctly.
+
+**`modifier`-parameter-order — 9 fixes across shared/dispatcher files never swept before**: `BuildReminderScreen.kt`'s
+`QuickStartButton`, `TodoEditScreen.kt`, `SelectApplicationScreen.kt`, `RemindersArchiveScreen.kt`,
+`ReminderFullscreenMapScreen.kt`, `PreviewReminderScreen.kt`'s private `DetailRow`, and — the first time this
+sweep reached the value-editor package — `MapValueEditor.kt`, `ValueEditorSheet.kt` (the sheet host shared
+by every field-type editor), `OfflineOnlyRow.kt`, and `CountdownExclusionValueEditor.kt`/`CountdownTimeValueEditor.kt`'s
+private `ModeRow`/`KeypadKey`. Confirmed every call site uses named arguments before reordering (`ValueEditorSheet.kt`'s
+own 1 call site in `BuildReminderNavGraph.kt` passes all 14 arguments by name). Most of the ~20-file
+value-editor package already had `modifier` correctly first or no `modifier` parameter at all (an
+established, acceptable pattern for these sheet-embedded editors, which never need external repositioning)
+— only the handful above had the gap.
+
+**`DrawableCatalog`/`AppIcons` — ~20 call sites across 10 files**, the largest icon cleanup since Settings
+(§81): `ActionValueEditors.kt`, `MapEditorScreen.kt`, `NoteValueEditor.kt` (2 icons), `TextInputValueEditor.kt`
+(2 icons), `SubTasksValueEditor.kt` (2 icons — the fix was routing to `AppIcons.Fluent.CheckboxChecked`/
+`.CheckboxUnchecked`, already correctly imported and used one function below in the same file, making the
+raw-`painterResource` instances 20 lines above look like an oversight rather than an unaudited gap),
+`RemindersArchiveScreen.kt`, `TodoEditScreen.kt`, `PreviewReminderScreen.kt` (4 icons, including a
+3-line conditional `painterResource(if (...) R.drawable.a else R.drawable.b)` collapsed to a single-line `if`
+expression over two `AppIcons.*` values), `ReminderFullscreenMapScreen.kt`, and `ReminderActionScreen.kt` (6
+icons — the group's single biggest concentration, spread across its 4 header-content variants). One new
+catalog entry needed, unlike every prior icon sweep this arc: `SelectApplicationScreen.kt`'s empty-state
+illustration (`ic_human_resources`) was already in `DrawableCatalog` but had no `AppIcons` `Painter` wrapper
+— added `AppIcons.HumanResources` alongside the pre-existing top-level `RocketWhatsNew`/`Moon` entries
+(`DrawableCatalog`'s own top-level, ungrouped bucket already held it), then pointed the call site at it.
+
+**Shape — 6 literal-`RoundedCornerShape` token-hygiene fixes, all full-symmetric and safe**: `AttachmentsValueEditor.kt`
+(2× 8dp), `NoteValueEditor.kt` (8dp + 4dp), `TextInputValueEditor.kt` (4dp, on a `.border()`), `SubTasksValueEditor.kt`
+(8dp, `AllDoneRow`), and `ReminderActionScreen.kt` (3× 12dp — its header `Card`, the app-icon box, and the
+todo-list `Card`) — all swapped to `MaterialTheme.shapes.{extraSmall,small,medium}` per the exact-match scale
+step, zero visual change. **Investigated but not fixed, unlike those**: `MapEditorScreen.kt`'s asymmetric
+`RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)` bottom-sheet corner — hit the identical
+`CornerSize`-has-no-public-`Dp`-per-corner-constructor wall §82 already documented for `InsightsScreen.kt`'s
+bar chart. Left as the literal it already was; guidelines §9.5 independently specs bottom sheets at exactly
+28dp, so the value itself is correct, only its token-sourcing isn't, and there's no clean public API to fix
+that here either. `SplitButton`'s `cornerRadius = 28.dp` argument in `ReminderActionScreen.kt` is a different
+case, not touched: it's the component's own first-class `Dp`-typed customization parameter (default 16dp,
+`SplitButton.kt`'s own previews pass 28dp the same way), not a bare shape literal standing in for a token —
+matches the scale anyway.
+
+**Accessibility — one touch-target fix**: `TextInputValueEditor.kt`'s `MIC_BUTTON_SIZE` was `40.dp`, sized
+onto both the mic `IconButton`'s clickable bounds and its Lottie waveform animation — a standalone control
+next to a text field, not a dense grid, so bumped to `48.dp` the same way §20 already fixed this exact
+value/shape of gap on this same file's sibling editors' check/remove buttons.
+
+**Investigated, not fixed, matches the group's already-documented open items**: `LocalBackupScreen.kt`/
+`InsightsScreen.kt`'s `CircularProgressIndicator` finding (§82) recurs here on `ReminderFullscreenMapScreen.kt`'s
+loading state — same `@ExperimentalMaterial3ExpressiveApi` gate, same reasoning, left open. `PinDigitButton`-style
+component-choice questions don't apply to this group. `EditGroupScreen.kt`-style hand-rolled dialogs don't
+recur here either — `CountdownExclusionValueEditor.kt`'s `TimePickerDialog` is a real `AlertDialog` wrapping
+a real `TimePicker`, not a `SeekValueDialog` candidate.
+
+Verified via `./gradlew :feature:feature-reminder:compileDebugKotlin :app:compileProDebugKotlin` (all clean
+— confirms the two shared-file modifier reorders, `ValueEditorSheet.kt` and `MapValueEditor.kt`, didn't break
+either of their call sites) and `:feature:feature-reminder:testDebugUnitTest` (passing). Detekt via
+stash-and-rerun on all 18 touched `feature-reminder` files simultaneously: identical weighted-issue count
+before and after (931/931) — zero new findings from the entire batch. `:ui:ui-common:detekt` (touched:
+`AppIcons.kt`'s new `HumanResources` entry) reproduces the same pre-existing `PermissionRequester.kt` crash
+already documented in §47/§78/§80/§81/§82 (confirmed unrelated); correctness there rests on the compile-clean
+result plus manual review, the same established limitation.
+
+**Promoted all 8 remaining "In progress" rows** to "Done" in `docs/m3-expressive-screen-inventory.md`:
+Reminder Editor (Build Reminder), Select Application, Map Value Editor, Reminder Preview, Reminder
+Fullscreen Map, Reminders Archive, Reminder Action, Todo Editor. Reminder Help/Recurrence Help were already
+"Done" via §48.
+
+**Suggested next step**: two groups remain from the re-verification series without this treatment —
+Notes/Birthdays and Calendar/Google Tasks. Either is a candidate to continue this arc, or a different
+request entirely.
+
+## 84. Calendar/Google Tasks — full adoption pass, promoted to "Done"
+
+Per the user's request. Unlike Reminders (§83), this group arrived already extensively vetted — the
+original audit (§10), six landed fix sections (§34-§39), a fresh full re-audit with its own `modifier`-order
+and `FontWeight`/`Emphasized` fixes (§67), a `DrawableCatalog`/`AppIcons` cleanup (§68), and a re-verification
+pass (§75) that had already re-read all 10 backing files fresh and found only 3 missed `modifier`-order gaps
+in private helpers. So this pass's job was almost entirely the genuinely non-mechanical checklist items
+those passes weren't scoped to check, plus finding what those 10 files' own dependency graph still hadn't
+surfaced: shared components used by this group but never named in any of its audits.
+
+**New shared-component surface found**: grepping for every composable this group's files call out to (not
+just the files themselves) turned up two `ui-common` components no prior Calendar/Google Tasks section had
+ever read — `CloudBubble.kt` (the speech-bubble popup behind `CalendarModeToggleButton`'s view switcher,
+`CalendarScreen.kt`'s add-event bubble, and both of `TimelinePager.kt`'s tap-to-expand event/holiday
+bubbles) and `GoogleCalendarEventDeleteDialog.kt` (a plain, already-correct `AlertDialog` — read, no
+findings). `CloudBubble.kt` had two real gaps:
+
+- **`modifier`-parameter-order** — 4th param, after `onDismissRequest`/`containerColor`/`contentColor`.
+  This component is also used by 3 files in `feature-note` (`NoteEditFloatingBar.kt`, `NoteEditPanels.kt`,
+  `NotesScreen.kt` — the Notes group, not yet promoted), so the fix ripples there too. Confirmed all 7 call
+  sites across both modules use named arguments before reordering.
+- **Off-scale `tonalElevation`** — `6.dp` `shadowElevation` paired with `4.dp` `tonalElevation`, an
+  internally-inconsistent pairing (4dp isn't one of the 6 defined elevation levels at all, guidelines §5).
+  Bumped `tonalElevation` to `6.dp` to match the already-correct `shadowElevation`, rather than guess at
+  which named example component (the guidelines table's own examples don't include anything shaped quite
+  like a speech-bubble popup) this custom component should be re-leveled to match instead.
+
+**Shape — one more literal `RoundedCornerShape` found and fixed**: `GoogleTasksScreen.kt`'s `TaskListTile`
+had `RoundedCornerShape(12.dp)` (lands on "medium") on its tinted tile background — swapped to
+`MaterialTheme.shapes.medium`. The tile's `color.copy(alpha = 0.12f)` background itself was reviewed and
+left alone: `color` is the task list's own user-chosen accent color (`Color(entry.color)`), so this is the
+same "translucent fill derived from a brand/accent color" pattern already judged legitimate for
+`RoutineCard`'s badge tint in §80, not the de-emphasis anti-pattern guidelines §2.2 targets (which is about
+diluting a *theme* role like `onSurface`, not tinting a container with its own subject's color).
+
+**Accessibility — one more sub-48dp touch target, same shape as §80's fix**: `CalendarModeToggleButton.kt`'s
+`CalendarModeRow` (the 4-item view-mode list inside its `CloudBubble`) explicitly sized its icon to `20.dp`
+inside `12.dp` vertical padding, landing the row at 44dp total height — under the minimum. Unlike the
+group's two already-documented, deliberately-left-open touch-target items (Calendar Month/Timeline's
+breakpoint adaptation and the Timeline grid's own sub-48dp event blocks, both real layout/density trade-offs
+needing design input), this is a plain 4-row vertical list, not a dense grid — the same "single control,
+safe to just resize" category as §80's `RoutineIconPicker.kt` bubble fix. Added `Modifier.heightIn(min =
+48.dp)` to the row rather than changing its padding, keeping the existing visual rhythm intact.
+`CalendarScreen.kt`'s sibling `AddEventRow` (same `CloudBubble`-hosted-list shape, in its "add reminder/add
+birthday" bubble) was checked too and is already exactly 48dp — its `Icon` relies on the default 24dp size
+rather than an explicit smaller one, so no fix was needed there.
+
+**Reviewed, confirmed correct, no change**: `TimelinePager.kt`'s `content.copy(alpha = 0.85f)` on an
+event-bubble subtitle — `content` is a per-item-type color (either a real `on*Container` theme-role pairing
+or a dynamically-computed birthday contrast color), not `onSurface`/`onBackground` sitting on a neutral
+surface, so guidelines §2.2's "use `onSurfaceVariant`, not hand-blended alpha" fix doesn't have a direct
+target here — M3 doesn't define a "variant" role for container-pair roles the way it does for
+surface/onSurface, so there's no single token to swap to. Different situation from the alpha-blend
+anti-pattern already fixed elsewhere in this exact file's history (§39). `GoogleCalendarEventPreviewScreen.kt`'s
+event-title `titleLarge` (arguably this screen's clearest single hero element) was considered for the
+`*Emphasized` migration and left alone — no existing `FontWeight` override to swap (the "weight" trigger)
+and no prior audit named this screen specifically as a hero-moment candidate (the "audit named it directly"
+exception), matching this arc's established restraint. `SmallExtendedFloatingActionButton` (not the
+deprecated baseline variant) confirmed still in place on all 3 Google Tasks FABs; no `Card` in the group
+overrides its default (0dp) elevation.
+
+**Left open, unchanged, still correctly deliberate**: the two design-judgment items §10 originally flagged
+and no section since has forced a fix for — Calendar Month/Timeline's lack of breakpoint-adaptive layout,
+and `TimelinePager.kt`'s dense timeline grid's own sub-48dp event blocks (a real density trade-off, not a
+same-shape mechanical resize like `CalendarModeRow`'s fix above).
+
+Verified via `./gradlew :feature:feature-calendar:compileDebugKotlin :feature:feature-googletask:compileDebugKotlin
+:feature:feature-note:compileDebugKotlin :ui:ui-common:compileDebugKotlin :app:compileProDebugKotlin` (all
+clean — confirms `CloudBubble.kt`'s reorder didn't break any of its 7 call sites across 2 modules) and
+`:feature:feature-calendar:testDebugUnitTest :feature:feature-googletask:testDebugUnitTest
+:feature:feature-note:testDebugUnitTest` (all passing). Detekt via stash-and-rerun on
+`feature-calendar`/`feature-googletask`: identical weighted-issue counts before and after in both
+(116/6 — matching §75's own documented baseline exactly) — zero new findings. `:ui:ui-common:detekt`
+reproduces the same pre-existing `PermissionRequester.kt` crash already documented in §47/§78/§80/§81/§82/§83
+(confirmed unrelated — neither `CloudBubble.kt` nor `AppIcons.kt` touches that file); correctness there rests
+on the compile-clean result plus manual review, the same established limitation. `feature-note` had no
+source changes this pass (only consumes the reordered `CloudBubble` via named-arg call sites, already
+compile-verified), so no detekt re-run was needed there.
+
+**Promoted all 8 rows** from "In progress" to "Done" in `docs/m3-expressive-screen-inventory.md`: Calendar
+(Month), Calendar Timeline, Google Calendar Event Preview, Google Task Lists, Task List, Task Preview, Task
+Editor, Task List Editor.
+
+**Suggested next step**: Notes/Birthdays is the last group from the re-verification series without this
+treatment — a natural next candidate to close out the arc entirely, or a different request.
+
+## 85. Notes/Birthdays — full adoption pass, promoted to "Done"
+
+Per the user's request — the last group in the "promote clean re-verified groups to Done" arc, closing it
+out entirely. Unlike Calendar/Google Tasks (§84), this group's re-verification pass (§73) never re-read
+`BirthdayActionScreen.kt` at all (its only prior touch was the original §18 fix, landed long before this
+session's re-verification series started), so this pass treated it as the group's biggest unknown and read
+it fully fresh alongside every other file. Also grepped the whole group for `painterResource(R.drawable`/
+`iconRes = R.drawable`/`Icons.Default`/`RoundedCornerShape(` up front, the same triage step used for
+Reminders (§83) — this group had never had a dedicated `DrawableCatalog` sweep either (§8's original audit
+predates that convention's establishment), and the results showed it: **~30 raw icon references across 10
+of the group's 11 files**, the largest single icon cleanup found in this whole "Done"-promotion arc after
+Settings (§81).
+
+**`DrawableCatalog`/`AppIcons` — ~30 call sites across 10 files**: every icon found was already cataloged
+(checked before touching any call site, same discipline as every prior sweep) —
+`NoteEditPanels.kt` (mic/recording-stop icons), `NoteEditScreen.kt` (share/delete), `NotesScreen.kt` (6
+sites, including its `NoteMenuAction.iconRes()` dispatcher function fully re-routed from raw `R.drawable.*`
+to `DrawableCatalog.Fluent.*`), `PreviewNoteReminderRow.kt` (alert), `PreviewNoteScreen.kt` (4 sites),
+`EditBirthdayScreen.kt` (delete/contacts/person), `PreviewBirthdayScreen.kt` (edit/delete, plus a
+`ic_builder_group`→`AppIcons.Builder.Tag` mapping — the catalog constant name doesn't match the drawable's
+literal filename, worth knowing if this ever needs finding again), `BirthdaysScreen.kt` (delete), and
+`BirthdayActionScreen.kt` (phone icon on its header, `more-hor` on its `SplitButton` overflow — the exact
+same two fixes §83 already made to `ReminderActionScreen.kt`'s structurally-identical twin). Preview-only
+sample data in `BirthdayActionScreen.kt`'s two `@Preview` composables was left alone, matching §83's
+established exception.
+
+**One genuinely new anti-pattern instance found — raw Material-icons-library reference**:
+`NoteEditImageGrid.kt`'s per-thumbnail remove badge used `Icons.Default.Close` (the
+`androidx.compose.material.icons` library import), the identical bug already fixed once for
+`BirthdaysScreen.kt`'s `Icons.Default.FilterList` back in §27 — swapped to `AppIcons.Fluent.Dismiss`.
+`NoteEditImageGrid.kt` was never named in §8's original file list at all, discovered only because this
+pass's icon grep covered the whole group directory rather than the audit's original file list.
+
+**Shape — 6 more literal-`RoundedCornerShape` fixes**: `NoteEditPanels.kt`'s `GlyphToggleButton`/
+`LineFormatButton` (2× `RoundedCornerShape(8.dp)`, both formatting-toolbar buttons) and
+`GradientColorControls`'s preview swatch (1×) all → `MaterialTheme.shapes.small`; `TextColorModeChip`'s
+`RoundedCornerShape(50)` and `NoteEditFloatingBar.kt`'s `RoundedCornerShape(percent = 50)` (§8's own
+cross-cutting finding #5, "conceptually correct... but still a literal") both → `CircleShape` — the real
+M3 library defines `CircleShape` as exactly `RoundedCornerShape(50)` itself (confirmed via the M3 sources
+jar, which explicitly notes "Shapes None and Full are omitted as None is a RectangleShape and Full is a
+CircleShape"), so this is the correct token-equivalent for a "Full" pill shape, not just a stylistic
+preference.
+
+**Motion — 2 more hand-tuned `spring()`/`tween()` fixes, in files never in §8's original scope**:
+`NoteEditImageGrid.kt` and `PreviewNoteImageCarousel.kt` (the latter wraps the real M3
+`HorizontalUncontainedCarousel` component — a positive, already-correct component choice, just with a
+hand-tuned entrance animation) both had `spring(dampingRatio = ..., stiffness = ...)` +
+`tween(IMAGE_ANIMATION_DURATION_MS)` staggered-entrance animations — the identical shape §8 flagged for
+`NoteEditFloatingBar.kt`/`PreviewNoteReminderRow.kt`/`PreviewBirthdayScreen.kt` and all three already fixed.
+Both swapped to `MaterialTheme.motionScheme.fastSpatialSpec()`/`.fastEffectsSpec()`, matching
+`PreviewNoteReminderRow.kt`'s already-landed precedent exactly (a per-list/grid-item stagger, not a
+partial-screen surface).
+
+**Typography — closed the group's one long-standing deferred item, plus a matching sibling**: `NotesScreen.kt`'s
+`SelectableOptionRow` — the state-driven "context"-trigger `FontWeight.SemiBold`/`.Normal` swap §24
+deliberately deferred "for a full type-token pass" back near the start of this doc, re-confirmed still open
+by §73 — was finally swapped to `titleMediumEmphasized`/`titleMedium`, the same fix already applied to this
+exact shape of gap throughout the "Done"-promotion arc (§67's `CalendarModeToggleButton.kt`, §79's implicit
+precedent). Found the identical pattern one file over: `NoteEditPanels.kt`'s `TextColorModeChip` (the
+solid/gradient mode toggle in the text-color picker) had the same selected-state `FontWeight.Bold`/`.Normal`
+— fixed identically, to `labelLargeEmphasized`/`labelLarge`.
+
+**Reviewed, confirmed as legitimate exceptions — no change**: the large number of `FontWeight.Bold`/`Normal`
+values throughout `NoteEditPanels.kt`'s `GlyphToggleButton`/`LineFormatButton` — these render the note's
+actual rich-text-formatting glyphs (the user-facing Bold/Italic/Underline/Strikethrough/heading toolbar,
+i.e. literal formatting the user applies to their note content), not app-chrome text needing the
+`*Emphasized` token migration; a fundamentally different case from the two fixes above, which are both
+selection-state UI chrome. Similarly, the extensive `contentColor.copy(alpha = ...)` usage throughout
+`NoteEditPanels.kt`/`NoteEditScreen.kt` (switch track colors, slider inactive-track colors, disabled-state
+text, an unselected radio color) was reviewed and left alone: `contentColor` here is always the note's own
+dynamic content color passed down as a parameter, not `MaterialTheme.colorScheme.onSurface`/`onBackground`
+— the same "note's own custom background/content color a shared static token couldn't express" exception §8
+already established for this group's app bars.
+
+**Accessibility — one real gap found, deliberately not fixed**: `NoteEditImageGrid.kt`'s remove-image badge
+(a small `Surface` circle sized to `20.dp`) sits well under the 48×48dp minimum. Unlike this arc's other
+touch-target fixes (§80's `RoutineIconPicker` bubble, §84's `CalendarModeToggleButton` row — both simple
+constant bumps), this badge floats on the corner of an otherwise normal-sized image thumbnail; enlarging
+just the touch target without visually enlarging the badge itself would need restructuring the modifier
+chain to separate hit-area from visual size, not a same-shape mechanical resize. Left open as a documented,
+found-but-not-guessed-at gap rather than risk changing the visual design without a clear correct answer.
+
+**Confirmed via fresh full read, no changes needed**: `BirthdayActionScreen.kt` — §18's `titleLargeEmphasized`/
+`bodyLargeEmphasized`/`bodyMediumEmphasized`/`titleMediumEmphasized` type fixes, `AppShapes.tile` header
+shape, and default (0dp) card elevation are all still holding exactly as documented, seven sections after
+they landed and never re-checked since. `ImagePreviewScreen.kt` (Note Image Preview, already "Done" via
+§48) was spot-checked once more and remains genuinely clean — no icon/shape/elevation/motion findings, and
+its `modifier` was already first.
+
+**Self-caught regression, fixed before it shipped**: migrating `BirthdaysScreen.kt`'s hand-rolled
+`BirthdaysEmptyState` onto the shared `EmptyState` (the same consolidation already done for
+`RemindersArchiveScreen.kt` in §72 and `NotesScreen.kt`'s twin empty state earlier in this section) left two
+now-dead imports (`androidx.compose.foundation.layout.size`, `androidx.compose.material3.Icon`) and,
+separately, put the new `DrawableCatalog` import in the wrong lexicographic position — the detekt
+stash-compare step (run specifically to catch exactly this class of mistake) surfaced all three as new
+findings against the file's own baseline; fixed immediately, re-verified clean. The 4 pre-existing
+`Wrapping`/`ArgumentListWrapping` findings on the old badly-wrapped `BirthdaysEmptyState(...)` call site were
+correctly cleared as a side effect too, the same "consolidation incidentally cleared pre-existing wrap debt"
+outcome already seen in §72.
+
+Verified via `./gradlew :feature:feature-note:compileDebugKotlin :feature:feature-birthday:compileDebugKotlin
+:app:compileProDebugKotlin` (all clean) and `:feature:feature-note:testDebugUnitTest
+:feature:feature-birthday:testDebugUnitTest` (both passing). Detekt via stash-and-rerun on both modules:
+`feature-note` identical before/after (129/129) — zero new findings; `feature-birthday` went 91→87, fully
+explained by the 4 pre-existing wrap-debt findings cleared by the `EmptyState` migration (confirmed via a
+second, line-by-line diff against the untouched baseline, not just the raw count, specifically because the
+first pass through this file had already caught and fixed 3 genuinely new findings before this final
+comparison). `:ui:ui-common:detekt` reproduces the same pre-existing `PermissionRequester.kt` crash already
+documented in §47/§78/§80/§81/§82/§83/§84 (confirmed unrelated — none of this pass's `ui-common`-adjacent
+work, all inherited from §84's `CloudBubble.kt`/`AppIcons.kt` edits, touches that file); correctness there
+rests on the compile-clean result plus manual review, the same established limitation.
+
+**Promoted all 8 remaining "In progress" rows** to "Done" in `docs/m3-expressive-screen-inventory.md`: Notes
+List, Notes Archive, Note Editor, Note Preview, Birthdays List, Birthday Editor, Birthday Preview, Birthday
+Action. Note Image Preview was already "Done" via §48.
+
+This closes out the "promote clean re-verified groups to Done" arc in full: every screen group in the
+inventory has now either been "Done" from an earlier point in this doc's history, or has been through this
+arc's full adoption-pass treatment (Groups/Tags/Places §79, Workflow/Routines §80, Settings §81,
+Backup/Insights/Onboarding/Widget Config §82, Reminders §83, Calendar/Google Tasks §84, Notes/Birthdays
+§85).
+
+**Suggested next step**: no group-level promotion work remains queued. Every row in
+`docs/m3-expressive-screen-inventory.md` is now "Done" or explicitly "Out of scope" — future sections should
+pick up from whatever the user's next request is, e.g. revisiting the handful of deliberately-deferred,
+documented judgment calls this whole arc accumulated (breakpoint-adaptive layouts for Calendar Month/
+Timeline, dense-grid touch targets in `RoutineIconPicker`/`TimelinePager`/`NoteEditImageGrid`, the
+`LoadingIndicator`/`ExperimentalMaterial3ExpressiveApi` question raised in §82/§83) if the user wants to
+revisit any of those, or a different request entirely.

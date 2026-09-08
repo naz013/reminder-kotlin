@@ -29,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -37,6 +36,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.feature.reminder.build.BuilderItem
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Place
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import kotlinx.coroutines.launch
 
@@ -143,7 +143,7 @@ internal fun MapEditorScreen(
             modifier = Modifier.weight(1f),
           )
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_builder_chevron_down),
+            icon = AppIcons.Builder.ChevronDown,
             contentDescription = stringResource(R.string.cd_collapse),
             onClick = ::dismiss,
           )

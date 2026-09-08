@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -24,7 +23,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -43,7 +41,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,8 +56,10 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.SelectionTopBar
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 import com.github.naz013.ui.common.compose.foundation.component.BottomSheetHeader
+import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.tag.TagFilterRow
 
 private val BIRTHDAY_SMART_LIST_FILTERS = listOf(SmartListFilter.TODAY, SmartListFilter.THIS_WEEK)
@@ -153,9 +152,13 @@ internal fun BirthdaysScreen(
         }
 
         is ListState.Empty -> {
-          BirthdaysEmptyState(modifier = Modifier
-            .fillMaxSize()
-            .weight(1f))
+          EmptyState(
+            icon = AppIcons.Fluent.FoodCake,
+            message = stringResource(R.string.no_events),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
+          )
         }
 
         is ListState.Ready -> {
@@ -299,28 +302,6 @@ private fun SmartListFilter.titleRes(): Int =
     SmartListFilter.NO_GROUP -> R.string.smart_list_no_group
   }
 
-@Composable
-private fun BirthdaysEmptyState(modifier: Modifier = Modifier) {
-  Column(
-    modifier = modifier,
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center,
-  ) {
-    Icon(
-      painter = painterResource(R.drawable.ic_fluent_food_cake),
-      contentDescription = null,
-      modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
-    Text(
-      text = stringResource(R.string.no_events),
-      style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-      modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
-    )
-  }
-}
-
 private enum class BirthdaysSelectionAction { DELETE }
 
 @Composable
@@ -336,7 +317,7 @@ private fun BirthdaysSelectionTopBar(
       PopupMenuItem(
         id = BirthdaysSelectionAction.DELETE.ordinal,
         title = stringResource(R.string.delete),
-        iconRes = R.drawable.ic_fluent_delete,
+        iconRes = DrawableCatalog.Fluent.Delete,
       ),
     ),
     onActionClick = { id ->

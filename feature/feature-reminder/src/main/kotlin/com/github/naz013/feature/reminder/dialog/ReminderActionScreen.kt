@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -71,6 +70,7 @@ import com.github.naz013.ui.common.compose.foundation.component.PopupMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.deviceScreenConfiguration
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -414,7 +414,7 @@ private fun SnoozeDialogContent(
 private fun ReminderHeader(header: ReminderActionScreenHeader) {
   Card(
     modifier = Modifier.fillMaxWidth(),
-    shape = RoundedCornerShape(12.dp),
+    shape = MaterialTheme.shapes.medium,
     colors = CardDefaults.cardColors(
       containerColor = MaterialTheme.colorScheme.surfaceVariant,
     ),
@@ -435,7 +435,7 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
             contactName = header.contactName,
             contactInfo = header.phoneNumber,
             contactPhoto = header.contactPhoto,
-            icon = R.drawable.ic_fluent_phone,
+            icon = DrawableCatalog.Fluent.Phone,
           )
         }
 
@@ -445,7 +445,7 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
             contactName = header.contactName,
             contactInfo = header.phoneNumber,
             contactPhoto = header.contactPhoto,
-            icon = R.drawable.ic_fluent_send,
+            icon = DrawableCatalog.Fluent.Send,
           )
         }
 
@@ -609,7 +609,7 @@ private fun EmailHeaderContent(
         contentAlignment = Alignment.Center,
       ) {
         Icon(
-          painter = painterResource(id = R.drawable.ic_fluent_send),
+          painter = AppIcons.Fluent.Send,
           contentDescription = null,
           modifier = Modifier.size(28.dp),
           tint = MaterialTheme.colorScheme.onTertiaryContainer,
@@ -675,7 +675,7 @@ private fun AppHeaderContent(
     Box(
       modifier = Modifier
         .size(56.dp)
-        .clip(RoundedCornerShape(12.dp))
+        .clip(MaterialTheme.shapes.medium)
         .background(MaterialTheme.colorScheme.secondaryContainer),
       contentAlignment = Alignment.Center,
     ) {
@@ -688,7 +688,7 @@ private fun AppHeaderContent(
         )
       } else {
         Icon(
-          painter = painterResource(id = R.drawable.ic_fluent_apps),
+          painter = AppIcons.Fluent.Apps,
           contentDescription = appName,
           modifier = Modifier.size(32.dp),
           tint = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -740,7 +740,7 @@ private fun LinkHeaderContent(
       contentAlignment = Alignment.Center,
     ) {
       Icon(
-        painter = painterResource(id = R.drawable.ic_fluent_globe),
+        painter = AppIcons.Fluent.Globe,
         contentDescription = null,
         modifier = Modifier.size(28.dp),
         tint = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -784,7 +784,7 @@ private fun TodoListSection(
   Card(
     modifier = Modifier
       .fillMaxWidth(),
-    shape = RoundedCornerShape(12.dp),
+    shape = MaterialTheme.shapes.medium,
     colors = CardDefaults.cardColors(
       containerColor = MaterialTheme.colorScheme.surface,
     ),
@@ -901,7 +901,7 @@ private fun ActionsSection(
         rightContent = {
           Box {
             Icon(
-              painter = painterResource(id = R.drawable.ic_fluent_more_hor),
+              painter = AppIcons.Fluent.MoreHor,
               contentDescription = stringResource(R.string.more_options),
             )
             PopupMenu(

@@ -45,7 +45,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.feature.note.R
@@ -57,6 +56,7 @@ import com.github.naz013.ui.common.compose.foundation.SelectionOverlay
 import com.github.naz013.ui.common.compose.foundation.SelectionTopBar
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
+import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 import com.github.naz013.ui.common.icon.DrawableCatalog
@@ -163,8 +163,11 @@ internal fun NotesScreen(
         }
 
         is ListState.Empty -> {
-          NotesEmptyState(
-            isArchived = state.isArchived,
+          EmptyState(
+            icon = AppIcons.Fluent.Note,
+            message = stringResource(
+              if (state.isArchived) R.string.notes_archive_is_empty else R.string.no_notes,
+            ),
             modifier = Modifier
               .fillMaxSize()
               .weight(1f),
@@ -303,7 +306,7 @@ private fun BoxScope.NoteOverflowMenu(
 ) {
   var menuExpanded by remember { mutableStateOf(false) }
   MenuIconButton(
-    icon = painterResource(R.drawable.ic_fluent_more_vertical),
+    icon = AppIcons.Fluent.MoreVertical,
     iconColor = textColor,
     contentDescription = stringResource(R.string.more_options),
     onClick = { menuExpanded = true },
@@ -344,42 +347,15 @@ private fun noteMenuItems(isArchived: Boolean, isPinned: Boolean): List<PopupMen
 
 private fun NoteMenuAction.iconRes(): Int =
   when (this) {
-    NoteMenuAction.OPEN -> R.drawable.ic_fluent_open
-    NoteMenuAction.EDIT -> R.drawable.ic_fluent_edit
-    NoteMenuAction.SHARE -> R.drawable.ic_fluent_share
-    NoteMenuAction.SHOW_IN_STATUS_BAR -> R.drawable.ic_fluent_alert
-    NoteMenuAction.ARCHIVE, NoteMenuAction.UNARCHIVE -> R.drawable.ic_fluent_archive
+    NoteMenuAction.OPEN -> DrawableCatalog.Fluent.Open
+    NoteMenuAction.EDIT -> DrawableCatalog.Fluent.Edit
+    NoteMenuAction.SHARE -> DrawableCatalog.Fluent.Share
+    NoteMenuAction.SHOW_IN_STATUS_BAR -> DrawableCatalog.Fluent.Alert
+    NoteMenuAction.ARCHIVE, NoteMenuAction.UNARCHIVE -> DrawableCatalog.Fluent.Archive
     NoteMenuAction.PIN -> DrawableCatalog.Fluent.Pin
     NoteMenuAction.UNPIN -> DrawableCatalog.Fluent.PinOff
-    NoteMenuAction.DELETE -> R.drawable.ic_fluent_delete
+    NoteMenuAction.DELETE -> DrawableCatalog.Fluent.Delete
   }
-
-@Composable
-private fun NotesEmptyState(
-  isArchived: Boolean,
-  modifier: Modifier = Modifier,
-) {
-  Column(
-    modifier = modifier,
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center,
-  ) {
-    Icon(
-      painter = painterResource(R.drawable.ic_fluent_note),
-      contentDescription = null,
-      modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
-    Text(
-      text = stringResource(
-        if (isArchived) R.string.notes_archive_is_empty else R.string.no_notes,
-      ),
-      style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-      modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
-    )
-  }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -459,7 +435,7 @@ private fun notesSelectionMenuItems(isArchived: Boolean, selectedCount: Int): Li
         PopupMenuItem(
           id = NotesSelectionAction.CHANGE_COLOR.ordinal,
           title = stringResource(R.string.change_color),
-          iconRes = R.drawable.ic_fluent_color_background,
+          iconRes = DrawableCatalog.Fluent.ColorBackground,
         )
       )
     }
@@ -476,14 +452,14 @@ private fun notesSelectionMenuItems(isArchived: Boolean, selectedCount: Int): Li
       PopupMenuItem(
         id = NotesSelectionAction.ARCHIVE.ordinal,
         title = stringResource(if (isArchived) R.string.notes_unarchive else R.string.notes_move_to_archive),
-        iconRes = R.drawable.ic_fluent_archive,
+        iconRes = DrawableCatalog.Fluent.Archive,
       )
     )
     add(
       PopupMenuItem(
         id = NotesSelectionAction.DELETE.ordinal,
         title = stringResource(R.string.delete),
-        iconRes = R.drawable.ic_fluent_delete,
+        iconRes = DrawableCatalog.Fluent.Delete,
       )
     )
   }
@@ -564,13 +540,16 @@ private fun SelectableOptionRow(
     Text(
       text = label,
       color = rowContentColor,
-      style = MaterialTheme.typography.titleMedium,
-      fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+      style = if (selected) {
+        MaterialTheme.typography.titleMediumEmphasized
+      } else {
+        MaterialTheme.typography.titleMedium
+      },
       modifier = Modifier.weight(1f),
     )
     if (selected) {
       Icon(
-        painter = painterResource(R.drawable.ic_fluent_checkmark),
+        painter = AppIcons.Fluent.Checkmark,
         contentDescription = null,
         tint = rowContentColor,
         modifier = Modifier.size(20.dp),
@@ -665,7 +644,7 @@ private fun OverflowMenuButton(
   }
   Box {
     MenuIconButton(
-      icon = painterResource(R.drawable.ic_fluent_more_vertical),
+      icon = AppIcons.Fluent.MoreVertical,
       contentDescription = stringResource(R.string.more_options),
       onClick = { expanded = true },
     )

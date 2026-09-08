@@ -133,10 +133,10 @@ private enum class TimeField { FROM, TO }
 
 @Composable
 private fun ModeRow(
+  modifier: Modifier = Modifier,
   selected: Boolean,
   label: String,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Row(
     modifier = modifier

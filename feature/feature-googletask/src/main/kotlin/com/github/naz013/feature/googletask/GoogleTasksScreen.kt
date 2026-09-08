@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -177,7 +176,7 @@ private fun TaskListTile(
   val color = Color(entry.color)
   Box(
     modifier = modifier
-      .background(color = color.copy(alpha = 0.12f), shape = RoundedCornerShape(12.dp))
+      .background(color = color.copy(alpha = 0.12f), shape = MaterialTheme.shapes.medium)
       .clickable(onClick = onClick)
       .padding(horizontal = 16.dp, vertical = 10.dp),
   ) {

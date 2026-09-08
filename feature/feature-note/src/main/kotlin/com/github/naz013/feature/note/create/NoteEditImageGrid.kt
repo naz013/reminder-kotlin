@@ -1,10 +1,8 @@
 package com.github.naz013.feature.note.create
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
@@ -20,8 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -36,12 +32,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.note.UiNoteImage
 import com.github.naz013.ui.note.UiNoteImageState
 import kotlinx.coroutines.delay
 
 private const val GRID_COLUMNS = 3
-private const val IMAGE_ANIMATION_DURATION_MS = 220
 private const val IMAGE_STAGGER_DELAY_MS = 30L
 private const val IMAGE_MAX_STAGGER_DELAY_MS = 180L
 
@@ -93,6 +89,10 @@ private fun NoteEditImageItem(
   modifier: Modifier = Modifier,
 ) {
   val visibleState = remember { MutableTransitionState(false) }
+  // "Fast" speed per guidelines - each thumbnail's staggered entrance is a per-grid-item
+  // animation, the same shape already used for PreviewNoteReminderRow's staggered cards.
+  val imageSpatialSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastSpatialSpec()
+  val imageEffectsSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastEffectsSpec()
   LaunchedEffect(Unit) {
     delay((index * IMAGE_STAGGER_DELAY_MS).coerceAtMost(IMAGE_MAX_STAGGER_DELAY_MS))
     visibleState.targetState = true
@@ -100,15 +100,8 @@ private fun NoteEditImageItem(
   AnimatedVisibility(
     modifier = modifier,
     visibleState = visibleState,
-    enter =
-    scaleIn(
-      animationSpec =
-      spring(
-        dampingRatio = Spring.DampingRatioMediumBouncy,
-        stiffness = Spring.StiffnessLow,
-      ),
-      initialScale = 0f,
-    ) + fadeIn(animationSpec = tween(IMAGE_ANIMATION_DURATION_MS)),
+    enter = scaleIn(animationSpec = imageSpatialSpec, initialScale = 0f) +
+      fadeIn(animationSpec = imageEffectsSpec),
   ) {
     Box(
       modifier =
@@ -140,7 +133,7 @@ private fun NoteEditImageItem(
           color = MaterialTheme.colorScheme.tertiary,
         ) {
           Icon(
-            imageVector = Icons.Default.Close,
+            painter = AppIcons.Fluent.Dismiss,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onTertiary,
             modifier = Modifier.padding(3.dp),

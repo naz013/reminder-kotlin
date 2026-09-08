@@ -104,12 +104,12 @@ internal fun PreviewBirthdayScreen(
         },
         actions = {
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_edit),
+            icon = AppIcons.Fluent.Edit,
             contentDescription = stringResource(R.string.edit),
             onClick = onEditClick,
           )
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_delete),
+            icon = AppIcons.Fluent.Delete,
             contentDescription = stringResource(R.string.delete),
             onClick = onDeleteClick,
           )
@@ -243,7 +243,7 @@ private fun TagsRow(tags: List<TagChipState>) {
       .padding(start = 16.dp, end = 16.dp, top = 12.dp),
   ) {
     Icon(
-      painter = painterResource(R.drawable.ic_builder_group),
+      painter = AppIcons.Builder.Tag,
       contentDescription = null,
       tint = MaterialTheme.colorScheme.onBackground,
       modifier = Modifier.size(32.dp),

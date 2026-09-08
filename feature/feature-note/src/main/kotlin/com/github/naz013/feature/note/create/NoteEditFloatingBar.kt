@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -64,10 +63,10 @@ private val BAR_ITEM_SIZE = 52.dp
 
 @Composable
 internal fun NoteEditFloatingBar(
+  modifier: Modifier = Modifier,
   items: List<NoteEditBarItem>,
   containerColor: Color,
   contentColor: Color,
-  modifier: Modifier = Modifier,
 ) {
   val visibleState = remember { MutableTransitionState(false) }
   LaunchedEffect(Unit) {
@@ -91,7 +90,7 @@ internal fun NoteEditFloatingBar(
   ) {
     Surface(
       modifier = Modifier.scale(barScale),
-      shape = RoundedCornerShape(percent = 50),
+      shape = CircleShape,
       color = containerColor,
       shadowElevation = 3.dp,
       tonalElevation = 3.dp,

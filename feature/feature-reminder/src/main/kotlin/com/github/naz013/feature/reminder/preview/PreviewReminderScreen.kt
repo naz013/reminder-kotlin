@@ -32,7 +32,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +56,7 @@ import com.github.naz013.feature.reminder.preview.data.UiCalendarEventList
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
@@ -136,7 +136,7 @@ internal fun PreviewReminderScreen(
             onDeleteClick = onDeleteClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
@@ -298,7 +298,7 @@ private fun OverflowMenu(
   }
   Box {
     MenuIconButton(
-      icon = painterResource(R.drawable.ic_fluent_more_vertical),
+      icon = AppIcons.Fluent.MoreVertical,
       contentDescription = stringResource(R.string.more_options),
       onClick = { expanded = true },
     )
@@ -416,9 +416,9 @@ private fun SectionHeader(text: String) {
 
 @Composable
 private fun DetailRow(
+  modifier: Modifier = Modifier,
   icon: Int,
   text: String,
-  modifier: Modifier = Modifier,
   textDecoration: TextDecoration = TextDecoration.None,
   isWarning: Boolean = false,
 ) {
@@ -676,13 +676,7 @@ private fun SubTaskRow(
       .padding(start = 4.dp, end = 4.dp),
   ) {
     MenuIconButton(
-      icon = painterResource(
-        if (subTask.isChecked) {
-          R.drawable.ic_fluent_checkbox_checked
-        } else {
-          R.drawable.ic_fluent_checkbox_unchecked
-        },
-      ),
+      icon = if (subTask.isChecked) AppIcons.Fluent.CheckboxChecked else AppIcons.Fluent.CheckboxUnchecked,
       contentDescription = if (subTask.isChecked) {
         stringResource(R.string.cd_mark_as_not_done)
       } else {
@@ -699,7 +693,7 @@ private fun SubTaskRow(
       modifier = Modifier.weight(1f),
     )
     MenuIconButton(
-      icon = painterResource(R.drawable.ic_fluent_delete),
+      icon = AppIcons.Fluent.Delete,
       contentDescription = stringResource(R.string.delete),
       iconColor = MaterialTheme.colorScheme.onSurfaceVariant,
       onClick = { onRemove(subTask.id) },

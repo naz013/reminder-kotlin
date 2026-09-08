@@ -27,12 +27,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.github.naz013.feature.note.R
 import com.github.naz013.feature.note.preview.reminders.UiNoteAttachedReminder
+import com.github.naz013.ui.common.compose.AppIcons
 import kotlinx.coroutines.delay
 
 private val REMINDER_CARD_WIDTH = 300.dp
@@ -97,7 +97,7 @@ private fun PreviewNoteReminderCard(
     Column(modifier = Modifier.padding(8.dp)) {
       Row {
         Icon(
-          painter = painterResource(R.drawable.ic_fluent_alert),
+          painter = AppIcons.Fluent.Alert,
           contentDescription = null,
           tint = MaterialTheme.colorScheme.onSurface,
         )

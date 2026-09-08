@@ -74,118 +74,75 @@ closed out.
 
 ## Reminders
 
-Audited in full — see [`m3-expressive-adoption.md` §6](m3-expressive-adoption.md#6-reminders-screens--audit)
-for cross-cutting patterns (missing back-button content descriptions, off-scale hardcoded shapes, manual
-`FontWeight` overrides vs. emphasized type, etc.) and per-screen findings. Reminder Action moved to "In
-progress": its `FontWeight`/alpha-blend/off-scale-elevation gaps were fixed in
-[§17](m3-expressive-adoption.md#17-reminderactionscreenkt-typeelevationcolor-token-fixes--landed). Map
-Value Editor moved to "In progress" too: its hand-rolled bottom sheet's literal `tween()` motion, missing
-640dp max-width, and hardcoded scrim color were fixed in
-[§19](m3-expressive-adoption.md#19-mapeditorscreenkt-motionmax-widthscrim-token-fixes--landed).
-`SubTasksValueEditor.kt`'s literal `tween()` and sub-48dp check/remove buttons were fixed in
-[§20](m3-expressive-adoption.md#20-subtasksvalueeditorkt-motiontouch-target-fixes--landed) — it's rendered
-from both Reminder Editor (via `ValueEditorSheet.kt`'s checklist builder item) and Todo Editor directly, so
-both move to "In progress" too. Select Application and Reminder Preview move to "In progress" as well:
-their hand-built list rows and (for Reminder Preview) inconsistent surface-container roles were fixed in
-[§21](m3-expressive-adoption.md#21-selectapplicationscreenktpreviewreminderscreenkt-list-row-and-surface-container-fixes--landed).
-Reminder Fullscreen Map moves to "In progress" too: its deprecated baseline `ExtendedFloatingActionButton`
-was swapped for the real `SmallExtendedFloatingActionButton` in
-[§22](m3-expressive-adoption.md#22-reminderfullscreenmapscreenkt-deprecated-baseline-extended-fab--landed).
-Reminder Editor and Todo Editor's duplicated `OfflineOnlyRow` composable was deduplicated into a shared
-internal `feature-reminder` composable in
-[§23](m3-expressive-adoption.md#23-todoeditscreenktbuildreminderscreenkt-duplicated-offlineonlyrow-dedup--landed)
-(both rows were already "In progress" from §20). Reminders Archive moves to "In progress" too: its
-back-button content description was fixed in
-[§28](m3-expressive-adoption.md#28-remindersarchivescreenkt-back-button-fix--landed) — §20/§23 had wrongly
-claimed this closed out every §6 finding, but this screen's bug (and its scroll-shadow app bar, then still
-open) had actually been missed; §28 corrects that. The scroll-shadow app bar itself has since been fixed too
-— see [§64](m3-expressive-adoption.md#64-scroll-shadow-to-color-fill-migration--landed). Reminder Help and
-Recurrence Help move to "Done": §6's own audit
-text found both already fully spec-compliant (correct back-button description, correct `TopAppbarColor`
-usage) with "little further Compose-layer surface area to audit" — re-verified directly against current
-source in
-[§48](m3-expressive-adoption.md#48-leftover-audited-only-screens-re-verified-and-promoted-to-done--landed),
-no code changes needed. A cross-cutting alpha-blend re-sweep in
-[§58](m3-expressive-adoption.md#58-remindersnotesbirthdays-alpha-blend-cross-cutting-sweep--landed) found two
-sites §6 never named: Reminders Archive's private `ArchiveEmptyState` (never audited at all) and Reminder
-Action's completed-todo-item text color (a fourth alpha-blend site in a file §17 already touched, but for a
-different composable) — §58 itself only landed the second one, though.
-[§72](m3-expressive-adoption.md#72-reminders-group--re-verification-of-17192123285848s-claims)
-re-verified all of §17/§19-§23/§28/§48/§58's claims against current source: the great majority held up, but
-found and fixed three back-button `contentDescription = null` bugs that §6 originally named and no later
-section ever actually closed (`Select Application`, `Reminder Preview`'s non-detail-pane branch, `Todo
-Editor`), plus confirmed `Reminders Archive` had 2 of its 3 claimed fixes not actually landed — §58's
-`ArchiveEmptyState`→`EmptyState.kt` migration and §64's scroll-shadow-to-color-fill migration were both
-claimed but the file still had the old private composable and the old drop shadow; both landed now. The
-other rows below stay "Audited" (not "In progress") until a fix actually lands.
+Promoted to "Done" in
+[§83](m3-expressive-adoption.md#83-reminders--full-adoption-pass-promoted-to-done), a full adoption pass on
+top of the original audit ([§6](m3-expressive-adoption.md#6-reminders-screens--audit)) and its long fix
+history (§17, §19-§23, §28, §48, §58, re-verified in
+[§72](m3-expressive-adoption.md#72-reminders-group--re-verification-of-17192123285848s-claims)). §83 closed
+out §6's two oldest never-landed cross-cutting findings — the off-scale `RoundedCornerShape(24.dp)` on
+`BuildReminderScreen.kt`/`TodoEditScreen.kt` (→ `AppShapes.pill`) and the `TopAppBar` color-token bypass on
+`SelectApplicationScreen.kt`/`PreviewReminderScreen.kt` (→ `TopAppbarColor`; `RemindersArchiveScreen.kt`'s
+`Color.Transparent` turned out to be a false positive, already correctly paired with its §64 animated-`Surface`
+scroll treatment) — plus the group's first `modifier`-order and `DrawableCatalog` sweep of the ~20-file
+`build/valuedialog/editor/` value-editor package that renders inside `BuildReminderScreen`'s
+`ValueEditorSheet.kt`, never read by any prior audit of this group. Reminder Help/Recurrence Help were
+already "Done" via §48.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Reminder Editor (Build Reminder) | Compose | `feature/feature-reminder/.../feature/reminder/build/BuildReminderScreen.kt` | In progress |
+| Reminder Editor (Build Reminder) | Compose | `feature/feature-reminder/.../feature/reminder/build/BuildReminderScreen.kt` | Done |
 | Reminder Help | Compose | `feature/feature-reminder/.../feature/reminder/build/help/ReminderHelpScreen.kt` | Done |
 | Recurrence Help | Compose | `feature/feature-reminder/.../feature/reminder/recur/RecurHelpScreen.kt` | Done |
-| Select Application | Compose | `feature/feature-reminder/.../feature/reminder/apps/SelectApplicationScreen.kt` | In progress |
-| Map Value Editor | Compose | `feature/feature-reminder/.../feature/reminder/build/valuedialog/editor/MapEditorScreen.kt` | In progress |
-| Reminder Preview | Compose | `feature/feature-reminder/.../feature/reminder/preview/PreviewReminderScreen.kt` | In progress |
-| Reminder Fullscreen Map | Compose | `feature/feature-reminder/.../feature/reminder/preview/ReminderFullscreenMapScreen.kt` | In progress |
-| Reminders Archive | Compose | `feature/feature-reminder/.../feature/reminder/lists/removed/RemindersArchiveScreen.kt` | In progress |
-| Reminder Action (alarm/ringing) | Compose (Activity-hosted) | Screen: `feature/feature-reminder/.../feature/reminder/dialog/ReminderActionScreen.kt`; Activity: `app/src/main/java/com/elementary/tasks/reminder/dialog/ReminderActionActivity.kt` | In progress |
-| Todo Editor | Compose | `feature/feature-reminder/.../feature/reminder/todo/TodoEditScreen.kt` | In progress |
+| Select Application | Compose | `feature/feature-reminder/.../feature/reminder/apps/SelectApplicationScreen.kt` | Done |
+| Map Value Editor | Compose | `feature/feature-reminder/.../feature/reminder/build/valuedialog/editor/MapEditorScreen.kt` | Done |
+| Reminder Preview | Compose | `feature/feature-reminder/.../feature/reminder/preview/PreviewReminderScreen.kt` | Done |
+| Reminder Fullscreen Map | Compose | `feature/feature-reminder/.../feature/reminder/preview/ReminderFullscreenMapScreen.kt` | Done |
+| Reminders Archive | Compose | `feature/feature-reminder/.../feature/reminder/lists/removed/RemindersArchiveScreen.kt` | Done |
+| Reminder Action (alarm/ringing) | Compose (Activity-hosted) | Screen: `feature/feature-reminder/.../feature/reminder/dialog/ReminderActionScreen.kt`; Activity: `app/src/main/java/com/elementary/tasks/reminder/dialog/ReminderActionActivity.kt` | Done |
+| Todo Editor | Compose | `feature/feature-reminder/.../feature/reminder/todo/TodoEditScreen.kt` | Done |
 
 ## Notes
 
-Audited — see [`m3-expressive-adoption.md` §8](m3-expressive-adoption.md#8-notes--birthdays-screens--audit).
-Note Editor moved to "In progress": its background-color/gradient panels render through `ui-common`'s
-shared `ColorSlider`, fixed for accessibility in
-[§16](m3-expressive-adoption.md#16-colorslider-accessibility-fix--landed). Notes List and Notes Archive
-move to "In progress" too: `NotesScreen.kt`'s back-button content description, app-bar color token, and
-empty-state alpha-blend were fixed in
-[§24](m3-expressive-adoption.md#24-notesscreenkt-back-buttonapp-bar-tokenalpha-blend-fixes--landed) — both
-rows share the same composable, so one fix covers both. Note Editor's floating toolbar
-(`NoteEditFloatingBar.kt`) also had its off-scale elevation and literal `tween()`/`spring()` calls fixed in
-[§25](m3-expressive-adoption.md#25-noteeditfloatingbarkt-elevationmotion-fixes--landed) (row already "In
-progress" from §16). Note Preview moves to "In progress" too: its attached-reminder row
-(`PreviewNoteReminderRow.kt`) had its literal `tween()` motion fixed in
-[§26](m3-expressive-adoption.md#26-previewnotereminderrowkt-motion-fix--landed). Note Image Preview moves to
-"Done": §8's own audit text called it the "cleanest screen in the group... nothing to flag" — re-verified
-directly against current source in
-[§48](m3-expressive-adoption.md#48-leftover-audited-only-screens-re-verified-and-promoted-to-done--landed),
-no code changes needed.
+Promoted to "Done" in
+[§85](m3-expressive-adoption.md#85-notesbirthdays--full-adoption-pass-promoted-to-done), a full adoption
+pass on top of the original audit
+([§8](m3-expressive-adoption.md#8-notes--birthdays-screens--audit)) and its landed fixes (§16, §24-§27,
+§58). §85's largest finding was a ~30-call-site `DrawableCatalog` cleanup across the whole group (this
+group never had one before), plus: `NotesScreen.kt`'s hand-rolled empty state migrated onto the shared
+`EmptyState`; its long-deferred `SelectableOptionRow` `FontWeight` (state-driven "context" trigger, deferred
+since §24) finally swapped to `titleMediumEmphasized`; `NoteEditImageGrid.kt` and
+`PreviewNoteImageCarousel.kt` (never in §8's original scope) both had hand-tuned `spring()`/`tween()`
+stagger animations migrated to `motionScheme`, and the former's raw `Icons.Default.Close` (the same
+anti-pattern §27 already fixed once for `BirthdaysScreen.kt`) fixed too. Left open: `NoteEditImageGrid.kt`'s
+20dp remove-image badge, a real sub-48dp touch target that needs restructuring (not a simple resize) to fix
+without changing its visual size.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Notes List | Compose | `feature/feature-note/.../feature/note/list/NotesScreen.kt` | In progress |
-| Notes Archive | Compose | `feature/feature-note/.../feature/note/NotesNavGraph.kt` (`NotesArchiveEntry`, reuses `NotesScreen`) | In progress |
-| Note Editor | Compose | `feature/feature-note/.../feature/note/create/NoteEditScreen.kt` | In progress |
-| Note Preview | Compose | `feature/feature-note/.../feature/note/preview/PreviewNoteScreen.kt` | In progress |
+| Notes List | Compose | `feature/feature-note/.../feature/note/list/NotesScreen.kt` | Done |
+| Notes Archive | Compose | `feature/feature-note/.../feature/note/NotesNavGraph.kt` (`NotesArchiveEntry`, reuses `NotesScreen`) | Done |
+| Note Editor | Compose | `feature/feature-note/.../feature/note/create/NoteEditScreen.kt` | Done |
+| Note Preview | Compose | `feature/feature-note/.../feature/note/preview/PreviewNoteScreen.kt` | Done |
 | Note Image Preview | Compose | `feature/feature-note/.../feature/note/preview/ImagePreviewScreen.kt` | Done |
 
 ## Birthdays
 
-Audited — see [`m3-expressive-adoption.md` §8](m3-expressive-adoption.md#8-notes--birthdays-screens--audit).
-Birthday Action moved to "In progress": its `FontWeight`/alpha-blend/off-scale-elevation/off-scale-shape
-gaps (the twin of Reminder Action's §17 fix) were fixed in
-[§18](m3-expressive-adoption.md#18-birthdayactionscreenkt-typeelevationshapecolor-token-fixes--landed).
-Birthdays List, Birthday Editor, and Birthday Preview all move to "In progress" too: their back/close
-content descriptions, app-bar color tokens, `BirthdaysList`'s bare `Icons.Default.FilterList`/alpha-blend
-empty state, and `PreviewBirthdayScreen.kt`'s literal motion were fixed in
-[§27](m3-expressive-adoption.md#27-birthdays-half-of-8--backclose-app-bar-token-alpha-blend-bare-icon-and-motion-fixes--landed).
-That section also flagged a real gap in the earlier Reminders work: `RemindersArchiveScreen.kt`'s identical
-back-button bug and scroll-shadow app bar were never actually fixed despite §20/§23 claiming §6 was "fully
-closed." The back-button half of that gap was fixed in
-[§28](m3-expressive-adoption.md#28-remindersarchivescreenkt-back-button-fix--landed) (see the Reminders
-section above). §64 claimed the scroll-shadow app bar was fixed for `BirthdaysScreen.kt` alongside
-`RemindersArchiveScreen.kt`/`AgendaScreen.kt`, but re-verification in
-[§73](m3-expressive-adoption.md#73-notes--birthdays-group--re-verification-of-24-27-58s-claims-plus-a-stale-deferred-item-resolved)
-found that claim was false for this specific file — it was actually landed there instead, plus the group's
-last remaining app-bar-token gap (`BirthdaysTopBar`'s missing `titleContentColor`).
+Promoted to "Done" in
+[§85](m3-expressive-adoption.md#85-notesbirthdays--full-adoption-pass-promoted-to-done), alongside Notes
+(see above for the shared history — §8/§18/§27/§28/§64/§73 — and this pass's group-wide `DrawableCatalog`
+sweep). §85's Birthdays-specific findings: `BirthdayActionScreen.kt` — never re-read since its original §18
+fix, seven sections ago — was confirmed still fully correct (emphasized type, `AppShapes.tile`, default
+card elevation all holding), plus two more icon fixes matching Reminders' identical
+`ReminderActionScreen.kt` twin; `BirthdaysScreen.kt`'s hand-rolled empty state migrated onto the shared
+`EmptyState` (self-caught and fixed two stray unused imports plus an import-ordering slip this migration
+introduced, via the usual detekt stash-compare check).
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Birthdays List | Compose | `feature/feature-birthday/.../feature/birthday/list/BirthdaysScreen.kt` | In progress |
-| Birthday Editor | Compose | `feature/feature-birthday/.../feature/birthday/create/EditBirthdayScreen.kt` | In progress |
-| Birthday Preview | Compose | `feature/feature-birthday/.../feature/birthday/preview/PreviewBirthdayScreen.kt` | In progress |
-| Birthday Action (alarm/ringing) | Compose (Activity-hosted) | Screen: `feature/feature-birthday/.../feature/birthday/dialog/BirthdayActionScreen.kt`; Activity: `app/src/main/java/com/elementary/tasks/birthdays/dialog/BirthdayActionActivity.kt` | In progress |
+| Birthdays List | Compose | `feature/feature-birthday/.../feature/birthday/list/BirthdaysScreen.kt` | Done |
+| Birthday Editor | Compose | `feature/feature-birthday/.../feature/birthday/create/EditBirthdayScreen.kt` | Done |
+| Birthday Preview | Compose | `feature/feature-birthday/.../feature/birthday/preview/PreviewBirthdayScreen.kt` | Done |
+| Birthday Action (alarm/ringing) | Compose (Activity-hosted) | Screen: `feature/feature-birthday/.../feature/birthday/dialog/BirthdayActionScreen.kt`; Activity: `app/src/main/java/com/elementary/tasks/birthdays/dialog/BirthdayActionActivity.kt` | Done |
 
 ## Groups / Tags / Places
 
@@ -243,69 +200,42 @@ non-defects, not gaps blocking "Done."
 
 ## Calendar
 
-Audited — see [`m3-expressive-adoption.md` §10](m3-expressive-adoption.md#10-calendar--google-tasks-screens--audit).
-All 3 rows moved to "In progress":
-[§34](m3-expressive-adoption.md#34-calendargoogle-tasks-screens-back-button-content-description-fixes--landed)
-fixed the back/close `contentDescription = null` bug §10 found on every screen in this group, and
-[§35](m3-expressive-adoption.md#35-calendargoogle-tasks-topappbars-pointed-at-shared-topappbarcolor-token--landed)
-pointed every `TopAppBar` at the shared `TopAppbarColor` token (including the 2 Calendar screens' distinct
-`Color.Transparent` variant, confirmed visually equivalent since neither screen layers its own background
-under the app bar). [§37](m3-expressive-adoption.md#37-timelinepagerkt-off-scale-corner-radius-fix--landed)
-fixed `TimelinePager.kt`'s (the composable behind Calendar Timeline's grid) two off-scale
-`RoundedCornerShape(6.dp)` chip corners, moved onto `MaterialTheme.shapes.extraSmall`, and
-[§39](m3-expressive-adoption.md#39-calendargoogle-tasks-ad-hoc-alpha-blend-de-emphasis-fixes--landed) fixed
-`CalendarScreen.kt`'s other-month day number, moving its hand-blended `onSurface.copy(alpha = 0.35f)` onto
-`MaterialTheme.colorScheme.outlineVariant`. Only the Calendar Month/Timeline breakpoint-adaptation gap — a
-design-judgment item, not a mechanical fix — remains open from §10 for this group.
-A fresh full re-audit in
-[§67](m3-expressive-adoption.md#67-calendargoogle-tasks-group--fresh-re-audit-modifier-order-and-fontweightemphasized-fixes--landed)
-confirmed every §34-§39 fix is still holding and fixed two things §10 never put in its fix order: the
-`modifier`-parameter-order convention violation (same pattern §65/§66 already fixed twice) across 12
-composables in this group, and `CalendarModeToggleButton.kt`'s manual `FontWeight` override, now
-`titleMediumEmphasized`. It also surfaced a large, purely mechanical `DrawableCatalog`/`AppIcons` cleanup
-(19 call sites across 10 files), landed right after in
-[§68](m3-expressive-adoption.md#68-calendargoogle-tasks-group--drawablecatalogappicons-cleanup--landed).
+Promoted to "Done" in
+[§84](m3-expressive-adoption.md#84-calendargoogle-tasks--full-adoption-pass-promoted-to-done), a full
+adoption pass on top of the original audit
+([§10](m3-expressive-adoption.md#10-calendar--google-tasks-screens--audit)), its six landed fix sections
+(§34-§39), a fresh re-audit (§67), a `DrawableCatalog`/`AppIcons` cleanup (§68), and a re-verification pass
+(§75). §84 found and fixed two real gaps in `CloudBubble.kt` — the shared `ui-common` speech-bubble popup
+behind this group's view-mode switcher and add-event/event-detail bubbles, never read by any prior audit of
+this group — a `modifier`-order gap and an internally-inconsistent off-scale `tonalElevation`, plus a
+sub-48dp touch target in `CalendarModeToggleButton.kt`'s view-mode list and one more literal
+`RoundedCornerShape` in Google Tasks (see below). Left open, still correctly deliberate: the Calendar
+Month/Timeline breakpoint-adaptation gap and the Timeline grid's own sub-48dp event blocks (both real
+layout/density trade-offs, not mechanical fixes).
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Calendar (Month) | Compose | `feature/feature-calendar/.../feature/calendar/monthview/CalendarScreen.kt` | In progress |
-| Calendar Timeline (Day / 3-day / 7-day) | Compose | `feature/feature-calendar/.../feature/calendar/timeline/TimelineScreen.kt` | In progress |
-| Google Calendar Event Preview | Compose | `feature/feature-calendar/.../feature/calendar/preview/GoogleCalendarEventPreviewScreen.kt` | In progress |
+| Calendar (Month) | Compose | `feature/feature-calendar/.../feature/calendar/monthview/CalendarScreen.kt` | Done |
+| Calendar Timeline (Day / 3-day / 7-day) | Compose | `feature/feature-calendar/.../feature/calendar/timeline/TimelineScreen.kt` | Done |
+| Google Calendar Event Preview | Compose | `feature/feature-calendar/.../feature/calendar/preview/GoogleCalendarEventPreviewScreen.kt` | Done |
 
 ## Google Tasks
 
-Audited — see [`m3-expressive-adoption.md` §10](m3-expressive-adoption.md#10-calendar--google-tasks-screens--audit).
-Task List Editor was already "In progress": its list-color picker renders through the shared `ColorSlider`,
-fixed for accessibility in [§16](m3-expressive-adoption.md#16-colorslider-accessibility-fix--landed). The
-other 4 rows join it now for the same two reasons as Calendar's:
-[§34](m3-expressive-adoption.md#34-calendargoogle-tasks-screens-back-button-content-description-fixes--landed)
-fixed their back-button bug, and
-[§35](m3-expressive-adoption.md#35-calendargoogle-tasks-topappbars-pointed-at-shared-topappbarcolor-token--landed)
-pointed all 5 screens' `TopAppBar`s at the shared `TopAppbarColor` token. On top of that,
-[§36](m3-expressive-adoption.md#36-google-tasks-deprecated-baseline-fab-fixes--landed) replaced the
-deprecated baseline `ExtendedFloatingActionButton` on `Google Task Lists`, `Task List`, and `Task Preview`
-with `SmallExtendedFloatingActionButton`, and
-[§38](m3-expressive-adoption.md#38-detailscreencontentwidth-added-to-the-three-under-adapted-google-tasks-screens--landed)
-added `Modifier.detailScreenContentWidth()` to `Task Preview`, `Task Editor`, and `Task List Editor`,
-mirroring `GoogleCalendarEventPreviewScreen.kt`'s existing usage, and
-[§39](m3-expressive-adoption.md#39-calendargoogle-tasks-ad-hoc-alpha-blend-de-emphasis-fixes--landed)
-migrated `Google Task Lists`' (and its sibling `Task List`'s) shared `GoogleTasksEmptyState` onto
-`ui-common`'s `EmptyState`, replacing its hand-blended `onSurface.copy(alpha = ...)` icon/text tint —
-closing every mechanical, no-judgment-required item in §10. Only the two design-judgment items (Calendar
-Month/Timeline breakpoint adaptation, sub-48dp timeline touch targets) remain open from that audit, and
-neither is scoped to Google Tasks.
-[§67](m3-expressive-adoption.md#67-calendargoogle-tasks-group--fresh-re-audit-modifier-order-and-fontweightemphasized-fixes--landed)'s
-fresh re-audit fixed the `modifier`-parameter-order gap on `GoogleTasksScreen.kt`/`TaskListScreen.kt` too, and
-[§68](m3-expressive-adoption.md#68-calendargoogle-tasks-group--drawablecatalogappicons-cleanup--landed)
-landed the same `DrawableCatalog`/`AppIcons` cleanup on its 5 Google Tasks screens.
+Promoted to "Done" in
+[§84](m3-expressive-adoption.md#84-calendargoogle-tasks--full-adoption-pass-promoted-to-done), alongside
+Calendar (see above for the shared-history links and this pass's `CloudBubble.kt` findings). §84's own
+Google-Tasks-specific fix: `GoogleTasksScreen.kt`'s `TaskListTile` had a literal `RoundedCornerShape(12.dp)`
+→ `MaterialTheme.shapes.medium`; its `color.copy(alpha = 0.12f)` tinted background was reviewed and kept —
+`color` is the task list's own chosen accent color, the same legitimate "tint from a brand color" pattern
+already established elsewhere (§80), not the de-emphasis anti-pattern.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Google Task Lists | Compose | `feature/feature-googletask/.../feature/googletask/GoogleTasksScreen.kt` | In progress |
-| Task List (tasks in a list) | Compose | `feature/feature-googletask/.../feature/googletask/TaskListScreen.kt` | In progress |
-| Task Preview | Compose | `feature/feature-googletask/.../feature/googletask/preview/PreviewGoogleTaskScreen.kt` | In progress |
-| Task Editor | Compose | `feature/feature-googletask/.../feature/googletask/task/EditGoogleTaskScreen.kt` | In progress |
-| Task List Editor | Compose | `feature/feature-googletask/.../feature/googletask/tasklist/EditGoogleTaskListScreen.kt` | In progress |
+| Google Task Lists | Compose | `feature/feature-googletask/.../feature/googletask/GoogleTasksScreen.kt` | Done |
+| Task List (tasks in a list) | Compose | `feature/feature-googletask/.../feature/googletask/TaskListScreen.kt` | Done |
+| Task Preview | Compose | `feature/feature-googletask/.../feature/googletask/preview/PreviewGoogleTaskScreen.kt` | Done |
+| Task Editor | Compose | `feature/feature-googletask/.../feature/googletask/task/EditGoogleTaskScreen.kt` | Done |
+| Task List Editor | Compose | `feature/feature-googletask/.../feature/googletask/tasklist/EditGoogleTaskListScreen.kt` | Done |
 
 ## Workflow (automation rules)
 
@@ -473,98 +403,92 @@ gap" shape §66/§79 already established for `ColorPickerCard.kt`. **Promoted al
 
 ## Backup / Insights (PRO)
 
-Audited — see [`m3-expressive-adoption.md` §13](m3-expressive-adoption.md#13-backup--insights--onboarding--widget-configuration-screens--audit).
-Both rows moved to "In progress":
-[§44](m3-expressive-adoption.md#44-localbackupscreenktinsightsscreenkt-back-button-content-description-fixes--landed)
-fixed the back-button `contentDescription = null` bug §13 found on both screens' standalone `Scaffold`s
-(the two `WidgetConfigScaffold.kt`'s own §14 fix didn't reach, since these two don't share that scaffold),
-and
-[§45](m3-expressive-adoption.md#45-localbackupscreenktinsightsscreenkt-topappbars-pointed-at-shared-topappbarcolor-token--landed)
-pointed both screens' `TopAppBar`s at the shared `TopAppbarColor` token, and
-[§46](m3-expressive-adoption.md#46-insightsscreenkt-alpha-blend-fixes--landed) fixed `InsightsScreen.kt`'s 7
-alpha-blended `.copy(alpha = ...)` call sites — 5 via a straight `onSurfaceVariant` role swap, and its
-`InsightsEmptyState` by migrating onto `ui-common`'s shared `EmptyState`. §13 has no remaining mechanical
-findings for either screen; still open (low-urgency, visual-only): both screens' baseline
-`CircularProgressIndicator`.
+Promoted to "Done" in
+[§82](m3-expressive-adoption.md#82-backupinsightsonboardingwidget-configuration--full-adoption-pass-promoted-to-done),
+a full adoption pass on top of the original audit
+([§13](m3-expressive-adoption.md#13-backup--insights--onboarding--widget-configuration-screens--audit)) and
+its landed fixes (back-button content descriptions, §44; shared `TopAppbarColor`, §45; `InsightsScreen.kt`'s
+alpha-blend cleanup, §46). §82 removed a dead-import leftover on `LocalBackupScreen.kt` and investigated (but
+could not cleanly fix, for a documented real-API-constraint reason) `InsightsScreen.kt`'s bar-chart corner
+radius. Still open, deliberately not required for "Done": both screens' baseline
+`CircularProgressIndicator` — the newer `LoadingIndicator` replacement needs an `@ExperimentalMaterial3ExpressiveApi`
+opt-in nothing else in the app uses yet.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Local Backup (Export) | Compose | `extensions/localbackup/.../localbackup/compose/LocalBackupScreen.kt` | In progress |
-| Local Backup (Import) | Compose | same file, `LocalBackupNavKey.Import` | In progress |
-| Insights Dashboard | Compose | `feature/feature-insights/.../insights/compose/InsightsScreen.kt` | In progress |
+| Local Backup (Export) | Compose | `extensions/localbackup/.../localbackup/compose/LocalBackupScreen.kt` | Done |
+| Local Backup (Import) | Compose | same file, `LocalBackupNavKey.Import` | Done |
+| Insights Dashboard | Compose | `feature/feature-insights/.../insights/compose/InsightsScreen.kt` | Done |
 
 ## App Shell (Splash)
 
+Promoted to "Done" in
+[§82](m3-expressive-adoption.md#82-backupinsightsonboardingwidget-configuration--full-adoption-pass-promoted-to-done).
 `BottomNavSplashScreen.kt` was missing from this doc entirely until
-[§55](m3-expressive-adoption.md#55-onboarding--splash-screens--audit) added it. Its app-name reveal animation
-(`fadeIn() + slideInVertically`) relied on Compose's implicit default animation specs instead of
-`MaterialTheme.motionScheme` — the same migration target as §54's `HomeScreen.kt` fix, just starting from
-unset defaults rather than a literal `tween()` — fixed in
-[§57](m3-expressive-adoption.md#57-bottomnavsplashscreenkt-motion-scheme-fix--landed) by hoisting the
-expression into a local val, the same shape §54 used. Otherwise clean: no back button (correctly, it's a
-transient splash), no app bar, no alpha-blend. `AppLauncherIcon.kt`'s raw
-`painterResource(R.drawable.ic_launcher_foreground)` was reviewed and left alone — a documented, justified
-exception (recreating an adaptive launcher icon from its mipmap leaves, which `painterResource` can't load
-directly as an `<adaptive-icon>`), not a `DrawableCatalog` convention gap.
+[§55](m3-expressive-adoption.md#55-onboarding--splash-screens--audit) added it; its app-name reveal animation
+was migrated onto `MaterialTheme.motionScheme` in
+[§57](m3-expressive-adoption.md#57-bottomnavsplashscreenkt-motion-scheme-fix--landed). §82 re-read both files
+fresh: no back button (correctly, it's a transient splash), no app bar, no alpha-blend, and its
+`AnimatedGradientBackground` backdrop's own literal `tween()` is a deliberate, correct exception (an
+unbounded ambient loop, not the kind of state transition `motionScheme` specs are for). `AppLauncherIcon.kt`'s
+raw `painterResource(R.drawable.ic_launcher_foreground)` and hardcoded launcher-gradient hex values remain a
+documented, justified exception (recreating an adaptive launcher icon from its mipmap leaves, pixel-matching
+the actual OS asset) — not `DrawableCatalog`/color-token gaps.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Bottom Nav Splash | Compose | `app/.../navigation/BottomNavSplashScreen.kt`, `AppLauncherIcon.kt` | In progress |
+| Bottom Nav Splash | Compose | `app/.../navigation/BottomNavSplashScreen.kt`, `AppLauncherIcon.kt` | Done |
 
 ## Onboarding / Login
 
-`PinLoginScreen.kt` audited — see [`m3-expressive-adoption.md` §13](m3-expressive-adoption.md#13-backup--insights--onboarding--widget-configuration-screens--audit).
-It was already this audit's positive counter-example — both its close and fingerprint
-buttons already had correct content descriptions, so [§44](m3-expressive-adoption.md#44-localbackupscreenktinsightsscreenkt-back-button-content-description-fixes--landed)
-made no change here. Moved to "In progress":
-[§47](m3-expressive-adoption.md#47-widgetconfigscaffoldktpinloginscreenktpininputkt-drawablecatalog-cleanup--landed)
-routed `PinLoginScreen.kt`'s (fingerprint + close icons) and `PinInput.kt`'s (delete-key + per-digit dot
-icons) raw `painterResource(R.drawable.*)` lookups through the already-cataloged `AppIcons.Fluent.*`. Still
-open: `PinInput.kt`'s off-scale `2.dp` tonal elevation on `PinDigitButton`.
+Promoted to "Done" in
+[§82](m3-expressive-adoption.md#82-backupinsightsonboardingwidget-configuration--full-adoption-pass-promoted-to-done).
+`PinLoginScreen.kt`/`PinInput.kt` were already this group's positive counter-example on content descriptions
+(§13/§44) and had their icons cataloged in
+[§47](m3-expressive-adoption.md#47-widgetconfigscaffoldktpinloginscreenktpininputkt-drawablecatalog-cleanup--landed);
+§82 fixed the one remaining item, `PinInput.kt`'s off-scale `2.dp` tonal elevation on `PinDigitButton`
+(changed to the correct `1.dp` resting level). `PinLoginActivity.kt`, read directly for the first time this
+pass, is pure Activity glue with no theming decisions.
 
-`OnboardingScreen.kt` was missing from this doc entirely (not just unaudited within a tracked group) until
-[§55](m3-expressive-adoption.md#55-onboarding--splash-screens--audit) added it: its page-indicator's inactive
-dot used the same alpha-blend de-emphasis anti-pattern fixed elsewhere in this doc
-(`onSurfaceVariant.copy(alpha = 0.3f)`), which
-[§56](m3-expressive-adoption.md#56-onboardingscreenkt-alpha-blend-fix--landed) fixed by swapping to
-`outlineVariant`. Otherwise clean — icons already route through `AppIcons.Fluent.*`, and no text in the file
-has a manual `FontWeight` override to trigger the `*Emphasized` typography-token migration used elsewhere.
-Its translucent icon-chip background (`surface.copy(alpha = 0.85f)` over `AnimatedGradientBackground`) was
-reviewed and left alone — a different, likely-intentional "frosted glass over gradient" effect, not the
-de-emphasis pattern item 1 targeted.
+`OnboardingScreen.kt` was missing from this doc entirely until
+[§55](m3-expressive-adoption.md#55-onboarding--splash-screens--audit) added it; its alpha-blend page-indicator
+bug was fixed in [§56](m3-expressive-adoption.md#56-onboardingscreenkt-alpha-blend-fix--landed). §82 re-read
+it fresh: icons already route through `AppIcons.Fluent.*`, no manual `FontWeight` override exists to trigger
+the `*Emphasized` typography migration, and its translucent icon-chip background
+(`surface.copy(alpha = 0.85f)` over `AnimatedGradientBackground`) remains a deliberate, different
+"frosted glass over gradient" effect, not the de-emphasis pattern item 1 targeted.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| PIN Login | Compose (Activity-hosted) | `ui/ui-common/.../ui/common/login/PinLoginScreen.kt`, `PinLoginActivity.kt` | In progress |
-| Onboarding | Compose | `feature/feature-onboarding/.../onboarding/compose/OnboardingScreen.kt` | In progress |
+| PIN Login | Compose (Activity-hosted) | `ui/ui-common/.../ui/common/login/PinLoginScreen.kt`, `PinLoginActivity.kt` | Done |
+| Onboarding | Compose | `feature/feature-onboarding/.../onboarding/compose/OnboardingScreen.kt` | Done |
 
 ## Widget Configuration (appwidgets module)
 
-Audited — see [`m3-expressive-adoption.md` §13](m3-expressive-adoption.md#13-backup--insights--onboarding--widget-configuration-screens--audit).
-The shared `WidgetConfigScaffold.kt`'s back-button content description and app-bar color-token bypass have
-been fixed (see [§14](m3-expressive-adoption.md#14-shared-scaffold-fixes--landed)), and the shared
-`ColorSlider` every one of these 7 screens uses for its color pickers has since had its accessibility gap
-fixed too (see [§16](m3-expressive-adoption.md#16-colorslider-accessibility-fix--landed)) — both moving all
-7 screens below to "In progress." `WidgetConfigScaffold.kt`'s raw `painterResource(R.drawable.ic_fluent_dismiss)`
-was also routed through `AppIcons.Fluent.Dismiss` in
-[§47](m3-expressive-adoption.md#47-widgetconfigscaffoldktpinloginscreenktpininputkt-drawablecatalog-cleanup--landed).
-A fresh full re-audit in
-[§65](m3-expressive-adoption.md#65-widget-configuration-group--fresh-re-audit-and-two-fixes--landed)
-re-read all 7 screens from scratch, confirmed the shared-component fixes above are all still holding, fixed
-§13's never-landed `modifier`-parameter-order finding across 6 of the 7 screens (plus their private mock-preview
-composables), and found one thing §13 missed entirely: `EventsWidgetConfigScreen.kt`'s own hand-rolled
-text-size `AlertDialog` was the exact seek/slider-dialog pattern §61 consolidated elsewhere — migrated onto
-the shared `SeekValueDialog` too.
+Promoted to "Done" in
+[§82](m3-expressive-adoption.md#82-backupinsightsonboardingwidget-configuration--full-adoption-pass-promoted-to-done).
+The shared `WidgetConfigScaffold.kt` (back button, app-bar color token, `AppIcons.Fluent.Dismiss`) and
+`ColorSlider` (accessibility semantics) were fixed in §13/§14/§16/§47, and a fresh full re-audit in
+[§65](m3-expressive-adoption.md#65-widget-configuration-group--fresh-re-audit-and-two-fixes--landed) fixed
+the group's `modifier`-parameter-order gap and migrated `EventsWidgetConfigScreen.kt`'s hand-rolled text-size
+dialog onto the shared `SeekValueDialog`. §82 re-read all 7 screens' full bodies against the guidelines'
+complete per-screen checklist (not just re-checking prior findings) and found nothing further: every
+screen's real (non-mock-preview) content correctly uses `AppShapes`/`MaterialTheme.shapes`, on-scale
+elevation, and no manual typography overrides; the mock-preview composables' raw `painterResource`/
+`dimensionResource` calls remain the established, deliberate "matches the real home-screen widget" exception,
+not a `DrawableCatalog`/shape-token gap. Still open, low-priority: `EventsWidgetConfigScreen.kt`'s
+dialog-based vs. `SingleNoteWidgetConfigScreen.kt`'s inline-`Slider`-based text-size UX inconsistency
+(a product call, not a compliance gap).
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Single Note Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../singlenote/SingleNoteWidgetConfigScreen.kt` | In progress |
-| Notes Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../notes/NotesWidgetConfigScreen.kt` | In progress |
-| Calendar Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../calendar/CalendarWidgetConfigScreen.kt` | In progress |
-| Events Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../events/EventsWidgetConfigScreen.kt` | In progress |
-| Birthdays Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../birthdays/BirthdaysWidgetConfigScreen.kt` | In progress |
-| Combined Buttons Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../combinedbuttons/CombinedWidgetConfigScreen.kt` | In progress |
-| Google Tasks Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../googletasks/TasksWidgetConfigScreen.kt` | In progress |
+| Single Note Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../singlenote/SingleNoteWidgetConfigScreen.kt` | Done |
+| Notes Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../notes/NotesWidgetConfigScreen.kt` | Done |
+| Calendar Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../calendar/CalendarWidgetConfigScreen.kt` | Done |
+| Events Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../events/EventsWidgetConfigScreen.kt` | Done |
+| Birthdays Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../birthdays/BirthdaysWidgetConfigScreen.kt` | Done |
+| Combined Buttons Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../combinedbuttons/CombinedWidgetConfigScreen.kt` | Done |
+| Google Tasks Widget Config | Compose (Activity-hosted) | `extensions/appwidgets/.../googletasks/TasksWidgetConfigScreen.kt` | Done |
 
 ## Notes on scope
 

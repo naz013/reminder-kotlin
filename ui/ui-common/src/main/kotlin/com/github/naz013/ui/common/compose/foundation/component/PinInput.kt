@@ -134,7 +134,7 @@ private fun PinDigitButton(digit: Int, onClick: (Int) -> Unit) {
     modifier = Modifier.size(DigitButtonSize),
     shape = CircleShape,
     color = MaterialTheme.colorScheme.surface,
-    tonalElevation = 2.dp,
+    tonalElevation = 1.dp,
     shadowElevation = 1.dp,
   ) {
     Box(contentAlignment = Alignment.Center) {

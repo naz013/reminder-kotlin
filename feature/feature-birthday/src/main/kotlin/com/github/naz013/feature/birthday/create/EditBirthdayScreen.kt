@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -94,7 +93,7 @@ internal fun EditBirthdayScreen(
         actions = {
           if (state.canDelete) {
             MenuIconButton(
-              icon = painterResource(R.drawable.ic_fluent_delete),
+              icon = AppIcons.Fluent.Delete,
               contentDescription = stringResource(R.string.delete),
               enabled = !state.isLoading,
               onClick = onDeleteMenuClick,
@@ -183,7 +182,7 @@ internal fun EditBirthdayScreen(
           modifier = Modifier.weight(1f),
         )
         MenuIconButton(
-          icon = painterResource(R.drawable.ic_fluent_contacts),
+          icon = AppIcons.Fluent.Contacts,
           contentDescription = stringResource(R.string.acc_select_number_from_contacts),
           enabled = !state.isLoading,
           onClick = onPickContactClick,
@@ -214,7 +213,7 @@ internal fun EditBirthdayScreen(
               )
             } else {
               Icon(
-                painter = painterResource(R.drawable.ic_fluent_person),
+                painter = AppIcons.Fluent.Person,
                 contentDescription = null,
                 modifier = Modifier.size(36.dp),
               )

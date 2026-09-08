@@ -22,7 +22,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.TextUnit
@@ -70,7 +69,7 @@ internal fun PreviewNoteScreen(
       },
       actions = {
         MenuIconButton(
-          icon = painterResource(R.drawable.ic_fluent_edit),
+          icon = AppIcons.Fluent.Edit,
           iconColor = state.content,
           contentDescription = stringResource(R.string.edit),
           onClick = actions.onEditClick,
@@ -96,7 +95,7 @@ internal fun PreviewNoteScreen(
             PopupMenuItem(
               id = OVERFLOW_ITEM_SHARE,
               title = stringResource(R.string.share),
-              iconRes = R.drawable.ic_fluent_share_android,
+              iconRes = DrawableCatalog.Fluent.ShareAndroid,
             ),
             PopupMenuItem(
               id = OVERFLOW_ITEM_ARCHIVE,
@@ -108,7 +107,7 @@ internal fun PreviewNoteScreen(
                   R.string.notes_move_to_archive
                 },
               ),
-              iconRes = R.drawable.ic_fluent_archive,
+              iconRes = DrawableCatalog.Fluent.Archive,
             ),
             PopupMenuItem(
               id = OVERFLOW_ITEM_PIN,
@@ -118,7 +117,7 @@ internal fun PreviewNoteScreen(
             PopupMenuItem(
               id = OVERFLOW_ITEM_DELETE,
               title = stringResource(R.string.delete),
-              iconRes = R.drawable.ic_fluent_delete,
+              iconRes = DrawableCatalog.Fluent.Delete,
             ),
           ),
           onItemClick = { id ->

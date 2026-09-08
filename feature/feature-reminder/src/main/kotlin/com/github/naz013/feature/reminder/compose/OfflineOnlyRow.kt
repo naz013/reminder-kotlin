@@ -26,9 +26,9 @@ import com.github.naz013.ui.common.compose.AppIcons
  */
 @Composable
 internal fun OfflineOnlyRow(
+  modifier: Modifier = Modifier,
   checked: Boolean,
   onCheckedChange: (Boolean) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(modifier = modifier.fillMaxWidth()) {
     Row(

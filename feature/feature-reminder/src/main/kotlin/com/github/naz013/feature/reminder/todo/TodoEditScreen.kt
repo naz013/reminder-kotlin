@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
@@ -21,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
@@ -31,6 +29,7 @@ import com.github.naz013.feature.reminder.build.valuedialog.editor.SubTasksValue
 import com.github.naz013.feature.reminder.compose.OfflineOnlyRow
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.AppShapes
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
@@ -40,6 +39,7 @@ import com.github.naz013.ui.tag.TagChipState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun TodoEditScreen(
+  modifier: Modifier = Modifier,
   state: TodoEditState,
   dateTimeManager: DateTimeManager,
   onBackClick: () -> Unit,
@@ -52,7 +52,6 @@ internal fun TodoEditScreen(
   onExtendClick: () -> Unit,
   onDeleteClick: () -> Unit,
   onOfflineOnlyChange: (Boolean) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
@@ -74,7 +73,7 @@ internal fun TodoEditScreen(
           )
           if (state.isEditing) {
             MenuIconButton(
-              icon = painterResource(R.drawable.ic_fluent_delete),
+              icon = AppIcons.Fluent.Delete,
               contentDescription = stringResource(R.string.delete),
               onClick = onDeleteClick,
             )
@@ -139,7 +138,7 @@ internal fun TodoEditScreen(
       FilledTonalButton(
         onClick = onExtendClick,
         enabled = state.canSave,
-        shape = RoundedCornerShape(24.dp),
+        shape = AppShapes.pill,
         modifier = Modifier
           .fillMaxWidth()
           .padding(top = 24.dp),

@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -37,7 +37,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -51,6 +50,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.github.naz013.domain.note.NoteSpanAttribute
 import com.github.naz013.feature.note.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 import com.github.naz013.ui.note.NoteFontProvider
@@ -70,7 +70,7 @@ internal fun MicIcon(
   when (speechState) {
     SpeechUiState.IDLE -> {
       Icon(
-        painter = painterResource(R.drawable.ic_builder_mic_on),
+        painter = AppIcons.Builder.MicOn,
         contentDescription = stringResource(R.string.acc_type_by_voice),
         tint = contentColor,
       )
@@ -89,7 +89,7 @@ internal fun MicIcon(
 
     SpeechUiState.STARTED, SpeechUiState.STOPPED -> {
       Icon(
-        painter = painterResource(R.drawable.ic_fluent_recording_stop),
+        painter = AppIcons.Fluent.RecordingStop,
         contentDescription = stringResource(R.string.acc_type_by_voice),
         tint = contentColor,
       )
@@ -556,7 +556,7 @@ private fun GlyphToggleButton(
     textDecoration = decoration,
     style = MaterialTheme.typography.titleMedium,
     modifier = Modifier
-      .clip(RoundedCornerShape(8.dp))
+      .clip(MaterialTheme.shapes.small)
       .background(if (active) contentColor.copy(alpha = 0.2f) else Color.Transparent)
       .clickable(onClick = onClick)
       .padding(horizontal = 12.dp, vertical = 8.dp),
@@ -578,7 +578,7 @@ private fun LineFormatButton(
     fontWeight = FontWeight.Bold,
     style = MaterialTheme.typography.titleMedium,
     modifier = Modifier
-      .clip(RoundedCornerShape(8.dp))
+      .clip(MaterialTheme.shapes.small)
       .background(if (active) contentColor.copy(alpha = 0.2f) else Color.Transparent)
       .clickable(onClick = onClick)
       .padding(horizontal = 10.dp, vertical = 8.dp),
@@ -640,10 +640,13 @@ private fun TextColorModeChip(
   Text(
     text = text,
     color = contentColor,
-    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-    style = MaterialTheme.typography.labelLarge,
+    style = if (selected) {
+      MaterialTheme.typography.labelLargeEmphasized
+    } else {
+      MaterialTheme.typography.labelLarge
+    },
     modifier = modifier
-      .clip(RoundedCornerShape(50))
+      .clip(CircleShape)
       .background(if (selected) contentColor.copy(alpha = 0.2f) else Color.Transparent)
       .clickable(onClick = onClick)
       .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -699,7 +702,7 @@ private fun GradientColorControls(
       .fillMaxWidth()
       .height(28.dp)
       .padding(top = 12.dp)
-      .clip(RoundedCornerShape(8.dp))
+      .clip(MaterialTheme.shapes.small)
       .background(
         Brush.linearGradient(
           listOf(

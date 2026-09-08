@@ -11,17 +11,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 
 @Composable
 internal fun ReminderFullscreenMapScreen(
+  modifier: Modifier = Modifier,
   isLoading: Boolean,
   onMoveToPlaceClick: () -> Unit,
   mapContent: @Composable () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Box(modifier = modifier.fillMaxSize()) {
     if (isLoading) {
@@ -30,7 +30,7 @@ internal fun ReminderFullscreenMapScreen(
       mapContent()
       SmallExtendedFloatingActionButton(
         onClick = onMoveToPlaceClick,
-        icon = { Icon(painterResource(R.drawable.ic_fluent_place), contentDescription = null) },
+        icon = { Icon(AppIcons.Fluent.Place, contentDescription = null) },
         text = { Text(stringResource(R.string.move_to_place)) },
         modifier = Modifier
           .align(Alignment.BottomCenter)

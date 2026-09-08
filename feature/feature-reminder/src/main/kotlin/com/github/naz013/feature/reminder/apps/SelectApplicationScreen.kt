@@ -20,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,6 +35,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 import org.koin.androidx.compose.koinViewModel
@@ -45,9 +44,9 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SelectApplicationScreen(
+  modifier: Modifier = Modifier,
   onBackClick: () -> Unit,
   onAppSelected: (String) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val viewModel = koinViewModel<SelectApplicationViewModel>()
   val state by viewModel.state.collectAsState()
@@ -72,7 +71,7 @@ internal fun SelectApplicationScreen(
             onClick = onBackClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
@@ -174,7 +173,7 @@ private fun SelectApplicationEmptyState(modifier: Modifier = Modifier) {
     verticalArrangement = Arrangement.Center,
   ) {
     Image(
-      painter = painterResource(R.drawable.ic_human_resources),
+      painter = AppIcons.HumanResources,
       contentDescription = null,
       modifier = Modifier.size(dimensionResource(R.dimen.empty_image_size)),
     )

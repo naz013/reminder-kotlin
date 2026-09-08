@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -108,13 +107,13 @@ private fun AttachmentCell(attachmentFile: AttachmentFile, onRemove: () -> Unit)
         contentScale = ContentScale.Crop,
         modifier = Modifier
           .fillMaxSize()
-          .clip(RoundedCornerShape(8.dp)),
+          .clip(MaterialTheme.shapes.small),
       )
     } else {
       Column(
         modifier = Modifier
           .fillMaxSize()
-          .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+          .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.small)
           .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
       ) {

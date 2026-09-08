@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -55,7 +54,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.contentDescription
@@ -315,7 +313,7 @@ private fun ShopItemRow(
           exit = scaleOut(checkSpatialSpec) + fadeOut(checkEffectsSpec),
         ) {
           Icon(
-            painter = painterResource(R.drawable.ic_fluent_checkbox_checked),
+            painter = AppIcons.Fluent.CheckboxChecked,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface,
           )
@@ -326,7 +324,7 @@ private fun ShopItemRow(
           exit = scaleOut(checkSpatialSpec) + fadeOut(checkEffectsSpec),
         ) {
           Icon(
-            painter = painterResource(R.drawable.ic_fluent_checkbox_unchecked),
+            painter = AppIcons.Fluent.CheckboxUnchecked,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface,
           )
@@ -438,7 +436,7 @@ private fun AllDoneRow(modifier: Modifier = Modifier) {
     modifier = modifier
       .fillMaxWidth()
       .padding(vertical = 6.dp)
-      .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
+      .background(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.shapes.small)
       .padding(horizontal = 12.dp, vertical = 8.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {

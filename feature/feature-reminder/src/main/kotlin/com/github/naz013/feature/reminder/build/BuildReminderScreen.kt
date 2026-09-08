@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,6 +59,7 @@ import com.github.naz013.feature.reminder.compose.OfflineOnlyRow
 import com.github.naz013.feature.reminder.note.UiNoteList
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.AppShapes
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
@@ -535,13 +535,13 @@ private fun BuilderEmptyState(
 
 @Composable
 private fun QuickStartButton(
+  modifier: Modifier = Modifier,
   text: String,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   FilledTonalButton(
     onClick = onClick,
-    shape = RoundedCornerShape(24.dp),
+    shape = AppShapes.pill,
     modifier = modifier,
   ) {
     Text(text = text)
