@@ -13,10 +13,12 @@ import com.github.naz013.ui.common.compose.foundation.deviceScreenConfiguration
 
 /**
  * Shared shell for a full-screen "notification action" dialog (reminder, birthday, ...):
- * a [Scaffold] + [Surface], an early return while [state] is still loading, and a
- * portrait/landscape layout switch based on [deviceScreenConfiguration]. [overlayContent]
- * renders as a sibling of the surface, for content such as a modal bottom sheet that
- * shouldn't be clipped to it.
+ * a [Scaffold] + [Surface], an early return while [state] is still loading, and a width-class
+ * layout switch based on [deviceScreenConfiguration]: [portrait] (stacked, phone-shaped) renders
+ * only on [DeviceScreenConfiguration.MobilePortrait]; every Medium+ width bucket (tablet/desktop,
+ * as well as short wide phone windows) renders [landscape] (two-pane: content + action rail).
+ * [overlayContent] renders as a sibling of the surface, for content such as a modal bottom sheet
+ * that shouldn't be clipped to it.
  */
 @Composable
 fun <S> ActionDialogScaffold(
@@ -41,8 +43,8 @@ fun <S> ActionDialogScaffold(
       Logger.d(logTag, "Rendering screen with configuration: $screenConfiguration")
 
       when (screenConfiguration) {
-        DeviceScreenConfiguration.MobileLandscape -> landscape(screenState)
-        else -> portrait(screenState)
+        DeviceScreenConfiguration.MobilePortrait -> portrait(screenState)
+        else -> landscape(screenState)
       }
     }
 
