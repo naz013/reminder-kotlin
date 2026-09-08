@@ -113,11 +113,13 @@ internal fun OtherSettingsScreen(
     }
     SettingsItem(
       title = stringResource(R.string.permissions),
+      icon = AppIcons.Fluent.LockShield,
       dividerBottom = true,
       onClick = onPermissionsClick,
     )
     SettingsItem(
       title = stringResource(R.string.allow_permission),
+      icon = AppIcons.Fluent.Lock,
       dividerBottom = true,
       onClick = onAllowPermissionClick,
     )

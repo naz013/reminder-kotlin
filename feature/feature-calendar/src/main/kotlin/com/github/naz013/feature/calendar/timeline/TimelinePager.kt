@@ -75,6 +75,7 @@ private const val NOW_LINE_REFRESH_INTERVAL_MS = 30_000L
  */
 @Composable
 internal fun TimelinePager(
+  modifier: Modifier = Modifier,
   initialPagerPosition: Int,
   pagerJumpRequest: Int?,
   onPagerJumpConsumed: () -> Unit,
@@ -89,7 +90,6 @@ internal fun TimelinePager(
   onDayHeaderClick: (LocalDate) -> Unit,
   initialScrollOffset: Int,
   onScrollOffsetChanged: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val pagerState = rememberPagerState(initialPage = initialPagerPosition) { Int.MAX_VALUE }
   // Hoisted above the pager so swiping between windows keeps the same vertical scroll offset.
@@ -139,6 +139,7 @@ internal fun TimelinePager(
 
 @Composable
 private fun TimelinePage(
+  modifier: Modifier = Modifier,
   windowStart: LocalDate,
   daysForWindow: (LocalDate) -> List<TimelineDay>,
   hourLabels: List<String>,
@@ -150,7 +151,6 @@ private fun TimelinePage(
   loadWindowHolidays: suspend (LocalDate) -> Map<LocalDate, PublicHoliday>,
   onItemClick: (UiAgendaItem) -> Unit,
   onDayHeaderClick: (LocalDate) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val days = remember(windowStart) { daysForWindow(windowStart) }
   var eventsByDay by remember(windowStart) { mutableStateOf<Map<LocalDate, List<UiAgendaItem>>?>(null) }
@@ -225,9 +225,9 @@ private fun TimelinePage(
 
 @Composable
 private fun TimelineDayHeader(
+  modifier: Modifier = Modifier,
   day: TimelineDay,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier =
@@ -268,9 +268,9 @@ private fun TimelineDayHeader(
  */
 @Composable
 private fun TimelineHolidayRow(
+  modifier: Modifier = Modifier,
   days: List<TimelineDay>,
   holidaysByDay: Map<LocalDate, PublicHoliday>,
-  modifier: Modifier = Modifier,
 ) {
   if (holidaysByDay.isEmpty()) return
   Row(modifier = modifier) {
@@ -285,8 +285,8 @@ private fun TimelineHolidayRow(
 
 @Composable
 private fun HolidayChip(
-  holiday: PublicHoliday,
   modifier: Modifier = Modifier,
+  holiday: PublicHoliday,
 ) {
   var expanded by remember { mutableStateOf(false) }
   val containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -338,8 +338,8 @@ private fun HolidayChip(
 
 @Composable
 private fun HourAxis(
-  hourLabels: List<String>,
   modifier: Modifier = Modifier,
+  hourLabels: List<String>,
 ) {
   Box(modifier = modifier.height(HOUR_HEIGHT * HOURS_IN_DAY)) {
     hourLabels.forEachIndexed { hour, label ->
@@ -360,10 +360,10 @@ private fun HourAxis(
 
 @Composable
 private fun TimelineDayColumn(
+  modifier: Modifier = Modifier,
   items: List<UiAgendaItem>,
   isToday: Boolean,
   onItemClick: (UiAgendaItem) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val positioned = remember(items) { layoutDayEvents(items, MINUTES_IN_HOUR) }
   val density = LocalDensity.current

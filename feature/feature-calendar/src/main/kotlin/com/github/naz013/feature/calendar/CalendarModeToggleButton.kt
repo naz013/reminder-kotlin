@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
@@ -40,9 +39,9 @@ import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
  */
 @Composable
 internal fun CalendarModeToggleButton(
+  modifier: Modifier = Modifier,
   currentMode: CalendarViewMode,
   onModeSelected: (CalendarViewMode) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   var expanded by remember { mutableStateOf(false) }
   Box(modifier = modifier) {
@@ -108,8 +107,11 @@ private fun CalendarModeRow(
     Text(
       text = label,
       color = rowContentColor,
-      style = MaterialTheme.typography.titleMedium,
-      fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+      style = if (selected) {
+        MaterialTheme.typography.titleMediumEmphasized
+      } else {
+        MaterialTheme.typography.titleMedium
+      },
       modifier = Modifier.weight(1f),
     )
     if (selected) {

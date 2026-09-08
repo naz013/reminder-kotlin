@@ -47,7 +47,7 @@ internal fun ProVersionScreen(
         Spacer(modifier = Modifier.height(24.dp))
         Text(
           text = stringResource(R.string.pro_advantages),
-          style = MaterialTheme.typography.headlineSmall,
+          style = MaterialTheme.typography.headlineSmallEmphasized,
           color = MaterialTheme.colorScheme.tertiary,
         )
         Spacer(modifier = Modifier.height(24.dp))
@@ -55,7 +55,7 @@ internal fun ProVersionScreen(
           advantages.forEach { advantage ->
             Text(
               text = advantage,
-              style = MaterialTheme.typography.titleMedium,
+              style = MaterialTheme.typography.titleMediumEmphasized,
               color = MaterialTheme.colorScheme.onSurface,
             )
           }

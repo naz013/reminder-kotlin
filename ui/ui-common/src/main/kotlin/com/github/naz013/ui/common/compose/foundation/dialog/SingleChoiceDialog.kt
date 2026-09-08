@@ -3,9 +3,12 @@ package com.github.naz013.ui.common.compose.foundation.dialog
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -31,16 +34,20 @@ fun SingleChoiceDialog(
     onDismissRequest = onDismiss,
     title = { Text(title) },
     text = {
-      Column(modifier = Modifier.selectableGroup()) {
+      Column(
+        modifier = Modifier
+          .heightIn(max = 400.dp)
+          .verticalScroll(rememberScrollState())
+          .selectableGroup(),
+      ) {
         options.forEachIndexed { index, option ->
           val selected = index == selectedIndex
           Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier =
-              Modifier
-                .fillMaxWidth()
-                .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
-                .padding(vertical = 8.dp),
+            modifier = Modifier
+              .fillMaxWidth()
+              .selectable(selected = selected, onClick = { onOptionSelected(index) }, role = Role.RadioButton)
+              .padding(vertical = 8.dp),
           ) {
             RadioButton(selected = selected, onClick = null)
             Text(

@@ -30,6 +30,7 @@ import org.threeten.bp.LocalDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun TimelineScreen(
+  modifier: Modifier = Modifier,
   state: TimelineScreenState,
   currentMode: CalendarViewMode,
   onModeSelected: (CalendarViewMode) -> Unit,
@@ -49,7 +50,6 @@ internal fun TimelineScreen(
   onBackClick: () -> Unit,
   initialScrollOffset: Int,
   onScrollOffsetChanged: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,

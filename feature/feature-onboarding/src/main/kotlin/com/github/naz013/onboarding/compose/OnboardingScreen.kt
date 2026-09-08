@@ -54,12 +54,11 @@ fun OnboardingScreen(
   AnimatedGradientBackground(modifier = modifier.fillMaxSize()) {
     Column(modifier = Modifier.fillMaxSize()) {
       Row(
-        modifier =
-          Modifier
-            .statusBarsPadding()
-            .fillMaxWidth()
-            .height(56.dp)
-            .padding(horizontal = 8.dp),
+        modifier = Modifier
+          .statusBarsPadding()
+          .fillMaxWidth()
+          .height(56.dp)
+          .padding(horizontal = 8.dp),
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
       ) {
@@ -72,7 +71,9 @@ fun OnboardingScreen(
 
       HorizontalPager(
         state = pagerState,
-        modifier = Modifier.weight(1f).fillMaxWidth(),
+        modifier = Modifier
+          .weight(1f)
+          .fillMaxWidth(),
       ) { page ->
         when (page) {
           WELCOME_PAGE -> OnboardingWelcomePage()
@@ -87,7 +88,9 @@ fun OnboardingScreen(
       OnboardingPageIndicator(
         pageCount = ONBOARDING_PAGE_COUNT,
         currentPage = pagerState.currentPage,
-        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(vertical = 16.dp),
       )
 
       Spacer(modifier = Modifier.navigationBarsPadding())
@@ -108,7 +111,9 @@ private fun OnboardingWelcomePage(modifier: Modifier = Modifier) {
 @Composable
 private fun OnboardingCapabilitiesPage(modifier: Modifier = Modifier) {
   Column(
-    modifier = modifier.fillMaxSize().padding(horizontal = 32.dp),
+    modifier = modifier
+      .fillMaxSize()
+      .padding(horizontal = 32.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Center,
   ) {
@@ -162,7 +167,9 @@ private fun OnboardingCapabilityCaption(
       Icon(
         painter = icon,
         contentDescription = null,
-        modifier = Modifier.padding(14.dp).size(24.dp),
+        modifier = Modifier
+          .padding(14.dp)
+          .size(24.dp),
         tint = MaterialTheme.colorScheme.primary,
       )
     }
@@ -183,7 +190,9 @@ private fun OnboardingGetStartedPage(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier.fillMaxSize().padding(horizontal = 32.dp),
+    modifier = modifier
+      .fillMaxSize()
+      .padding(horizontal = 32.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Center,
   ) {
@@ -228,7 +237,9 @@ private fun OnboardingPageContent(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier.fillMaxSize().padding(horizontal = 32.dp),
+    modifier = modifier
+      .fillMaxSize()
+      .padding(horizontal = 32.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Center,
   ) {
@@ -266,19 +277,17 @@ private fun OnboardingPageIndicator(
   ) {
     repeat(pageCount) { page ->
       val isSelected = page == currentPage
-      val color =
-        if (isSelected) {
-          MaterialTheme.colorScheme.primary
-        } else {
-          MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
-        }
+      val color = if (isSelected) {
+        MaterialTheme.colorScheme.primary
+      } else {
+        MaterialTheme.colorScheme.outlineVariant
+      }
       Box(
-        modifier =
-          Modifier
-            .padding(horizontal = 4.dp)
-            .size(if (isSelected) 10.dp else 8.dp)
-            .clip(CircleShape)
-            .background(color),
+        modifier = Modifier
+          .padding(horizontal = 4.dp)
+          .size(if (isSelected) 10.dp else 8.dp)
+          .clip(CircleShape)
+          .background(color),
       )
     }
   }

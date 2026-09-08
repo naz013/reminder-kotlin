@@ -52,6 +52,7 @@ import com.google.android.gms.common.SignInButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun GoogleTasksScreen(
+  modifier: Modifier = Modifier,
   state: GoogleTasksState,
   onBackClick: () -> Unit,
   onConnectClick: () -> Unit,
@@ -62,7 +63,6 @@ internal fun GoogleTasksScreen(
   onTaskToggle: (String) -> Unit,
   onRefresh: () -> Unit,
   onTagSelected: (String?) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
@@ -171,9 +171,9 @@ internal fun GoogleTasksScreen(
 
 @Composable
 private fun TaskListTile(
+  modifier: Modifier = Modifier,
   entry: UiGoogleTaskListEntry,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val color = Color(entry.color)
   Box(
@@ -194,8 +194,8 @@ private fun TaskListTile(
 
 @Composable
 private fun NotLoggedInContent(
-  onConnectClick: () -> Unit,
   modifier: Modifier = Modifier,
+  onConnectClick: () -> Unit,
 ) {
   Column(
     modifier = modifier

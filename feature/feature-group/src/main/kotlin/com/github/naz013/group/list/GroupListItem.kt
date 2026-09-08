@@ -44,12 +44,12 @@ private val COLOR_DOT_SIZE = 14.dp
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun GroupListItem(
+  modifier: Modifier = Modifier,
   group: UiGroupList,
   isSelectionMode: Boolean,
   onClick: () -> Unit,
   onLongClick: () -> Unit,
   onMenuAction: (GroupMenuAction) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Card(
     modifier = modifier
@@ -57,7 +57,11 @@ internal fun GroupListItem(
       .clip(MaterialTheme.shapes.medium)
       .combinedClickable(onClick = onClick, onLongClick = onLongClick),
     colors = CardDefaults.cardColors(
-      containerColor = if (group.isHighlighted) MaterialTheme.colorScheme.primaryContainer else CardDefaults.cardColors().containerColor,
+      containerColor = if (group.isHighlighted) {
+        MaterialTheme.colorScheme.primaryContainer
+      } else {
+        CardDefaults.cardColors().containerColor
+      },
     ),
     border = if (group.isHighlighted) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
   ) {

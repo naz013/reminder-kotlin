@@ -58,6 +58,7 @@ private const val MAX_DOTS = 4
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CalendarScreen(
+  modifier: Modifier = Modifier,
   state: CalendarScreenState,
   currentMode: CalendarViewMode,
   onModeSelected: (CalendarViewMode) -> Unit,
@@ -75,7 +76,6 @@ internal fun CalendarScreen(
   onAddBirthdayClick: (LocalDate) -> Unit,
   onSettingsClick: () -> Unit,
   onBackClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val pagerState = rememberPagerState(initialPage = initialPagerPosition) { Int.MAX_VALUE }
 

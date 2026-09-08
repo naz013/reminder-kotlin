@@ -29,10 +29,10 @@ import com.github.naz013.ui.common.icon.DrawableCatalog
 
 @Composable
 internal fun PlaceListItemCard(
+  modifier: Modifier = Modifier,
   place: PlaceState,
   onClick: () -> Unit,
   onMenuAction: (PlaceMenuAction) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   var menuExpanded by remember { mutableStateOf(false) }
 

@@ -4,16 +4,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +19,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
+import com.github.naz013.ui.common.compose.foundation.dialog.SeekValueDialog
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
 @Composable
@@ -45,11 +41,10 @@ internal fun LocationSettingsScreen(
   modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState()),
+    modifier = modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background)
+      .verticalScroll(rememberScrollState()),
   ) {
     SettingsSwitchItem(
       title = stringResource(R.string.distance_notification),
@@ -84,18 +79,17 @@ internal fun LocationSettingsScreen(
       enabled = state.isMapStyleRowEnabled,
       dividerBottom = true,
       onClick = onMapStyleClick,
-      trailing =
-        if (state.mapStylePreviewRes != 0) {
-          {
-            Image(
-              painter = painterResource(state.mapStylePreviewRes),
-              contentDescription = null,
-              modifier = Modifier.size(40.dp),
-            )
-          }
-        } else {
-          null
-        },
+      trailing = if (state.mapStylePreviewRes != 0) {
+        {
+          Image(
+            painter = painterResource(state.mapStylePreviewRes),
+            contentDescription = null,
+            modifier = Modifier.size(40.dp),
+          )
+        }
+      } else {
+        null
+      },
     )
     if (state.isMarkerStyleVisible) {
       SettingsItem(
@@ -142,50 +136,29 @@ internal fun LocationSettingsScreen(
     }
 
     is LocationSettingsDialog.Radius -> {
-      AlertDialog(
-        onDismissRequest = onDialogDismiss,
-        title = { Text(stringResource(R.string.radius)) },
-        text = {
-          Column {
-            Text(text = dialog.formattedValue, style = MaterialTheme.typography.bodyLarge)
-            Slider(
-              value = dialog.value.toFloat(),
-              onValueChange = { onRadiusPreviewChange(it.toInt()) },
-              valueRange = 0f..dialog.valueTo,
-              modifier = Modifier.fillMaxWidth(),
-            )
-          }
-        },
-        confirmButton = { TextButton(onClick = onRadiusConfirm) { Text(stringResource(R.string.ok)) } },
-        dismissButton = { TextButton(onClick = onDialogDismiss) { Text(stringResource(R.string.cancel)) } },
+      SeekValueDialog(
+        title = stringResource(R.string.radius),
+        value = dialog.value,
+        valueText = dialog.formattedValue,
+        valueRange = 0f..dialog.valueTo,
+        onValueChange = onRadiusPreviewChange,
+        onConfirm = onRadiusConfirm,
+        onDismiss = onDialogDismiss,
       )
     }
 
     is LocationSettingsDialog.Tracker -> {
-      AlertDialog(
-        onDismissRequest = onDialogDismiss,
-        title = { Text(stringResource(R.string.tracking_settings)) },
-        text = {
-          Column {
-            Text(
-              text = stringResource(R.string.for_lower_battery_usage_set_bigger_values),
-              style = MaterialTheme.typography.titleSmall,
-            )
-            Text(
-              text = stringResource(R.string.x_seconds, dialog.seconds.toString()),
-              style = MaterialTheme.typography.titleLarge,
-            )
-            Slider(
-              value = dialog.seconds.toFloat(),
-              onValueChange = { onTrackerPreviewChange(it.toInt()) },
-              valueRange = 1f..30f,
-              steps = 28,
-              modifier = Modifier.fillMaxWidth(),
-            )
-          }
-        },
-        confirmButton = { TextButton(onClick = onTrackerConfirm) { Text(stringResource(R.string.ok)) } },
-        dismissButton = { TextButton(onClick = onDialogDismiss) { Text(stringResource(R.string.cancel)) } },
+      SeekValueDialog(
+        title = stringResource(R.string.tracking_settings),
+        value = dialog.seconds,
+        valueText = stringResource(R.string.x_seconds, dialog.seconds.toString()),
+        valueRange = 1f..30f,
+        steps = 28,
+        description = stringResource(R.string.for_lower_battery_usage_set_bigger_values),
+        valueTextStyle = MaterialTheme.typography.titleLarge,
+        onValueChange = onTrackerPreviewChange,
+        onConfirm = onTrackerConfirm,
+        onDismiss = onDialogDismiss,
       )
     }
 

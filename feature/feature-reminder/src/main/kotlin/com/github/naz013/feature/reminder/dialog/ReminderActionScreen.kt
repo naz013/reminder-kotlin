@@ -832,7 +832,7 @@ private fun TodoItemRow(
       text = item.text,
       style = MaterialTheme.typography.bodyMedium,
       color = if (item.isCompleted) {
-        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+        MaterialTheme.colorScheme.onSurfaceVariant
       } else {
         MaterialTheme.colorScheme.onSurface
       },

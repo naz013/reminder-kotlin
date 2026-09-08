@@ -77,7 +77,7 @@ internal fun HolidayCountryScreen(
           Box(modifier = Modifier.fillMaxSize().weight(1f), contentAlignment = Alignment.Center) {
             Text(
               text = stringResource(R.string.search_no_countries_found),
-              color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
           }
         }

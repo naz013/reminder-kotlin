@@ -35,6 +35,7 @@ import com.github.naz013.ui.group.UiGroupList
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun GroupsScreen(
+  modifier: Modifier = Modifier,
   state: GroupsScreenState,
   onBackClick: () -> Unit,
   onAddClick: () -> Unit,
@@ -44,7 +45,6 @@ internal fun GroupsScreen(
   onSelectionCancel: () -> Unit,
   onDeleteSelectedClick: () -> Unit,
   onChangeColorClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val isSelectionMode = state.selectedCount > 0
   val canDeleteSelection = (state.listState as? ListState.Ready)
@@ -88,9 +88,12 @@ internal fun GroupsScreen(
   ) { padding ->
     when (val listState = state.listState) {
       is ListState.Loading -> {
-        Box(modifier = Modifier
-          .fillMaxSize()
-          .padding(padding), contentAlignment = Alignment.Center) {
+        Box(
+          modifier = Modifier
+            .fillMaxSize()
+            .padding(padding),
+          contentAlignment = Alignment.Center
+        ) {
           CircularProgressIndicator()
         }
       }

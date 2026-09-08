@@ -51,6 +51,7 @@ import com.github.naz013.ui.common.icon.DrawableCatalog
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 internal fun TagsScreen(
+  modifier: Modifier = Modifier,
   state: TagsScreenState,
   onBackClick: () -> Unit,
   onAddClick: () -> Unit,
@@ -60,7 +61,6 @@ internal fun TagsScreen(
   onSelectionCancel: () -> Unit,
   onDeleteSelectedClick: () -> Unit,
   onChangeColorClick: () -> Unit,
-  modifier: Modifier = Modifier
 ) {
   val isSelectionMode = state.selectedCount > 0
 
@@ -183,12 +183,12 @@ private fun tagsSelectionMenuItems(): List<PopupMenuItem> =
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TagListItem(
+  modifier: Modifier = Modifier,
   tag: TagState,
   isSelectionMode: Boolean,
   onClick: () -> Unit,
   onLongClick: () -> Unit,
   onMenuAction: (TagMenuAction) -> Unit,
-  modifier: Modifier = Modifier
 ) {
   Card(
     modifier = modifier.combinedClickable(onClick = onClick, onLongClick = onLongClick),

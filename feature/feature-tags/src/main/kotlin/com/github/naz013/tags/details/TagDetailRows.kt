@@ -15,9 +15,9 @@ import org.threeten.bp.LocalDateTime
 
 @Composable
 internal fun TagDetailItemRow(
+  modifier: Modifier = Modifier,
   item: TagDetailItem,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   when (item) {
     is TagDetailItem.ReminderItem ->

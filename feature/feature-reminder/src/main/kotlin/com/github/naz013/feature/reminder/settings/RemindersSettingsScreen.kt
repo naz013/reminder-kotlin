@@ -3,14 +3,10 @@ package com.github.naz013.feature.reminder.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -22,6 +18,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
+import com.github.naz013.ui.common.compose.foundation.dialog.SeekValueDialog
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
 @Composable
@@ -65,11 +62,10 @@ fun RemindersSettingsScreen(
   onDialogDismiss: () -> Unit,
 ) {
   Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState()),
+    modifier = modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background)
+      .verticalScroll(rememberScrollState()),
   ) {
     SettingsItem(
       title = stringResource(R.string.insights),
@@ -375,22 +371,14 @@ fun RemindersSettingsScreen(
     }
 
     is RemindersSettingsDialog.Seek -> {
-      AlertDialog(
-        onDismissRequest = onDialogDismiss,
-        title = { Text(dialog.title) },
-        text = {
-          Column {
-            Text(text = dialog.formattedValue, style = MaterialTheme.typography.bodyLarge)
-            Slider(
-              value = dialog.previewValue.toFloat(),
-              onValueChange = { onSeekValueChange(it.toInt()) },
-              valueRange = dialog.minValue.toFloat()..dialog.maxValue.toFloat(),
-              modifier = Modifier.fillMaxWidth(),
-            )
-          }
-        },
-        confirmButton = { TextButton(onClick = onSeekConfirm) { Text(stringResource(R.string.ok)) } },
-        dismissButton = { TextButton(onClick = onDialogDismiss) { Text(stringResource(R.string.cancel)) } },
+      SeekValueDialog(
+        title = dialog.title,
+        value = dialog.previewValue,
+        valueText = dialog.formattedValue,
+        valueRange = dialog.minValue.toFloat()..dialog.maxValue.toFloat(),
+        onValueChange = onSeekValueChange,
+        onConfirm = onSeekConfirm,
+        onDismiss = onDialogDismiss,
       )
     }
 

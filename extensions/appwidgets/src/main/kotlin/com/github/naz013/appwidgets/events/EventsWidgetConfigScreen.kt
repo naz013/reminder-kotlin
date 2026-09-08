@@ -9,21 +9,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,10 +28,11 @@ import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.compose.WidgetConfigScaffold
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
-import kotlin.math.roundToInt
+import com.github.naz013.ui.common.compose.foundation.dialog.SeekValueDialog
 
 @Composable
 internal fun EventsWidgetConfigScreen(
+  modifier: Modifier = Modifier,
   state: EventsWidgetConfigState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
@@ -44,10 +40,7 @@ internal fun EventsWidgetConfigScreen(
   onTextSizeChanged: (Int) -> Unit,
   onTextSizeDialogConfirm: () -> Unit,
   onTextSizeDialogDismiss: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
-  val hapticFeedback = LocalHapticFeedback.current
-
   WidgetConfigScaffold(
     title = stringResource(R.string.events),
     onBackClick = onBackClick,
@@ -83,41 +76,25 @@ internal fun EventsWidgetConfigScreen(
   }
 
   if (state.isTextSizeDialogVisible) {
-    AlertDialog(
-      onDismissRequest = onTextSizeDialogDismiss,
-      title = { Text(stringResource(R.string.text_size)) },
-      text = {
-        Column {
-          Text(text = state.textSize.toString(), style = MaterialTheme.typography.titleLarge)
-          Slider(
-            value = state.textSize.toFloat(),
-            onValueChange = {
-              val newSize = it.roundToInt()
-              if (state.hapticFeedbackEnabled && newSize != state.textSize) {
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-              }
-              onTextSizeChanged(newSize)
-            },
-            valueRange = 12f..25f,
-            steps = 12,
-          )
-        }
-      },
-      confirmButton = {
-        TextButton(onClick = onTextSizeDialogConfirm) { Text(stringResource(R.string.ok)) }
-      },
-      dismissButton = {
-        TextButton(onClick = onTextSizeDialogDismiss) { Text(stringResource(R.string.cancel)) }
-      },
+    SeekValueDialog(
+      title = stringResource(R.string.text_size),
+      value = state.textSize,
+      valueText = state.textSize.toString(),
+      valueRange = 12f..25f,
+      steps = 12,
+      onValueChange = onTextSizeChanged,
+      onConfirm = onTextSizeDialogConfirm,
+      onDismiss = onTextSizeDialogDismiss,
+      hapticFeedbackEnabled = state.hapticFeedbackEnabled,
     )
   }
 }
 
 @Composable
 private fun EventsWidgetMockPreview(
+  modifier: Modifier = Modifier,
   backgroundColor: Color,
   foregroundColor: Color,
-  modifier: Modifier = Modifier,
 ) {
   Box(
     modifier = modifier

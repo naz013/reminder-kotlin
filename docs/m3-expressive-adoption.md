@@ -2923,3 +2923,1024 @@ audit. With this, §13 has no remaining mechanical findings.
 A good next step is auditing the next screen group not yet covered in depth, or continuing the alpha-blend
 cross-cutting pass over groups already audited but not yet fixed for it (per the accumulated "Not fixed"
 notes across §16-§27).
+
+## 48. Leftover "Audited"-only screens re-verified and promoted to "Done" — landed
+
+At this point every group in `docs/m3-expressive-screen-inventory.md` had at least one landed fix except for
+four individual rows still sitting at bare "Audited" inside otherwise-fixed groups: `ReminderHelpScreen.kt`
+and `RecurHelpScreen.kt` (§6, Reminders), `ImagePreviewScreen.kt` (§8, Notes), and
+`NotificationCustomizationHelpScreen.kt` (§11, Settings). Asked the user which of three options to pursue
+next (leftover individual screens, the cross-cutting alpha-blend pass, or a fresh Home/Events audit); they
+picked the leftover screens.
+
+Re-reading each audit's own text (rather than assuming "Audited" meant "has an unfixed bug") showed all four
+were already flagged as fully spec-compliant when originally reviewed, with explicit "nothing to flag"/
+"little further Compose-layer surface area to audit" language — not screens waiting on a fix, but screens
+where the audit found no gap at all. Re-verified this directly against current source (not just trusting the
+audit text, since these sections are old enough that the files could have drifted since):
+
+- **`ReminderHelpScreen.kt`** / **`RecurHelpScreen.kt`** — both correctly pass `stringResource(R.string.cd_back)`
+  for the back arrow and use the shared `TopAppbarColor` token. Both are thin `Scaffold`/`TopAppBar` wrappers
+  around a bundled-HTML `WebView` (`how_to_create_a_reminder.html` / `doc_rfc_5545.html`) — any further work
+  would mean restyling those HTML/CSS assets, out of scope for a Compose-focused pass.
+- **`ImagePreviewScreen.kt`** — correct back-button description; its `TopAppBarDefaults.topAppBarColors(containerColor
+  = Color.Transparent)` is the same legitimate exception already documented for Note screens in §8
+  cross-cutting #2 (tinting the whole app bar to the image's own custom background/content color via
+  `state.background`/`state.content`, which a static shared token couldn't express). No Cards/shapes/
+  elevation in the screen to get wrong.
+- **`NotificationCustomizationHelpScreen.kt`** — same shape and same verdict as `ReminderHelpScreen.kt`:
+  correct back-button description, correct `TopAppbarColor`, thin `WebView` wrapper around
+  `notification_customization.html`.
+
+No code changes made — there was nothing to fix. Promoted all four rows from "Audited" to "Done" in
+`docs/m3-expressive-screen-inventory.md` (Reminders, Notes, and Settings sections respectively), since
+"Done" is the status this doc's own legend defines for "screen fully reflects the `ui-common` expressive
+foundation," which better reflects reality than leaving them at "Audited" indefinitely as if a fix were
+still pending.
+
+**Not fixed**: nothing — this section is a verification-and-reclassification pass, not a fix. The out-of-scope
+HTML/CSS asset restyling for the three WebView-hosted screens remains explicitly out of scope unless
+requested separately.
+
+**Suggested next step**: with these four resolved, the only work left that isn't a design-judgment item or
+already-deferred screen-specific gap is the cross-cutting alpha-blend pass over groups already audited but
+not yet fixed for it (per the accumulated "Not fixed" notes across §16-§27), or a fresh audit of Home/Events
+— the two oldest-touched screens, predating this doc's numbered-section system, that have never had a formal
+§-numbered audit pass like every other group.
+
+## 49. Home / Events screens — audit
+
+Audit pass over Home and Agenda, the two oldest-touched screens in the app — the first ones this whole
+effort landed changes on (see §2-4), but never given a formal §-numbered audit like every other group since.
+**Audit only — no code changed in this pass.** Files read in full: `HomeScreen.kt` (the banner-overlay
+wrapper), `ChronologicalHomeScreen.kt` (the actual Home tab content — header, nav grid, event list),
+`HomeScreenState.kt`, `ResolvedEventAction.kt`, and `AgendaScreen.kt`.
+
+### Cross-cutting patterns (found on 2+ screens — fix once, verify everywhere it repeats)
+
+1. **Raw `R.drawable.*` instead of the `DrawableCatalog`/`AppIcons` catalog, despite every icon already
+   being cataloged** — a real CLAUDE.md convention violation, the same class of finding fixed for
+   Groups/Tags/Places in §33. Spans both files:
+   - `HomeScreenState.kt:68-72` (`HomeEvent.EventAction.IconRes` companion object) hardcodes
+     `R.drawable.ic_fluent_phone`, `ic_fluent_send` (×2), `ic_fluent_globe`, `ic_fluent_open` — notably this
+     one lives in a plain state/domain class, not even inside a `@Composable`, so it can't reach for
+     `AppIcons`'s `@Composable` painter getters; `DrawableCatalog.Fluent.Phone`/`.Send`/`.Globe`/`.Open`
+     (plain `@DrawableRes Int` constants, no composable context needed) are the right target here.
+   - `ChronologicalHomeScreen.kt:227-231` (`AddButton`'s `when` block, building `PopupMenuItem.iconRes`
+     values) hardcodes `ic_fluent_alert`, `ic_fluent_food_cake`, `ic_builder_google_task_list`,
+     `ic_fluent_note`, `ic_fluent_cart`.
+   - `AgendaScreen.kt` has the heaviest concentration: `AgendaSelectionTopBar` (`:521`, `:529` —
+     `ic_fluent_archive`, `ic_fluent_delete`), `AddMenuButton` (`:608-610` — `ic_fluent_alert`,
+     `ic_fluent_cart`, `ic_fluent_food_cake`), and `OverflowMenuButton` (`:632-634` — `ic_fluent_archive`,
+     `ic_fluent_group`, `ic_builder_group`, plus `:638`'s `painterResource(R.drawable.ic_fluent_more_vertical)`
+     bare `Painter` lookup) — 10 bare references in one file. All are `Int`-context `PopupMenuItem.iconRes`
+     values except the last, so the fix is routing through `DrawableCatalog.Fluent.*`/`.Builder.*` for the
+     `Int` sites and `AppIcons.Fluent.MoreVertical` for the one `Painter` site.
+2. **Scroll-triggered app-bar elevation implemented as a drop shadow, not the Expressive-recommended color
+   fill** — both `ChronologicalHomeScreen.kt` (`:98-108`, `animateDpAsState` driving
+   `Modifier.shadow(elevation = headerElevation, clip = false)` on the header `Column`, target 4dp when
+   scrolled) and `AgendaScreen.kt` (`:100-105`/`:150`, the same `animateDpAsState` pattern driving
+   `Surface(shadowElevation = headerElevation)`, target 3dp) animate a real drop shadow in on scroll. This is
+   a materially more sophisticated implementation than the *static* scroll-shadow gap flagged as still-open
+   for `RemindersArchiveScreen.kt`/`BirthdaysScreen.kt` elsewhere in this doc (those have no scroll-elevation
+   behavior at all) — but per guidelines' app-bar component table (§9.1: "On scroll: color fill instead of
+   drop shadow"), Expressive's own recommended pattern moved away from the drop-shadow-on-scroll treatment
+   entirely, toward tinting the app bar to a raised surface-container tone instead. Both Home and Agenda
+   independently built the *previous* generation's version of this affordance — worth flagging as its own
+   item since it means the "reference pattern" this doc has been citing for the Reminders/Birthdays Archive
+   gap (implicitly, "build a scroll shadow like Home/Agenda already do") is itself not the currently
+   recommended approach. Separately, `ChronologicalHomeScreen.kt`'s 4dp scrolled-elevation target is also
+   off the defined 0/1/3/6/8/12dp scale (guidelines §5) — `AgendaScreen.kt`'s own `HEADER_ELEVATION = 3.dp`
+   constant already lands correctly on "scrolled app bar" (Level 2), and would be the more scale-correct
+   value to copy if a shadow-based approach were kept rather than moving to color-fill.
+
+### Screen-specific findings
+
+- **`AgendaScreen.kt`** — `AgendaTopBar`'s back arrow (`:560`) passes `contentDescription = null`, the same
+  exact defect class found on every other screen group audited this session (worst case: 8 of 8 in
+  Workflow/Routines, §7). This is the *only* back button in this whole group — Home has none since it's a
+  root tab destination, not a pushed screen. Also: `:574` uses bare `Icons.Default.FilterList` instead of
+  the already-cataloged `AppIcons.Fluent.Filter`/`DrawableCatalog.Fluent.Filter` — the identical bug already
+  fixed for `BirthdaysScreen.kt`'s equivalent filter icon in §27. And the filter bottom sheet's empty states
+  for "no tags"/"no groups" (`:267`, `:283`) hand-blend `MaterialTheme.colorScheme.onSurface.copy(alpha =
+  0.5f)` instead of `onSurfaceVariant` — the same ad hoc de-emphasis anti-pattern flagged repeatedly
+  throughout this doc, though here it's inline caption text inside a bottom sheet rather than a dedicated
+  empty-state composable, so no `EmptyState.kt` migration applies — just the direct role swap. On the
+  positive side: `AgendaTopBar`'s `colors = TopAppBarDefaults.topAppBarColors(containerColor =
+  Color.Transparent)` (`:585`) is the same legitimate pattern already confirmed equivalent for
+  `CalendarScreen.kt`/`TimelineScreen.kt` in §35 — the real fill comes from the wrapping
+  `Surface(color = MaterialTheme.colorScheme.background, ...)` at `:150` — though per §35's own precedent,
+  swapping to the real `TopAppbarColor` token would still be worth doing for the `titleContentColor` pairing
+  it also carries, which the transparent-plus-Surface approach doesn't provide. `EmptyState.kt` is already
+  used correctly for the empty list state (`:197`), and `FilterChipLabel`/`UiAgendaHeader` correctly reach
+  for `labelLargeEmphasized`/`titleMediumEmphasized` (real emphasized type tokens) rather than manual
+  `FontWeight` overrides — no `FontWeight` gap anywhere in this file, unlike almost every other group
+  audited so far.
+- **`HomeScreen.kt`** — the three banner variants (`PrivacyBanner`/`LoginBanner`/`WhatsNewBanner`) animate in
+  with literal `tween(BANNER_ANIMATION_DURATION_MS)` (`:32-37`) instead of `MaterialTheme.motionScheme`, the
+  same recurring literal-motion pattern flagged across nearly every prior audit (§7 #4, §8 #7, etc.) — worth
+  calling out specifically here because its own sibling file in the same module,
+  `ChronologicalHomeScreen.kt`, already gets this right (`HeaderNavigationTile`/`TimeSectionRow` both
+  correctly use `MaterialTheme.motionScheme.defaultEffectsSpec()`/`defaultSpatialSpec()`, `:317-318`/
+  `:379-380`) — so the fix is a same-module copy-paste, not new research. `HomeBanner`'s
+  `CardDefaults.elevatedCardElevation(defaultElevation = 12.dp)` (`:150`) is correctly on-scale (12dp =
+  Level 5, guidelines §5) despite being a literal rather than a token — not a defect, just worth noting it
+  landed on a real level by design rather than luck. `primaryContainer`/`onPrimaryContainer` are correctly
+  paired throughout.
+- **`ChronologicalHomeScreen.kt`** — beyond cross-cutting #1/#2, this is otherwise a strong screen: real
+  `MaterialTheme.motionScheme` usage for its stagger-in animations (see above), `AppShapes.tile`/`AppShapes.card`
+  tokens used instead of literal `RoundedCornerShape`s, and `labelSmallEmphasized`/`titleMediumEmphasized`/
+  `bodyMediumEmphasized`/`headlineMediumEmphasized` used throughout instead of manual `FontWeight` — no
+  `FontWeight` gap here either. `HeaderNavigationTile`'s `item.color.copy(alpha = TILE_ICON_TINT_ALPHA)`
+  (`:336`) is the same legitimate *tonal container tint* pattern already confirmed correct for
+  `TaskListTile` in the Google Tasks audit (§10) — not the ad hoc text/icon de-emphasis anti-pattern, so not
+  a finding. One low-confidence note: `EventCard`'s default-case `containerColor = CardDefaults.cardColors().containerColor`
+  (resolves to `surfaceContainerLow`) is paired with `onContainerColor = MaterialTheme.colorScheme.onBackground`
+  (`:429-432`) rather than `onSurface` — guidelines §2.2 calls for container/on-color pairs to always match;
+  in practice `onBackground` and `onSurface` render identically in this app's current theme, so this is a
+  token-hygiene note rather than a visible bug, worth a look if this file is touched for the fixes above.
+
+### Suggested fix order
+
+Cheapest-and-highest-value first: (1) `AgendaScreen.kt`'s single back-button `contentDescription = null` —
+mechanical, `cd_back` already exists; (2) `AgendaScreen.kt`'s bare `Icons.Default.FilterList` →
+`AppIcons.Fluent.Filter`, matching §27's exact precedent; (3) the `DrawableCatalog` cleanup across
+`HomeScreenState.kt`/`ChronologicalHomeScreen.kt`/`AgendaScreen.kt` (cross-cutting #1) — the widest-reach
+mechanical fix in this group; (4) `AgendaScreen.kt`'s two alpha-blend call sites → `onSurfaceVariant`; (5)
+`HomeScreen.kt`'s literal `tween()` → `MaterialTheme.motionScheme`, copying the pattern already correct one
+file over in `ChronologicalHomeScreen.kt`. Item 6 — the scroll-shadow-to-color-fill migration
+(cross-cutting #2) — is a genuine design-judgment item, not a mechanical fix: it would mean redesigning
+Home's and Agenda's scroll-elevation affordance to the currently-recommended pattern, and its outcome
+should probably also inform the still-open Reminders/Birthdays Archive scroll-shadow gap this doc has been
+carrying since §6, rather than being fixed in isolation here.
+
+## 50. `AgendaScreen.kt` back-button content-description fix — landed
+
+Fixes item 1 of §49's suggested fix order: `AgendaTopBar`'s back arrow (`:560`) passed `contentDescription =
+null` — the same defect class found on every other screen group audited this session, here on the one and
+only back button in the whole Home/Events group (Home has none, being a root tab destination rather than a
+pushed screen). One-line swap to `stringResource(R.string.cd_back)`, same mechanical fix as every prior
+group's item 1; `cd_back` already resolves via the existing `com.github.naz013.ui.common.R` import.
+
+Verified via `./gradlew :feature:feature-agenda:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-agenda:detekt --rerun`. All 29 reported findings sit in files/lines this fix never
+touched: `AgendaNavGraph.kt`, `AgendaViewModel.kt`, and `AgendaViewModelTest.kt` are untouched this session,
+and every finding actually located in `AgendaScreen.kt` (lines 76, 170-172, 182-184, 248-250, 607-611, 645)
+was confirmed byte-identical against `git show HEAD` at those same line numbers — this fix's edit was a
+like-for-like one-line content swap with zero net line-count change, so no line-shift accounting was needed.
+
+**Not fixed**: items 2-6 of §49 — the bare `Icons.Default.FilterList`, the `DrawableCatalog` cleanup
+(cross-cutting #1), the two alpha-blend call sites, `HomeScreen.kt`'s literal `tween()`, and the
+scroll-shadow-to-color-fill design-judgment item (cross-cutting #2).
+
+**Suggested next step**: item 2 — `AgendaScreen.kt`'s bare `Icons.Default.FilterList` →
+`AppIcons.Fluent.Filter`, the exact same fix already applied to `BirthdaysScreen.kt`'s equivalent icon in
+§27.
+
+## 51. `AgendaScreen.kt` bare `Icons.Default.FilterList` fix — landed
+
+Fixes item 2 of §49's suggested fix order: `AgendaTopBar`'s filter icon (`:574`) used bare
+`Icons.Default.FilterList` instead of the already-cataloged `AppIcons.Fluent.Filter`/
+`DrawableCatalog.Fluent.Filter` — the identical bug, and identical fix, already applied to
+`BirthdaysScreen.kt`'s equivalent filter icon in §27. `AppIcons` was already imported in this file (used
+elsewhere for the back arrow, add button, and empty-state icon); `MenuIconButton`'s `Painter` overload
+(`MenuIconButton.kt:50-60`, alongside the `ImageVector` one the old `Icons.Default.*` call resolved to)
+covers `AppIcons.Fluent.Filter`'s return type with no other call-site changes needed.
+
+`androidx.compose.material.icons.Icons` and `androidx.compose.material.icons.filled.FilterList` both became
+unused (this was their only call site in the file) and were removed.
+
+Verified via `./gradlew :feature:feature-agenda:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-agenda:detekt --rerun`. Same 29 pre-existing findings as §50, shifted by this edit's -2
+net line delta (two import lines removed); every finding actually located in `AgendaScreen.kt` was
+re-confirmed byte-identical against `git show HEAD` at the corresponding pre-shift line numbers.
+
+**Not fixed**: items 3-6 of §49 — the `DrawableCatalog` cleanup across `HomeScreenState.kt`/
+`ChronologicalHomeScreen.kt`/`AgendaScreen.kt` (cross-cutting #1), `AgendaScreen.kt`'s two alpha-blend call
+sites, `HomeScreen.kt`'s literal `tween()`, and the scroll-shadow-to-color-fill design-judgment item
+(cross-cutting #2).
+
+**Suggested next step**: item 3 — the `DrawableCatalog` cleanup (cross-cutting #1), the widest-reach
+mechanical fix left in this group, spanning `HomeScreenState.kt`, `ChronologicalHomeScreen.kt`, and
+`AgendaScreen.kt`.
+
+## 52. Home/Events `DrawableCatalog` cleanup — landed
+
+Fixes item 3 of §49's suggested fix order (cross-cutting #1), the widest-reach mechanical finding in this
+group — 15 bare `R.drawable.*` references across all three files, the same convention violation fixed for
+Groups/Tags/Places in §33:
+
+- **`HomeScreenState.kt:68-72`** (`HomeEvent.EventAction.IconRes` companion object, a plain state class with
+  no composable context) — `R.drawable.ic_fluent_phone`/`ic_fluent_send` (×2)/`ic_fluent_globe`/`ic_fluent_open`
+  → `DrawableCatalog.Fluent.Phone`/`.Send`/`.Globe`/`.Open`.
+- **`ChronologicalHomeScreen.kt:227-231`** (`AddButton`'s `when` block) — `ic_fluent_alert`/`ic_fluent_food_cake`/
+  `ic_builder_google_task_list`/`ic_fluent_note`/`ic_fluent_cart` → `DrawableCatalog.Fluent.Alert`/`.FoodCake`,
+  `DrawableCatalog.Builder.GoogleTaskList`, `DrawableCatalog.Fluent.Note`/`.Cart`.
+- **`AgendaScreen.kt`** — `AgendaSelectionTopBar` (`ic_fluent_archive`/`ic_fluent_delete` →
+  `DrawableCatalog.Fluent.Archive`/`.Delete`), `AddMenuButton` (`ic_fluent_alert`/`ic_fluent_cart`/
+  `ic_fluent_food_cake` → the same three `DrawableCatalog.Fluent.*` constants as above), `OverflowMenuButton`
+  (`ic_fluent_archive`/`ic_fluent_group`/`ic_builder_group` → `DrawableCatalog.Fluent.Archive`/`.Group`,
+  `DrawableCatalog.Builder.Tag` — the last one is the one `ic_builder_group` maps to a `Tag`-named constant,
+  not `Group`, so worth double-checking against `DrawableCatalog.kt:38` if this file is touched again), and
+  the one `Painter`-context site, `painterResource(R.drawable.ic_fluent_more_vertical)` →
+  `AppIcons.Fluent.MoreVertical`.
+
+`painterResource` became unused in `AgendaScreen.kt` (its only call site was the one just fixed) and was
+removed; `com.github.naz013.ui.common.R` in `HomeScreenState.kt` was entirely replaceable with
+`DrawableCatalog` since those five lines were its only usage in the file. `DrawableCatalog` imported newly
+in all three files (`HomeScreenState.kt` swapping its `R` import outright; `ChronologicalHomeScreen.kt`/
+`AgendaScreen.kt` adding it alongside their existing `R` import, which both still need for `stringResource`
+calls elsewhere).
+
+Note the preview-only code at the bottom of `ChronologicalHomeScreen.kt`
+(`HeaderNavigationGridPreview`, `:762-786`) still uses bare `R.drawable.*` too — left untouched since §49's
+audit scoped this finding to the two real call sites, matching this session's practice of fixing documented
+findings rather than scope-creeping into unflagged preview-only code.
+
+Verified via `./gradlew :feature:feature-home:compileDebugKotlin :feature:feature-agenda:compileDebugKotlin
+:app:compileProDebugKotlin` (clean) and detekt on both modules. `HomeScreenState.kt` reports zero findings.
+Every other reported finding sits in a file/line this fix never touched (`AgendaNavGraph.kt`,
+`AgendaViewModel.kt`, `HomeNavGraph.kt`, various use-case files, tests) or was confirmed byte-identical
+against `git show HEAD` at the corresponding pre-shift line number for the two files this fix did touch —
+`AgendaScreen.kt` at zero net line-count change (every replacement was line-for-line), and
+`ChronologicalHomeScreen.kt` at its +1 net delta (one import line added).
+
+**Not fixed**: items 4-6 of §49 — `AgendaScreen.kt`'s two alpha-blend call sites, `HomeScreen.kt`'s literal
+`tween()`, and the scroll-shadow-to-color-fill design-judgment item (cross-cutting #2).
+
+**Suggested next step**: item 4 — `AgendaScreen.kt`'s two alpha-blend call sites (the filter bottom sheet's
+"no tags"/"no groups" captions) → `onSurfaceVariant`, the same role-swap pattern applied throughout this
+session.
+
+## 53. `AgendaScreen.kt` alpha-blend fixes — landed
+
+Fixes item 4 of §49's suggested fix order: the filter bottom sheet's "no tags" (`:265`) and "no groups"
+(`:281`) captions both hand-blended `MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)` instead of
+`onSurfaceVariant` — the same ad hoc de-emphasis anti-pattern flagged and fixed everywhere else this
+session. Straight role swap at both sites via one `replace_all` edit; no component migration applies here
+since this is inline caption text inside `FilterSection`, not a dedicated empty-state composable.
+
+Verified via `./gradlew :feature:feature-agenda:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-agenda:detekt --rerun`. Findings are identical to the baseline confirmed pre-existing in
+§51/§52 — this edit was a zero-net-line-delta, line-for-line swap at both sites, so every line number stayed
+put.
+
+**Not fixed**: items 5-6 of §49 — `HomeScreen.kt`'s literal `tween()` and the scroll-shadow-to-color-fill
+design-judgment item (cross-cutting #2). With this, every mechanical item in §49 through item 4 has landed;
+only item 5 (mechanical) and item 6 (design-judgment) remain.
+
+**Suggested next step**: item 5 — `HomeScreen.kt`'s three banner variants' literal `tween(BANNER_ANIMATION_DURATION_MS)`
+→ `MaterialTheme.motionScheme`, copying the pattern its own sibling file `ChronologicalHomeScreen.kt` already
+gets right.
+
+## 54. `HomeScreen.kt` literal `tween()` fix — landed
+
+Fixes item 5 of §49's suggested fix order, the last mechanical item in the section: all three banner
+variants' `AnimatedVisibility` enter/exit transitions used literal `tween(BANNER_ANIMATION_DURATION_MS)`
+(300ms) instead of `MaterialTheme.motionScheme` — the same recurring literal-motion pattern flagged across
+nearly every prior audit, notable here because the sibling file in the same module,
+`ChronologicalHomeScreen.kt`, already gets this right for its own stagger-in animations.
+
+The fix wasn't a bare token swap: `bannerEnterTransition`/`bannerExitTransition` were top-level `private
+val`s, computed once at class-load time — `MaterialTheme.motionScheme` is a composition-local, only
+readable from inside a `@Composable`. Moved both from top-level vals into local vals inside `HomeScreen`'s
+own body (which already is `@Composable`), matching how `ChronologicalHomeScreen.kt`'s equivalent
+`enter =`/`exit =` expressions are built directly in-place rather than hoisted out — no `remember` needed,
+consistent with that same sibling pattern. `fadeIn`/`fadeOut` map to `defaultEffectsSpec()`,
+`slideInVertically`/`slideOutVertically` map to `defaultSpatialSpec()`, the identical effects/spatial spec
+pairing `ChronologicalHomeScreen.kt`'s `HeaderNavigationTile`/`TimeSectionRow` already use. Deleted the
+now-unused `BANNER_ANIMATION_DURATION_MS` constant and the `androidx.compose.animation.core.tween` import
+(both had no other call sites in the file).
+
+Verified via `./gradlew :feature:feature-home:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-home:detekt --rerun` — `HomeScreen.kt` itself reports zero findings; every other finding
+sits in a file this fix never touched (`ChronologicalHomeScreen.kt` at the same lines confirmed pre-existing
+in §52, `HomeNavGraph.kt`, `scheduleview/*` use-case files, tests).
+
+**Not fixed**: item 6 of §49 — the scroll-shadow-to-color-fill migration (cross-cutting #2), a genuine
+design-judgment item rather than a mechanical fix. With this, §49 has no remaining mechanical findings.
+
+**Suggested next step**: §49 is now fully closed except for item 6, which needs a product/design decision on
+redesigning Home's and Agenda's scroll-elevation affordance to the currently-recommended color-fill pattern
+— and whose outcome should probably also inform the still-open Reminders/Birthdays Archive scroll-shadow gap
+carried since §6, rather than being decided in isolation here. A good next step is auditing the next screen
+group not yet covered in depth, or continuing the alpha-blend cross-cutting pass over groups already audited
+but not yet fixed for it (per the accumulated "Not fixed" notes across §16-§27).
+
+## 55. Onboarding & Splash screens — audit
+
+Every group in `docs/m3-expressive-screen-inventory.md` already carries at least one audit, so "next
+unaudited screen group" no longer has a literal referent (this is the fourth time; §48's text covers the
+first three). Rather than ask again or pick another already-covered proxy target, diffed every `*Screen.kt`
+file in the repo against the inventory table directly (`find . -name "*Screen.kt"` minus `build/` output,
+minus `admin/*` which is out of scope per the doc's own scope note) — and this time it surfaced two screens
+genuinely missing from the inventory entirely, not just unaudited within a tracked group:
+`OnboardingScreen.kt` (`feature-onboarding/.../onboarding/compose/OnboardingScreen.kt`) and
+`BottomNavSplashScreen.kt` (`app/.../navigation/BottomNavSplashScreen.kt`, backed by
+`AppLauncherIcon.kt` in the same package). Both are real, user-navigable screens (first-run onboarding
+flow; the launch splash shown while the nav shell loads) that predate or were added after this doc's last
+full sweep and were simply never added as rows. (Ruled out as non-screens: `DestinationScreen.kt` in
+`core:navigation-api` is a plain enum, not UI; `DynamicScreen.kt` in `ui-common` is a breakpoint-switching
+layout helper, not a screen of its own — neither belongs in the inventory.)
+
+**OnboardingScreen.kt findings**:
+
+1. `OnboardingPageIndicator`'s inactive-dot color uses `MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha
+   = 0.3f)` — the same alpha-blend de-emphasis anti-pattern fixed repeatedly elsewhere in this audit (most
+   recently §53's `AgendaScreen.kt` captions), where a `.copy(alpha = X)` on a text/foreground color stands
+   in for a purpose-built full-opacity token. The precedent from §39 (`CalendarScreen.kt`'s de-emphasized
+   other-month day numbers, `onSurface.copy(alpha = 0.35f)` → `outlineVariant`) is the closer match here since
+   this is also a de-emphasized indicator dot, not body text — `outlineVariant` is the likely target.
+2. No manual `FontWeight` override anywhere in the file (checked against the established trigger for the
+   `*Emphasized` typography tokens — confirmed via a repo-wide grep that every existing `*Emphasized` adoption
+   in this codebase, e.g. `ChronologicalHomeScreen.kt:355`, `ReminderActionScreen.kt`, `BirthdayActionScreen.kt`,
+   `AgendaScreen.kt:349`, replaced a hand-rolled `FontWeight.Bold`/`.SemiBold`/`.Medium` next to a plain
+   typography style, not just any headline-sized text). `OnboardingScreen.kt`'s `headlineSmall`/`bodyLarge`/
+   `labelMedium` texts all use plain, un-overridden styles — no emphasized-token finding here, unlike some
+   earlier audits in this doc that over-applied that check.
+3. Icons all already route through `AppIcons.Fluent.*` — no `DrawableCatalog` gap, unlike several older
+   screens fixed earlier in this doc; this screen appears to postdate that convention being established.
+4. No back button, no `TopAppBar`, no FAB, no off-scale corner radius (`CircleShape` usages are circular
+   badges/dots, outside the 10-step scale by design) — nothing else to flag.
+
+**Not fixed / design judgment**: `OnboardingCapabilityCaption`'s icon-chip background,
+`Surface(color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f))`, is a translucent chip sitting on
+top of `AnimatedGradientBackground` — visually a "frosted glass over gradient" effect, not the "dim this
+text/icon against an opaque surface" pattern item 1 above and every prior alpha-blend fix in this doc
+targets. No shared token for that effect exists anywhere else in the codebase (checked `PinLoginScreen.kt`
+and other `AnimatedGradientBackground` consumers — none use this pattern), so there's nothing established to
+swap it to; left as-is rather than guessing at a fix for an intentional-looking visual effect.
+
+**BottomNavSplashScreen.kt findings**:
+
+5. The app-name reveal animation — `AnimatedVisibility(enter = fadeIn() + slideInVertically { it / 2 })` —
+   passes no `animationSpec`, relying on Compose's own built-in defaults rather than
+   `MaterialTheme.motionScheme.defaultEffectsSpec()`/`defaultSpatialSpec()`. Same migration target as §54's
+   `HomeScreen.kt` fix and `ChronologicalHomeScreen.kt`'s existing pattern, just starting from implicit
+   defaults instead of an explicit literal `tween()`.
+6. No back button (transient splash, correctly has none), no `TopAppBar`, no alpha-blend, no
+   `DrawableCatalog` gap in the screen file itself.
+
+**Not fixed / boundary case, not a genuine gap**: `AppLauncherIcon.kt`'s
+`painterResource(R.drawable.ic_launcher_foreground)` is a raw drawable lookup, which CLAUDE.md's icon rule
+reads broadly enough to cover ("never referenced as a bare `R.drawable.ic_fluent_*` (or any other
+drawable)"). But `DrawableCatalog`/`AppIcons` are organized strictly by UI icon family
+(`.Fluent.*`/`.Builder.*`); the launcher foreground/background are mipmap adaptive-icon leaves with no family
+to join, single-use by construction, and the file already carries a doc comment explaining why
+`painterResource` is called directly here (Compose can't load the `<adaptive-icon>` XML format, only its leaf
+drawables — this recreates the round launcher icon from those leaves by hand). Not treating this as a
+catalog-convention gap.
+
+**Docs**: added both screens to `docs/m3-expressive-screen-inventory.md` — `Onboarding` under the existing
+"Onboarding / Login" section (renamed from tracking PIN Login alone), and a new `Bottom Nav Splash` row.
+Both set to "Audited."
+
+**Suggested next step**: two small, independent, low-risk mechanical fixes are ready to land — item 1
+(`OnboardingScreen.kt`'s alpha-blend dot → `outlineVariant`) and item 5 (`BottomNavSplashScreen.kt`'s
+implicit-default reveal animation → `motionScheme`). Both are one-file, few-line changes consistent with
+every other fix landed in this doc.
+
+## 56. `OnboardingScreen.kt` alpha-blend fix — landed
+
+Fixes item 1 of §55: `OnboardingPageIndicator`'s inactive-dot color,
+`MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)`, swapped for
+`MaterialTheme.colorScheme.outlineVariant` — the same full-opacity-token replacement used for §39's
+de-emphasized `CalendarScreen.kt` day numbers, the closest precedent since both are de-emphasized indicator
+marks rather than body text.
+
+Verified via `./gradlew :feature:feature-onboarding:compileDebugKotlin :app:compileProDebugKotlin` (clean)
+and `:feature:feature-onboarding:detekt --rerun`. Detekt reported 11 weighted issues (5 `Indentation`
+findings at lines 58-62, 5 more at 277-281, 1 `UnusedParameter` in `OnboardingNavGraph.kt`) — confirmed
+pre-existing and unrelated by stashing this one-line fix and re-running detekt against unmodified HEAD,
+which reproduced the identical 11 issues, then restoring the fix (`git stash pop`).
+
+**Not fixed**: item 5 of §55 (`BottomNavSplashScreen.kt`'s implicit-default reveal animation →
+`motionScheme`) — still open.
+
+**Suggested next step**: land item 5, the other small fix identified in §55.
+
+## 57. `BottomNavSplashScreen.kt` motion-scheme fix — landed
+
+Fixes item 5 of §55: the app-name reveal animation passed no `animationSpec` to `fadeIn()`/
+`slideInVertically()`, relying on Compose's own built-in defaults instead of `MaterialTheme.motionScheme`.
+
+First attempt inlined the fix directly into `AnimatedVisibility`'s `enter =` argument
+(`fadeIn(animationSpec = ...) + slideInVertically(animationSpec = ...) { it / 2 }` spread across two lines),
+but detekt's `Indentation` rule wanted a continuation-indent shape
+(first line flush with `enter =`, second at +2) that reads awkwardly for a named-argument value. Instead
+restructured to match §54's `HomeScreen.kt` precedent: hoisted the expression into a local
+`nameEnterTransition` val computed in the composable body (this function was already `@Composable`, so no
+`remember`/composition-local complication like §54 had), then passed `enter = nameEnterTransition` as a
+plain reference. Same val-then-reference shape as `HomeScreen.kt`'s `bannerEnterTransition`, and it passed
+detekt cleanly with zero reformatting needed — confirming that shape, not the inline-expression shape, is
+what this codebase's detekt indentation config expects for multi-line animation-spec expressions.
+
+Verified via `./gradlew :app:compileProDebugKotlin` (clean) and `:app:detekt --rerun`: zero findings in
+`BottomNavSplashScreen.kt` itself; the module's other 71 weighted issues are pre-existing and untouched by
+this one-file change (this session made no other edits anywhere in `app`).
+
+With this, both items from §55 are landed. §55 has no remaining findings except the two explicitly
+low-priority/design-judgment notes (the translucent onboarding icon-chip background, and the
+`AppLauncherIcon.kt` raw-drawable boundary case) — neither calls for a fix.
+
+**Suggested next step**: no open mechanical items remain from §49 or §55. A good next step is auditing
+another screen group not yet covered in depth (re-diff `*Screen.kt` files against the inventory the way §55
+did, in case more screens are missing from the doc entirely), or continuing the alpha-blend cross-cutting
+pass over groups already audited but not yet fixed for it (per the accumulated "Not fixed" notes across
+§16-§27).
+
+## 58. Reminders/Notes/Birthdays alpha-blend cross-cutting sweep — landed
+
+Re-checked the "Not fixed" notes across §16-§27 (the Reminders and Notes/Birthdays groups, §6/§8) looking
+for a remaining alpha-blend anti-pattern to fix. None of those notes actually name one — every alpha-blend
+finding those two audits originally raised was already landed (§17/§18's `ReminderActionScreen.kt`/
+`BirthdayActionScreen.kt` de-emphasis fixes, §24's `NotesEmptyState`, §27's `BirthdaysEmptyState`); what's
+left open in that note trail is unrelated (orientation-based layout splits, list-row consistency, the
+scroll-shadow app bar, `SelectableOptionRow`'s `FontWeight`, `OfflineOnlyRow` dedup).
+
+So rather than trust the doc text alone, grepped the live source of all three feature modules
+(`feature-reminder`, `feature-note`, `feature-birthday`) for `onSurface\.copy(alpha`/`onSurfaceVariant\.copy(alpha`/
+`onBackground\.copy(alpha` directly — the same "verify current state, don't just trust the audit" approach
+§55 used to find the missing Onboarding/Splash screens. `feature-note` and `feature-birthday` came back
+clean (confirming §24/§26/§27's "fully closed" claims actually hold). `feature-reminder` did not: two
+genuine, previously-unaudited misses.
+
+**`RemindersArchiveScreen.kt`'s `ArchiveEmptyState`** — a private composable, never named in §6 at all,
+duplicating the exact `onSurface.copy(alpha = 0.3f)` icon-tint / `alpha = 0.5f` caption shape §24 fixed for
+`NotesEmptyState` and §27 fixed for `BirthdaysEmptyState` (§27 itself even called those two "almost certainly
+copy-pasted from one to the other" — this is evidently a third copy nobody had traced back to this file).
+Migrated onto the shared `EmptyState.kt` composable, same as those two: `icon = AppIcons.Fluent.Archive`,
+`message = stringResource(R.string.archive_is_empty)`. Also removed the file's now fully-unused `Icon`
+import (its only call site was inside the deleted composable) and the `size` import (only used by the
+deleted composable's own `Modifier.size(64.dp)`, since the shared `EmptyState` sizes its own icon
+internally).
+
+**`ReminderActionScreen.kt`'s `TodoItemRow`** — the completed-todo-item text used
+`if (item.isCompleted) onSurface.copy(alpha = 0.5f) else onSurface`, a fourth ad hoc alpha-blend site in this
+exact file that §17's original 3-site sweep (contact phone, email address, email subject) missed entirely —
+same file, same anti-pattern, just a different composable §17 didn't happen to look at. Fixed to
+`onSurfaceVariant` for the completed case, matching every other de-emphasis fix in this doc; the active
+(`else`) branch's plain `onSurface` was left untouched.
+
+**Reviewed and NOT changed** (found during the same grep sweep, judged not to be the anti-pattern):
+`MapEditorScreen.kt:98`'s `scrim.copy(alpha = scrimAlpha)` is §19's own already-correct token-based scrim
+fix, not a miss. `BuilderSelectorSheet.kt`'s `SelectorItemRow` uses `contentAlpha = if (available) 1f else
+0.75f` uniformly across an item's icon/title/description/subtext — this reads as "unavailable selector item"
+styling (a disabled-adjacent state applied consistently to every text role in the row), not the
+"de-emphasize secondary text against primary text" pattern the `onSurfaceVariant` fixes target; M3's own
+disabled-content convention is itself alpha-based, so there's no obvious full-opacity token this should
+become instead. Left as a boundary case rather than guessed at.
+
+**Adjacent gap noticed but out of this pass's Reminders/Notes/Birthdays scope**:
+`ManagePresetsScreen.kt`'s private `EmptyState` (same `onSurface.copy(alpha = 0.3f/0.5f)` shape, `feature-reminder`
+module but a **Settings**-group screen) already has this exact fix named as item 3 of §11's own suggested fix
+order and was never landed — a pre-existing gap from a different audit section, not a new find, left for a
+Settings-scoped pass rather than folded in here.
+
+Verified via `./gradlew :feature:feature-reminder:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-reminder:detekt --rerun`. `RemindersArchiveScreen.kt` briefly showed a new
+`NoUnusedImports` hit on the `size` import after the first pass (caught and removed before the final run);
+the two files' remaining `ImportOrdering` findings were confirmed pre-existing by diffing against
+`git show HEAD` (`RemindersArchiveScreen.kt`'s `com.github.naz013.ui.reminder.UiReminderList` import was
+already out of lexicographic order relative to `com.github.naz013.ui.common.compose.AppIcons` before this
+pass touched the file; `ReminderActionScreen.kt`'s edit never touched any import line at all — a same-line
+value swap with zero net line delta).
+
+**Not fixed**: `ManagePresetsScreen.kt`'s empty state (§11, Settings group — noted above, deliberately left
+for a Settings-scoped pass). Everything else in §16-§27's "Not fixed" trail remains what it already was
+(orientation splits, list-row consistency, scroll-shadow app bars, `SelectableOptionRow` `FontWeight`,
+`OfflineOnlyRow` dedup) — none of it alpha-blend, so out of scope for this specific sweep.
+
+**Suggested next step**: this closes out the alpha-blend cross-cutting pass for Reminders/Notes/Birthdays —
+no more grep hits for the anti-pattern in any of those three modules. `ManagePresetsScreen.kt`'s matching gap
+is a small, well-scoped fix if picking up the Settings group (§11/§12) next; otherwise, re-diffing
+`*Screen.kt` files against the inventory (the §55 method) for more undiscovered screens remains open too.
+
+## 59. `ManagePresetsScreen.kt` empty-state fix — landed
+
+Fixed the adjacent gap §58 noticed but deliberately left out of its Reminders/Notes/Birthdays scope: item 3
+of §11's own suggested fix order, named there and never landed since. Same private-`EmptyState`-composable
+shape as §58's `RemindersArchiveScreen.kt` fix (and §24's `NotesEmptyState`/§27's `BirthdaysEmptyState`
+before that) — `onSurface.copy(alpha = 0.3f)` icon tint, `alpha = 0.5f` caption — migrated onto the shared
+`EmptyState.kt` composable: `icon = AppIcons.Builder.Preset` (already cataloged), `message =
+stringResource(R.string.recur_no_presets)`.
+
+One naming wrinkle this file's fix hit that the others didn't: its private composable was itself named
+`EmptyState`, shadowing the shared one — deleting it and adding the `ui-common` import resolves the call
+site to the shared composable by the same name, so the diff reads as if the call just grew two new
+arguments, not a rename.
+
+Removed six imports that lost their only call site once the private composable was deleted (`Icon`,
+`Arrangement`, `Alignment`, `size`, `painterResource`, `Text`, `dp` — `dp` had no remaining use anywhere in
+the file either); added `AppIcons` and the shared `EmptyState` import.
+
+Verified via `./gradlew :feature:feature-reminder:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-reminder:detekt --rerun`: one pre-existing `ImportOrdering` finding and a run of
+`Indentation` findings on the untouched `modifier =` chain and the untouched preview's `listOf(...)` block.
+Confirmed pre-existing by stashing this change and re-running detekt against unmodified HEAD: identical 945
+weighted-issue total, same findings shifted by exactly the line count this fix removed, then restored via
+`git stash pop`.
+
+With this, every empty-state alpha-blend duplicate found across §24, §27, §58, and this section is closed —
+`NotesEmptyState`, `BirthdaysEmptyState`, `RemindersArchiveScreen.kt`'s `ArchiveEmptyState`, and now
+`ManagePresetsScreen.kt`'s own copy, all on the shared `EmptyState.kt`.
+
+**Suggested next step**: §11's own suggested fix order named `HolidayCountryScreen.kt` alongside
+`ManagePresetsScreen.kt` for this exact same alpha-blended empty-state pattern — a same-module (`feature-settings`),
+same-fix candidate worth checking next if continuing the Settings group. Otherwise, re-diffing `*Screen.kt`
+files against the inventory (the §55 method) for more undiscovered screens remains open.
+
+## 60. `HolidayCountryScreen.kt` alpha-blend fix and `GeneralSettingsScreen`/`SingleChoiceDialog` dedup — landed
+
+Two of §11's remaining suggested-fix-order items, landed together in one batch at the user's request rather
+than as two separate turns.
+
+**Item 3, second half — `HolidayCountryScreen.kt`'s alpha-blend fix**: unlike the `ManagePresetsScreen.kt`
+half of this finding (§59), this screen's "empty" state is a single centered `Text` with no icon — a
+"no search results" message, not an icon+caption empty-list pattern — so it doesn't fit the shared
+`EmptyState.kt` composable's shape (which requires an `icon: Painter`) and was never meant to: §11's finding
+#5 only ever asked for the token swap, not a component migration. One-line fix:
+`MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)` → `onSurfaceVariant`. Verified via
+`./gradlew :feature:feature-settings:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-settings:detekt --rerun` — zero findings in this file.
+
+**Item 4 — `GeneralSettingsScreen`'s private `SingleChoiceDialog` deduped onto the shared `ui-common` one**:
+checked for real differences first, same discipline as §23's `OfflineOnlyRow` dedup, rather than trusting
+§11's "functionally equivalent" description at face value. The two were **not** interchangeable as originally
+described: the shared version's dialog `Column` had no height cap or scroll, while
+`GeneralSettingsScreen`'s private version wrapped its `Column` in
+`.heightIn(max = 400.dp).verticalScroll(rememberScrollState())` — necessary because this dialog's option
+list is the app's language picker, which runs to dozens of entries and would overflow the dialog without a
+cap. Swapping to the shared component as-is would have silently dropped that behavior.
+
+Rather than skip the dedup or fork the difference, ported the height-cap/scroll behavior into the shared
+`SingleChoiceDialog.kt` itself, making it the more complete, canonical version — the same "pick the more
+correct behavior as canonical" call §23 made. This is additive, not a breaking change for the dialog's other
+3 existing callers (`CalendarSettingsScreen.kt`, `BirthdaySettingsScreen.kt`, `LocationSettingsScreen.kt`):
+`heightIn(max = 400.dp)` is a ceiling that has no effect on option lists already shorter than that, and
+`verticalScroll` on content that doesn't overflow is inert — neither changes appearance or behavior for a
+short list, only enables correct behavior for a long one.
+
+`GeneralSettingsScreen.kt`'s private `SingleChoiceDialog(dialog: GeneralSettingsDialog, ...)` composable
+(45 lines) was deleted entirely; its call site now calls the shared `SingleChoiceDialog(title, options,
+selectedIndex, onOptionSelected, onDismiss)` directly, unpacking the three fields off `state.dialog` instead
+of passing the whole object (a real, if minor, signature difference — the shared component takes primitives,
+not this screen's own dialog-state type). Removed ten imports that lost their only call site with the
+private composable (`Row`, `fillMaxWidth`, `heightIn`, `selectable`, `selectableGroup`, `AlertDialog`,
+`RadioButton`, `TextButton`, `Alignment`, `Role`) — `dp`, `Text`, `verticalScroll`, and `rememberScrollState`
+were checked individually and kept, since each still has a real call site in the screen's own outer `Column`.
+
+Verified via `./gradlew :ui:ui-common:compileDebugKotlin :feature:feature-settings:compileDebugKotlin
+:app:compileProDebugKotlin` (all clean) and detekt on both touched modules.
+`:ui:ui-common:detekt --rerun` hit the same pre-existing `PermissionRequester.kt` crash already documented
+in §47 (confirmed unrelated — this change never touches that file). `:feature:feature-settings:detekt --rerun`
+flagged 4 `Indentation` hits on `GeneralSettingsScreen.kt`'s untouched outer-`Column` modifier chain;
+confirmed pre-existing by stashing the change and re-running against unmodified HEAD, which reported the
+same 4 hits (shifted) plus 12 more inside the now-deleted private composable's own body — 425 weighted
+issues at HEAD vs. 413 with this fix applied, a net *decrease* since deleting the duplicate removed its own
+debt along with it. Restored via `git stash pop`.
+
+**Not fixed**: §11's item 5 (consolidating the app's four hand-rolled seek/slider `AlertDialog`s into one
+shared `SeekValueDialog`) — explicitly lower-urgency per §11's own ordering, and a larger rework than this
+batch's two items.
+
+**Suggested next step**: with items 1-4 of §11's suggested fix order now all landed, only item 5 (the
+`SeekValueDialog` consolidation) remains from that list. Otherwise, re-diffing `*Screen.kt` files against the
+inventory (the §55 method) for more undiscovered screens remains open.
+
+## 61. Shared `SeekValueDialog` consolidation — landed
+
+Fixed §11's last remaining item, item 5: four hand-rolled seek/slider `AlertDialog`s across
+`RemindersSettingsScreen.kt`, `BirthdaySettingsScreen.kt` (already extracted into its own private
+`SeekValueDialog` composable), `NoteSettingsScreen.kt`, and `LocationSettingsScreen.kt` consolidated onto one
+new shared `SeekValueDialog` in `ui-common`, alongside `SingleChoiceDialog`/`MultiChoiceDialog`. Turned out to
+be **five** instances, not four — `LocationSettingsScreen.kt` has two independent seek dialogs (Radius and
+Tracker) under one `when` block, both counted as "the Location screen's dialog" by §11's original tally.
+
+**Checked for real differences before designing the shared API**, same discipline as every prior dedup in
+this doc (§23, §60). The five were not interchangeable:
+
+- **Stepped vs. continuous slider**: Birthday's two dialogs and Location's Tracker dialog pass `steps`
+  (discrete increments); Reminders', Note's, and Location's Radius dialog don't (continuous drag).
+- **Haptic feedback**: Birthday and Note wire `LocalHapticFeedback` + a `hapticFeedbackEnabled` flag into the
+  slider's `onValueChange`; Reminders and both Location dialogs have no haptic at all.
+- **Confirm button text**: Birthday uses `R.string.save`; every other instance uses `R.string.ok`.
+- **Body content shape**: four of five show one `Text` (the current value) above the `Slider`; Location's
+  Tracker dialog shows *two* — an explanatory `titleSmall` sentence ("for lower battery usage, set bigger
+  values") followed by the `titleLarge` value — the one dialog in the group that also uses a heavier text
+  style for its value than the other four's `bodyLarge`.
+- **One real, not just stylistic, inconsistency worth flagging rather than silently carrying forward**:
+  Note's dialog compared the new slider value against `state.colorOpacity` (the last *confirmed* value) to
+  decide whether to fire haptic feedback, while Birthday's compared against its own `value` parameter (the
+  live *preview* value, i.e. what every render of the dialog already shows). Note's version meant haptic
+  feedback wouldn't fire on most drag steps — only when crossing back over the last-saved value — which reads
+  as an unintentional divergence, not a deliberate design choice; the other four dialogs' consistent
+  "compare against the currently-displayed value" logic is what the shared component now does for everyone,
+  Note's call site included.
+
+**The shared component** (`ui-common/compose/foundation/dialog/SeekValueDialog.kt`) takes the union of what
+every call site needs, defaulted to match the majority behavior: `title`, `value`, `valueText`, `valueRange`,
+`onValueChange`, `onConfirm`, `onDismiss` are required; `description: String? = null` (Location Tracker's
+extra sentence), `valueTextStyle: TextStyle = MaterialTheme.typography.bodyLarge` (Location Tracker passes
+`titleLarge` explicitly to keep its exact existing appearance — a real, if minor, visual choice from before
+consolidation, preserved rather than normalized away since nothing suggested it was accidental),
+`steps: Int = 0` (continuous by default), `hapticFeedbackEnabled: Boolean = false`, and
+`confirmText: String = stringResource(R.string.ok)` (Birthday passes `R.string.save` explicitly) are
+optional. Haptic wiring (the `LocalHapticFeedback` lookup and the `performHapticFeedback` call) lives inside
+the shared component now, not duplicated at each call site.
+
+**Per-file changes**: `BirthdaySettingsScreen.kt`'s private `SeekValueDialog` (36 lines) deleted outright,
+its two call sites gaining `steps = 4` and `confirmText = stringResource(R.string.save)`.
+`RemindersSettingsScreen.kt`'s inline `AlertDialog` block replaced with a `SeekValueDialog` call using only
+the required parameters (its defaults already match). `NoteSettingsScreen.kt`'s inline block replaced the
+same way, dropping its own `LocalHapticFeedback.current` local val (now redundant) and passing
+`hapticFeedbackEnabled = state.hapticFeedbackEnabled`. `LocationSettingsScreen.kt`'s two inline blocks
+(Radius, Tracker) each replaced with their own `SeekValueDialog` call, Tracker's carrying `steps = 28`,
+`description`, and `valueTextStyle = MaterialTheme.typography.titleLarge`.
+
+Removed now-fully-unused imports across all four call-site files: `AlertDialog`, `Slider`, `TextButton`,
+`Text` (where no longer used elsewhere in the file), `Column` (checked individually — still needed by each
+screen's own outer layout `Column`, so kept everywhere), `fillMaxWidth` (missed on the first pass for
+`BirthdaySettingsScreen.kt` — caught by `NoUnusedImports` on the first detekt run, then proactively grepped
+the other three files for the same miss before rerunning, finding none), and `LocalHapticFeedback`/
+`HapticFeedbackType` in `BirthdaySettingsScreen.kt`/`NoteSettingsScreen.kt` (Reminders and Location never had
+these, matching their no-haptic behavior).
+
+Verified via `./gradlew :ui:ui-common:compileDebugKotlin :feature:feature-birthday:compileDebugKotlin
+:feature:feature-reminder:compileDebugKotlin :feature:feature-settings:compileDebugKotlin
+:app:compileProDebugKotlin` (all clean after one fix: `TextStyle` is `androidx.compose.ui.text.TextStyle`,
+not `androidx.compose.material3.TextStyle` — caught immediately by the first compile attempt). Detekt on all
+four touched feature modules; every finding confirmed pre-existing via stash-and-rerun-against-HEAD for each
+file (`BirthdaySettingsScreen.kt`: 95 weighted issues both before and after, same indentation shifted by the
+removed lines; `RemindersSettingsScreen.kt`: 935 both before and after, including its own pre-existing
+`MultiLineIfElse` finding on the unrelated `dndValueColor` line; `feature-settings` module: 409 at HEAD vs.
+408 with the fix — one fewer, because deleting `NoteSettingsScreen.kt`'s old inline lambda (with its awkward
+`onOpacityPreviewChange(it.toInt()) }` trailing-brace wrapping) also removed a pre-existing `Wrapping`
+finding along with it, a genuine improvement, not something hidden). `ui:ui-common:detekt` hit the same
+pre-existing `PermissionRequester.kt` crash from §47/§60 — this change doesn't touch that file, and the new
+`SeekValueDialog.kt` was checked by hand against `SingleChoiceDialog.kt`'s established formatting (2-space
+indent, trailing commas) since the module-wide crash prevents a direct per-file detekt run on it this session.
+
+This closes out every item in §11's suggested fix order (1 through 5).
+
+**Suggested next step**: with §11 fully closed, re-diffing `*Screen.kt` files against the inventory (the §55
+method) for more undiscovered screens remains the main open thread, alongside §12's still-unaudited-for-fixes
+findings (the doc has only ever audited, not fixed, most of §12's own list beyond the gradient-hero dedup in
+§15) and the various design-judgment items carried since earlier sections (scroll-shadow-to-color-fill,
+breakpoint-based layout splits).
+
+## 62. §12 items 4 and 5 — `HeaderItemsSettingsScreen.kt` drag-handle a11y fix and `ProVersionScreen.kt` emphasized type — landed
+
+Items 1-3 of §12's suggested fix order were already landed (1/2 in §14's shared-scaffold fix, 3 in §15's
+gradient-hero dedup, both of which predate this doc segment). This lands items 4 and 5, batched together per
+the user's request to group ready fixes rather than land them one at a time.
+
+**Item 4 — `HeaderItemsSettingsScreen.kt`'s drag handle**: two findings, following the reference pattern
+`SubTasksValueEditor.kt` (§20) already established for the identical problem on its own reorder rows.
+
+- **48dp touch target**: the drag handle icon was sized directly at `Modifier.size(20.dp)` — both its visual
+  size and its actual gesture-detection region (`detectDragGesturesAfterLongPress` is attached to that same
+  modifier chain), well under the 48×48dp minimum. Wrapped it in a new `Box(DRAG_HANDLE_TOUCH_SIZE = 48.dp)`
+  with the icon centered inside at its original 20dp — same "48dp interactive footprint, smaller icon
+  centered inside" shape §20 used for `SubTasksValueEditor.kt`'s check/remove buttons
+  (`ROW_BUTTON_SIZE`/`.fillMaxSize().padding(12.dp)`), just via an explicit `Box` here since there's no
+  `IconButton` wrapper in this row to begin with. Note this is a real, deliberate layout change, not a
+  behavior-preserving one: the row's leading column grows from 20dp to 48dp, shifting everything after it
+  right by 28dp — an accepted, correct consequence of actually meeting the touch-target minimum, the same
+  way any `IconButton` reserves its full 48dp footprint regardless of its icon's drawn size.
+- **TalkBack-reachable reorder action**: the long-press-drag gesture itself has no screen-reader equivalent,
+  exactly the gap `SubTasksValueEditor.kt`'s `ShopItemRow` already solves via `CustomAccessibilityAction`s
+  exposing one-step move-up/move-down actions. Copied that exact pattern: the parent `items(...)` block now
+  computes `onMoveUp`/`onMoveDown` (nullable lambdas, `null` at the list's start/end respectively) from
+  `displayIndex` within `state.configurableItems`, calling the existing `onReorder(fromIndex, toIndex)`
+  callback — mirroring `SubTasksValueEditor.kt`'s identical `displayIndex`/`onMoveUp`/`onMoveDown` shape
+  verbatim. `ConfigurableHeaderItemRow` gained `onMoveUp`/`onMoveDown` parameters and a
+  `Modifier.semantics { customActions = listOfNotNull(...) }` block on the drag-handle `Box`, using the same
+  already-existing, already-localized `R.string.cd_move_item_up`/`cd_move_item_down` strings
+  `SubTasksValueEditor.kt` uses — no new string resources needed.
+
+One formatting miss caught by detekt on the first pass: writing each `CustomAccessibilityAction`'s lambda
+body as `{ action(); true }` (semicolon-separated on one line) tripped the `Wrapping` rule ("Missing newline
+after \";\""); reformatted to match `SubTasksValueEditor.kt`'s own multi-line block shape
+(`action()` / `true` on separate lines) instead of copying the semicolon shorthand.
+
+**Item 5 — `ProVersionScreen.kt`'s emphasized type**: `headlineSmall` → `headlineSmallEmphasized` (the "Pro
+advantages" headline) and `titleMedium` → `titleMediumEmphasized` (each advantage line). Worth noting this
+doesn't follow the narrower "only swap on a manual `FontWeight` override" trigger §58 established for most
+emphasized-token fixes in this doc — there was no `FontWeight` override here, just baseline styles carrying
+the screen's "hero" emphasis through color (`tertiary`) alone. This screen is the one explicit exception:
+§12's own audit text named it directly as the group's single clearest hero-moment candidate and put this
+swap in its suggested fix order as a deliberate, no-downside adoption ("costs nothing further to wire up"),
+not a mechanical anti-pattern sweep — different trigger, same doc, done because the audit that found it
+asked for it by name.
+
+Verified via `./gradlew :feature:feature-settings:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-settings:detekt --rerun`. `ProVersionScreen.kt`: zero findings in both runs.
+`HeaderItemsSettingsScreen.kt`: after the `Wrapping` fix, exactly 389 weighted issues — confirmed identical
+to unmodified HEAD's own 389 (stash-and-rerun comparison), the same pre-existing indentation block on the
+untouched `dragHandleModifier`/`rowModifier` `pointerInput` chain, shifted by the 17 lines this fix added.
+
+This closes every item in §12's suggested fix order (1 through 5), same as §11's earlier full closure.
+
+**Suggested next step**: with both Settings audits (§11, §12) now fully closed on their suggested fix orders,
+the remaining threads are re-diffing `*Screen.kt` files against the inventory (the §55 method) for more
+undiscovered screens, §12's lower-priority screen-specific notes that were never in its fix order
+(`OtherSettingsScreen.kt`'s two icon-less rows, `HeaderItemsSettingsScreen`'s own row-composable divergence
+from `SettingsItem`, `CloudBackupSettingsScreen.kt`'s `LoadingIndicator` candidacy), and the accumulated
+design-judgment items (scroll-shadow-to-color-fill, breakpoint-based layout splits) carried since earlier
+sections.
+
+## 63. Screen-inventory re-diff (negative result) and `OtherSettingsScreen.kt` icon fix — landed
+
+**Re-diff, no new screens found**: repeated §55's `*Screen.kt`-vs-inventory diff to check for any screen
+added or missed since the last pass. This time the raw diff produced 3 false positives
+(`BuildReminderScreen.kt`, `MapEditorScreen.kt`, `ReminderHelpScreen.kt` briefly looked "untracked" because
+the first-pass `grep -v "/build/"` filter meant to exclude Gradle build output also matched these files'
+own package path — `feature/reminder/build/...` is a real source package named "build", not a build
+directory — so the filter incorrectly excluded genuinely-tracked files; corrected by restricting the file
+search to actual `*/src/main/*` paths instead of grep-excluding a substring). After that correction, every
+remaining untracked file is one already known and excluded: the `admin/cloudtestadmin` and
+`admin/reviewsadmin` modules' 6 screens (debug-only, explicitly out of scope per this doc's own scope note)
+and `DestinationScreen.kt`/`DynamicScreen.kt` (confirmed non-screens back in §55 — a plain enum and a
+breakpoint-switching layout helper, neither a UI screen). No genuine gap this time — the inventory is
+currently complete.
+
+**`OtherSettingsScreen.kt`'s two icon-less rows** (§12 screen-specific finding, never in its numbered fix
+order): "Permissions" and "Allow Permission" were the only 2 of 12 `SettingsItem` rows in this screen with no
+`icon`, leaving them visually mis-aligned against every sibling row (the icon column reserves its width
+whether or not one is supplied). No dedicated "permission" icon exists in `DrawableCatalog`/`AppIcons` — the
+closest cataloged fits are the two already-existing lock icons — so "Permissions" got `AppIcons.Fluent.LockShield`
+(already used elsewhere for the conceptually adjacent "Lock Screen Visibility" row in
+`RemindersSettingsScreen.kt`) and "Allow Permission" got the plainer `AppIcons.Fluent.Lock`, keeping the two
+adjacent rows visually distinct from each other rather than both using the same icon.
+
+Verified via `./gradlew :feature:feature-settings:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-settings:detekt --rerun` — zero findings in `OtherSettingsScreen.kt`, and the module's
+total weighted-issue count is unchanged from §62's 389, confirming no new debt.
+
+**Suggested next step**: §12's two remaining screen-specific notes are both non-urgent by the audit's own
+framing — `HeaderItemsSettingsScreen`'s row-composable divergence from `SettingsItem` needs a new
+optional-drag-handle-slot API design, not a mechanical fix, and `CloudBackupSettingsScreen.kt`'s
+`CircularProgressIndicator`→`LoadingIndicator` swap was explicitly flagged "optional, not urgent." With the
+screen inventory confirmed complete and both Settings audits (§11, §12) fully worked through, the main open
+threads left project-wide are the accumulated design-judgment items: the scroll-shadow-to-color-fill
+migration (Home/Agenda from §49, Reminders/Birthdays Archive from §6/§27), and the Reminders/Notes/Birthdays
+groups' breakpoint-based layout splits — both need a product/design decision rather than a mechanical fix.
+
+## 64. Scroll-shadow-to-color-fill migration — landed
+
+Fixed the scroll-shadow-on-scroll pattern flagged across §6/§27 (`RemindersArchiveScreen.kt`,
+`BirthdaysScreen.kt`) and §49 (`ChronologicalHomeScreen.kt`, `AgendaScreen.kt`) — 4 screens, all growing a
+drop shadow under their app bar once the list scrolls, against guidelines §9.6's explicit "App bars... On
+scroll: color fill instead of drop shadow."
+
+**Design decision made explicit**: this had been deferred since §27 specifically because a real migration
+path — wiring `TopAppBarDefaults.pinnedScrollBehavior()`/`enterAlwaysScrollBehavior()` via
+`Modifier.nestedScroll(...)` — changes real UX behavior beyond "add a color instead of a shadow" (§27's own
+text: `enterAlwaysScrollBehavior()` would let the whole app bar slide off-screen on scroll-down, a behavior
+none of these 4 screens has today). Given the user's instruction to continue with this specific migration
+now, the decision made was the narrowest one that satisfies the guideline literally without also deciding a
+separate, bigger, unrequested UX change: keep each screen's existing "always-pinned, gains a visual cue on
+scroll" behavior exactly as-is, and swap only the visual cue itself — shadow → color fill — using the same
+`isScrolled` boolean state each screen already computes. No `nestedScroll`/`scrollBehavior` wiring was
+introduced anywhere; this is a token/mechanism swap on already-working scroll-state plumbing, not a
+migration onto M3's built-in scrollable-app-bar machinery.
+
+**Color choice verified against the actual library, not assumed**: extracted
+`material3-android-1.5.0-alpha27-sources.jar` (the exact version on this project's classpath, same diligence
+as §19/§22) and confirmed `AppBarTokens.OnScrollContainerColor = ColorSchemeKeyTokens.SurfaceContainer` —
+i.e. `MaterialTheme.colorScheme.surfaceContainer` is M3's own real default for exactly this "app bar container
+color once scrolled" case, not a guess. Each screen already used `MaterialTheme.colorScheme.background` as
+its unscrolled color (matching this app's established `TopAppbarColor` convention elsewhere, not M3's own
+`Surface` default) — kept that side as-is, since only the *scrolled* half of the pair was ever the gap.
+
+**The fix, applied identically across all 4 files**: replaced each `animateDpAsState`-driven
+`headerElevation: Dp` (which fed `shadowElevation`/`Modifier.shadow(...)`) with an `animateColorAsState`-driven
+`headerContainerColor: Color` (`background` unscrolled → `surfaceContainer` scrolled), and dropped the shadow
+parameter/modifier entirely rather than keeping it at 0 — the guideline says "instead of," not "in addition
+to."
+
+- **`AgendaScreen.kt`, `RemindersArchiveScreen.kt`, `BirthdaysScreen.kt`** (identical shape in all 3):
+  `Surface(color = MaterialTheme.colorScheme.background, shadowElevation = headerElevation)` →
+  `Surface(color = headerContainerColor)`. Removed each file's now-unused `HEADER_ELEVATION = 3.dp` constant
+  and `animateDpAsState` import; added `animateColorAsState`.
+- **`ChronologicalHomeScreen.kt`** (a different shape — no `TopAppBar`/`Surface`, just a plain header
+  `Column`): `Modifier.shadow(elevation = headerElevation, clip = false).background(background)` →
+  `Modifier.background(headerContainerColor)`. Removed the now-unused `androidx.compose.ui.draw.shadow`
+  import alongside `animateDpAsState`.
+
+Verified via `./gradlew :feature:feature-home:compileDebugKotlin :feature:feature-agenda:compileDebugKotlin
+:feature:feature-reminder:compileDebugKotlin :feature:feature-birthday:compileDebugKotlin
+:app:compileProDebugKotlin` (all clean) and detekt on all 4 modules, each checked against unmodified HEAD via
+stash-and-rerun. All 4 files' post-fix findings were either identical to HEAD (`BirthdaysScreen.kt`: same
+pre-existing `Wrapping`/`ArgumentListWrapping` on its still-unmigrated private `BirthdaysEmptyState`, just
+shifted by the 3 net lines this fix added) or strictly fewer than HEAD
+(`ChronologicalHomeScreen.kt`: 20→17, `AgendaScreen.kt`: 29→10, `RemindersArchiveScreen.kt`: 935→931) —
+in every reduced case the file had already been externally reformatted on disk mid-session (flagged by
+this session's own "changed on disk" notices for these exact 3 files), and the removed findings were
+pre-existing `Indentation`/`Wrapping`/`ArgumentListWrapping` debt at lines this fix never touched, not
+anything this change caused. `CyclomaticComplexMethod` findings on `EventCard`
+(`ChronologicalHomeScreen.kt`) and the `AgendaScreen` composable itself (`AgendaScreen.kt`) are unchanged in
+both value and relative position — confirmed pre-existing, untouched by a `Dp`-to-`Color` state swap that
+adds no branching.
+
+**Not fixed / deliberately out of scope**: whether any of these 4 app bars *should* hide on scroll
+(`enterAlwaysScrollBehavior()`) rather than stay pinned remains an open, separate product question — this
+fix only addressed the literal "shadow vs. color fill" gap the guideline named, not a broader scroll-behavior
+redesign nobody asked for.
+
+This was the last of the accumulated design-judgment items carried since §6/§27/§49. Combined with §63's
+confirmation that the screen inventory is complete and §11/§12's full closure, every open item this doc has
+tracked with a concrete, nameable fix is now landed.
+
+**Suggested next step**: no further tracked findings remain open in this doc as mechanical or now-decided
+items. A fresh full re-audit of a screen group (re-reading current source against
+`m3-expressive-guidelines.md` from scratch, the way §6/§8/§9/§10 etc. originally did) would be the way to
+surface anything new — the accumulated backlog from prior audits has been fully worked through.
+
+## 65. Widget Configuration group — fresh re-audit and two fixes — landed
+
+Every screen-inventory row now reads "In progress" or "Done" — there's no longer a literal "unaudited group"
+or "not fixed" item left to point at (§64's own closing note). Per the user's request for "a fresh full
+re-audit of the next screen group," picked **Widget Configuration** (the 7 `*WidgetConfigScreen.kt` screens
++ `WidgetConfigScaffold.kt` + `ColorSlider.kt`) specifically because its shared-component gaps (§13's
+findings #1/#2/#3/#5) were fixed years-in-doc-time ago (§14, §16, §47) but every one of §13's *screen-specific*
+findings — the ones that don't reduce to "fix the shared file once" — were never revisited. Re-read all 7
+screens' current source in full against the guidelines, from scratch, rather than just re-checking §13's old
+finding list against memory.
+
+**Confirmed still holding, no drift found**: `WidgetConfigScaffold.kt` still has the real content
+description, `TopAppbarColor`, and cataloged `AppIcons.Fluent.Dismiss` from §14/§47. `ColorSlider.kt` still
+has full semantics (content description, `progressBarRangeInfo`, `setProgress`) from §16, and every one of
+the 7 screens now correctly sizes it at `.height(48.dp)` (the `.height(36.dp)`/`.height(40.dp)` sub-target
+sizes §13 flagged are gone). No alpha-blend anti-pattern anywhere in the group. The
+`dimensionResource(R.dimen.home_screen_widget_corner_radius)` mock-preview corner radius and the decorative
+mock-preview icons are both still correctly out of scope, matching §13's own original judgment calls on both.
+
+**Fixed — §13's never-landed `modifier`-parameter-order finding**: `SingleNoteWidgetConfigScreen`,
+`NotesWidgetConfigScreen`/`NotesWidgetMockPreview`, `CalendarWidgetConfigScreen`/`CalendarWidgetMockPreview`,
+`EventsWidgetConfigScreen`/`EventsWidgetMockPreview`, `BirthdaysWidgetConfigScreen`, and
+`TasksWidgetConfigScreen`/`TasksWidgetMockPreview` all put `modifier: Modifier = Modifier` last instead of
+first, against CLAUDE.md's explicit convention. Confirmed every call site (`*WidgetConfigActivity.kt`,
+`@Preview` composables, and mock-preview call sites) already uses named arguments before reordering any
+declaration — a pure parameter reorder, zero behavior change. `CombinedWidgetConfigScreen` and
+`BirthdaysWidgetMockPreview` already had it right (§13 named exactly these two as the correct examples);
+left untouched.
+
+**New finding, not in §13's original list — `EventsWidgetConfigScreen.kt`'s own hand-rolled seek dialog**:
+its text-size picker is an `AlertDialog { Text + Slider }` with inline haptic-feedback wiring — the *exact*
+shape §61 just consolidated four other instances of onto the shared `ui-common` `SeekValueDialog`, missed
+there only because widget-config screens weren't in that pass's scope. Migrated it onto `SeekValueDialog`
+the same way: `title`/`value`/`valueText`/`valueRange`/`steps`/`hapticFeedbackEnabled` map directly, and the
+screen's own `LocalHapticFeedback.current` local val (now redundant — the shared component owns that
+wiring) was removed along with the now-unused `AlertDialog`/`Slider`/`TextButton`/`HapticFeedbackType`/
+`LocalHapticFeedback`/`roundToInt` imports.
+
+Verified via `./gradlew :extensions:appwidgets:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:extensions:appwidgets:detekt --rerun`: 4 weighted issues total across the whole module, all one
+pre-existing `ImportOrdering` finding on `SingleNoteWidgetConfigScreen.kt` (already documented as
+pre-existing back in §16) — confirmed identical, not shifted, via stash-and-rerun against unmodified HEAD
+(param reorders don't move import lines, so the finding landed at the exact same line before and after).
+
+**Not fixed / still open, unchanged from §13**: `EventsWidgetConfigScreen.kt` still puts its text-size
+control behind a dialog while `SingleNoteWidgetConfigScreen.kt` uses an inline `Slider` for the equivalent
+controls — a cross-screen UX inconsistency, not a compliance gap on its own, and now that both use the
+correct underlying primitives (real M3 `Slider`, real `SeekValueDialog` where a dialog is used) there's even
+less pressure to force one screen's pattern onto the other without a product opinion on which shape is
+right. `CircularProgressIndicator`→`LoadingIndicator` remains open too, but that's `LocalBackupScreen.kt`/
+`InsightsScreen.kt` (Backup/Insights group), not this one.
+
+**Suggested next step**: no further findings surfaced in this group. Continuing the same "fresh full
+re-audit" approach on another group — Groups/Tags/Places or Calendar/Google Tasks are the two that have had
+the fewest post-audit fix sections landed relative to their original finding counts — would be the next
+place to look for anything similarly missed.
+
+## 66. Groups/Tags/Places group — fresh re-audit, `modifier`-order fixes — landed
+
+Picked **Groups/Tags/Places** for the next fresh full re-audit. Correction to §65's own "suggested next
+step" before starting: checking §9's fix history first (not just its finding count) showed this group
+actually had the *most* dedicated fix sections of any group audited so far — §29 through §33, five sections,
+covering every cross-cutting item and screen-specific note in the original audit. Not the under-serviced
+group the "fewest fix sections" framing suggested — worth re-auditing anyway, since a fully-closed audit
+list is exactly the situation where a genuinely fresh read (not just re-checking the old list) is most
+likely to catch something the original pass missed, which is what happened here.
+
+Re-read all 8 screens, `GroupListItem.kt`/`TagListItem`/`PlaceListItemCard.kt` (list rows),
+`GroupReminderRow.kt`/`TagDetailRows.kt` (dispatcher rows), and `ColorPickerCard.kt` (shared color picker)
+in full, from scratch, against the guidelines — not against §9's finding list from memory.
+
+**Confirmed every §29-§33 fix is still holding, no drift**: real back/save-button content descriptions on
+all 8 screens (including `TagEditScreen.kt`'s save button, still an icon-only `MenuIconButton` rather than a
+self-labeling `MenuTextButton` like its siblings — the component-choice half of that finding was explicitly
+left as-is by §29, only the missing description was the actual accessibility defect). `TopAppbarColor` on
+all 8. `GroupsEmptyState`/`TagsEmptyState`/`PlacesEmptyState`/`TagDetailsEmptyState` all gone, replaced by
+the shared `EmptyState.kt`. `GroupListItem`/`TagListItem`/`PlaceListItemCard` all now use `titleMedium` for
+their primary label. `DrawableCatalog`/`AppIcons` used everywhere checked. `ColorPickerCard.kt` still the
+positive, spec-correct example §9 called out (`surfaceContainer` card, `titleMedium` + `primary` title,
+`outlineVariant`-bordered selection dot) — no change since.
+
+**New finding, fixed — the same `modifier`-parameter-order violation §65 fixed in Widget Configuration,
+never checked here**: `GroupsScreen`, `TagsScreen`, `PlacesScreen` (the 3 top-level list screens) and every
+list-row/dispatcher composable — `GroupListItem`, `TagListItem` (private, in `TagsScreen.kt`),
+`PlaceListItemCard`, `GroupReminderRow`, `TagDetailItemRow` — all put `modifier: Modifier = Modifier` last
+instead of first, against CLAUDE.md's convention. The same split pattern found in Widget Configuration
+repeats here too: every screen that has a `renderAsDetailPane` toggle (`GroupDetailsScreen`,
+`EditGroupScreen`, `TagEditScreen`, `TagDetailsScreen`, `EditPlaceScreen`) already had it right; only the
+plain list/dispatcher composables didn't. Confirmed every call site uses named arguments before reordering
+any declaration (`*NavGraph.kt` entries, `@Preview` composables, and inter-composable call sites) — a pure
+parameter reorder, zero behavior change, same discipline as §65.
+
+Note: `ColorPickerCard.kt`'s own signature (`colors, selectedIndex, onColorSelected, modifier, title, ...`)
+technically also has required params before `modifier`, and none of the recently-added shared dialogs
+(`SingleChoiceDialog`, `MultiChoiceDialog`, `SeekValueDialog`) expose a `modifier` parameter at all — both
+are real, wider instances of the same CLAUDE.md convention gap, but pursuing either is a different, much
+larger scope than "the composable already has a trailing `modifier` param, just move it" — this pass stayed
+within the narrower, already-precedented fix, matching §65 rather than expanding scope mid-audit.
+
+**New finding, NOT fixed — `EditGroupScreen.kt`'s `DelayMinutes` dialog is a third leftover hand-rolled
+seek/slider `AlertDialog`** (after §61's four and §65's `EventsWidgetConfigScreen.kt`), but this one doesn't
+fit the shared `SeekValueDialog`'s shape and wasn't forced onto it. Every prior `SeekValueDialog` migration
+target renders its value-text-plus-`Slider` content unconditionally whenever the dialog is open;
+`EditGroupScreen.kt`'s version wraps an "inherit from settings" `Switch` row (always shown) around a
+value-text-plus-`Slider` section that only renders `if (dialog.isOverridden)` — the slider itself is
+conditionally present, not just accompanied by optional description text the way `SeekValueDialog`'s
+`description` parameter already handles. Forcing this one caller's conditional-content shape onto a
+component 6 other call sites already use cleanly would mean growing `SeekValueDialog`'s API for a single
+user, which risks making it harder to read for everyone else rather than easier — left as a documented,
+found-but-not-migrated gap rather than guessed at. Worth reconsidering if a second dialog with this same
+"optional slider section behind a toggle" shape ever turns up.
+
+Verified via `./gradlew :feature:feature-group:compileDebugKotlin :feature:feature-tags:compileDebugKotlin
+:feature:feature-places:compileDebugKotlin :app:compileProDebugKotlin` (all clean) and detekt on all three
+modules, each checked against unmodified HEAD via stash-and-rerun: identical weighted-issue counts before
+and after in every module (`feature-group`: 15, `feature-tags`: 30, `feature-places`: 8) — confirming the 7
+parameter reorders introduced zero new findings anywhere.
+
+**Suggested next step**: `EditGroupScreen.kt`'s `DelayMinutes` dialog remains open as a documented,
+deliberately-not-forced gap. Otherwise, Calendar/Google Tasks is the next candidate for the same fresh-audit
+treatment — and worth checking its fix-section count directly first this time, rather than assuming from the
+finding-count framing the way this section's own opening had to correct.
+
+## 67. Calendar/Google Tasks group — fresh re-audit, `modifier`-order and `FontWeight`→`Emphasized` fixes — landed
+
+Checked §10's fix history first this time, per §66's own correction. Calendar/Google Tasks turned out the
+same as every other group checked so far: §34 through §39, six sections, closed every item in §10's
+suggested fix order (back-button, `TopAppbarColor`, deprecated baseline FAB, `TimelinePager.kt`'s off-scale
+corner radius, `detailScreenContentWidth()`, alpha-blend). Re-audited anyway, on the same reasoning as §65/§66
+— a fully-closed list doesn't mean a fresh read won't find something new, and this one did, on both counts
+that have held for the last two groups.
+
+Re-read all 8 screens, `TimelinePager.kt`, and `CalendarModeToggleButton.kt` in full, from scratch.
+
+**Confirmed every §34-§39 fix still holding**: real content descriptions, `TopAppbarColor` everywhere,
+`SmallExtendedFloatingActionButton` on both Google Tasks screens' FABs, `TimelinePager.kt`'s corner radii
+on-scale, `detailScreenContentWidth()` on the three Google Tasks detail screens plus
+`GoogleCalendarEventPreviewScreen.kt`, `GoogleTasksEmptyState` gone (migrated to shared `EmptyState.kt` in
+§39). No drift.
+
+**Fixed — the same `modifier`-parameter-order violation §65/§66 already fixed twice**: 12 composables across
+`CalendarScreen.kt`, `CalendarModeToggleButton.kt`, `TimelineScreen.kt`, all 7 composables in
+`TimelinePager.kt` (`TimelinePager`, `TimelinePage`, `TimelineDayHeader`, `TimelineHolidayRow`,
+`HolidayChip`, `HourAxis`, `TimelineDayColumn`), `GoogleTasksScreen.kt` (plus its private `TaskListTile`/
+`NotLoggedInContent`), and `TaskListScreen.kt`. Same split as the last two groups: every screen with
+`renderAsDetailPane` already had it right (`GoogleCalendarEventPreviewScreen`, `PreviewGoogleTaskScreen`,
+`EditGoogleTaskScreen`, `EditGoogleTaskListScreen`) — worth noting `TaskListScreen.kt` breaks that pattern
+slightly, since it *has* `renderAsDetailPane` but still had `modifier` last, unlike every other
+detail-pane-capable screen checked in this doc so far. Confirmed every call site (nav graphs, `@Preview`
+composables, internal call sites within `TimelinePager.kt`) uses named arguments before reordering; pure
+parameter reorder, zero behavior change.
+
+**Fixed — `CalendarModeToggleButton.kt`'s manual `FontWeight` override**: `CalendarModeRow`'s selected-state
+label used `fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal` on a baseline
+`titleMedium` style — §10 flagged this as "worth noting" and named it as exactly the guidelines §3.1
+"context" trigger for `titleMediumEmphasized`, but never put it in the suggested fix order, so it never
+landed. Fixed now, following the same trigger §17/§18/§58 established elsewhere in this doc: swapped to
+`style = if (selected) titleMediumEmphasized else titleMedium`, removed the `fontWeight` parameter and the
+now-unused `FontWeight` import.
+
+**New finding, NOT fixed — extensive `DrawableCatalog`/`AppIcons` bypass across the whole group**: this
+audit surfaced far more raw `painterResource(R.drawable.*)`/`PopupMenuItem(iconRes = R.drawable.*)` call
+sites than any group checked so far — roughly 25+ across `CalendarScreen.kt` (overflow menu, add-event
+bubble rows), `CalendarModeToggleButton.kt` (its own trigger icon), `TimelineScreen.kt` (add-menu items),
+`TimelinePager.kt` (`HolidayChip`'s globe icon), `GoogleCalendarEventPreviewScreen.kt` (delete icon),
+`GoogleTasksScreen.kt` (list-add icon, FAB icon), `TaskListScreen.kt` (overflow icon, FAB icon),
+`PreviewGoogleTaskScreen.kt` (edit/delete/complete icons, plus its `DetailRow`'s `icon: Int` parameter
+threading 7 more raw drawable IDs through from its own call sites), `EditGoogleTaskScreen.kt` (move/delete
+icons), and `EditGoogleTaskListScreen.kt` (delete icon). Every icon checked already exists in
+`DrawableCatalog.Fluent`/`AppIcons.Fluent` (matching §33's experience doing the same cleanup for
+Groups/Tags/Places — no new catalog entries needed, pure call-site migration), but the volume here is large
+enough — spanning 10 files, several with a dozen-plus call sites apiece — that folding it into this section
+risked losing the modifier-order and `FontWeight` fixes in a much bigger diff. Left as a clearly-scoped,
+ready-to-land item for its own pass, the same way §33 and §47 each got their own dedicated section rather
+than being bundled into the audit that found them.
+
+Verified via `./gradlew :feature:feature-calendar:compileDebugKotlin :feature:feature-googletask:compileDebugKotlin
+:app:compileProDebugKotlin` (all clean) and detekt on both modules, checked against unmodified HEAD via
+stash-and-rerun: identical weighted-issue counts before and after in both modules (`feature-calendar`: 193,
+`feature-googletask`: 6) — confirming the 12 parameter reorders and the one `FontWeight` fix introduced zero
+new findings. The `feature-googletask` findings that do show (5 `NoUnusedImports` in `GoogleTasksScreen.kt`)
+match §39's own already-documented pre-existing baseline exactly.
+
+**Suggested next step**: the `DrawableCatalog`/`AppIcons` cleanup identified above is the natural next item —
+large but entirely mechanical, same shape as §33's Groups/Tags/Places pass. Otherwise, Workflow/Routines is
+the one remaining screen group not yet given the fresh-re-audit treatment in this doc.

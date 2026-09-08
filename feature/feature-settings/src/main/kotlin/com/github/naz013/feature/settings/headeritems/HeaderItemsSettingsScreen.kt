@@ -30,6 +30,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.customActions
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.github.naz013.domain.home.HeaderNavigationSection
 import com.github.naz013.ui.common.R
@@ -37,6 +40,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.DisabledAlpha
 
 private val ROW_HEIGHT = 64.dp
+private val DRAG_HANDLE_TOUCH_SIZE = 48.dp
 
 @Composable
 internal fun HeaderItemsSettingsScreen(
@@ -61,48 +65,59 @@ internal fun HeaderItemsSettingsScreen(
 
     items(state.configurableItems, key = { it.section.ordinal }) { row ->
       val sectionKey = row.section.ordinal
+      val displayIndex = state.configurableItems.indexOfFirst { it.section.ordinal == sectionKey }
+      val onMoveUp = if (displayIndex > 0) {
+        { onReorder(displayIndex, displayIndex - 1) }
+      } else {
+        null
+      }
+      val onMoveDown = if (displayIndex < state.configurableItems.size - 1) {
+        { onReorder(displayIndex, displayIndex + 1) }
+      } else {
+        null
+      }
       ConfigurableHeaderItemRow(
         row = row,
         onToggle = { enabled -> onToggle(row.section, enabled) },
-        rowModifier =
-          Modifier
-            .animateItem()
-            .graphicsLayer {
-              translationY = if (draggedSectionKey == sectionKey) dragOffset else 0f
-            },
-        dragHandleModifier =
-          Modifier.pointerInput(sectionKey) {
-            detectDragGesturesAfterLongPress(
-              onDragStart = {
-                draggedSectionKey = sectionKey
-                dragOffset = 0f
-              },
-              onDragEnd = {
-                draggedSectionKey = null
-                dragOffset = 0f
-              },
-              onDragCancel = {
-                draggedSectionKey = null
-                dragOffset = 0f
-              },
-              onDrag = { change, dragAmount ->
-                change.consume()
-                dragOffset += dragAmount.y
-                val steps = (dragOffset / rowHeightPx).toInt()
-                if (steps != 0) {
-                  val items = latestConfigurableItems.value
-                  val fromIndex = items.indexOfFirst { it.section.ordinal == sectionKey }
-                  if (fromIndex != -1) {
-                    val toIndex = (fromIndex + steps).coerceIn(0, items.size - 1)
-                    if (toIndex != fromIndex) {
-                      onReorder(fromIndex, toIndex)
-                    }
-                  }
-                  dragOffset -= steps * rowHeightPx
-                }
-              },
-            )
+        onMoveUp = onMoveUp,
+        onMoveDown = onMoveDown,
+        rowModifier = Modifier
+          .animateItem()
+          .graphicsLayer {
+            translationY = if (draggedSectionKey == sectionKey) dragOffset else 0f
           },
+        dragHandleModifier = Modifier.pointerInput(sectionKey) {
+          detectDragGesturesAfterLongPress(
+            onDragStart = {
+              draggedSectionKey = sectionKey
+              dragOffset = 0f
+            },
+            onDragEnd = {
+              draggedSectionKey = null
+              dragOffset = 0f
+            },
+            onDragCancel = {
+              draggedSectionKey = null
+              dragOffset = 0f
+            },
+            onDrag = { change, dragAmount ->
+              change.consume()
+              dragOffset += dragAmount.y
+              val steps = (dragOffset / rowHeightPx).toInt()
+              if (steps != 0) {
+                val items = latestConfigurableItems.value
+                val fromIndex = items.indexOfFirst { it.section.ordinal == sectionKey }
+                if (fromIndex != -1) {
+                  val toIndex = (fromIndex + steps).coerceIn(0, items.size - 1)
+                  if (toIndex != fromIndex) {
+                    onReorder(fromIndex, toIndex)
+                  }
+                }
+                dragOffset -= steps * rowHeightPx
+              }
+            },
+          )
+        },
       )
     }
   }
@@ -151,8 +166,12 @@ private fun ConfigurableHeaderItemRow(
   onToggle: (Boolean) -> Unit,
   rowModifier: Modifier = Modifier,
   dragHandleModifier: Modifier = Modifier,
+  onMoveUp: (() -> Unit)? = null,
+  onMoveDown: (() -> Unit)? = null,
 ) {
   val contentAlpha = if (row.isEnabled) 1f else DisabledAlpha
+  val moveUpLabel = stringResource(R.string.cd_move_item_up)
+  val moveDownLabel = stringResource(R.string.cd_move_item_down)
   Row(
     modifier = rowModifier
       .fillMaxWidth()
@@ -161,12 +180,34 @@ private fun ConfigurableHeaderItemRow(
       .padding(horizontal = 16.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
-    Icon(
-      painter = AppIcons.Fluent.ReOrderDots,
-      contentDescription = stringResource(R.string.todo_drag_to_reorder),
-      tint = MaterialTheme.colorScheme.onSurfaceVariant,
-      modifier = dragHandleModifier.size(20.dp),
-    )
+    Box(
+      modifier = dragHandleModifier
+        .size(DRAG_HANDLE_TOUCH_SIZE)
+        .semantics {
+          customActions = listOfNotNull(
+            onMoveUp?.let { action ->
+              CustomAccessibilityAction(moveUpLabel) {
+                action()
+                true
+              }
+            },
+            onMoveDown?.let { action ->
+              CustomAccessibilityAction(moveDownLabel) {
+                action()
+                true
+              }
+            },
+          )
+        },
+      contentAlignment = Alignment.Center,
+    ) {
+      Icon(
+        painter = AppIcons.Fluent.ReOrderDots,
+        contentDescription = stringResource(R.string.todo_drag_to_reorder),
+        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.size(20.dp),
+      )
+    }
     Icon(
       painter = painterResource(row.iconRes),
       contentDescription = null,

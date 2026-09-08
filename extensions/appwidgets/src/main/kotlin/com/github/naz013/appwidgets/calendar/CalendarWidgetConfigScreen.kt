@@ -31,11 +31,11 @@ import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 
 @Composable
 internal fun CalendarWidgetConfigScreen(
+  modifier: Modifier = Modifier,
   state: CalendarWidgetConfigState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
   onBackgroundColorSelected: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   WidgetConfigScaffold(
     title = stringResource(R.string.calendar),
@@ -74,9 +74,9 @@ internal fun CalendarWidgetConfigScreen(
 
 @Composable
 private fun CalendarWidgetMockPreview(
+  modifier: Modifier = Modifier,
   backgroundColor: Color,
   foregroundColor: Color,
-  modifier: Modifier = Modifier,
 ) {
   Box(
     modifier = modifier

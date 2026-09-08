@@ -31,11 +31,11 @@ import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 
 @Composable
 internal fun BirthdaysWidgetConfigScreen(
+  modifier: Modifier = Modifier,
   state: BirthdaysWidgetConfigState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
   onHeaderColorSelected: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   WidgetConfigScaffold(
     title = stringResource(R.string.birthdays),

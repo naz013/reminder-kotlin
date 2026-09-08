@@ -47,6 +47,7 @@ private const val MENU_ITEM_CLEAR = 2
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun TaskListScreen(
+  modifier: Modifier = Modifier,
   state: TaskListState,
   // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
   // leading icon (close vs. back), onBackClick pops the entry either way.
@@ -62,7 +63,6 @@ internal fun TaskListScreen(
   onAddTaskClick: () -> Unit,
   onRefresh: () -> Unit,
   onTagSelected: (String?) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,

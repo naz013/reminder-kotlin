@@ -1,7 +1,6 @@
 package com.github.naz013.feature.home
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
@@ -27,15 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 
-private const val BANNER_ANIMATION_DURATION_MS = 300
-
-private val bannerEnterTransition =
-  fadeIn(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) +
-    slideInVertically(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight }
-private val bannerExitTransition =
-  fadeOut(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) +
-    slideOutVertically(animationSpec = tween(BANNER_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight }
-
 @Composable
 fun HomeScreen(
   modifier: Modifier = Modifier,
@@ -48,6 +38,13 @@ fun HomeScreen(
   onWhatsNewDismissClick: () -> Unit = {},
   content: @Composable BoxScope.() -> Unit,
 ) {
+  val bannerEnterTransition =
+    fadeIn(animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()) +
+      slideInVertically(animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()) { fullHeight -> fullHeight }
+  val bannerExitTransition =
+    fadeOut(animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()) +
+      slideOutVertically(animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()) { fullHeight -> fullHeight }
+
   Box(modifier = modifier) {
     content()
     AnimatedVisibility(

@@ -32,13 +32,13 @@ import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun PlacesScreen(
+  modifier: Modifier = Modifier,
   state: PlacesScreenState,
   onBackClick: () -> Unit,
   onSearchQueryChange: (String) -> Unit,
   onAddClick: () -> Unit,
   onPlaceClick: (String) -> Unit,
   onPlaceMenuAction: (String, PlaceMenuAction) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,

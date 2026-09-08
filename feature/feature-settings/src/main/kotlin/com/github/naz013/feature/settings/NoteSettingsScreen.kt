@@ -3,18 +3,11 @@ package com.github.naz013.feature.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
@@ -22,6 +15,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
+import com.github.naz013.ui.common.compose.foundation.dialog.SeekValueDialog
 
 @Composable
 internal fun NoteSettingsScreen(
@@ -36,14 +30,11 @@ internal fun NoteSettingsScreen(
   onOpacityDialogDismiss: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  val hapticFeedback = LocalHapticFeedback.current
-
   Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState()),
+    modifier = modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background)
+      .verticalScroll(rememberScrollState()),
   ) {
     SettingsSwitchItem(
       title = stringResource(R.string.last_color),
@@ -94,30 +85,15 @@ internal fun NoteSettingsScreen(
 
   val opacityDialog = state.opacityDialog
   if (opacityDialog != null) {
-    AlertDialog(
-      onDismissRequest = onOpacityDialogDismiss,
-      title = { Text(stringResource(R.string.color_saturation)) },
-      text = {
-        Column {
-          Text(text = "${opacityDialog.previewValue}%", style = MaterialTheme.typography.bodyLarge)
-          Slider(
-            value = opacityDialog.previewValue.toFloat(),
-            onValueChange = {
-              if (it.toInt() != state.colorOpacity && state.hapticFeedbackEnabled) {
-                hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-              }
-              onOpacityPreviewChange(it.toInt()) },
-            valueRange = 0f..100f,
-            modifier = Modifier.fillMaxWidth(),
-          )
-        }
-      },
-      confirmButton = {
-        TextButton(onClick = onOpacityConfirm) { Text(stringResource(R.string.ok)) }
-      },
-      dismissButton = {
-        TextButton(onClick = onOpacityDialogDismiss) { Text(stringResource(R.string.cancel)) }
-      },
+    SeekValueDialog(
+      title = stringResource(R.string.color_saturation),
+      value = opacityDialog.previewValue,
+      valueText = "${opacityDialog.previewValue}%",
+      valueRange = 0f..100f,
+      onValueChange = onOpacityPreviewChange,
+      onConfirm = onOpacityConfirm,
+      onDismiss = onOpacityDialogDismiss,
+      hapticFeedbackEnabled = state.hapticFeedbackEnabled,
     )
   }
 }
