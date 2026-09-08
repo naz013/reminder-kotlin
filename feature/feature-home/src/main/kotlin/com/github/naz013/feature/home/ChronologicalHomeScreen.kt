@@ -1,8 +1,8 @@
 package com.github.naz013.feature.home
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
@@ -43,7 +43,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -60,6 +59,7 @@ import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.dynamicParameter
 import com.github.naz013.ui.common.compose.foundation.isDesktopScreen
 import com.github.naz013.ui.common.compose.foundation.isTabletScreen
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import kotlinx.coroutines.delay
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -95,17 +95,18 @@ fun ChronologicalHomeScreen(
       listState.firstVisibleItemIndex > 0 || listState.firstVisibleItemScrollOffset > 0
     }
   }
-  val headerElevation by animateDpAsState(
-    targetValue = if (isScrolled) 4.dp else 0.dp,
-    label = "header_elevation",
+  val headerContainerColor by animateColorAsState(
+    targetValue = if (isScrolled) {
+      MaterialTheme.colorScheme.surfaceContainer
+    } else {
+      MaterialTheme.colorScheme.background
+    },
+    label = "header_container_color",
   )
 
   Column(modifier = modifier.fillMaxSize()) {
     Column(
-      modifier =
-        Modifier
-          .shadow(elevation = headerElevation, clip = false)
-          .background(MaterialTheme.colorScheme.background),
+      modifier = Modifier.background(headerContainerColor),
     ) {
       Header(
         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
@@ -224,11 +225,11 @@ private fun AddButton(
       id = index,
       title = stringResource(eventType.title),
       iconRes = when (eventType) {
-        ScheduleHomeViewModel.EventType.Reminder -> R.drawable.ic_fluent_alert
-        ScheduleHomeViewModel.EventType.Birthday -> R.drawable.ic_fluent_food_cake
-        ScheduleHomeViewModel.EventType.GoogleTask -> R.drawable.ic_builder_google_task_list
-        ScheduleHomeViewModel.EventType.Note -> R.drawable.ic_fluent_note
-        ScheduleHomeViewModel.EventType.Todo -> R.drawable.ic_fluent_cart
+        ScheduleHomeViewModel.EventType.Reminder -> DrawableCatalog.Fluent.Alert
+        ScheduleHomeViewModel.EventType.Birthday -> DrawableCatalog.Fluent.FoodCake
+        ScheduleHomeViewModel.EventType.GoogleTask -> DrawableCatalog.Builder.GoogleTaskList
+        ScheduleHomeViewModel.EventType.Note -> DrawableCatalog.Fluent.Note
+        ScheduleHomeViewModel.EventType.Todo -> DrawableCatalog.Fluent.Cart
       },
     )
   }
@@ -428,7 +429,7 @@ private fun EventCard(
 
     else -> {
       containerColor = CardDefaults.cardColors().containerColor
-      onContainerColor = MaterialTheme.colorScheme.onBackground
+      onContainerColor = MaterialTheme.colorScheme.onSurface
     }
   }
   Card(
@@ -474,7 +475,7 @@ private fun EventCard(
         }
         event.action?.let { action ->
           MenuIconButton(
-            modifier = Modifier.size(36.dp),
+            modifier = Modifier.size(48.dp),
             icon = painterResource(action.icon),
             iconColor = onContainerColor,
             contentDescription = when (action.value) {

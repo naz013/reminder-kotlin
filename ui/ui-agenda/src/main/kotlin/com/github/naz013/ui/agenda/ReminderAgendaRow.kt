@@ -86,12 +86,12 @@ private fun reminderMenuItems(item: UiAgendaReminder): List<PopupMenuItem> {
 
 private fun AgendaMenuAction.iconResOrNull(): Int? =
   when (this) {
-    AgendaMenuAction.OPEN -> R.drawable.ic_fluent_open
-    AgendaMenuAction.EDIT -> R.drawable.ic_fluent_edit
-    AgendaMenuAction.ARCHIVE -> R.drawable.ic_fluent_archive
-    AgendaMenuAction.DELETE -> R.drawable.ic_fluent_delete
-    AgendaMenuAction.SKIP -> R.drawable.ic_fluent_approvals_app
-    AgendaMenuAction.TURN_OFF -> R.drawable.ic_fluent_alert_off
+    AgendaMenuAction.OPEN -> DrawableCatalog.Fluent.Open
+    AgendaMenuAction.EDIT -> DrawableCatalog.Fluent.Edit
+    AgendaMenuAction.ARCHIVE -> DrawableCatalog.Fluent.Archive
+    AgendaMenuAction.DELETE -> DrawableCatalog.Fluent.Delete
+    AgendaMenuAction.SKIP -> DrawableCatalog.Fluent.ApprovalsApp
+    AgendaMenuAction.TURN_OFF -> DrawableCatalog.Fluent.AlertOff
     AgendaMenuAction.PIN -> DrawableCatalog.Fluent.Pin
     AgendaMenuAction.UNPIN -> DrawableCatalog.Fluent.PinOff
   }

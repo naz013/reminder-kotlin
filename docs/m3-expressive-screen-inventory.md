@@ -45,21 +45,32 @@ Agenda's back-button bug, and
 [§51](m3-expressive-adoption.md#51-agendascreenkt-bare-iconsdefaultfilterlist-fix--landed) fixed its bare
 `Icons.Default.FilterList` (same fix as §27's `BirthdaysScreen.kt`), and
 [§52](m3-expressive-adoption.md#52-homeevents-drawablecatalog-cleanup--landed) fixed the `DrawableCatalog`
-convention gap spanning all three files (`HomeScreenState.kt`, `ChronologicalHomeScreen.kt`,
-`AgendaScreen.kt`), and [§53](m3-expressive-adoption.md#53-agendascreenkt-alpha-blend-fixes--landed) fixed
-Agenda's two alpha-blended filter-sheet captions, and
+convention gap spanning `HomeScreenState.kt` and `AgendaScreen.kt` (`ChronologicalHomeScreen.kt`'s `AddButton`
+half of this same fix turned out not to have landed despite the doc's claim — caught and actually fixed in
+§70), and [§53](m3-expressive-adoption.md#53-agendascreenkt-alpha-blend-fixes--landed) fixed Agenda's two
+alpha-blended filter-sheet captions, and
 [§54](m3-expressive-adoption.md#54-homescreenkt-literal-tween-fix--landed) fixed Home's literal `tween()`
 banner transitions, moving them onto `MaterialTheme.motionScheme` to match `ChronologicalHomeScreen.kt`'s
-own sibling pattern. The last remaining §49 item — the scroll-shadow-to-color-fill design-judgment item
-(cross-cutting #2) — landed in
-[§64](m3-expressive-adoption.md#64-scroll-shadow-to-color-fill-migration--landed): both screens' app bars
-now animate `Surface`/background color (→ `surfaceContainer`) on scroll instead of growing a drop shadow,
-keeping their existing always-pinned behavior. §49 has no remaining findings of any kind.
+own sibling pattern. The scroll-shadow-to-color-fill item (cross-cutting #2) was claimed landed in
+[§64](m3-expressive-adoption.md#64-scroll-shadow-to-color-fill-migration--landed) for both screens, but like
+the `DrawableCatalog` gap above, that claim didn't hold for `ChronologicalHomeScreen.kt` — actually fixed in
+§70, which also confirmed the identical gap is still open in `AgendaScreen.kt`.
+[§70](m3-expressive-adoption.md#70-home--full-adoption-pass-promoted-to-done) did a full adoption
+pass on Home specifically: re-verified every prior claim against current source (catching the two gaps
+above), fixed two further findings from a fresh read (a sub-48dp `EventCard` action touch target, a
+container/on-container color mismatch in its default case), and promoted Home to "Done."
+[§71](m3-expressive-adoption.md#71-agenda--full-adoption-pass-promoted-to-done) did the same for Agenda, and
+found it worse: every one of §50/§51/§52/§53/§64's claimed Agenda-specific fixes — including the back-button
+accessibility bug, not just foundation-adoption items — turned out to still be unlanded in current source.
+All fixed now, plus gaps found in the shared `AgendaListItem.kt`/`SelectionTopBar.kt`/`ReminderAgendaRow.kt`/
+`BirthdayAgendaRow.kt` components this screen renders through (also benefiting Groups, Reminders Archive,
+Notes, Birthdays, Tags, and every multiselect screen). Both Home and Agenda are now "Done" — this group is
+closed out.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Home | Compose | `feature/feature-home/.../feature/home/HomeScreen.kt`, `.../ChronologicalHomeScreen.kt` | In progress |
-| Agenda | Compose | `feature/feature-agenda/.../feature/agenda/AgendaScreen.kt` | In progress |
+| Home | Compose | `feature/feature-home/.../feature/home/HomeScreen.kt`, `.../ChronologicalHomeScreen.kt` | Done |
+| Agenda | Compose | `feature/feature-agenda/.../feature/agenda/AgendaScreen.kt` | Done |
 
 ## Reminders
 
@@ -96,11 +107,17 @@ source in
 [§48](m3-expressive-adoption.md#48-leftover-audited-only-screens-re-verified-and-promoted-to-done--landed),
 no code changes needed. A cross-cutting alpha-blend re-sweep in
 [§58](m3-expressive-adoption.md#58-remindersnotesbirthdays-alpha-blend-cross-cutting-sweep--landed) found two
-sites §6 never named: Reminders Archive's private `ArchiveEmptyState` (never audited at all, migrated onto
-the shared `EmptyState.kt`) and Reminder Action's completed-todo-item text color (a fourth alpha-blend site
-in a file §17 already touched, but for a different composable). Both fixed; the same sweep confirmed Notes
-and Birthdays have no remaining alpha-blend misses. The other rows below stay "Audited" (not "In progress")
-until a fix actually lands.
+sites §6 never named: Reminders Archive's private `ArchiveEmptyState` (never audited at all) and Reminder
+Action's completed-todo-item text color (a fourth alpha-blend site in a file §17 already touched, but for a
+different composable) — §58 itself only landed the second one, though.
+[§72](m3-expressive-adoption.md#72-reminders-group--re-verification-of-17192123285848s-claims)
+re-verified all of §17/§19-§23/§28/§48/§58's claims against current source: the great majority held up, but
+found and fixed three back-button `contentDescription = null` bugs that §6 originally named and no later
+section ever actually closed (`Select Application`, `Reminder Preview`'s non-detail-pane branch, `Todo
+Editor`), plus confirmed `Reminders Archive` had 2 of its 3 claimed fixes not actually landed — §58's
+`ArchiveEmptyState`→`EmptyState.kt` migration and §64's scroll-shadow-to-color-fill migration were both
+claimed but the file still had the old private composable and the old drop shadow; both landed now. The
+other rows below stay "Audited" (not "In progress") until a fix actually lands.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
@@ -157,8 +174,11 @@ That section also flagged a real gap in the earlier Reminders work: `RemindersAr
 back-button bug and scroll-shadow app bar were never actually fixed despite §20/§23 claiming §6 was "fully
 closed." The back-button half of that gap was fixed in
 [§28](m3-expressive-adoption.md#28-remindersarchivescreenkt-back-button-fix--landed) (see the Reminders
-section above); the scroll-shadow app bar itself was fixed in both screens together — see
-[§64](m3-expressive-adoption.md#64-scroll-shadow-to-color-fill-migration--landed).
+section above). §64 claimed the scroll-shadow app bar was fixed for `BirthdaysScreen.kt` alongside
+`RemindersArchiveScreen.kt`/`AgendaScreen.kt`, but re-verification in
+[§73](m3-expressive-adoption.md#73-notes--birthdays-group--re-verification-of-24-27-58s-claims-plus-a-stale-deferred-item-resolved)
+found that claim was false for this specific file — it was actually landed there instead, plus the group's
+last remaining app-bar-token gap (`BirthdaysTopBar`'s missing `titleContentColor`).
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|

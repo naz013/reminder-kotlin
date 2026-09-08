@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -34,6 +32,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppShapes
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
@@ -77,12 +76,11 @@ fun AgendaListItem(
   }
 
   Card(
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .clip(AppShapes.card)
-        .semantics(mergeDescendants = true) {}
-        .combinedClickable(onClick = onClick, onLongClick = onLongClick),
+    modifier = modifier
+      .fillMaxWidth()
+      .clip(AppShapes.card)
+      .semantics(mergeDescendants = true) {}
+      .combinedClickable(onClick = onClick, onLongClick = onLongClick),
     colors = CardDefaults.cardColors(containerColor = containerColor),
     border = if (isHighlighted) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null,
   ) {
@@ -146,7 +144,7 @@ fun AgendaListItem(
           ) {
             if (menuItems.isNotEmpty()) {
               MenuIconButton(
-                icon = painterResource(R.drawable.ic_fluent_more_vertical),
+                icon = AppIcons.Fluent.MoreVertical,
                 contentDescription = stringResource(R.string.more_options),
                 onClick = { menuExpanded = true },
               )
@@ -183,7 +181,7 @@ private fun AgendaChipRow(
 @Composable
 private fun AgendaChip(text: String) {
   Surface(
-    shape = RoundedCornerShape(8.dp),
+    shape = MaterialTheme.shapes.small,
     color = MaterialTheme.colorScheme.tertiaryContainer,
   ) {
     Text(

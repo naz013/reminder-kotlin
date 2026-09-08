@@ -1,7 +1,7 @@
 package com.github.naz013.feature.agenda
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,8 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
@@ -41,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -68,8 +65,7 @@ import com.github.naz013.ui.common.compose.foundation.component.BottomSheetHeade
 import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
-
-private val HEADER_ELEVATION = 3.dp
+import com.github.naz013.ui.common.icon.DrawableCatalog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,9 +95,13 @@ internal fun AgendaScreen(
 ) {
   val lazyListState = rememberLazyListState()
   val isScrolled by remember { derivedStateOf { lazyListState.canScrollBackward } }
-  val headerElevation by animateDpAsState(
-    targetValue = if (isScrolled) HEADER_ELEVATION else 0.dp,
-    label = "agendaHeaderElevation",
+  val headerContainerColor by animateColorAsState(
+    targetValue = if (isScrolled) {
+      MaterialTheme.colorScheme.surfaceContainer
+    } else {
+      MaterialTheme.colorScheme.background
+    },
+    label = "agendaHeaderContainerColor",
   )
   var showFilterSheet by remember { mutableStateOf(false) }
   // Seeded from the ViewModel-persisted flag rather than always starting false, since navigating
@@ -121,11 +121,10 @@ internal fun AgendaScreen(
       onScrolledToToday()
     }
   }
-  val hasActiveFilters =
-    state.selectedCategories != AgendaCategory.entries.toSet() ||
-      state.selectedSmartList != null ||
-      state.selectedTagId != null ||
-      state.selectedGroupId != null
+  val hasActiveFilters = state.selectedCategories != AgendaCategory.entries.toSet() ||
+    state.selectedSmartList != null ||
+    state.selectedTagId != null ||
+    state.selectedGroupId != null
   val isSelectionMode = state.selectedCount > 0
   val canArchiveSelection = (readyListState?.items ?: emptyList())
     .let { items ->
@@ -147,7 +146,7 @@ internal fun AgendaScreen(
           onArchiveClick = onArchiveSelectedClick,
         )
       } else {
-        Surface(color = MaterialTheme.colorScheme.background, shadowElevation = headerElevation) {
+        Surface(color = headerContainerColor) {
           Column {
             AgendaTopBar(
               onBackClick = onBackClick,
@@ -166,10 +165,9 @@ internal fun AgendaScreen(
                 query = state.searchQuery,
                 onQueryChange = onSearchQueryChange,
                 placeholder = stringResource(R.string.search),
-                modifier =
-                  Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier
+                  .fillMaxWidth()
+                  .padding(horizontal = 16.dp, vertical = 8.dp),
               )
             }
           }
@@ -178,15 +176,16 @@ internal fun AgendaScreen(
     },
   ) { padding ->
     Column(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(padding),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding),
     ) {
       when (val listState = state.listState) {
         is ListState.Loading -> {
           Box(
-            modifier = Modifier.fillMaxSize().weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
             contentAlignment = Alignment.Center,
           ) {
             CircularProgressIndicator()
@@ -197,7 +196,9 @@ internal fun AgendaScreen(
           EmptyState(
             icon = AppIcons.Fluent.CalendarAgenda,
             message = stringResource(R.string.no_events),
-            modifier = Modifier.fillMaxSize().weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
           )
         }
 
@@ -209,7 +210,9 @@ internal fun AgendaScreen(
             onItemClick = onItemClick,
             onItemLongClick = onItemLongClick,
             onAgendaMenuAction = onAgendaMenuAction,
-            modifier = Modifier.fillMaxSize().weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
           )
         }
       }
@@ -244,10 +247,9 @@ private fun AgendaFilterBottomSheet(
     onDismissRequest = onDismissRequest,
   ) {
     Column(
-      modifier =
-        Modifier
-          .verticalScroll(rememberScrollState())
-          .padding(bottom = 16.dp),
+      modifier = Modifier
+        .verticalScroll(rememberScrollState())
+        .padding(bottom = 16.dp),
     ) {
       BottomSheetHeader(title = stringResource(R.string.filter))
 
@@ -264,7 +266,7 @@ private fun AgendaFilterBottomSheet(
           Text(
             text = stringResource(R.string.no_tags),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
           )
         } else {
           TagFilterChipRow(
@@ -280,7 +282,7 @@ private fun AgendaFilterBottomSheet(
           Text(
             text = stringResource(R.string.no_groups),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
           )
         } else {
           GroupFilterChipRow(
@@ -518,7 +520,7 @@ private fun AgendaSelectionTopBar(
           PopupMenuItem(
             id = AgendaSelectionAction.ARCHIVE.ordinal,
             title = stringResource(R.string.move_to_archive),
-            iconRes = R.drawable.ic_fluent_archive,
+            iconRes = DrawableCatalog.Fluent.Archive,
           ),
         )
       }
@@ -526,7 +528,7 @@ private fun AgendaSelectionTopBar(
         PopupMenuItem(
           id = AgendaSelectionAction.DELETE.ordinal,
           title = stringResource(R.string.delete),
-          iconRes = R.drawable.ic_fluent_delete,
+          iconRes = DrawableCatalog.Fluent.Delete,
         ),
       )
     },
@@ -557,7 +559,7 @@ private fun AgendaTopBar(
     navigationIcon = {
       MenuIconButton(
         icon = AppIcons.Builder.ArrowLeft,
-        contentDescription = null,
+        contentDescription = stringResource(R.string.cd_back),
         onClick = onBackClick,
       )
     },
@@ -571,7 +573,7 @@ private fun AgendaTopBar(
         badge = { if (hasActiveFilters) Badge() },
       ) {
         MenuIconButton(
-          icon = Icons.Default.FilterList,
+          icon = AppIcons.Fluent.Filter,
           contentDescription = stringResource(R.string.filter),
           onClick = onFilterClick,
         )
@@ -582,7 +584,10 @@ private fun AgendaTopBar(
         onTagsClick = onTagsClick,
       )
     },
-    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+    colors = TopAppBarDefaults.topAppBarColors(
+      containerColor = Color.Transparent,
+      titleContentColor = MaterialTheme.colorScheme.onBackground,
+    ),
   )
 }
 
@@ -605,9 +610,13 @@ private fun AddMenuButton(
       onDismissRequest = { expanded = false },
       items =
         listOf(
-          PopupMenuItem(id = 0, title = stringResource(R.string.reminder), iconRes = R.drawable.ic_fluent_alert),
-          PopupMenuItem(id = 1, title = stringResource(R.string.todo), iconRes = R.drawable.ic_fluent_cart),
-          PopupMenuItem(id = 2, title = stringResource(R.string.birthday), iconRes = R.drawable.ic_fluent_food_cake),
+          PopupMenuItem(id = 0, title = stringResource(R.string.reminder), iconRes = DrawableCatalog.Fluent.Alert),
+          PopupMenuItem(id = 1, title = stringResource(R.string.todo), iconRes = DrawableCatalog.Fluent.Cart),
+          PopupMenuItem(
+            id = 2,
+            title = stringResource(R.string.birthday),
+            iconRes = DrawableCatalog.Fluent.FoodCake,
+          ),
         ),
       onItemClick = { id ->
         when (id) {
@@ -629,20 +638,26 @@ private fun OverflowMenuButton(
   var expanded by remember { mutableStateOf(false) }
   val actions =
     listOf(
-      Triple(0, stringResource(R.string.reminders_archive), R.drawable.ic_fluent_archive) to onArchiveClick,
-      Triple(1, stringResource(R.string.groups), R.drawable.ic_fluent_group) to onGroupsClick,
-      Triple(2, stringResource(R.string.tags), R.drawable.ic_builder_group) to onTagsClick,
+      Triple(0, stringResource(R.string.reminders_archive), DrawableCatalog.Fluent.Archive) to onArchiveClick,
+      Triple(1, stringResource(R.string.groups), DrawableCatalog.Fluent.Group) to onGroupsClick,
+      Triple(2, stringResource(R.string.tags), DrawableCatalog.Builder.Tag) to onTagsClick,
     )
   Box {
     MenuIconButton(
-      icon = painterResource(R.drawable.ic_fluent_more_vertical),
+      icon = AppIcons.Fluent.MoreVertical,
       contentDescription = stringResource(R.string.more_options),
       onClick = { expanded = true },
     )
     AppDropdownMenu(
       expanded = expanded,
       onDismissRequest = { expanded = false },
-      items = actions.map { (triple, _) -> PopupMenuItem(id = triple.first, title = triple.second, iconRes = triple.third) },
+      items = actions.map { (triple, _) ->
+        PopupMenuItem(
+          id = triple.first,
+          title = triple.second,
+          iconRes = triple.third
+        )
+      },
       onItemClick = { id -> actions.firstOrNull { it.first.first == id }?.second?.invoke() },
     )
   }

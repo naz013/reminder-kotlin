@@ -4067,3 +4067,324 @@ as low-severity/non-defects rather than open work.
 **Suggested next step**: every screen group in the inventory has now had a fresh full re-audit. No
 group-level work remains queued; future sections should pick up from whatever the user's next request is,
 rather than another audit pass.
+
+## 70. Home — full adoption pass, promoted to "Done"
+
+The user asked to promote Home (`HomeScreen.kt` + `ChronologicalHomeScreen.kt`) to "Done" — the screen-
+inventory doc's own legend defines that as "fully reflects the `ui-common` expressive foundation," a higher
+bar than "no known defects." Home had already received the deepest build-out of any screen in this doc
+(§3/§4's original pass, plus §50-§54/§64 touching the sibling `AgendaScreen.kt`/`HomeScreen.kt`), so this
+pass re-verified every prior claim against current source before deciding what, if anything, was still
+missing — rather than trusting the doc's own "landed" labels at face value.
+
+**Discrepancy found and worth flagging plainly**: two fixes the doc records as "landed" for this exact file
+were not actually present in current source:
+- §52's `DrawableCatalog` cleanup never reached `ChronologicalHomeScreen.kt`'s `AddButton` — it still had 5
+  raw `R.drawable.*` references in its `when` block (`HomeScreenState.kt`'s half of that same §52 fix, the
+  `EventAction.IconRes` companion, *was* correctly on `DrawableCatalog` — only the `AddButton` half was
+  missing).
+- §64's scroll-shadow-to-color-fill migration, which the doc explicitly lists as covering 4 files including
+  `ChronologicalHomeScreen.kt`, was never applied here — the header was still driving `animateDpAsState` into
+  `Modifier.shadow(elevation = headerElevation, clip = false)`, the exact pre-Expressive pattern §64 says it
+  replaced.
+
+No theory for how this happened is confirmed — `git log` shows only one commit ever touching this file
+(`faf8e86af Migrate to M3 Expressive`) plus this session's own step commits, so the gap predates this
+session. Both are now fixed as part of this pass (see below) rather than left as an open question, but future
+sessions should treat this doc's "landed" labels as claims to spot-check against current source before
+building on them, not as verified fact — this is the first time in ~70 sections that a claim didn't hold up.
+
+**Re-verified as genuinely landed** (matches doc claims, confirmed against current source): Greeting →
+`headlineMediumEmphasized`; header nav tiles → `AppShapes.tile`, tonal `item.color.copy(alpha = 0.16f)` icon
+chip, `labelSmallEmphasized`/`titleMediumEmphasized` title/subtitle; `EventCard` → `AppShapes.card`,
+`isSelected`→`isOverdue`→`Birthday`→default color priority, `bodyMediumEmphasized`/`bodySmallEmphasized` text;
+`TimeSectionRow` time label → `bodyMediumEmphasized`; stagger animations (tiles + rows) →
+`MaterialTheme.motionScheme`; `HomeScreen.kt`'s banner transitions → `MaterialTheme.motionScheme` (§54);
+`GetNavigationItemsUseCase.kt`'s per-section themed colors (§5's `Color.Green` stub resolution) → real
+`ThemeProvider.themedColor` values, one per section. No `FontWeight` overrides, no literal `RoundedCornerShape`,
+no literal `tween()` anywhere left in either file.
+
+**Fixed — the two missing "landed" items above**, plus two new findings from this pass's own fresh line-by-line
+read (never flagged in §49 or anywhere else):
+- `AddButton`'s 5 raw `R.drawable.*` references → `DrawableCatalog.Fluent.Alert`/`.FoodCake`/`.Note`/`.Cart`
+  and `DrawableCatalog.Builder.GoogleTaskList`.
+- Scroll header: `animateDpAsState(0.dp → 4.dp)` driving `Modifier.shadow(...)` → `animateColorAsState`
+  driving `Modifier.background(...)` (`background` unscrolled → `surfaceContainer` scrolled), following §64's
+  exact pattern (color fill instead of drop shadow, target removed entirely rather than kept at 0). Removed
+  the now-unused `androidx.compose.ui.draw.shadow` import; swapped `animateDpAsState` for `animateColorAsState`.
+- **New**: `EventCard`'s per-row action `MenuIconButton` was sized `Modifier.size(36.dp)` — below the 48dp
+  minimum touch target (guidelines §8). Verified against the real `IconButtonImpl` source
+  (`material3-android-1.5.0-alpha27-sources.jar`, same diligence as §61/§64/§69) that an outer `.size()`
+  modifier passed into `IconButton` constrains the box *before* its internal
+  `.minimumInteractiveComponentSize()` call gets a chance to expand it — so 36dp really did cap the tappable
+  area, it wasn't just a visual icon-scale choice. Bumped to 48dp, matching the same fix already applied to
+  `SubTasksValueEditor.kt`'s and `RoutinePreviewScreen.kt`'s equivalent compact-row action buttons this
+  session (§69).
+- **New**: `EventCard`'s default (non-selected/non-overdue/non-birthday) case paired `containerColor =
+  CardDefaults.cardColors().containerColor` (resolves to `surfaceContainerLow`) with `onContainerColor =
+  MaterialTheme.colorScheme.onBackground` instead of `onSurface` — §49 flagged this exact pairing as a
+  "token-hygiene note... worth a look if this file is touched," never acted on. Fixed now that the file is
+  genuinely being touched: `onBackground` → `onSurface`.
+
+**Deliberately not touched, and not required for "Done"**: `HomeEvent.color` stays unread by `EventCard` (an
+explicit, still-open design question from §5 about whether a third color signal on the card would conflict
+with the new overdue/birthday container colors — a product decision, not a foundation-adoption gap); shape
+morphing (FAB open/close, loading indicators) stays out of scope per §5's own reasoning that it's the
+highest-effort, most novel piece of Expressive and isn't what any other "Done" screen in this doc has needed
+either.
+
+Verified via `./gradlew :feature:feature-home:compileDebugKotlin :feature:feature-home:testDebugUnitTest
+:app:compileProDebugKotlin` (compiles clean, all existing tests pass unchanged — no test touched this
+session, since none of these fixes changed observable state/logic) and detekt, checked against unmodified
+HEAD via stash-and-rerun: baseline carried 20 weighted issues including 3 `Indentation` findings on the exact
+shadow-modifier block this fix replaced; this fix's version carries 17, with those 3 gone as a side effect
+and every other finding identical (two location-only, modulo the net +1 line this fix added, no new
+categories). Zero new findings.
+
+**Promoted "Home" from "In progress" to "Done"** in `docs/m3-expressive-screen-inventory.md` — the first
+screen in this doc's Home/Events-through-Workflow/Routines arc to reach that status (as opposed to the 4
+earlier "Done" screens, all thin WebView/static wrappers promoted in §48 where reaching the bar was closer to
+automatic).
+
+**Suggested next step**: `AgendaScreen.kt` — sibling screen in the same Home/Events group. Spot-checked its
+scroll-shadow state while writing this section: it has the identical gap just fixed for Home — `Surface(color
+= MaterialTheme.colorScheme.background, shadowElevation = headerElevation)` driven by `animateDpAsState` is
+still there, so §64's "landed" claim doesn't hold for this file either. A full re-verification pass on
+Agenda (not just this one spot-check) is the natural next step before assuming "Done" is as close as the doc
+currently implies.
+
+## 71. Agenda — full adoption pass, promoted to "Done"
+
+Continuation of §70's pattern, applied to `AgendaScreen.kt` and every shared component it renders through.
+Re-read the whole screen fresh and re-verified every §49-§54/§64 claim against current source before deciding
+what was actually still open — the spot-check at the end of §70 already predicted this would matter.
+
+**The discrepancy is worse here than for Home — worth stating plainly**: every single one of §50, §51, §52,
+§53, and §64's claimed Agenda-specific fixes turned out to still be unlanded in current source, including a
+genuine accessibility defect (not just a foundation-adoption gap):
+- §50 claimed `AgendaTopBar`'s back arrow got a real `contentDescription`. Current source: still `null`.
+- §51 claimed the bare `Icons.Default.FilterList` was swapped for `AppIcons.Fluent.Filter`. Current source:
+  still `Icons.Default.FilterList`, `androidx.compose.material.icons.*` still imported.
+- §52 claimed the `DrawableCatalog` cleanup covered `AgendaScreen.kt` too. Current source: 9 raw
+  `R.drawable.*`/`painterResource(R.drawable.*)` references remained, matching §49's original "10 bare
+  references in one file" finding almost exactly (one fewer, since `AgendaSelectionTopBar` — a later addition
+  from the multiselect feature — hadn't existed yet when §49 counted).
+- §53 claimed the two alpha-blended filter-sheet captions were fixed. Current source: both still
+  `MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)`.
+- §64 claimed the scroll-shadow-to-color-fill migration covered this file. Current source: still
+  `animateDpAsState` driving `Surface(shadowElevation = ...)`, the exact pattern §64 says it removed.
+
+Checked `git log` for `AgendaScreen.kt`: the only commits since `feature: extract agenda feature to the
+feature module` are `Migrate to M3 Expressive` and a later `Add multiselect to the Agenda and Birthdays list
+screens`. Diffed the multiselect commit specifically in case it had reverted something — it didn't; every one
+of the defects above was already present in the multiselect commit's *parent*, meaning none of §50-§53/§64
+ever reached this file's committed history at all, going back further than this whole doc's step-commit arc.
+Same conclusion as §70: no evidence of a revert, the fixes simply never landed, and this doc's "landed"
+labels are claims worth spot-checking, not verified fact — second time now, and worse than the first.
+
+**Fixed — all five items above**, in `AgendaScreen.kt`:
+- Back arrow → `stringResource(R.string.cd_back)`.
+- `Icons.Default.FilterList` → `AppIcons.Fluent.Filter`; removed the now-unused
+  `androidx.compose.material.icons.Icons`/`.filled.FilterList` imports.
+- 9 raw drawable references (`AgendaSelectionTopBar`'s archive/delete actions, `AddMenuButton`'s 3 add-type
+  icons, `OverflowMenuButton`'s 3 menu-item icons plus its own trigger icon) → `DrawableCatalog.Fluent.*`/
+  `.Builder.Tag` / `AppIcons.Fluent.MoreVertical`. Removed the now-unused `painterResource` import.
+- Two `onSurface.copy(alpha = 0.5f)` captions ("no tags"/"no groups" in the filter sheet) → `onSurfaceVariant`.
+- Scroll header: `animateDpAsState` + `Surface(shadowElevation = ...)` → `animateColorAsState` +
+  `Surface(color = headerContainerColor)`, identical pattern to §70's Home fix (`background` unscrolled →
+  `surfaceContainer` scrolled). Removed the now-unused `HEADER_ELEVATION` constant.
+
+**New finding, fixed**: `AgendaTopBar`'s `TopAppBarDefaults.topAppBarColors(containerColor =
+Color.Transparent)` was missing the `titleContentColor` pairing `TopAppbarColor` normally carries — flagged
+as "worth doing" back in §49 but never actioned. Could **not** just swap to the full `TopAppbarColor` token
+the way every other screen in this doc has, though: that token's `containerColor` is opaque
+(`MaterialTheme.colorScheme.background`), and this screen deliberately keeps its own app bar transparent so
+the *wrapping* `Surface` — the same one the scroll-color-fill fix above just touched — shows through and
+carries the scroll-driven tint. Making the app bar itself opaque would paint over that tint and silently
+defeat the fix two bullets up. Landed the narrower, non-conflicting half instead: added `titleContentColor =
+MaterialTheme.colorScheme.onBackground` to the existing transparent `topAppBarColors(...)` call, leaving
+`containerColor = Color.Transparent` untouched.
+
+**Fixed — shared components `AgendaScreen.kt` renders through**, found on the same fresh read (never flagged
+by §49, since that audit only read `AgendaScreen.kt` itself, not its dependencies) — in scope here because
+they're exactly what "full adoption" for this screen renders through, with the side effect of also fixing
+Groups, Reminders Archive, Notes, Birthdays, Tags, and every multiselect screen that shares them:
+- `ui-common/.../AgendaListItem.kt` (shared row scaffold behind both `ReminderAgendaRow`/`BirthdayAgendaRow`,
+  and — per its own docstring — Groups' and Reminders Archive's rows too): its "more options" icon was
+  `painterResource(R.drawable.ic_fluent_more_vertical)` → `AppIcons.Fluent.MoreVertical`; its decorative
+  `AgendaChip`'s `RoundedCornerShape(8.dp)` literal → `MaterialTheme.shapes.small` (verified against the real
+  M3 1.5.0-alpha27 `ShapeTokens.kt` that `CornerSmall = 8.dp` exactly — same value, now a token, matching
+  guidelines §4.1's "corner radii come from the shape scale... not a literal `Ndp` value").
+- `ui-common/.../SelectionTopBar.kt` (the shared multiselect top bar used by every screen with bulk-select —
+  see `docs/multiselect.md`): same raw `painterResource(R.drawable.ic_fluent_more_vertical)` →
+  `AppIcons.Fluent.MoreVertical`; its `TopAppBarDefaults.topAppBarColors(containerColor =
+  MaterialTheme.colorScheme.background)` had no wrapping-`Surface` reason to stay split like `AgendaTopBar`
+  above, so swapped to the full `TopAppbarColor` token outright, picking up the `titleContentColor` pairing
+  for every screen using this bar, not just Agenda's.
+- `ui-agenda/.../ReminderAgendaRow.kt` and `BirthdayAgendaRow.kt`: 8 more raw `R.drawable.*` references
+  across both files' `AgendaMenuAction.iconResOrNull()` (open/edit/archive/delete/skip/turn-off) →
+  `DrawableCatalog.Fluent.*`. Both files already had `PIN`/`UNPIN` correctly on `DrawableCatalog` — only the
+  older actions were still raw.
+
+**Confirmed already correct, no fix needed**: `FilterChipLabel` and `UiAgendaHeader` already use
+`labelLargeEmphasized`/`titleMediumEmphasized` real tokens (§49 noted this already held); no `FontWeight`
+override anywhere in `AgendaScreen.kt` or its dependencies; `AgendaListItem.kt`'s main-text `titleMedium` is
+intentionally *not* emphasized — this doc's established trigger for `xxxEmphasized` has consistently been
+"replacing an existing manual `FontWeight` override" (§58/§62/§67/§69), and there's no such override here to
+replace, so adding emphasis would be scope creep beyond what any other shared row component in this doc has
+received; no touch-target gaps (every `MenuIconButton` in this group uses its default size, none pass an
+explicit sub-48dp `Modifier.size(...)`, unlike Home's `EventCard` action button in §70).
+
+Verified via `./gradlew :feature:feature-agenda:compileDebugKotlin :ui:ui-agenda:compileDebugKotlin
+:ui:ui-common:compileDebugKotlin :feature:feature-group:compileDebugKotlin
+:feature:feature-tags:compileDebugKotlin :feature:feature-birthday:compileDebugKotlin
+:feature:feature-note:compileDebugKotlin :feature:feature-reminder:compileDebugKotlin
+:app:compileProDebugKotlin` (all clean — the last 5 modules are the shared-component consumers, checked
+since `AgendaListItem.kt`/`SelectionTopBar.kt` changed) and
+`:feature:feature-agenda:testDebugUnitTest :ui:ui-agenda:testDebugUnitTest` (pass, unchanged — no fix here
+touched observable state/logic). Detekt on all 3 directly-edited modules, checked against unmodified HEAD via
+stash-and-rerun: `ui-agenda` and `ui-common` came back with weighted-issue counts identical to baseline (zero
+new findings, `ui-common` reports zero issues in both versions). `feature-agenda` came back higher — 33 vs.
+baseline's 29 — but every one of those 4 extra weighted points is the *same* `Indentation` finding
+(`items =` followed by a `listOf(...)` continuation indented 2 spaces deeper than detekt expects) already
+present, unfixed, at 3 other untouched locations in this exact file in *both* versions; reformatting
+`AddMenuButton`'s birthday `PopupMenuItem` onto multiple lines (needed to keep it under the line-length limit
+after the `DrawableCatalog` swap) extended that same pre-existing, already-2-off indentation onto more lines
+of the same block, and a byte-for-byte-unchanged block elsewhere in the file (`AgendaFilterBottomSheet`'s
+`Column` modifier, confirmed via `git diff` to carry zero changes) started being flagged too — ktlint's
+indentation rule tracks nesting via a stateful pass through the whole file rather than pure per-node AST
+recursion, so a line-count shift earlier in the file can change what it reports for untouched code later on.
+Confirmed by eye: every newly-reported line matches the identical "actual = expected + 2" signature already
+accepted as pre-existing debt at the 3 other occurrences of this same pattern in this file — not a new
+violation type, not code this pass touched in substance.
+
+**Promoted "Agenda" from "In progress" to "Done"** in `docs/m3-expressive-screen-inventory.md` — closing out
+the Home/Events group entirely (both rows now "Done").
+
+**Suggested next step**: given two consecutive "full adoption" passes both found the doc's own "landed"
+claims didn't hold for the specific file they focused on, it's worth treating every other still-"In progress"
+screen's claimed fixes the same way — spot-check against current source before trusting the doc — rather than
+assuming this was isolated to Home/Events. No specific screen is queued next; that's a call for whoever picks
+this up.
+
+## 72. Reminders group — re-verification of §17/§19-§23/§28/§48/§58's claims
+
+Re-verified every "landed" claim across 9 sections (§17, §19, §20, §21, §22, §23, §28, §48, §58) touching
+this group's 9 files, against current source rather than trusting the doc text — the pattern §71 closed on.
+Read `ReminderActionScreen.kt`, `MapEditorScreen.kt`, `SubTasksValueEditor.kt`, `SelectApplicationScreen.kt`,
+`PreviewReminderScreen.kt`, `ReminderFullscreenMapScreen.kt`, `TodoEditScreen.kt`, `BuildReminderScreen.kt`
+(spot-checked for the `OfflineOnlyRow` import), `RemindersArchiveScreen.kt`, `ReminderHelpScreen.kt`, and
+`RecurHelpScreen.kt` fresh.
+
+**Much better news than §70/§71**: the great majority of this group's claims hold up. Confirmed genuinely
+landed, matching the doc exactly: §17's 9 `FontWeight`→emphasized swaps and 3 alpha-blend→`onSurfaceVariant`
+sites and the off-scale card-elevation removal on `ReminderActionScreen.kt`; §19's `tween`→
+`defaultSpatialSpec()`, 640dp max-width, and scrim-token fixes on `MapEditorScreen.kt`; §20's
+`tween`→fast-tier `motionScheme` specs and 40dp→`ROW_BUTTON_SIZE = 48.dp` on `SubTasksValueEditor.kt`; §21's
+`Card`-own-`onClick` fix on `SelectApplicationScreen.kt` and its surface-container-role/`AttachmentRow`
+grouping fixes on `PreviewReminderScreen.kt`; §22's FAB swap on `ReminderFullscreenMapScreen.kt`; §23's
+`OfflineOnlyRow` extraction (the shared file exists, both screens import it); §58's `TodoItemRow`
+alpha-blend fix on `ReminderActionScreen.kt`; §28's back-button fix on `RemindersArchiveScreen.kt`; and §48's
+"Done" verdict for `ReminderHelpScreen.kt`/`RecurHelpScreen.kt`.
+
+**Real gaps found and fixed anyway** — two different shapes:
+
+1. **Three back-button `contentDescription = null` bugs, never claimed fixed by any section, exactly as §6
+   originally found them** — not a "doc said X but it's false" case like §70/§71, more a "the fix-order
+   sequence moved on to type/motion/elevation work across §17-§23 and never came back to close every
+   instance of item 1" gap. §6's cross-cutting #1 named 4 files with this bug
+   (`SelectApplicationScreen.kt:72`, `PreviewReminderScreen.kt:112`, `RemindersArchiveScreen.kt:146`,
+   `TodoEditScreen.kt:70`); only the third ever got a dedicated fix (§28). The other three were still
+   exactly as broken as §6 first found them. Fixed all three now:
+   `SelectApplicationScreen.kt`'s sole back arrow → `stringResource(R.string.cd_back)`;
+   `PreviewReminderScreen.kt`'s non-detail-pane branch (the detail-pane/close branch was already correct) →
+   same, reformatted to a multi-line `if`/`else` matching the shape §29 established for this exact split
+   elsewhere; `TodoEditScreen.kt`'s sole back arrow → same.
+2. **`RemindersArchiveScreen.kt` had 2 of its 3 claimed fixes not actually landed** — the same
+   doc-vs-reality gap §70/§71 found, on the one file in this group that had multiple claims. §64 claims this
+   file's scroll-shadow was migrated to color-fill; current source still had `animateDpAsState` driving
+   `Surface(shadowElevation = ...)`, untouched. §58 claims `ArchiveEmptyState` was migrated onto the shared
+   `EmptyState.kt`; it was still a private composable with the exact `onSurface.copy(alpha = 0.3f/0.5f)`
+   icon/caption pattern §58 says it removed. Only §28's back-button fix (confirmed above) actually landed
+   for this file. Fixed both now, identically to the pattern §70/§71 already established:
+   `animateDpAsState`/`shadowElevation` → `animateColorAsState`/`Surface(color = headerContainerColor)`
+   (`background` unscrolled → `surfaceContainer` scrolled); `ArchiveEmptyState` deleted and replaced with
+   `EmptyState(icon = AppIcons.Fluent.Archive, message = stringResource(R.string.archive_is_empty))` at its
+   one call site. Removed the now-unused `HEADER_ELEVATION` constant, `animateDpAsState`/`Icon`/`size`
+   imports; added `animateColorAsState`/`EmptyState` imports.
+
+Verified via `./gradlew :feature:feature-reminder:compileDebugKotlin :app:compileProDebugKotlin
+:feature:feature-reminder:testDebugUnitTest` (all clean/passing) and detekt, checked against unmodified HEAD
+via stash-and-rerun on the 4 edited files: `SelectApplicationScreen.kt` and `TodoEditScreen.kt` identical to
+baseline (same-line-count content swaps). `PreviewReminderScreen.kt` identical modulo the expected +4-line
+shift from the back-button's `if`/`else` reformat. `RemindersArchiveScreen.kt` came back *lower* than
+baseline (931 vs. 935 module-wide, isolated to 4 fewer findings on this file) — the old
+`ArchiveEmptyState(modifier = Modifier\n  .fillMaxSize()\n  .weight(1f))` call had pre-existing
+`Wrapping`/`ArgumentListWrapping` debt that the `EmptyState(...)` replacement's cleaner formatting
+incidentally cleared. Zero new findings anywhere.
+
+**Not fixed, left as-is**: everything else the doc already listed as explicitly deferred (orientation-based
+layout splits on the two alarm screens, `SelectableOptionRow`'s `FontWeight` in Notes, `ManagePresetsScreen.kt`'s
+empty state in Settings) remains genuinely open and out of scope for this group.
+
+**Suggested next step**: continue the same re-verification approach on the next screen group in the
+inventory — Notes/Birthdays (§8, §18, §24-§27, plus the shared §58 sweep already partially covers it) — since
+this group scored much better than Home/Agenda but still wasn't 100% clean, there's no reason to assume any
+other "In progress" group is either.
+
+## 73. Notes & Birthdays group — re-verification of §24-§27/§58's claims, plus a stale deferred item resolved
+
+Re-verified every "landed" claim across §24 (`NotesScreen.kt`), §25 (`NoteEditFloatingBar.kt`), §26
+(`PreviewNoteReminderRow.kt`), §27 (`BirthdaysScreen.kt`/`EditBirthdayScreen.kt`/`PreviewBirthdayScreen.kt`),
+and §58's Notes/Birthdays-relevant claims (`RemindersArchiveScreen.kt`'s `ArchiveEmptyState` — already
+confirmed fixed in §72 — and `ReminderActionScreen.kt`'s `TodoItemRow`), against current source. Read all six
+Notes/Birthdays files fresh.
+
+**Best result yet for §24-§27/§58's own claims**: every claim made *by those sections themselves* held up
+exactly as documented — back buttons, `TopAppbarColor` token swaps, `onSurfaceVariant` alpha-blend fixes, the
+bare `Icons.Default.FilterList` swap, and every motion fix (`NoteEditFloatingBar.kt`'s elevation/spring/tween
+replacements, `PreviewNoteReminderRow.kt`'s stagger motion, `PreviewBirthdayScreen.kt`'s
+`AnimatedDetailRow`/`AnimatedAvatar` motion) all matched the doc precisely. `ReminderActionScreen.kt`'s
+`TodoItemRow` also confirmed already on `onSurfaceVariant`, no `onSurface.copy(alpha` left in the file.
+`NotesScreen.kt:568`'s state-driven `SelectableOptionRow` `FontWeight` — the one item §24 itself deliberately
+deferred — was confirmed still genuinely untouched, exactly as the doc says. The one miss found in this pass
+came from a *different*, later section (§64) overclaiming about this group's files — see below.
+
+**One false "landed" claim found — §64 didn't actually touch this file**: §64 (`Scroll-shadow-to-color-fill
+migration`) explicitly lists `BirthdaysScreen.kt` alongside `AgendaScreen.kt`/`RemindersArchiveScreen.kt` as one
+of "3 identical-shape screens" fixed in that pass. Current source before this section's edit still had the
+original `animateDpAsState`-driven `HEADER_ELEVATION`/`Surface(shadowElevation = ...)` — byte-for-byte the
+pre-§64 pattern. So §64's claim for this specific file was false, the same doc-vs-reality gap this whole
+re-verification series keeps finding (§70/§71/§72), just discovered from the opposite direction this time — a
+later section (§64) overclaiming a fix for a file an *earlier* section (§27) had correctly logged as
+deliberately deferred, and nothing after §64 ever circled back to check whether that particular file actually
+got touched. §27's own deferral reasoning ("same open product question as `RemindersArchiveScreen.kt`'s
+identical case") is itself now moot regardless: §72 resolved that "identical case" using the simpler,
+already-established shadow→color-fill pattern, which doesn't touch scroll behavior or `nestedScroll` at all, so
+it never actually collides with the harder UX question §27 was avoiding in the first place. Applied §64's
+documented fix for real this time: `animateDpAsState`/`Surface(shadowElevation = ...)` →
+`animateColorAsState`/`Surface(color = headerContainerColor)` (`background` unscrolled → `surfaceContainer`
+scrolled), removed the now-unused `HEADER_ELEVATION` constant and `animateDpAsState` import, added
+`animateColorAsState`. Also added the missing `titleContentColor = MaterialTheme.colorScheme.onBackground` to
+`BirthdaysTopBar`'s `TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)` — the container stays
+transparent deliberately (the wrapping `Surface` now carries the scroll-tint, same reasoning as `AgendaTopBar`
+in §71) but the paired title-color half of the token was missing, same gap already fixed for the group's other
+three screens in §24/§27.
+
+Verified via `./gradlew :feature:feature-birthday:compileDebugKotlin :app:compileProDebugKotlin` (clean) and
+`:feature:feature-birthday:testDebugUnitTest` (passing). Detekt reported 91 weighted issues both with and
+without this file's changes (stash-compare) — the two new-looking `ArgumentListWrapping`/`Wrapping` hits on the
+already-badly-wrapped `BirthdaysEmptyState(modifier = Modifier\n  .fillMaxSize()\n  .weight(1f))` call confirmed
+via `git show HEAD` to be byte-identical pre-existing code, just re-surfaced at shifted line numbers by the
+`+6`-line net change earlier in the file (the same stateful-`Indentation`-pass behavior observed in §71/§72) —
+zero new findings.
+
+This closes every remaining item from §8's Notes/Birthdays audit except the one genuinely-judgment-requiring
+deferral: `NotesScreen.kt`'s `SelectableOptionRow` `FontWeight` swap (state-driven "context" trigger, correctly
+left for a full type-token pass per §24's own reasoning, still valid).
+
+**Suggested next step**: continue the same re-verification approach on the remaining "In progress" groups —
+Groups/Tags/Places (§9, §29-§33, §66), Calendar/Google Tasks (§10, §34-§39, §67-§68), Workflow/Routines (§7,
+§40-§43, §69), Settings (§11-§12, §59-§63), or Backup/Insights/Onboarding/Widget Config (§13, §44-§47, §55-§57,
+§65) — none of which have had a dedicated post-hoc re-verification pass yet, so the same doc-vs-reality risk
+flagged repeatedly in this series (§70-§73) remains unchecked for all of them.

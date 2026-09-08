@@ -1,7 +1,7 @@
 package com.github.naz013.feature.birthday.list
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -63,7 +63,6 @@ import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 import com.github.naz013.ui.tag.TagFilterRow
 
-private val HEADER_ELEVATION = 3.dp
 private val BIRTHDAY_SMART_LIST_FILTERS = listOf(SmartListFilter.TODAY, SmartListFilter.THIS_WEEK)
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,9 +86,13 @@ internal fun BirthdaysScreen(
 ) {
   val lazyListState = rememberLazyListState()
   val isScrolled by remember { derivedStateOf { lazyListState.canScrollBackward } }
-  val headerElevation by animateDpAsState(
-    targetValue = if (isScrolled) HEADER_ELEVATION else 0.dp,
-    label = "birthdaysHeaderElevation",
+  val headerContainerColor by animateColorAsState(
+    targetValue = if (isScrolled) {
+      MaterialTheme.colorScheme.surfaceContainer
+    } else {
+      MaterialTheme.colorScheme.background
+    },
+    label = "birthdaysHeaderContainerColor",
   )
   var showFilterSheet by remember { mutableStateOf(false) }
   val hasActiveFilters = state.selectedSmartList != null || state.selectedTagId != null
@@ -108,7 +111,7 @@ internal fun BirthdaysScreen(
           onDeleteClick = onDeleteSelectedClick,
         )
       } else {
-        Surface(color = MaterialTheme.colorScheme.background, shadowElevation = headerElevation) {
+        Surface(color = headerContainerColor) {
           Column {
             BirthdaysTopBar(
               onBackClick = onBackClick,
@@ -378,7 +381,10 @@ private fun BirthdaysTopBar(
         )
       }
     },
-    colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+    colors = TopAppBarDefaults.topAppBarColors(
+      containerColor = Color.Transparent,
+      titleContentColor = MaterialTheme.colorScheme.onBackground,
+    ),
   )
 }
 

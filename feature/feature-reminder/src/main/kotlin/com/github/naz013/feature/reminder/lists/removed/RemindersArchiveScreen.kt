@@ -1,6 +1,6 @@
 package com.github.naz013.feature.reminder.lists.removed
 
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -39,9 +37,8 @@ import com.github.naz013.ui.reminder.UiReminderList
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
-
-private val HEADER_ELEVATION = 3.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,16 +54,20 @@ fun RemindersArchiveScreen(
 ) {
   val lazyListState = rememberLazyListState()
   val isScrolled by remember { derivedStateOf { lazyListState.canScrollBackward } }
-  val headerElevation by animateDpAsState(
-    targetValue = if (isScrolled) HEADER_ELEVATION else 0.dp,
-    label = "archiveHeaderElevation",
+  val headerContainerColor by animateColorAsState(
+    targetValue = if (isScrolled) {
+      MaterialTheme.colorScheme.surfaceContainer
+    } else {
+      MaterialTheme.colorScheme.background
+    },
+    label = "archiveHeaderContainerColor",
   )
 
   Scaffold(
     modifier = modifier,
     snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
-      Surface(color = MaterialTheme.colorScheme.background, shadowElevation = headerElevation) {
+      Surface(color = headerContainerColor) {
         Column {
           RemindersArchiveTopBar(
             onBackClick = onBackClick,
@@ -106,9 +107,13 @@ fun RemindersArchiveScreen(
         }
 
         is ListState.Empty -> {
-          ArchiveEmptyState(modifier = Modifier
-            .fillMaxSize()
-            .weight(1f))
+          EmptyState(
+            icon = AppIcons.Fluent.Archive,
+            message = stringResource(R.string.archive_is_empty),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
+          )
         }
 
         is ListState.Ready -> {
@@ -162,28 +167,6 @@ private fun RemindersArchiveTopBar(
     },
     colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
   )
-}
-
-@Composable
-private fun ArchiveEmptyState(modifier: Modifier = Modifier) {
-  Column(
-    modifier = modifier,
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center,
-  ) {
-    Icon(
-      painter = painterResource(R.drawable.ic_fluent_archive),
-      contentDescription = null,
-      modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
-    )
-    Text(
-      text = stringResource(R.string.archive_is_empty),
-      style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-      modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
-    )
-  }
 }
 
 @Preview(showBackground = true)
