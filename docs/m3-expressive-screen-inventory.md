@@ -233,7 +233,8 @@ confirmed every §34-§39 fix is still holding and fixed two things §10 never p
 `modifier`-parameter-order convention violation (same pattern §65/§66 already fixed twice) across 12
 composables in this group, and `CalendarModeToggleButton.kt`'s manual `FontWeight` override, now
 `titleMediumEmphasized`. It also surfaced a large, purely mechanical `DrawableCatalog`/`AppIcons` cleanup
-(25+ call sites across 10 files) — found but deliberately left for its own dedicated pass, same as §33/§47.
+(19 call sites across 10 files), landed right after in
+[§68](m3-expressive-adoption.md#68-calendargoogle-tasks-group--drawablecatalogappicons-cleanup--landed).
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
@@ -264,9 +265,9 @@ closing every mechanical, no-judgment-required item in §10. Only the two design
 Month/Timeline breakpoint adaptation, sub-48dp timeline touch targets) remain open from that audit, and
 neither is scoped to Google Tasks.
 [§67](m3-expressive-adoption.md#67-calendargoogle-tasks-group--fresh-re-audit-modifier-order-and-fontweightemphasized-fixes--landed)'s
-fresh re-audit fixed the `modifier`-parameter-order gap on `GoogleTasksScreen.kt`/`TaskListScreen.kt` too,
-and found (but left for a dedicated pass) the same large `DrawableCatalog`/`AppIcons` cleanup spanning both
-Calendar and Google Tasks files.
+fresh re-audit fixed the `modifier`-parameter-order gap on `GoogleTasksScreen.kt`/`TaskListScreen.kt` too, and
+[§68](m3-expressive-adoption.md#68-calendargoogle-tasks-group--drawablecatalogappicons-cleanup--landed)
+landed the same `DrawableCatalog`/`AppIcons` cleanup on its 5 Google Tasks screens.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
@@ -286,7 +287,11 @@ worst hit rate of any group audited so far), and
 [§43](m3-expressive-adoption.md#43-workflowroutines-topappbars-pointed-at-shared-topappbarcolor-token--landed)
 pointed all 4 of these screens' `TopAppBar`s at the shared `TopAppbarColor` token. §7 has no remaining
 findings for this group; what's left (`RoutinePreviewScreen.kt`'s deprecated FAB/sub-48dp touch target,
-`RoutineExecutionScreen.kt`'s `FontWeight`/elevation gaps) is tracked under Routines below.
+`RoutineExecutionScreen.kt`'s `FontWeight`/elevation gaps) is tracked under Routines below. A fresh full
+re-audit in
+[§69](m3-expressive-adoption.md#69-workflowroutines-group--fresh-re-audit-modifier-order-fontweightemphasized-drop-shadow-touch-target-and-motion-spec-fixes--landed)
+confirmed all 6 of this module's composables already had `modifier` first (no fix needed) and found no other
+gaps — `feature-workflow` is fully closed out.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
@@ -313,9 +318,15 @@ and
 [§43](m3-expressive-adoption.md#43-workflowroutines-topappbars-pointed-at-shared-topappbarcolor-token--landed)
 pointed `RoutinesListScreen.kt`'s and `RoutinePreviewScreen.kt`'s `TopAppBar`s at the shared `TopAppbarColor`
 token (`RoutineEditScreen.kt`/`RoutineExecutionScreen.kt` already used it correctly). §7 has no remaining
-findings that don't require touching `RoutineExecutionScreen.kt` or `RoutinePreviewScreen.kt` anyway — still
-open: `RoutinePreviewScreen.kt`'s 40dp check-toggle touch target (below the 48dp minimum), and
-`RoutineExecutionScreen.kt`'s `FontWeight.Bold` cluster and off-scale `shadowElevation = 4.dp` bottom bar.
+findings that don't require touching `RoutineExecutionScreen.kt` or `RoutinePreviewScreen.kt` anyway —
+[§69](m3-expressive-adoption.md#69-workflowroutines-group--fresh-re-audit-modifier-order-fontweightemphasized-drop-shadow-touch-target-and-motion-spec-fixes--landed)
+closed out the last two: `RoutinePreviewScreen.kt`'s 40dp check-toggle touch target is now 48dp and its
+literal `tween()` motion is now `MaterialTheme.motionScheme`-driven, and `RoutineExecutionScreen.kt`'s
+`FontWeight.Bold` cluster is now `*Emphasized` typography and its off-scale `shadowElevation = 4.dp` bottom
+bar is now a `surfaceContainer` color fill. §69 also fixed a `modifier`-parameter-order gap across all 4
+screens plus 6 private composables in this module (`feature-workflow`'s composables already had it right).
+Only §7's two explicitly-logged non-defects remain: `RoutineEditScreen.kt`'s indirect up-chevron-via-rotation
+implementation and `WorkflowTemplateCard.kt`'s `titleSmall`-for-description type-role mismatch.
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|

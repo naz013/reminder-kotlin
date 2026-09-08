@@ -3944,3 +3944,126 @@ match §39's own already-documented pre-existing baseline exactly.
 **Suggested next step**: the `DrawableCatalog`/`AppIcons` cleanup identified above is the natural next item —
 large but entirely mechanical, same shape as §33's Groups/Tags/Places pass. Otherwise, Workflow/Routines is
 the one remaining screen group not yet given the fresh-re-audit treatment in this doc.
+
+## 68. Calendar/Google Tasks group — `DrawableCatalog`/`AppIcons` cleanup — landed
+
+Landed the cleanup §67 identified but deliberately deferred: the raw `painterResource(R.drawable.*)` and
+`PopupMenuItem(iconRes = R.drawable.*)` bypass spanning all 10 files in the Calendar/Google Tasks group.
+
+Confirmed by re-grepping the group from scratch (not just the files §67 named) that every occurrence was
+already accounted for — no additional call sites turned up. Verified every drawable referenced already has
+a `DrawableCatalog.Fluent`/`DrawableCatalog.Builder` entry (and, where a `Painter` was needed, a matching
+`AppIcons.Fluent`/`AppIcons.Builder` wrapper) before touching any call site — same check §33 and §47 both
+did first, so no new catalog entries were needed here either.
+
+**Fixed — 19 call sites across 10 files**:
+- `CalendarModeToggleButton.kt`: the mode-switcher trigger icon, the selected-row checkmark.
+- `TimelinePager.kt`: `HolidayChip`'s globe icon.
+- `GoogleCalendarEventPreviewScreen.kt`: the delete action icon.
+- `CalendarScreen.kt`: the add-event bubble's two rows (`AddEventRow` itself keeps its generic `iconRes: Int`
+  parameter — it's shared by both, and now always receives a `DrawableCatalog` constant instead of a bare
+  resource ID), the overflow menu icon, and its one settings `PopupMenuItem`.
+- `TimelineScreen.kt`: the add-menu's two `PopupMenuItem`s (reformatted to multi-line — the constant name is
+  a few characters longer than the raw resource reference, which pushed both lines past the line-length
+  limit).
+- `GoogleTasksScreen.kt`: the new-list-icon and the FAB icon.
+- `TaskListScreen.kt`: the overflow-menu icon and the FAB icon.
+- `PreviewGoogleTaskScreen.kt`: the edit/delete top-bar icons, the complete-FAB icon, the tags-row icon, and
+  all 7 raw drawable IDs threaded through `DetailRow`'s call sites (`DetailRow` itself keeps its generic
+  `icon: Int` parameter, same reasoning as `AddEventRow` above — it's now always fed a `DrawableCatalog`
+  constant, never a bare `R.drawable.*`).
+- `EditGoogleTaskScreen.kt`: the move and delete top-bar icons.
+- `EditGoogleTaskListScreen.kt`: the delete top-bar icon.
+
+Every fix is a pure call-site substitution — `painterResource(R.drawable.ic_fluent_x)` →
+`AppIcons.Fluent.X` (or `AppIcons.Builder.X`) where a `Painter` was expected, `R.drawable.ic_fluent_x` →
+`DrawableCatalog.Fluent.X` (or `.Builder.X`) where a raw `@DrawableRes Int` was expected — plus removing the
+now-unused `painterResource` import from the 8 files where it had no remaining use (it stays imported in
+`CalendarScreen.kt` and `PreviewGoogleTaskScreen.kt`, where `AddEventRow`/`DetailRow` still call it
+internally on their generic `Int` parameter) and adding a `DrawableCatalog` import to the 4 files that
+needed one for the first time. No behavior change.
+
+Verified via `./gradlew :feature:feature-calendar:compileDebugKotlin :feature:feature-googletask:compileDebugKotlin`
+(both clean) and detekt on both modules, checked against unmodified HEAD via stash-and-rerun: identical
+weighted-issue counts before and after in both modules (`feature-calendar`: 193, `feature-googletask`: 6) —
+confirming zero new findings from the 19 substitutions and the import changes.
+
+**Suggested next step**: Workflow/Routines remains the one screen group never given the fresh-re-audit
+treatment used for the last three groups.
+
+## 69. Workflow/Routines group — fresh re-audit, `modifier`-order, `FontWeight`→`Emphasized`, drop-shadow, touch-target, and motion-spec fixes — landed
+
+Fresh full re-audit of the last screen group never given this treatment. Re-read all 8 screens from
+scratch — `WorkflowGalleryScreen.kt`, `WorkflowRulesForGroupScreen.kt`, `WorkflowRulesForReminderScreen.kt`,
+`builder/WorkflowRuleBuilderScreen.kt`, `WorkflowRuleRow.kt`, `WorkflowTemplateCard.kt`,
+`RoutinesListScreen.kt`, `RoutineEditScreen.kt`, `RoutinePreviewScreen.kt`, `RoutineExecutionScreen.kt` —
+plus `RoutineNavGraph.kt` to confirm call-site argument style before reordering any signature.
+
+**Confirmed still holding from §7/§40/§43**: back-button content descriptions fixed on all 8 screens,
+`TopAppbarColor` on all 8, no raw `R.drawable.*`/`painterResource(R.drawable.*)` anywhere in either module
+(both were already fully on `DrawableCatalog`/`AppIcons` — nothing left for a §68-style cleanup here).
+
+**New finding, fixed — `modifier`-parameter-order violation, but only in `feature-routine`**: unlike the
+last three groups, `feature-workflow`'s 6 composables (`WorkflowGalleryScreen`, `WorkflowRulesForGroupScreen`,
+`WorkflowRulesForReminderScreen`, `WorkflowRuleBuilderScreen`, `WorkflowRuleRow`, `WorkflowTemplateCard`)
+already had `modifier` first — no fix needed there. `feature-routine` was the opposite: every single
+screen had `modifier` as its *last* parameter, the mirror-image of the bug this doc has fixed three groups
+running. Fixed all 4 public screens (`RoutinesListScreen`, `RoutineEditScreen`, `RoutinePreviewScreen`,
+`RoutineExecutionScreen`) plus 6 private composables that had the same shape
+(`RecurrenceOptionPicker`, `WeekdaySelector`, `DayOfMonthPicker`, `RoutineStepRow` in `RoutineEditScreen.kt`;
+`RunningContent`, `FinishedContent` in `RoutineExecutionScreen.kt`). Confirmed every call site — all 4 in
+`RoutineNavGraph.kt`, plus every internal call site within `RoutineEditScreen.kt`/`RoutineExecutionScreen.kt`
+— uses named arguments and never passes `modifier` explicitly (all rely on the default), so the reorder is
+behavior-free.
+
+**Fixed — `RoutineExecutionScreen.kt`'s `FontWeight.Bold` cluster**, the last unfixed item from §7's
+cross-cutting finding #3: the "Complete step" button label (`titleMedium` → `titleMediumEmphasized`), the
+"Step X of N" counter (`labelLarge` → `labelLargeEmphasized`), the step title (`headlineSmall` →
+`headlineSmallEmphasized`), and the finished-state headline (`headlineSmall` → `headlineSmallEmphasized`).
+Verified all three `*Emphasized` tokens are real properties on `androidx.compose.material3.Typography` by
+extracting `material3-android-1.5.0-alpha27-sources.jar` (this project's exact classpath version, same
+diligence as §19/§22/§61) rather than assuming the names — confirmed `headlineSmallEmphasized` and
+`labelLargeEmphasized` exist alongside the already-used `titleMediumEmphasized`. Removed the now-unused
+`FontWeight` import.
+
+**Fixed — `RoutineExecutionScreen.kt`'s bottom bar drop shadow**, the last unfixed item from §7's
+screen-specific findings: `Surface(shadowElevation = 4.dp)` wrapping the "Complete step" button was already
+called out by §7 itself as "an M2-style drop-shadow-on-surface treatment rather than the M3 color-fill/tonal
+approach" — the exact same principle §64 applied to 4 scrolling top app bars. This bar isn't scroll-linked
+(it's simply present whenever `RoutineExecutionState.Running`), so there's no unscrolled/scrolled pair to
+animate between here — the fix is a direct swap: `shadowElevation = 4.dp` → `color =
+MaterialTheme.colorScheme.surfaceContainer`, dropping the shadow parameter entirely rather than keeping it
+at 0, matching §64's "instead of, not in addition to" reading of the guideline.
+
+**Fixed — `RoutinePreviewScreen.kt`'s 40dp check-toggle touch target**, the item §7 and the screen-inventory
+doc both left open pending wherever `SubTasksValueEditor.kt` landed its own fix for the identical
+compact-checklist-row trade-off. That fix has since landed — `SubTasksValueEditor.kt`'s row-action buttons
+now use a named `ROW_BUTTON_SIZE = 48.dp` constant — so this screen's `IconButton.size(40.dp)` was bumped to
+`48.dp` to match, closing the gap.
+
+**Fixed — `RoutinePreviewScreen.kt`'s literal `tween()` motion**, §7's cross-cutting finding #4, deferred at
+the time as "not urgent... a natural fix alongside item 3" (item 3 was `RoutinesListScreen`'s empty state,
+landed since in §42). The 8 `tween(CHECK_ANIMATION_MS)` calls across the check-toggle's two
+`AnimatedVisibility` blocks (scale+fade in each direction, ×2 for the checked/unchecked icons) were swapped
+for `MaterialTheme.motionScheme.defaultSpatialSpec()` (the `scaleIn`/`scaleOut` calls) and
+`.defaultEffectsSpec()` (the `fadeIn`/`fadeOut` calls) — the same spatial/effects pairing already established
+in `ChronologicalHomeScreen.kt` for an identical scale+fade `AnimatedVisibility`. Removed the now-unused
+`CHECK_ANIMATION_MS` constant and `androidx.compose.animation.core.tween` import.
+
+Verified via `./gradlew :feature:feature-routine:compileDebugKotlin :feature:feature-workflow:compileDebugKotlin
+:app:compileProDebugKotlin` (all clean) and detekt on both modules, checked against unmodified HEAD via
+stash-and-rerun: identical weighted-issue counts before and after in both modules (`feature-routine`: 2,
+`feature-workflow`: 5) — confirming zero new findings from the 10 modifier reorders, the 4 typography-token
+swaps, the shadow-to-color-fill swap, the touch-target bump, and the 8 motion-spec swaps combined. The one
+finding that does show in `feature-routine` (`NoUnusedImports` on `RoutinePreviewScreen.kt`'s pre-existing
+unused `androidx.compose.foundation.background` import) is confirmed pre-existing via the stash comparison,
+untouched by any of this section's edits.
+
+This closes out every item §7 ever flagged for this group, mechanical or otherwise — the only findings left
+unactioned from that audit are `RoutineEditScreen.kt`'s indirect up-chevron-via-180°-rotation implementation
+and `WorkflowTemplateCard.kt`'s `titleSmall`-for-description type-role mismatch, both explicitly logged in §7
+as low-severity/non-defects rather than open work.
+
+**Suggested next step**: every screen group in the inventory has now had a fresh full re-audit. No
+group-level work remains queued; future sections should pick up from whatever the user's next request is,
+rather than another audit pass.

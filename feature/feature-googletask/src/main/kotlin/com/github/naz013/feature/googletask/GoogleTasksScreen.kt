@@ -31,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -79,7 +78,7 @@ internal fun GoogleTasksScreen(
         actions = {
           if (state.isLoggedIn) {
             MenuIconButton(
-              icon = painterResource(R.drawable.ic_fluent_task_list_add),
+              icon = AppIcons.Fluent.TaskListAdd,
               contentDescription = stringResource(R.string.new_tasks_list),
               onClick = onAddListClick,
             )
@@ -94,7 +93,7 @@ internal fun GoogleTasksScreen(
           onClick = onAddTaskClick,
           containerColor = state.fabContainerColor ?: FloatingActionButtonDefaults.containerColor,
           contentColor = state.fabContentColor ?: MaterialTheme.colorScheme.onPrimaryContainer,
-          icon = { Icon(painterResource(R.drawable.ic_fluent_add), contentDescription = null) },
+          icon = { Icon(AppIcons.Fluent.Add, contentDescription = null) },
           text = { Text(stringResource(R.string.new_task)) },
         )
       }

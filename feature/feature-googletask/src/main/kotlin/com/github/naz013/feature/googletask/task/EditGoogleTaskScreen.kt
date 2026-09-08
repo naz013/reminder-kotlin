@@ -26,7 +26,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
@@ -81,7 +80,7 @@ internal fun EditGoogleTaskScreen(
         actions = {
           if (state.canMove) {
             MenuIconButton(
-              icon = painterResource(R.drawable.ic_fluent_arrow_move),
+              icon = AppIcons.Fluent.ArrowMove,
               contentDescription = stringResource(R.string.move_to_another_list),
               enabled = !state.isLoading,
               onClick = onMoveMenuClick,
@@ -89,7 +88,7 @@ internal fun EditGoogleTaskScreen(
           }
           if (state.canDelete) {
             MenuIconButton(
-              icon = painterResource(R.drawable.ic_fluent_delete),
+              icon = AppIcons.Fluent.Delete,
               contentDescription = stringResource(R.string.delete),
               enabled = !state.isLoading,
               onClick = onDeleteMenuClick,

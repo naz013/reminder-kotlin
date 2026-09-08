@@ -23,7 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
@@ -46,7 +45,7 @@ internal fun CalendarModeToggleButton(
   var expanded by remember { mutableStateOf(false) }
   Box(modifier = modifier) {
     MenuIconButton(
-      icon = painterResource(R.drawable.ic_fluent_calendar),
+      icon = AppIcons.Fluent.Calendar,
       contentDescription = stringResource(R.string.calendar_switch_view_mode),
       onClick = { expanded = true },
     )
@@ -89,13 +88,12 @@ private fun CalendarModeRow(
   Row(
     horizontalArrangement = Arrangement.spacedBy(12.dp),
     verticalAlignment = Alignment.CenterVertically,
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .clip(MaterialTheme.shapes.small)
-        .background(if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent)
-        .clickable(onClick = onClick)
-        .padding(horizontal = 12.dp, vertical = 12.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .clip(MaterialTheme.shapes.small)
+      .background(if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent)
+      .clickable(onClick = onClick)
+      .padding(horizontal = 12.dp, vertical = 12.dp),
   ) {
     val rowContentColor = if (selected) MaterialTheme.colorScheme.onSecondaryContainer else contentColor
     Icon(
@@ -116,7 +114,7 @@ private fun CalendarModeRow(
     )
     if (selected) {
       Icon(
-        painter = painterResource(R.drawable.ic_fluent_checkmark),
+        painter = AppIcons.Fluent.Checkmark,
         contentDescription = null,
         tint = rowContentColor,
         modifier = Modifier.size(20.dp),

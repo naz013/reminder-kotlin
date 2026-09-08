@@ -24,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -83,7 +82,7 @@ internal fun TaskListScreen(
         actions = {
           var menuExpanded by remember { mutableStateOf(false) }
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_more_vertical),
+            icon = AppIcons.Fluent.MoreVertical,
             contentDescription = stringResource(R.string.more_options),
             onClick = { menuExpanded = true },
           )
@@ -109,7 +108,7 @@ internal fun TaskListScreen(
         onClick = onAddTaskClick,
         containerColor = state.fabContainerColor ?: FloatingActionButtonDefaults.containerColor,
         contentColor = state.fabContentColor ?: MaterialTheme.colorScheme.onPrimaryContainer,
-        icon = { Icon(painterResource(R.drawable.ic_fluent_add), contentDescription = null) },
+        icon = { Icon(AppIcons.Fluent.Add, contentDescription = null) },
         text = { Text(stringResource(R.string.new_task)) },
       )
     },

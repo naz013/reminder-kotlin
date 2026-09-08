@@ -25,6 +25,7 @@ import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import org.threeten.bp.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,9 +75,11 @@ internal fun TimelineScreen(
       )
     },
   ) { padding ->
-    Box(modifier = Modifier
-      .fillMaxSize()
-      .padding(padding)) {
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding)
+    ) {
       TimelinePager(
         initialPagerPosition = initialPagerPosition,
         pagerJumpRequest = pagerJumpRequest,
@@ -114,8 +117,16 @@ private fun AddMenuButton(
       expanded = expanded,
       onDismissRequest = { expanded = false },
       items = listOf(
-        PopupMenuItem(id = 0, title = stringResource(R.string.new_reminder), iconRes = R.drawable.ic_fluent_alert),
-        PopupMenuItem(id = 1, title = stringResource(R.string.add_birthday), iconRes = R.drawable.ic_fluent_food_cake),
+        PopupMenuItem(
+          id = 0,
+          title = stringResource(R.string.new_reminder),
+          iconRes = DrawableCatalog.Fluent.Alert,
+        ),
+        PopupMenuItem(
+          id = 1,
+          title = stringResource(R.string.add_birthday),
+          iconRes = DrawableCatalog.Fluent.FoodCake,
+        ),
       ),
       onItemClick = { id ->
         when (id) {

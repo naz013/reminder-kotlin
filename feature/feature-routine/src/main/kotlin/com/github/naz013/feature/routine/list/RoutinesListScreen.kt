@@ -39,6 +39,7 @@ import com.github.naz013.ui.tag.TagFilterRow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun RoutinesListScreen(
+  modifier: Modifier = Modifier,
   state: RoutinesListState,
   onBackClick: () -> Unit,
   onSearchQueryChange: (String) -> Unit,
@@ -47,7 +48,6 @@ internal fun RoutinesListScreen(
   onAddClick: () -> Unit,
   onRoutineClick: (String) -> Unit,
   onStartClick: (String) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,

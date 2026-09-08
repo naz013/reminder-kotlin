@@ -36,6 +36,7 @@ import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.tag.TagChipRow
 import com.github.naz013.ui.tag.TagChipState
 
@@ -66,12 +67,12 @@ internal fun PreviewGoogleTaskScreen(
         },
         actions = {
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_edit),
+            icon = AppIcons.Fluent.Edit,
             contentDescription = stringResource(R.string.edit),
             onClick = onEditClick,
           )
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_delete),
+            icon = AppIcons.Fluent.Delete,
             contentDescription = stringResource(R.string.delete),
             onClick = onDeleteClick,
           )
@@ -84,7 +85,7 @@ internal fun PreviewGoogleTaskScreen(
       if (task != null && !task.isCompleted) {
         SmallExtendedFloatingActionButton(
           onClick = onCompleteClick,
-          icon = { Icon(painterResource(R.drawable.ic_fluent_checkmark), contentDescription = null) },
+          icon = { Icon(AppIcons.Fluent.Checkmark, contentDescription = null) },
           text = { Text(stringResource(R.string.complete)) },
         )
       }
@@ -115,7 +116,7 @@ internal fun PreviewGoogleTaskScreen(
           .verticalScroll(rememberScrollState()),
       ) {
         DetailRow(
-          icon = R.drawable.ic_fluent_text,
+          icon = DrawableCatalog.Fluent.Text,
           text = task.text,
           iconTint = MaterialTheme.colorScheme.primary,
           textStyle = MaterialTheme.typography.titleLarge,
@@ -123,25 +124,25 @@ internal fun PreviewGoogleTaskScreen(
           topPadding = 24.dp,
         )
         task.notes?.let {
-          DetailRow(icon = R.drawable.ic_fluent_note, text = it)
+          DetailRow(icon = DrawableCatalog.Fluent.Note, text = it)
         }
         DetailRow(
-          icon = R.drawable.ic_fluent_list,
+          icon = DrawableCatalog.Fluent.List,
           text = task.taskListName,
           iconTint = Color(task.taskListColor),
           textColor = Color(task.taskListColor),
         )
         task.dueDate?.let {
-          DetailRow(icon = R.drawable.ic_builder_by_monthday, text = it)
+          DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = it)
         }
         task.createdDate?.let {
-          DetailRow(icon = R.drawable.ic_builder_google_calendar_add, text = it)
+          DetailRow(icon = DrawableCatalog.Builder.GoogleCalendarAdd, text = it)
         }
         task.completedDate?.let {
-          DetailRow(icon = R.drawable.ic_fluent_calendar_checkmark, text = it)
+          DetailRow(icon = DrawableCatalog.Fluent.CalendarCheckmark, text = it)
         }
         DetailRow(
-          icon = R.drawable.ic_fluent_flag,
+          icon = DrawableCatalog.Fluent.Flag,
           text = stringResource(if (task.isCompleted) R.string.completed else R.string.not_completed),
         )
         if (state.tags.isNotEmpty()) {
@@ -176,7 +177,7 @@ private fun TagsRow(tags: List<TagChipState>) {
       .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
   ) {
     Icon(
-      painter = painterResource(R.drawable.ic_builder_group),
+      painter = AppIcons.Builder.Tag,
       contentDescription = null,
       tint = MaterialTheme.colorScheme.onSurfaceVariant,
       modifier = Modifier.size(32.dp),

@@ -1,7 +1,6 @@
 package com.github.naz013.feature.routine.preview
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -51,11 +50,10 @@ import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.tag.TagChipRow
 
-private const val CHECK_ANIMATION_MS = 150
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun RoutinePreviewScreen(
+  modifier: Modifier = Modifier,
   state: RoutinePreviewState,
   // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
   // leading icon (close vs. back), onBackClick pops the entry either way.
@@ -68,7 +66,6 @@ internal fun RoutinePreviewScreen(
   onStepCheckToggle: (stepId: String) -> Unit,
   onStartClick: () -> Unit,
   adsContent: @Composable () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
@@ -197,13 +194,15 @@ private fun RoutineStepChecklistRow(
       IconButton(
         onClick = onCheckToggle,
         modifier = Modifier
-          .size(40.dp)
+          .size(48.dp)
           .semantics { contentDescription = checkToggleDescription },
       ) {
         AnimatedVisibility(
           visible = step.isCompleted,
-          enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
-          exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+          enter = scaleIn(MaterialTheme.motionScheme.defaultSpatialSpec()) +
+            fadeIn(MaterialTheme.motionScheme.defaultEffectsSpec()),
+          exit = scaleOut(MaterialTheme.motionScheme.defaultSpatialSpec()) +
+            fadeOut(MaterialTheme.motionScheme.defaultEffectsSpec()),
         ) {
           Icon(
             painter = AppIcons.Fluent.CheckboxChecked,
@@ -213,8 +212,10 @@ private fun RoutineStepChecklistRow(
         }
         AnimatedVisibility(
           visible = !step.isCompleted,
-          enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
-          exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+          enter = scaleIn(MaterialTheme.motionScheme.defaultSpatialSpec()) +
+            fadeIn(MaterialTheme.motionScheme.defaultEffectsSpec()),
+          exit = scaleOut(MaterialTheme.motionScheme.defaultSpatialSpec()) +
+            fadeOut(MaterialTheme.motionScheme.defaultEffectsSpec()),
         ) {
           Icon(
             painter = AppIcons.Fluent.CheckboxUnchecked,

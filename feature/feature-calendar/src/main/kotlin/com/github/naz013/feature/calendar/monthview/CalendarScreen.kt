@@ -50,6 +50,7 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import org.threeten.bp.LocalDate
 
 private val DOT_SIZE = 5.dp
@@ -191,9 +192,11 @@ private fun MonthPage(
       LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }
     grid.chunked(WEEK_LENGTH).forEach { week ->
-      Row(modifier = Modifier
-        .fillMaxWidth()
-        .weight(1f)) {
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .weight(1f)
+      ) {
         week.forEach { cell ->
           MonthDayCell(
             cell = cell,
@@ -283,13 +286,13 @@ private fun MonthDayCell(
         Column {
           AddEventRow(
             text = stringResource(R.string.add_reminder_menu),
-            iconRes = R.drawable.ic_fluent_alert,
+            iconRes = DrawableCatalog.Fluent.Alert,
             contentColor = bubbleContentColor,
             onClick = { expanded = false; onAddReminderClick(cell.date) },
           )
           AddEventRow(
             text = stringResource(R.string.add_birthday),
-            iconRes = R.drawable.ic_fluent_food_cake,
+            iconRes = DrawableCatalog.Fluent.FoodCake,
             contentColor = bubbleContentColor,
             onClick = { expanded = false; onAddBirthdayClick(cell.date) },
           )
@@ -324,7 +327,7 @@ private fun OverflowMenuButton(onSettingsClick: () -> Unit) {
   var expanded by remember { mutableStateOf(false) }
   Box {
     MenuIconButton(
-      icon = painterResource(R.drawable.ic_fluent_more_vertical),
+      icon = AppIcons.Fluent.MoreVertical,
       contentDescription = stringResource(R.string.more_options),
       onClick = { expanded = true },
     )
@@ -335,7 +338,7 @@ private fun OverflowMenuButton(onSettingsClick: () -> Unit) {
         PopupMenuItem(
           id = 0,
           title = stringResource(R.string.action_settings),
-          iconRes = R.drawable.ic_fluent_settings
+          iconRes = DrawableCatalog.Fluent.Settings,
         ),
       ),
       onItemClick = { onSettingsClick() },
