@@ -8,7 +8,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
@@ -19,6 +18,7 @@ import com.github.naz013.ui.common.compose.foundation.dialog.SeekValueDialog
 
 @Composable
 internal fun NoteSettingsScreen(
+  modifier: Modifier = Modifier,
   state: NoteSettingsState,
   onColorRememberToggle: () -> Unit,
   onFontSizeRememberToggle: () -> Unit,
@@ -28,7 +28,6 @@ internal fun NoteSettingsScreen(
   onOpacityPreviewChange: (Int) -> Unit,
   onOpacityConfirm: () -> Unit,
   onOpacityDialogDismiss: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier = modifier
@@ -48,7 +47,7 @@ internal fun NoteSettingsScreen(
     SettingsItem(
       title = stringResource(R.string.color_saturation),
       subtitle = "${state.colorOpacity}%",
-      icon = painterResource(R.drawable.ic_fluent_circle_half_fill),
+      icon = AppIcons.Fluent.CircleHalfFill,
       itemKey = SettingsSearchItemKeys.NOTES_OPACITY,
       dividerBottom = true,
       onClick = onOpacityClick,
@@ -59,7 +58,7 @@ internal fun NoteSettingsScreen(
       onCheckedChange = { onFontSizeRememberToggle() },
       subtitleOn = stringResource(R.string.remember_last_set_text_size),
       subtitleOff = stringResource(R.string.use_default_text_size),
-      icon = painterResource(R.drawable.ic_fluent_text),
+      icon = AppIcons.Fluent.Text,
       itemKey = SettingsSearchItemKeys.NOTES_TEXT_SIZE,
       dividerBottom = true,
     )

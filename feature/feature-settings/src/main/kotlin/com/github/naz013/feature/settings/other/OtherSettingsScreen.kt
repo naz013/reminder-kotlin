@@ -18,6 +18,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 
 @Composable
 internal fun OtherSettingsScreen(
+  modifier: Modifier = Modifier,
   state: OtherSettingsState,
   onPrivacyPolicyClick: () -> Unit,
   onTermsClick: () -> Unit,
@@ -34,7 +35,6 @@ internal fun OtherSettingsScreen(
   onGeminiFunctionsClick: () -> Unit,
   onDigestClick: () -> Unit,
   onBuyMeACoffeeClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier = modifier

@@ -43,9 +43,9 @@ private const val MIN_BAR_FRACTION = 0.02f
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun InsightsScreen(
+  modifier: Modifier = Modifier,
   state: InsightsScreenState,
   onBackClick: () -> Unit,
-  modifier: Modifier = Modifier
 ) {
   Scaffold(
     modifier = modifier,
@@ -115,9 +115,9 @@ internal fun InsightsScreen(
 
 @Composable
 private fun WeeklyTrendCard(
+  modifier: Modifier = Modifier,
   trend: List<WeeklyTrendUi>,
   busiestDay: DayOfWeek?,
-  modifier: Modifier = Modifier
 ) {
   Card(
     modifier = modifier.fillMaxWidth(),
@@ -159,8 +159,8 @@ private fun WeeklyTrendCard(
 
 @Composable
 private fun StreakCard(
+  modifier: Modifier = Modifier,
   streak: UiStreak,
-  modifier: Modifier = Modifier
 ) {
   Card(
     modifier = modifier.fillMaxWidth(),
@@ -189,8 +189,8 @@ private fun StreakCard(
 
 @Composable
 private fun RoutineInsightCard(
+  modifier: Modifier = Modifier,
   insight: UiRoutineInsight,
-  modifier: Modifier = Modifier
 ) {
   Card(
     modifier = modifier.fillMaxWidth(),

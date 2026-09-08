@@ -16,16 +16,17 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
 @Composable
 internal fun CloudBackupSettingsScreen(
+  modifier: Modifier = Modifier,
   state: CloudBackupSettingsState,
   onCloudServicesClick: () -> Unit,
   onAutoBackupIntervalClick: () -> Unit,
@@ -37,25 +38,23 @@ internal fun CloudBackupSettingsScreen(
   onBackupNowClick: () -> Unit,
   onSyncNowClick: () -> Unit,
   onDialogDismiss: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState()),
+    modifier = modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background)
+      .verticalScroll(rememberScrollState()),
   ) {
     SettingsItem(
       title = stringResource(R.string.cloud_services),
-      icon = painterResource(R.drawable.ic_fluent_cloud),
+      icon = AppIcons.Fluent.Cloud,
       dividerBottom = true,
       onClick = onCloudServicesClick,
     )
     SettingsItem(
       title = stringResource(R.string.automatically_backup),
       subtitle = state.autoBackupStateName,
-      icon = painterResource(R.drawable.ic_fluent_cloud_backup),
+      icon = AppIcons.Fluent.CloudBackup,
       enabled = state.hasAnyCloudApi,
       itemKey = SettingsSearchItemKeys.BACKUP_AUTO_INTERVAL,
       dividerBottom = true,
@@ -64,7 +63,7 @@ internal fun CloudBackupSettingsScreen(
     SettingsItem(
       title = stringResource(R.string.which_network_to_use_for_sync),
       subtitle = state.networkTypeName,
-      icon = painterResource(R.drawable.ic_fluent_network_check),
+      icon = AppIcons.Fluent.NetworkCheck,
       enabled = state.hasAnyCloudApi,
       itemKey = SettingsSearchItemKeys.BACKUP_NETWORK_TYPE,
       dividerBottom = true,
@@ -72,7 +71,7 @@ internal fun CloudBackupSettingsScreen(
     )
     SettingsItem(
       title = stringResource(R.string.erase_cloud_data),
-      icon = painterResource(R.drawable.ic_fluent_broom),
+      icon = AppIcons.Fluent.Broom,
       enabled = state.hasAnyCloudApi,
       itemKey = SettingsSearchItemKeys.BACKUP_ERASE_CLOUD,
       dividerBottom = true,
@@ -81,19 +80,17 @@ internal fun CloudBackupSettingsScreen(
 
     if (state.isInProgress) {
       Column(
-        modifier =
-          Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(16.dp),
       ) {
         CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
         Text(
           text = stringResource(R.string.please_wait),
           style = MaterialTheme.typography.titleLarge,
-          modifier =
-            Modifier
-              .align(Alignment.CenterHorizontally)
-              .padding(top = 16.dp),
+          modifier = Modifier
+            .align(Alignment.CenterHorizontally)
+            .padding(top = 16.dp),
         )
       }
     }
@@ -101,20 +98,18 @@ internal fun CloudBackupSettingsScreen(
     OutlinedButton(
       onClick = onBackupNowClick,
       enabled = state.hasAnyCloudApi && !state.isInProgress,
-      modifier =
-        Modifier
-          .fillMaxWidth()
-          .padding(start = 16.dp, end = 16.dp, top = 16.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(start = 16.dp, end = 16.dp, top = 16.dp),
     ) {
       Text(stringResource(R.string.backup_data_now))
     }
     OutlinedButton(
       onClick = onSyncNowClick,
       enabled = state.hasAnyCloudApi && !state.isInProgress,
-      modifier =
-        Modifier
-          .fillMaxWidth()
-          .padding(16.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp),
     ) {
       Text(stringResource(R.string.sync_data_now))
     }

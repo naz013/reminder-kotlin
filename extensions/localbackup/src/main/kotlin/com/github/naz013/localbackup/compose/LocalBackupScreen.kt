@@ -28,12 +28,12 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocalBackupScreen(
+  modifier: Modifier = Modifier,
   state: LocalBackupState,
   onBackClick: () -> Unit,
   onPassphraseChange: (String) -> Unit,
   onConfirmPassphraseChange: (String) -> Unit,
   onActionClick: () -> Unit,
-  modifier: Modifier = Modifier
 ) {
   val isExport = state.mode == LocalBackupMode.EXPORT
   Scaffold(

@@ -63,12 +63,12 @@ fun builderItemRemoveTestTag(title: String): String = "builder_item_remove_$titl
  */
 @Composable
 fun BuilderListItemCard(
+  modifier: Modifier = Modifier,
   icon: Painter,
   title: String,
   status: BuilderItemStatus,
   onClick: () -> Unit,
   onRemoveClick: () -> Unit,
-  modifier: Modifier = Modifier,
   errorText: String? = null,
   removeIcon: Painter = AppIcons.Builder.Clear,
   value: @Composable () -> Unit = {},
@@ -141,13 +141,13 @@ fun BuilderListItemCard(
 /** [BuilderListItemCard] overload for the common case of a plain text value line. */
 @Composable
 fun BuilderListItemCard(
+  modifier: Modifier = Modifier,
   icon: Painter,
   title: String,
   value: String,
   status: BuilderItemStatus,
   onClick: () -> Unit,
   onRemoveClick: () -> Unit,
-  modifier: Modifier = Modifier,
   errorText: String? = null,
   removeIcon: Painter = AppIcons.Builder.Clear,
 ) {

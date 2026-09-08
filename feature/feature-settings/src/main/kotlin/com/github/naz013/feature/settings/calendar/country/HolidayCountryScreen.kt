@@ -36,9 +36,9 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun HolidayCountryScreen(
+  modifier: Modifier = Modifier,
   onBackClick: () -> Unit,
   onCountrySelected: (String) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val viewModel = koinViewModel<HolidayCountryViewModel>()
   val state by viewModel.state.collectAsState()
@@ -104,10 +104,10 @@ internal fun HolidayCountryScreen(
 
 @Composable
 private fun CountryListItem(
+  modifier: Modifier = Modifier,
   country: UiCountry,
   isSelected: Boolean,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Card(
     modifier = modifier.fillMaxWidth().clickable(onClick = onClick),

@@ -36,10 +36,10 @@ private const val SelectorContrastLuminanceThreshold = 0.5f
 
 @Composable
 fun ColorSlider(
+  modifier: Modifier = Modifier,
   colors: List<Color>,
   selectedIndex: Int,
   onColorSelected: (Int) -> Unit,
-  modifier: Modifier = Modifier,
   contentDescription: String = stringResource(R.string.acc_select_color),
   selectorColor: Color = MaterialTheme.colorScheme.onSurface,
   enabled: Boolean = true,
@@ -100,9 +100,11 @@ fun ColorSlider(
     }
   }
 
-  Canvas(modifier = modifier
-    .then(gestureModifier)
-    .then(semanticsModifier)) {
+  Canvas(
+    modifier = modifier
+      .then(gestureModifier)
+      .then(semanticsModifier)
+  ) {
     if (colors.isEmpty()) return@Canvas
     val itemWidth = size.width / colors.size
     val verticalInset = size.height * UnselectedItemVerticalInset

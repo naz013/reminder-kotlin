@@ -44,10 +44,10 @@ private val DRAG_HANDLE_TOUCH_SIZE = 48.dp
 
 @Composable
 internal fun HeaderItemsSettingsScreen(
+  modifier: Modifier = Modifier,
   state: HeaderItemsSettingsState,
   onToggle: (section: HeaderNavigationSection, enabled: Boolean) -> Unit,
   onReorder: (fromIndex: Int, toIndex: Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val latestConfigurableItems = rememberUpdatedState(state.configurableItems)
   var draggedSectionKey by remember { mutableStateOf<Int?>(null) }
@@ -125,8 +125,8 @@ internal fun HeaderItemsSettingsScreen(
 
 @Composable
 private fun PinnedHeaderItemRow(
-  row: HeaderItemRow,
   modifier: Modifier = Modifier,
+  row: HeaderItemRow,
 ) {
   Row(
     modifier = modifier

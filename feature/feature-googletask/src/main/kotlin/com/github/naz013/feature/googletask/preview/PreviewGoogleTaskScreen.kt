@@ -188,9 +188,9 @@ private fun TagsRow(tags: List<TagChipState>) {
 
 @Composable
 private fun DetailRow(
+  modifier: Modifier = Modifier,
   icon: Int,
   text: String,
-  modifier: Modifier = Modifier,
   iconTint: Color = MaterialTheme.colorScheme.onBackground,
   textColor: Color = MaterialTheme.colorScheme.onBackground,
   textStyle: TextStyle = MaterialTheme.typography.titleMedium,

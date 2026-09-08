@@ -20,11 +20,11 @@ import com.github.naz013.ui.common.compose.foundation.component.PinInput
 
 @Composable
 internal fun AddPinScreen(
+  modifier: Modifier = Modifier,
   stage: AddPinStage,
   pin: String,
   onDigitClick: (Int) -> Unit,
   onDeleteClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier =

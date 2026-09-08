@@ -16,9 +16,9 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScaffold(
+  modifier: Modifier = Modifier,
   title: String,
   onBackClick: () -> Unit,
-  modifier: Modifier = Modifier,
   navigationIcon: Int = R.drawable.ic_builder_arrow_left,
   navigationContentDescription: String = stringResource(R.string.cd_back),
   content: @Composable (PaddingValues) -> Unit,

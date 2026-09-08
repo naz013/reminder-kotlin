@@ -45,9 +45,9 @@ private const val GET_STARTED_PAGE = 2
 
 @Composable
 fun OnboardingScreen(
+  modifier: Modifier = Modifier,
   onSkip: () -> Unit,
   onCreateFirstReminder: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val pagerState = rememberPagerState(pageCount = { ONBOARDING_PAGE_COUNT })
 
@@ -152,9 +152,9 @@ private fun OnboardingCapabilitiesPage(modifier: Modifier = Modifier) {
 
 @Composable
 private fun OnboardingCapabilityCaption(
+  modifier: Modifier = Modifier,
   icon: Painter,
   caption: String,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier = modifier.width(88.dp),
@@ -185,9 +185,9 @@ private fun OnboardingCapabilityCaption(
 
 @Composable
 private fun OnboardingGetStartedPage(
+  modifier: Modifier = Modifier,
   onCreateFirstReminder: () -> Unit,
   onMaybeLater: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier = modifier
@@ -231,10 +231,10 @@ private fun OnboardingGetStartedPage(
 
 @Composable
 private fun OnboardingPageContent(
+  modifier: Modifier = Modifier,
   icon: Painter,
   title: String,
   subtitle: String,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier = modifier
@@ -267,9 +267,9 @@ private fun OnboardingPageContent(
 
 @Composable
 private fun OnboardingPageIndicator(
+  modifier: Modifier = Modifier,
   pageCount: Int,
   currentPage: Int,
-  modifier: Modifier = Modifier,
 ) {
   Row(
     modifier = modifier,

@@ -20,16 +20,15 @@ import com.github.naz013.ui.common.compose.foundation.component.PinInput
 
 @Composable
 internal fun DisablePinScreen(
+  modifier: Modifier = Modifier,
   pin: String,
   onDigitClick: (Int) -> Unit,
   onDeleteClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background),
+    modifier = modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background),
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     Spacer(modifier = Modifier.weight(1f))

@@ -9,7 +9,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
@@ -77,7 +76,7 @@ fun RemindersSettingsScreen(
     )
     SettingsItem(
       title = stringResource(R.string.recur_presets),
-      icon = painterResource(R.drawable.ic_builder_preset),
+      icon = AppIcons.Builder.Preset,
       dividerBottom = true,
       onClick = onPresetsClick,
     )
@@ -92,7 +91,7 @@ fun RemindersSettingsScreen(
     if (state.hasLocation) {
       SettingsItem(
         title = stringResource(R.string.location),
-        icon = painterResource(R.drawable.ic_builder_map_my_location),
+        icon = AppIcons.Builder.MapMyLocation,
         dividerBottom = true,
         onClick = onLocationClick,
       )
@@ -111,7 +110,7 @@ fun RemindersSettingsScreen(
       onCheckedChange = { onCompletedToggle() },
       subtitleOn = stringResource(R.string.move_to_the_archive),
       subtitleOff = stringResource(R.string.do_nothing),
-      icon = painterResource(R.drawable.ic_builder_google_task_list),
+      icon = AppIcons.Builder.GoogleTaskList,
       itemKey = SettingsSearchItemKeys.REMINDERS_COMPLETED,
       dividerBottom = true,
     )
@@ -124,14 +123,14 @@ fun RemindersSettingsScreen(
       onCheckedChange = { onWearToggle() },
       subtitleOn = stringResource(R.string.show_notifications_on_wear_devices),
       subtitleOff = stringResource(R.string.do_no_show_notifications_on_wear_devices),
-      icon = painterResource(R.drawable.ic_fluent_watch),
+      icon = AppIcons.Fluent.Watch,
       itemKey = SettingsSearchItemKeys.REMINDERS_WEAR,
       dividerBottom = true,
     )
     SettingsItem(
       title = stringResource(R.string.default_reminder_snooze_time),
       subtitle = state.snoozeText,
-      icon = painterResource(R.drawable.ic_fluent_alert_snooze),
+      icon = AppIcons.Fluent.AlertSnooze,
       itemKey = SettingsSearchItemKeys.REMINDERS_SNOOZE_TIME,
       dividerBottom = true,
       onClick = onSnoozeClick,
@@ -187,13 +186,13 @@ fun RemindersSettingsScreen(
         onCheckedChange = { onLedToggle() },
         subtitleOn = stringResource(R.string.show_led_indication),
         subtitleOff = stringResource(R.string.do_not_show_led_indication),
-        icon = painterResource(R.drawable.ic_builder_led_color),
+        icon = AppIcons.Builder.LedColor,
         dividerBottom = true,
       )
       SettingsItem(
         title = stringResource(R.string.led_indication_color),
         subtitle = state.ledColorName,
-        icon = painterResource(R.drawable.ic_fluent_color),
+        icon = AppIcons.Fluent.Color,
         enabled = state.isLedColorRowEnabled,
         itemKey = SettingsSearchItemKeys.REMINDERS_LED_COLOR,
         dividerBottom = true,
@@ -259,7 +258,7 @@ fun RemindersSettingsScreen(
     )
     SettingsItem(
       title = stringResource(R.string.from),
-      icon = painterResource(R.drawable.ic_builder_timer),
+      icon = AppIcons.Builder.Timer,
       enabled = state.isDoNotDisturbDependentEnabled,
       dividerBottom = true,
       onClick = onDndFromClick,
@@ -273,7 +272,7 @@ fun RemindersSettingsScreen(
     )
     SettingsItem(
       title = stringResource(R.string.to),
-      icon = painterResource(R.drawable.ic_builder_timer_exclusion),
+      icon = AppIcons.Builder.TimerExclusion,
       enabled = state.isDoNotDisturbDependentEnabled,
       dividerBottom = true,
       onClick = onDndToClick,

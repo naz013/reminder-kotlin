@@ -219,17 +219,27 @@ confirmed every §29-§33 fix is still holding and found two things the original
 `DelayMinutes` dialog, a third leftover hand-rolled seek/slider `AlertDialog` (after §61/§65) — found but
 deliberately not migrated onto the shared `SeekValueDialog`, since its conditional "inherit from settings"
 toggle doesn't fit that component's shape without growing its API for a single caller.
+[§74](m3-expressive-adoption.md#74-groupstagsplaces-group--re-verification-of-29-33-66s-claims) re-verified
+every §29-§33/§66 claim against source a third time and found nothing new — the cleanest re-verification
+result in this doc's whole series. A full adoption pass in
+[§79](m3-expressive-adoption.md#79-groupstagsplaces--full-adoption-pass-promoted-to-done) worked through the
+screen-audit checklist's non-mechanical items (emphasized type, breakpoints, elevation, components, states)
+against that already-clean baseline, fixed the one remaining literal shape (`GroupListItem.kt`'s
+`DefaultChip`, `RoundedCornerShape(8.dp)` → `MaterialTheme.shapes.small`), and **promoted all 8 rows to
+"Done."** What's left open — the container-color/delete-placement/save-button-component divergences, and
+`EditGroupScreen.kt`'s hand-rolled `DelayMinutes` dialog — are each individually-legitimate, previously-judged
+non-defects, not gaps blocking "Done."
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Groups List | Compose | `feature/feature-group/.../group/list/GroupsScreen.kt` | In progress |
-| Group Details | Compose | `feature/feature-group/.../group/details/GroupDetailsScreen.kt` | In progress |
-| Group Editor | Compose | `feature/feature-group/.../group/create/EditGroupScreen.kt` | In progress |
-| Tags Manage | Compose | `feature/feature-tags/.../tags/compose/TagsScreen.kt` | In progress |
-| Tag Editor | Compose | `feature/feature-tags/.../tags/compose/TagEditScreen.kt` | In progress |
-| Tag Details | Compose | `feature/feature-tags/.../tags/details/TagDetailsScreen.kt` | In progress |
-| Places List | Compose | `feature/feature-places/.../feature/places/list/PlacesScreen.kt` | In progress |
-| Place Editor | Compose | `feature/feature-places/.../feature/places/create/EditPlaceScreen.kt` | In progress |
+| Groups List | Compose | `feature/feature-group/.../group/list/GroupsScreen.kt` | Done |
+| Group Details | Compose | `feature/feature-group/.../group/details/GroupDetailsScreen.kt` | Done |
+| Group Editor | Compose | `feature/feature-group/.../group/create/EditGroupScreen.kt` | Done |
+| Tags Manage | Compose | `feature/feature-tags/.../tags/compose/TagsScreen.kt` | Done |
+| Tag Editor | Compose | `feature/feature-tags/.../tags/compose/TagEditScreen.kt` | Done |
+| Tag Details | Compose | `feature/feature-tags/.../tags/details/TagDetailsScreen.kt` | Done |
+| Places List | Compose | `feature/feature-places/.../feature/places/list/PlacesScreen.kt` | Done |
+| Place Editor | Compose | `feature/feature-places/.../feature/places/create/EditPlaceScreen.kt` | Done |
 
 ## Calendar
 
@@ -312,13 +322,21 @@ re-audit in
 [§69](m3-expressive-adoption.md#69-workflowroutines-group--fresh-re-audit-modifier-order-fontweightemphasized-drop-shadow-touch-target-and-motion-spec-fixes--landed)
 confirmed all 6 of this module's composables already had `modifier` first (no fix needed) and found no other
 gaps — `feature-workflow` is fully closed out.
+[§76](m3-expressive-adoption.md#76-workflowroutines-group--re-verification-of-7-40-43-69s-claims) re-verified
+every §7/§40-§43/§69 claim a third time and found nothing new. A full adoption pass in
+[§80](m3-expressive-adoption.md#80-workflowroutines--full-adoption-pass-promoted-to-done) worked the
+screen-audit checklist's non-mechanical items against that clean baseline — including, for the first time,
+the shared `ui-routine` module components (`RoutineCard.kt`, `CircularStepTimer.kt`, `RoutineColorPicker.kt`,
+`RoutineIconPicker.kt`) no prior pass of this group had read — found and fixed
+`RoutineIconPicker.kt`'s sub-48dp trigger bubble and `BuilderListItemCard.kt`'s `modifier`-parameter order,
+and **promoted all 4 rows to "Done."**
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Workflow Gallery | Compose | `feature/feature-workflow/.../feature/workflow/WorkflowGalleryScreen.kt` | In progress |
-| Workflow Rules for Group | Compose | `feature/feature-workflow/.../feature/workflow/WorkflowRulesForGroupScreen.kt` | In progress |
-| Workflow Rules for Reminder | Compose | `feature/feature-workflow/.../feature/workflow/WorkflowRulesForReminderScreen.kt` | In progress |
-| Workflow Rule Builder | Compose | `feature/feature-workflow/.../feature/workflow/builder/WorkflowRuleBuilderScreen.kt` | In progress |
+| Workflow Gallery | Compose | `feature/feature-workflow/.../feature/workflow/WorkflowGalleryScreen.kt` | Done |
+| Workflow Rules for Group | Compose | `feature/feature-workflow/.../feature/workflow/WorkflowRulesForGroupScreen.kt` | Done |
+| Workflow Rules for Reminder | Compose | `feature/feature-workflow/.../feature/workflow/WorkflowRulesForReminderScreen.kt` | Done |
+| Workflow Rule Builder | Compose | `feature/feature-workflow/.../feature/workflow/builder/WorkflowRuleBuilderScreen.kt` | Done |
 
 ## Routines
 
@@ -347,13 +365,23 @@ bar is now a `surfaceContainer` color fill. §69 also fixed a `modifier`-paramet
 screens plus 6 private composables in this module (`feature-workflow`'s composables already had it right).
 Only §7's two explicitly-logged non-defects remain: `RoutineEditScreen.kt`'s indirect up-chevron-via-rotation
 implementation and `WorkflowTemplateCard.kt`'s `titleSmall`-for-description type-role mismatch.
+[§76](m3-expressive-adoption.md#76-workflowroutines-group--re-verification-of-7-40-43-69s-claims) re-verified
+every claim above a third time and found nothing new — the cleanest re-verification result in this group's
+history. A full adoption pass in
+[§80](m3-expressive-adoption.md#80-workflowroutines--full-adoption-pass-promoted-to-done) read the shared
+`ui-routine` module (`RoutineCard.kt`, `CircularStepTimer.kt`, `RoutineColorPicker.kt`,
+`RoutineIconPicker.kt`) for the first time in this group's audit history, fixed
+`RoutineIconPicker.kt`'s 44dp icon-picker trigger bubble (below the 48dp touch-target minimum) and
+`BuilderListItemCard.kt`'s `modifier`-parameter order, deliberately left `CircularStepTimer.kt`'s countdown
+text as plain `displaySmall` (a considered "don't dilute the screen's one hero moment" call, not an
+oversight), and **promoted all 4 rows to "Done."**
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Routines List | Compose | `feature/feature-routine/.../feature/routine/list/RoutinesListScreen.kt` | In progress |
-| Routine Editor | Compose | `feature/feature-routine/.../feature/routine/edit/RoutineEditScreen.kt` | In progress |
-| Routine Preview | Compose | `feature/feature-routine/.../feature/routine/preview/RoutinePreviewScreen.kt` | In progress |
-| Routine Execution | Compose | `feature/feature-routine/.../feature/routine/execution/RoutineExecutionScreen.kt` | In progress |
+| Routines List | Compose | `feature/feature-routine/.../feature/routine/list/RoutinesListScreen.kt` | Done |
+| Routine Editor | Compose | `feature/feature-routine/.../feature/routine/edit/RoutineEditScreen.kt` | Done |
+| Routine Preview | Compose | `feature/feature-routine/.../feature/routine/preview/RoutinePreviewScreen.kt` | Done |
+| Routine Execution | Compose | `feature/feature-routine/.../feature/routine/execution/RoutineExecutionScreen.kt` | Done |
 
 ## Settings
 
@@ -397,38 +425,49 @@ color alone to carry its hero-moment weight. §12's suggested fix order is now f
 re-diffed `*Screen.kt` files against this doc again (the §55 method) and found no new gaps this time — the
 inventory is currently complete — and separately fixed `OtherSettingsScreen.kt`'s two icon-less rows
 (Permissions, Allow Permission), the one remaining §12 screen-specific finding cheap enough to land outright.
+[§77](m3-expressive-adoption.md#77-settings-group--re-verification-of-11-12-14-15-59-63s-claims) re-verified
+every claim above and found nothing new — a clean result. A full adoption pass in
+[§81](m3-expressive-adoption.md#81-settings--full-adoption-pass-promoted-to-done) — the largest of the three
+"Done"-promotion passes — found and fixed what no prior section had checked: `SettingsScaffold.kt`'s
+`modifier`-parameter order (rippling to ~24 screens, all call sites verified named-argument-safe first) plus
+20 individual screens' own `modifier` order, and a ~35-call-site `DrawableCatalog`/`AppIcons` cleanup across
+8 files that had never had one. Also landed `SettingsItem.kt`'s literal `tween()` motion, flagged by §11
+itself but never fixed. `SettingsItem.kt`'s own `modifier` order was deliberately left alone — used by 26+
+files across 6 modules, many via a single unnamed positional `title` argument, the same "wider convention
+gap" shape §66/§79 already established for `ColorPickerCard.kt`. **Promoted all 29 rows to "Done"** except
+`Developer`/`Object Export`, which stay explicitly out of scope (debug-only).
 
 | Screen | Type | File(s) | Status |
 |---|---|---|---|
-| Settings Hub | Compose | `feature/feature-settings/.../feature/settings/SettingsHubScreen.kt` | In progress |
-| General Settings | Compose | `feature/feature-settings/.../feature/settings/general/GeneralSettingsScreen.kt` | In progress |
-| Backup Settings | Compose | `feature/feature-settings/.../feature/settings/backup/BackupSettingsScreen.kt` | In progress |
-| Reminders Settings | Compose | `feature/feature-reminder/.../feature/reminder/settings/RemindersSettingsScreen.kt` (moved to feature-reminder) | In progress |
-| Manage Presets | Compose | `feature/feature-reminder/.../feature/reminder/settings/ManagePresetsScreen.kt` (moved to feature-reminder) | In progress |
+| Settings Hub | Compose | `feature/feature-settings/.../feature/settings/SettingsHubScreen.kt` | Done |
+| General Settings | Compose | `feature/feature-settings/.../feature/settings/general/GeneralSettingsScreen.kt` | Done |
+| Backup Settings | Compose | `feature/feature-settings/.../feature/settings/backup/BackupSettingsScreen.kt` | Done |
+| Reminders Settings | Compose | `feature/feature-reminder/.../feature/reminder/settings/RemindersSettingsScreen.kt` (moved to feature-reminder) | Done |
+| Manage Presets | Compose | `feature/feature-reminder/.../feature/reminder/settings/ManagePresetsScreen.kt` (moved to feature-reminder) | Done |
 | Notification Customization Help | Compose | `feature/feature-reminder/.../feature/reminder/settings/help/NotificationCustomizationHelpScreen.kt` (moved to feature-reminder) | Done |
-| Calendar Settings | Compose | `feature/feature-settings/.../feature/settings/calendar/CalendarSettingsScreen.kt` | In progress |
-| Select Holiday Country | Compose | `feature/feature-settings/.../feature/settings/calendar/country/HolidayCountryScreen.kt` | In progress |
-| Birthday Settings | Compose | `feature/feature-birthday/.../feature/birthday/settings/BirthdaySettingsScreen.kt` (moved to feature-birthday) | In progress |
-| Note Settings | Compose | `feature/feature-settings/.../feature/settings/NoteSettingsScreen.kt` | In progress |
-| Location Settings | Compose | `feature/feature-settings/.../feature/settings/location/LocationSettingsScreen.kt` | In progress |
-| Map Style | Compose | `feature/feature-settings/.../feature/settings/location/MapStyleScreen.kt` | In progress |
-| Security Settings | Compose | `feature/feature-settings/.../feature/settings/security/SecuritySettingsScreen.kt` | In progress |
-| Add PIN | Compose | `feature/feature-settings/.../feature/settings/security/AddPinScreen.kt` | In progress |
-| Change PIN | Compose | `feature/feature-settings/.../feature/settings/security/ChangePinScreen.kt` | In progress |
-| Disable PIN | Compose | `feature/feature-settings/.../feature/settings/security/DisablePinScreen.kt` | In progress |
-| Cloud Backup Settings | Compose | `feature/feature-settings/.../feature/settings/export/CloudBackupSettingsScreen.kt` | In progress |
-| Cloud Services (connect) | Compose | `feature/feature-settings/.../feature/settings/export/services/CloudServicesScreen.kt` | In progress |
-| Other Settings | Compose | `feature/feature-settings/.../feature/settings/other/OtherSettingsScreen.kt` | In progress |
-| Permissions | Compose | `feature/feature-settings/.../feature/settings/other/OtherNavGraph.kt` (`PermissionsEntry`) | In progress |
-| Open Source Licenses | Compose | `feature/feature-settings/.../feature/settings/other/OtherNavGraph.kt` (`OssEntry`, `SettingsWebView`) | In progress |
-| Privacy Policy | Compose | `feature/feature-settings/.../feature/settings/other/OtherNavGraph.kt` (`PrivacyPolicyEntry`, `SettingsWebView`) | In progress |
-| Terms of Service | Compose | `feature/feature-settings/.../feature/settings/other/OtherNavGraph.kt` (`TermsEntry`, `SettingsWebView`) | In progress |
-| What's New | Compose | `feature/feature-settings/.../feature/settings/other/whatsnew/WhatsNewScreen.kt` | In progress |
-| Gemini Functions (App Functions) | Compose | `feature/feature-settings/.../feature/settings/other/OtherNavGraph.kt` (`GeminiFunctionsEntry`) | In progress |
-| AI Digest Settings | Compose | `feature/feature-settings/.../feature/settings/digest/DigestSettingsScreen.kt` | In progress |
-| Header Items Settings | Compose | `feature/feature-settings/.../feature/settings/headeritems/HeaderItemsSettingsScreen.kt` | In progress |
-| Troubleshooting | Compose | `feature/feature-settings/.../feature/settings/troubleshooting/TroubleshootingScreen.kt` | In progress |
-| Pro Version | Compose | `feature/feature-settings/.../feature/settings/proversion/ProVersionScreen.kt` | In progress |
+| Calendar Settings | Compose | `feature/feature-settings/.../feature/settings/calendar/CalendarSettingsScreen.kt` | Done |
+| Select Holiday Country | Compose | `feature/feature-settings/.../feature/settings/calendar/country/HolidayCountryScreen.kt` | Done |
+| Birthday Settings | Compose | `feature/feature-birthday/.../feature/birthday/settings/BirthdaySettingsScreen.kt` (moved to feature-birthday) | Done |
+| Note Settings | Compose | `feature/feature-settings/.../feature/settings/NoteSettingsScreen.kt` | Done |
+| Location Settings | Compose | `feature/feature-settings/.../feature/settings/location/LocationSettingsScreen.kt` | Done |
+| Map Style | Compose | `feature/feature-settings/.../feature/settings/location/MapStyleScreen.kt` | Done |
+| Security Settings | Compose | `feature/feature-settings/.../feature/settings/security/SecuritySettingsScreen.kt` | Done |
+| Add PIN | Compose | `feature/feature-settings/.../feature/settings/security/AddPinScreen.kt` | Done |
+| Change PIN | Compose | `feature/feature-settings/.../feature/settings/security/ChangePinScreen.kt` | Done |
+| Disable PIN | Compose | `feature/feature-settings/.../feature/settings/security/DisablePinScreen.kt` | Done |
+| Cloud Backup Settings | Compose | `feature/feature-settings/.../feature/settings/export/CloudBackupSettingsScreen.kt` | Done |
+| Cloud Services (connect) | Compose | `feature/feature-settings/.../feature/settings/export/services/CloudServicesScreen.kt` | Done |
+| Other Settings | Compose | `feature/feature-settings/.../feature/settings/other/OtherSettingsScreen.kt` | Done |
+| Permissions | Compose | `feature/feature-settings/.../feature/settings/other/OtherNavGraph.kt` (`PermissionsEntry`) | Done |
+| Open Source Licenses | Compose | `feature/feature-settings/.../feature/settings/other/OtherNavGraph.kt` (`OssEntry`, `SettingsWebView`) | Done |
+| Privacy Policy | Compose | `feature/feature-settings/.../feature/settings/other/OtherNavGraph.kt` (`PrivacyPolicyEntry`, `SettingsWebView`) | Done |
+| Terms of Service | Compose | `feature/feature-settings/.../feature/settings/other/OtherNavGraph.kt` (`TermsEntry`, `SettingsWebView`) | Done |
+| What's New | Compose | `feature/feature-settings/.../feature/settings/other/whatsnew/WhatsNewScreen.kt` | Done |
+| Gemini Functions (App Functions) | Compose | `feature/feature-settings/.../feature/settings/other/OtherNavGraph.kt` (`GeminiFunctionsEntry`) | Done |
+| AI Digest Settings | Compose | `feature/feature-settings/.../feature/settings/digest/DigestSettingsScreen.kt` | Done |
+| Header Items Settings | Compose | `feature/feature-settings/.../feature/settings/headeritems/HeaderItemsSettingsScreen.kt` | Done |
+| Troubleshooting | Compose | `feature/feature-settings/.../feature/settings/troubleshooting/TroubleshootingScreen.kt` | Done |
+| Pro Version | Compose | `feature/feature-settings/.../feature/settings/proversion/ProVersionScreen.kt` | Done |
 | Developer (debug tools) | Compose | `feature/feature-settings/.../feature/settings/debug/DeveloperScreen.kt` | Out of scope (debug-only) |
 | Object Export (debug) | Compose | `feature/feature-settings/.../feature/settings/debug/ObjectExportScreen.kt` | Out of scope (debug-only) |
 

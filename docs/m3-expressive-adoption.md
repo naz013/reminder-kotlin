@@ -4388,3 +4388,577 @@ Groups/Tags/Places (§9, §29-§33, §66), Calendar/Google Tasks (§10, §34-§3
 §40-§43, §69), Settings (§11-§12, §59-§63), or Backup/Insights/Onboarding/Widget Config (§13, §44-§47, §55-§57,
 §65) — none of which have had a dedicated post-hoc re-verification pass yet, so the same doc-vs-reality risk
 flagged repeatedly in this series (§70-§73) remains unchecked for all of them.
+
+## 74. Groups/Tags/Places group — re-verification of §29-§33/§66's claims
+
+Re-verified every "landed" claim across §29 (back/save-button content descriptions), §30 (empty states onto
+shared `EmptyState.kt`), §31 (`TopAppbarColor` token), §32 (list-row `titleMedium` unification), §33
+(`DrawableCatalog`/`AppIcons` cleanup), and §66 (fresh re-audit + `modifier`-order fixes), against current
+source. Read all 14 relevant files fresh: `GroupsScreen.kt`, `GroupListItem.kt`, `GroupDetailsScreen.kt`,
+`GroupReminderRow.kt`, `EditGroupScreen.kt` (`feature-group`); `TagsScreen.kt` (incl. its private
+`TagListItem`), `TagEditScreen.kt`, `TagDetailsScreen.kt`, `TagDetailRows.kt` (`feature-tags`);
+`PlacesScreen.kt`, `PlaceListItemCard.kt`, `EditPlaceScreen.kt` (`feature-places`); `ColorPickerCard.kt`,
+`EmptyState.kt` (`ui-common`).
+
+**First group in this re-verification series with zero gaps found, on either side of the ledger** — no false
+"landed" claims (unlike Home/Agenda/Reminders/Birthdays' §64 miss) and no stray unclaimed defects either
+(unlike §73's fresh `BirthdaysScreen.kt` finding). Every specific claim held up exactly:
+
+- All 8 screens' back/close/save buttons use real `stringResource` content descriptions, including
+  `TagEditScreen.kt`'s icon-only save button (`AppIcons.Fluent.Checkmark` + `stringResource(...save)`,
+  component choice deliberately left as `MenuIconButton` rather than a self-labeling `MenuTextButton`, exactly
+  as §29 scoped it — only the missing description was ever the actual defect).
+- All 8 `TopAppBar`s use `colors = TopAppbarColor`.
+- `GroupsEmptyState`/`TagsEmptyState`/`PlacesEmptyState`/`TagDetailsEmptyState` are gone; all four call sites
+  now go through shared `EmptyState.kt`, which itself uses `onSurfaceVariant` (not the alpha-blend the four
+  duplicates originally had) — confirming §30's "fixed the shared component first" claim.
+- `GroupListItem`/`TagListItem`/`PlaceListItemCard` all use `titleMedium` for their primary label.
+- `AppIcons`/`DrawableCatalog` used at every call site checked — no bare `painterResource(R.drawable.ic_fluent_*)`
+  left in any of these 14 files.
+- `modifier: Modifier = Modifier` is the first parameter everywhere, including the 7 list/dispatcher
+  composables §66 specifically fixed (`GroupsScreen`, `TagsScreen`, `PlacesScreen`, `GroupListItem`,
+  `TagListItem`, `PlaceListItemCard`, `GroupReminderRow`, `TagDetailItemRow`).
+- Every item §9/§66 deliberately left open is still open, exactly as scoped: `GroupListItem.kt`'s
+  `DefaultChip` still uses a literal `RoundedCornerShape(8.dp)` (token-hygiene note, never claimed fixed);
+  `GroupListItem`'s plain default container color vs. `TagListItem`'s explicit `surfaceContainer` still
+  diverge (§9's cross-cutting #5, explicitly lower-priority); `EditPlaceScreen.kt` still places delete behind
+  an overflow menu vs. `EditGroupScreen.kt`/`TagEditScreen.kt`'s direct app-bar icon (also explicitly
+  lower-priority); `EditGroupScreen.kt`'s `DelayMinutes` dialog is still a hand-rolled `AlertDialog` with a
+  conditional `Switch`-gated `Slider` section, not `SeekValueDialog` (§66's own "doesn't fit the shared
+  component's shape without growing its API for one caller" reasoning, still valid); `ColorPickerCard.kt`
+  still has required params before `modifier` (§66's own "wider, larger-scope gap" note, correctly left
+  alone).
+
+No code changes were needed in this pass — nothing to verify via compile/detekt/tests since nothing was
+edited.
+
+This closes out Groups/Tags/Places' re-verification with a clean bill of health: every §29-§33/§66 claim is
+real, and no drift or oversights surfaced.
+
+**Suggested next step**: continue the same re-verification approach on the remaining "In progress" groups —
+Calendar/Google Tasks (§10, §34-§39, §67-§68), Workflow/Routines (§7, §40-§43, §69), Settings (§11-§12,
+§59-§63), or Backup/Insights/Onboarding/Widget Config (§13, §44-§47, §55-§57, §65) — none of which have had a
+dedicated post-hoc re-verification pass yet.
+
+## 75. Calendar/Google Tasks group — re-verification of §34-§39/§67-§68's claims, plus 3 missed `modifier`-order gaps
+
+Re-verified every "landed" claim across §34 (back-button descriptions), §35 (`TopAppbarColor`), §36
+(deprecated baseline FAB), §37 (`TimelinePager.kt`'s off-scale corner radius), §38
+(`detailScreenContentWidth()`), §39 (alpha-blend de-emphasis), and §67-§68 (fresh re-audit,
+`modifier`-order, `FontWeight`→`Emphasized`, `DrawableCatalog`/`AppIcons` cleanup) against current source.
+Read all 10 files fresh: `CalendarScreen.kt`, `TimelinePager.kt`, `TimelineScreen.kt`,
+`GoogleCalendarEventPreviewScreen.kt`, `CalendarModeToggleButton.kt` (`feature-calendar`); `GoogleTasksScreen.kt`,
+`TaskListScreen.kt`, `PreviewGoogleTaskScreen.kt`, `EditGoogleTaskScreen.kt`, `EditGoogleTaskListScreen.kt`
+(`feature-googletask`).
+
+**Every specific claim held up**: real back-button descriptions on all 8 screens, `TopAppbarColor`
+everywhere (including the `Color.Transparent`→token swap on the 2 Calendar screens),
+`SmallExtendedFloatingActionButton` on all 3 former baseline-FAB call sites, `TimelinePager.kt`'s
+`HolidayChip`/`TimelineEventBlock` on `MaterialTheme.shapes.extraSmall` (not the old off-scale 6dp literal),
+`detailScreenContentWidth()` on the 4 detail/preview screens, `GoogleTasksEmptyState` gone (both
+`GoogleTasksScreen.kt` and `TaskListScreen.kt` call the shared `EmptyState.kt` directly),
+`CalendarModeToggleButton.kt`'s selected-row label on `titleMediumEmphasized`, and the full 19-site
+`DrawableCatalog`/`AppIcons` migration (no bare `painterResource(R.drawable.ic_fluent_*)`/`iconRes =
+R.drawable.*` left anywhere checked, aside from `AddEventRow`/`DetailRow`'s deliberately-generic `icon: Int`
+parameters, exactly as §68 documented).
+
+**3 `modifier`-parameter-order gaps found that §67's own sweep missed**, despite §67 explicitly enumerating
+"12 composables across CalendarScreen.kt, CalendarModeToggleButton.kt, TimelineScreen.kt, all 7 composables
+in TimelinePager.kt..., GoogleTasksScreen.kt (plus its private TaskListTile/NotLoggedInContent), and
+TaskListScreen.kt" as fixed. §67's own count and file list check out for everywhere it actually reached
+(confirmed all 7 `TimelinePager.kt` composables, `GoogleTasksScreen.kt`'s 3, `CalendarModeToggleButton.kt`,
+`TimelineScreen.kt`, `TaskListScreen.kt`, and `CalendarScreen.kt`'s own top-level composable are all
+modifier-first) — but three private helper composables the sweep apparently never reached still had
+`modifier` last or mid-list:
+
+- **`CalendarScreen.kt`**: `WeekdayHeaderRow`, `MonthPage`, and `MonthDayCell` (all three take an incoming
+  `modifier` from their call sites — `WeekdayHeaderRow`'s app-bar-row padding, `MonthPage`'s
+  `Modifier.fillMaxSize()` from the pager, `MonthDayCell`'s `Modifier.weight(1f).fillMaxSize()` from the grid
+  row) all had `modifier: Modifier = Modifier` as their last parameter.
+- **`PreviewGoogleTaskScreen.kt`**: `DetailRow` had `modifier` third, after the two required `icon`/`text`
+  params — not last, but still not first.
+- **`EditGoogleTaskScreen.kt`**: `FieldCard` had `modifier` last, after `label`/`value`/`enabled`/`onClick`.
+
+None of these three files were named in §67's per-file breakdown for anything beyond what's confirmed above
+(`PreviewGoogleTaskScreen.kt`/`EditGoogleTaskScreen.kt` weren't named in §67's modifier-order list at all —
+their top-level screen composables already had it right from §38's earlier `detailScreenContentWidth()` work,
+so the pass apparently never descended into their private helpers). Fixed all 5 the same way as
+§65/§66/§67 — confirmed every call site (`WeekdayHeaderRow`/`MonthPage`/`MonthDayCell` from
+`CalendarScreen`'s own body, `DetailRow` from `PreviewGoogleTaskScreen`'s 7 call sites, `FieldCard` from
+`EditGoogleTaskScreen`'s 3 call sites) already uses named arguments before reordering — pure parameter
+reorder, zero behavior change.
+
+Verified via `./gradlew :feature:feature-calendar:compileDebugKotlin :feature:feature-googletask:compileDebugKotlin
+:app:compileProDebugKotlin` (all clean) and
+`:feature:feature-calendar:testDebugUnitTest :feature:feature-googletask:testDebugUnitTest` (passing), plus
+detekt on both modules checked against unmodified HEAD via stash-and-rerun: identical weighted-issue counts
+before and after in both modules (`feature-calendar`: 116, `feature-googletask`: 6 — the latter matching
+§67/§68's own documented baseline exactly) — confirming the 5 parameter reorders introduced zero new
+findings.
+
+This closes out Calendar/Google Tasks' re-verification: every §34-§39/§67-§68 claim is real, and the one gap
+found (a mechanical sweep that reached 8 of 10 files' private composables but not all of 3) is now closed too.
+
+**Suggested next step**: continue the same re-verification approach on the remaining "In progress" groups —
+Workflow/Routines (§7, §40-§43, §69), Settings (§11-§12, §59-§63), or Backup/Insights/Onboarding/Widget
+Config (§13, §44-§47, §55-§57, §65) — none of which have had a dedicated post-hoc re-verification pass yet.
+
+## 76. Workflow/Routines group — re-verification of §7/§40-§43/§69's claims
+
+Re-verified every "landed" claim across §40 (back-button descriptions), §41 (`RoutinePreviewScreen.kt`'s
+deprecated FAB), §42 (`RoutinesListScreen.kt`'s `EmptyState` migration), §43 (`TopAppbarColor`), and §69
+(fresh re-audit, `modifier`-order, `FontWeight`→`Emphasized`, drop-shadow, touch-target, motion-spec fixes)
+against current source. Read all 10 files fresh: `WorkflowGalleryScreen.kt`,
+`WorkflowRulesForGroupScreen.kt`, `WorkflowRulesForReminderScreen.kt`,
+`builder/WorkflowRuleBuilderScreen.kt`, `WorkflowRuleRow.kt`, `WorkflowTemplateCard.kt`
+(`feature-workflow`); `RoutinesListScreen.kt`, `RoutineEditScreen.kt`, `RoutinePreviewScreen.kt`,
+`RoutineExecutionScreen.kt` (`feature-routine`).
+
+**Every claim held up, on both sides of the ledger — the third clean re-verification in this series** (after
+Groups/Tags/Places §74; Notes/Birthdays §73 needed one small fix but had zero false claims):
+
+- All 8 screens' back buttons (or close/back split) use real `stringResource` content descriptions.
+- All 8 `TopAppBar`s use `colors = TopAppbarColor` — including `RoutineEditScreen.kt`/`RoutineExecutionScreen.kt`,
+  which already had it correct before §43 and needed no change.
+- `RoutinePreviewScreen.kt` uses `SmallExtendedFloatingActionButton`, not the deprecated baseline variant.
+- `RoutinesEmptyState` is gone; `RoutinesListScreen.kt` calls the shared `EmptyState.kt` directly with
+  `AppIcons.Builder.Timer`.
+- `modifier: Modifier = Modifier` is first everywhere it should be: all 6 `feature-workflow` composables
+  (confirmed already correct pre-§69, exactly as that section claimed — no fix was ever needed there), and
+  in `feature-routine`, all 4 public screens plus the 6 private composables §69 named
+  (`RecurrenceOptionPicker`, `WeekdaySelector`, `DayOfMonthPicker`, `RoutineStepRow` in
+  `RoutineEditScreen.kt`; `RunningContent`, `FinishedContent` in `RoutineExecutionScreen.kt`).
+- `RoutineExecutionScreen.kt`'s 4 `FontWeight.Bold` overrides are gone, replaced with
+  `titleMediumEmphasized`/`labelLargeEmphasized`/`headlineSmallEmphasized` (×2) — no `FontWeight` import
+  left in the file.
+- `RoutineExecutionScreen.kt`'s bottom bar is `Surface(color = MaterialTheme.colorScheme.surfaceContainer)`
+  — no `shadowElevation` parameter at all, confirming the drop-shadow-to-color-fill swap.
+- `RoutinePreviewScreen.kt`'s check-toggle `IconButton` is `Modifier.size(48.dp)` (not 40dp), and its 8
+  `AnimatedVisibility` scale/fade calls all use `MaterialTheme.motionScheme.defaultSpatialSpec()`/
+  `.defaultEffectsSpec()` — no `tween()` or `CHECK_ANIMATION_MS` constant left.
+- Every item §7 deliberately left open as low-severity/non-defect is still open, exactly as scoped:
+  `RoutineEditScreen.kt`'s "move up" control still rotates a chevron-down icon 180° rather than using a
+  distinct icon; `WorkflowTemplateCard.kt`'s description text still uses `titleSmall`;
+  `RoutinePreviewScreen.kt`'s pre-existing unused `androidx.compose.foundation.background` import (explicitly
+  left alone by §43 as unrelated debt) is still there, untouched.
+
+No code changes were needed in this pass — nothing to verify via compile/detekt/tests since nothing was
+edited.
+
+This closes out Workflow/Routines' re-verification with a clean bill of health, matching Groups/Tags/Places'
+result: every §7/§40-§43/§69 claim is real, and no drift or oversights surfaced.
+
+**Suggested next step**: continue the same re-verification approach on the two remaining "In progress"
+groups — Settings (§11-§12, §59-§63) or Backup/Insights/Onboarding/Widget Config (§13, §44-§47, §55-§57,
+§65) — neither of which has had a dedicated post-hoc re-verification pass yet. Once both are done, every
+screen group in the inventory will have gone through this re-verification pass at least once.
+
+## 77. Settings group — re-verification of §11-§12/§14-§15/§59-§63's claims
+
+Re-verified every "landed" claim across §14 (shared-scaffold back-button/`TopAppbarColor` fix), §15
+(gradient-hero header/card dedup), §59 (`ManagePresetsScreen.kt` empty state), §60
+(`HolidayCountryScreen.kt` alpha-blend + `GeneralSettingsScreen`/`SingleChoiceDialog` dedup), §61 (shared
+`SeekValueDialog` consolidation), §62 (`HeaderItemsSettingsScreen.kt` drag-handle a11y +
+`ProVersionScreen.kt` emphasized type), and §63 (`OtherSettingsScreen.kt` icon fix) against current source —
+the largest group re-verified in this series (29 screens across §11/§12). Read every file with a specific
+"landed" claim: `SettingsScaffold.kt`, `HolidayCountryScreen.kt`, `GradientScreenHeader.kt`,
+`GradientHeroCard.kt`, `CloudServicesScreen.kt`, `WhatsNewScreen.kt`, `ProVersionScreen.kt`,
+`ManagePresetsScreen.kt`, `GeneralSettingsScreen.kt`, `SingleChoiceDialog.kt`, `SeekValueDialog.kt`,
+`RemindersSettingsScreen.kt`, `BirthdaySettingsScreen.kt`, `NoteSettingsScreen.kt`,
+`LocationSettingsScreen.kt`, `HeaderItemsSettingsScreen.kt`, `OtherSettingsScreen.kt` — 17 files with a
+specific claim to check, spanning `feature-settings`, `feature-reminder`, `feature-birthday`, and
+`ui-common`.
+
+**Every claim held up — the fourth clean re-verification in this series** (after Groups/Tags/Places §74,
+Workflow/Routines §76; Notes/Birthdays §73 needed one small fix but had zero false claims):
+
+- `SettingsScaffold.kt` passes a real `navigationContentDescription` (defaulting to `cd_back`, with
+  `settingsNavigationIcon`/`settingsNavigationContentDescription` correctly pairing the close/back icon and
+  its description for the same inputs) and uses `colors = TopAppbarColor` — the single fix covering ~24 of
+  this group's screens automatically.
+- `HolidayCountryScreen.kt` now renders through `SettingsScaffold` entirely (no hand-rolled `TopAppBar` left)
+  and its "no results" text uses `onSurfaceVariant`, not an alpha blend.
+- `GradientScreenHeader.kt`/`GradientHeroCard.kt` exist as shared `ui-common` composables (no 40dp
+  `IconButton` override — the default 48dp footprint is preserved; `AppShapes.largeIncreased` instead of a
+  bare `RoundedCornerShape(20.dp)` literal) and all three former hand-rollers —
+  `CloudServicesScreen.kt`/`WhatsNewScreen.kt`/`ProVersionScreen.kt` — call them instead of duplicating the
+  header/card inline. `ProVersionScreen.kt` additionally uses `headlineSmallEmphasized`/
+  `titleMediumEmphasized` for its hero headline/advantage lines.
+- `ManagePresetsScreen.kt` calls the shared `EmptyState.kt` (`AppIcons.Builder.Preset` +
+  `recur_no_presets`) — no private `EmptyState` composable left shadowing the shared one.
+- `GeneralSettingsScreen.kt` calls the shared `SingleChoiceDialog` directly (no private copy), and the
+  shared `SingleChoiceDialog.kt` itself carries the ported `heightIn(max = 400.dp).verticalScroll(...)`
+  behavior the language picker needs.
+- The shared `SeekValueDialog.kt` exists with exactly the parameter union §61 designed (`description`,
+  `valueTextStyle`, `steps`, `hapticFeedbackEnabled`, `confirmText` all optional with the documented
+  defaults), and all 5 former call sites use it correctly: `RemindersSettingsScreen.kt`/
+  `LocationSettingsScreen.kt`'s Radius dialog (required params only), `NoteSettingsScreen.kt`
+  (`hapticFeedbackEnabled`), `BirthdaySettingsScreen.kt`'s two dialogs (`steps = 4`, `confirmText =
+  ...save`), and `LocationSettingsScreen.kt`'s Tracker dialog (`steps = 28`, `description`,
+  `valueTextStyle = titleLarge`) — no inline `AlertDialog`/`Slider` block left in any of the four files, and
+  `RemindersSettingsScreen.kt`'s `dndValueColor` still correctly uses the shared `DisabledAlpha` constant
+  rather than a magic-number alpha.
+- `HeaderItemsSettingsScreen.kt`'s drag handle is a 48dp `Box` (`DRAG_HANDLE_TOUCH_SIZE`) with the 20dp icon
+  centered inside, and `ConfigurableHeaderItemRow` carries `onMoveUp`/`onMoveDown`-driven
+  `CustomAccessibilityAction`s using the existing `cd_move_item_up`/`cd_move_item_down` strings, formatted
+  as multi-line action bodies (not the semicolon-joined shape the first detekt pass caught).
+- `OtherSettingsScreen.kt`'s "Permissions" and "Allow Permission" rows use `AppIcons.Fluent.LockShield`/
+  `AppIcons.Fluent.Lock` respectively — no longer the two icon-less outliers among 12 sibling rows.
+
+**Grep-verified the ~20 screens that only ever inherit the `SettingsScaffold`/`GradientScreenHeader` fixes
+automatically** (never read individually, since their claim is purely mechanical — "uses the shared
+component, therefore gets the fix") rather than assuming: `grep -rn "contentDescription = null"` across all
+of `feature-settings` returned 9 hits, every one confirmed by context to be a legitimate decorative icon
+next to visible text (a banner icon, a battery-optimization card icon, a map-style preview thumbnail, a
+selected-country checkmark, the header-item row icons) — none a back/navigation button. `grep -rn
+"TopAppBarDefaults.topAppBarColors"` across `feature-settings` and `feature-reminder`'s `settings` package
+returned zero hits — no screen anywhere in the group still hand-rolls the bypassed color call.
+
+No code changes were needed in this pass — nothing to verify via compile/detekt/tests since nothing was
+edited.
+
+This closes out Settings' re-verification with a clean bill of health, the largest group in this series to
+come back with zero gaps.
+
+**Suggested next step**: one group remains for this re-verification pass — Backup/Insights/Onboarding/Widget
+Config (§13, §44-§47, §55-§57, §65). Once it's done, every screen group in the inventory will have gone
+through this re-verification pass at least once.
+
+## 78. Backup/Insights/Onboarding/Widget Configuration group — re-verification of §13/§16/§44-§47/§55-§57/§65's claims, plus 12 newly-found `modifier`-order gaps
+
+Re-verified every "landed" claim across §16 (`ColorSlider` accessibility), §44 (back-button descriptions),
+§45 (`TopAppbarColor`), §46 (`InsightsScreen.kt` alpha-blend), §47 (`DrawableCatalog` cleanup), §55
+(Onboarding/Splash audit — including adding the two missing screens to the inventory), §56
+(`OnboardingScreen.kt` alpha-blend), §57 (`BottomNavSplashScreen.kt` motion-scheme), and §65 (Widget
+Configuration fresh re-audit) against current source — the last group in this re-verification series. Read
+every file with a specific claim: `LocalBackupScreen.kt`, `InsightsScreen.kt`, `PinLoginScreen.kt`,
+`PinInput.kt`, `WidgetConfigScaffold.kt`, `ColorSlider.kt`, `OnboardingScreen.kt`,
+`BottomNavSplashScreen.kt`, and all 7 `*WidgetConfigScreen.kt` screens — 18 files across 6 modules
+(`extensions:localbackup`, `feature-insights`, `feature-onboarding`, `extensions:appwidgets`, `ui-common`,
+`app`).
+
+**Every specific claim held up**: real back-button descriptions on `LocalBackupScreen.kt`/`InsightsScreen.kt`
+(`PinLoginScreen.kt` already correct, as claimed); `TopAppbarColor` on both standalone screens plus
+`WidgetConfigScaffold.kt`; `InsightsScreen.kt`'s `StreakCard`/`RoutineInsightCard` on `onSurfaceVariant` and
+its empty state migrated onto shared `EmptyState.kt`; `WidgetConfigScaffold.kt`/`PinLoginScreen.kt`/
+`PinInput.kt` all routed through `AppIcons.Fluent.Dismiss`/`.Fingerprint`/`.TextAsterisk`; `ColorSlider.kt`
+carries full semantics (`contentDescription`, `progressBarRangeInfo`, `setProgress`) and every one of its 14
+call sites (7 widget-config screens + `ColorPickerCard.kt`/`ColorPickerDialog.kt`/`MapPickerCards.kt`/4
+sites in `NoteEditPanels.kt`) passes a real or sensibly-defaulted description; every widget-config screen
+sizes `ColorSlider` at `.height(48.dp)`, not the old 36dp/40dp; `EventsWidgetConfigScreen.kt`'s text-size
+picker uses the shared `SeekValueDialog` (`steps = 12`, `hapticFeedbackEnabled`), not a hand-rolled
+`AlertDialog`; `OnboardingScreen.kt`'s inactive-dot indicator uses `outlineVariant`, and its translucent
+icon-chip alpha blend (a deliberate frosted-glass-over-gradient effect, not the de-emphasis anti-pattern) is
+still correctly left alone; `BottomNavSplashScreen.kt`'s name-reveal animation uses the hoisted
+`nameEnterTransition` val built from `MaterialTheme.motionScheme.defaultEffectsSpec()`/
+`.defaultSpatialSpec()`, matching §57's own documented `HomeScreen.kt`-precedent shape exactly. The two
+screens §55 found missing from the inventory (`OnboardingScreen.kt`, `BottomNavSplashScreen.kt`) are both
+still present and correctly described.
+
+**12 unclaimed `modifier`-parameter-order violations found and fixed** — this group never received a
+dedicated modifier-order sweep the way Groups/Tags/Places (§66), Calendar/Google Tasks (§67), and
+Workflow/Routines (§69) each did; only Widget Configuration's own 7 screens (+ their private
+`*WidgetMockPreview` composables) got one, in §65. Everything else in the group — the shared components
+`ColorSlider`/`WidgetConfigScaffold`/`PinInput`/`PinLoginScreen`, and the standalone screens
+`LocalBackupScreen`/`InsightsScreen`/`OnboardingScreen` plus their private sub-composables — was never
+checked. Confirmed every call site uses named arguments before reordering any signature (`grep`-verified for
+`ColorSlider`'s and `WidgetConfigScaffold`'s call sites specifically, since those are the two shared
+components with 14 and 7 call sites respectively spanning multiple modules — every one already named its
+arguments):
+
+- **`ColorSlider.kt`** (`ui-common`) — `modifier` was 4th, after 3 required params. This is the single
+  highest-reach fix in this batch: the component backs all 7 widget-config screens plus `ColorPickerCard.kt`
+  (Groups/Tags/Places, `RoutineColorPicker.kt`), `ColorPickerDialog.kt`, `MapPickerCards.kt`, and 4 sites in
+  `NoteEditPanels.kt` — 14 call sites across 6+ feature modules, all confirmed compiling clean afterward.
+- **`WidgetConfigScaffold.kt`** (`extensions:appwidgets`) — `modifier` was 4th, after `title`/`onBackClick`/
+  `onSaveClick`.
+- **`PinLoginScreen.kt`**/**`PinInput.kt`** (`ui-common`) — both had `modifier` last.
+- **`LocalBackupScreen.kt`** (`extensions:localbackup`) — `modifier` was last.
+- **`InsightsScreen.kt`** (`feature-insights`) — the top-level screen plus its three private card
+  composables (`WeeklyTrendCard`, `StreakCard`, `RoutineInsightCard`) all had `modifier` last.
+- **`OnboardingScreen.kt`** (`feature-onboarding`) — the top-level screen plus four private composables
+  (`OnboardingCapabilityCaption`, `OnboardingGetStartedPage`, `OnboardingPageContent`,
+  `OnboardingPageIndicator`) had `modifier` last; `OnboardingWelcomePage`/`OnboardingCapabilitiesPage`
+  already had it first and needed no change.
+
+Deliberately left `ColorPickerCard.kt` untouched despite it sharing the identical "modifier after required
+params" shape: §66 already found and explicitly declined to fix this exact gap during the Groups/Tags/Places
+re-audit, reasoning it (along with `SingleChoiceDialog`/`MultiChoiceDialog`/`SeekValueDialog`, which don't
+expose `modifier` at all) was a "wider instance of the same CLAUDE.md convention gap" than that pass's own
+narrow scope — and `ColorPickerCard.kt` belongs to a different, already-closed screen group (Groups/Tags/
+Places, re-confirmed clean in §74), not this one. Respecting that prior, reasoned deferral rather than
+silently overriding it.
+
+Verified via `./gradlew :extensions:appwidgets:compileDebugKotlin :ui:ui-common:compileDebugKotlin
+:extensions:localbackup:compileDebugKotlin :feature:feature-insights:compileDebugKotlin
+:feature:feature-onboarding:compileDebugKotlin :app:compileProDebugKotlin` (all clean) — this also
+transitively compiled every downstream consumer of the two widely-shared components (`ui-map`, `ui-routine`,
+`feature-note`, `feature-settings`, `feature-birthday`, `feature-workflow`, `feature-reminder`,
+`feature-googletask`, `feature-places`), confirming none of `ColorSlider`'s 14 call sites broke. Ran
+`testDebugUnitTest` on all 4 non-`ui-common` touched modules (passing; `feature-onboarding` has no test
+source). Detekt via stash-and-rerun on `extensions:appwidgets`/`extensions:localbackup`/
+`feature-insights`/`feature-onboarding`: identical finding counts before and after in all four (4/17/0/1) —
+zero new findings. `ui:ui-common:detekt` reproduces the same pre-existing `PermissionRequester.kt` crash
+already documented in §47 (confirmed unrelated — this pass never touches that file); correctness there rests
+on the compile-clean result plus manual review, the same limitation §47 already flagged as an open tooling
+gap.
+
+This closes out the re-verification series: every screen group in the inventory has now had this
+doc-vs-reality check at least once. Final tally across all eight groups (§70-§78): three fully clean on both
+claims and fresh findings (Groups/Tags/Places, Workflow/Routines, Settings), two with a small fix and zero
+false claims (Notes/Birthdays, this section), two with a handful of false "landed" claims corrected (Home,
+Reminders), one with extensive false claims plus a real accessibility bug (Agenda), and one with a
+modifier-order gap the sweep didn't fully reach (Calendar/Google Tasks) — plus, in this final section, the
+first case of a *systemic* gap (modifier-order) that no prior pass had ever attempted for this specific
+group at all, found only because a full fresh read was in scope rather than spot-checking the existing
+claim list.
+
+**Suggested next step**: no group-level re-verification work remains queued. Future sections should pick up
+from whatever the user's next request is.
+
+## 79. Groups/Tags/Places — full adoption pass, promoted to "Done"
+
+The user asked to move on from re-verification and start promoting screen groups that already came back
+clean to "Done" — the screen-inventory doc's own bar for that status ("fully reflects the `ui-common`
+expressive foundation," higher than "no known defects"). Picked Groups/Tags/Places first: it's the smallest
+of the three groups that came back with zero gaps in this session's re-verification series (§74), and it had
+already been through two independent clean checks (§66's fresh re-audit, §74's re-verification), so it
+needed the least additional work to actually clear the higher bar.
+
+Went through the screen-inventory checklist (`m3-expressive-guidelines.md` §10) item by item against all 8
+screens plus their shared components (`ColorPickerCard.kt`/`ColorSlider.kt`), rather than re-deriving new
+findings from scratch — §66/§74 already did that work twice with nothing left uncovered mechanically, so
+this pass's job was checking the *unmechanical* checklist items (emphasized type, hero moments, breakpoint
+adaptation, shape/elevation defaults) that a compliance-bug sweep doesn't naturally surface.
+
+**Typography** — the checklist's own phrasing is "emphasized type used (or *deliberately not* used) for
+selection/primary-action/unread moments." `GroupListItem`/`TagsScreen`'s `TagListItem` both drive their
+`isHighlighted` selected state through color + border only (`primaryContainer` fill, `primary`-colored
+1dp border) with no `FontWeight` distinction between selected and unselected title text at all — unlike
+`CalendarModeToggleButton.kt`'s selected-row label (§67), there's no existing manual weight override to
+swap for the emphasized token here; adding one now would be introducing new visual behavior, not a
+token-hygiene fix. Left as-is: this is the checklist's own explicitly-sanctioned "deliberately not used"
+branch, matching §9's original audit judgment that this was "worth adopting," never "a compliance gap."
+
+**Shape** — found and fixed the one remaining literal corner-radius value in the group: `GroupListItem.kt`'s
+`DefaultChip` used `RoundedCornerShape(8.dp)` instead of `MaterialTheme.shapes.small` (8dp is exactly the
+"small" step on the M3 shape scale, confirmed against real `ShapeTokens.kt` back in §37 — this is a pure
+token-hygiene swap, zero visual change). §9's original audit named this exact line as "fixable... with zero
+visual change" but it was never in any suggested fix order, so it never landed. `RoundedCornerShape` became
+fully unused in the file afterward and was removed from imports.
+
+**Layout/breakpoints** — none of the 8 screens add a `detailScreenContentWidth()`-style max-width cap; §9's
+own audit explicitly judged this "lower priority... these screens are generally used inside the app's
+existing two-pane `renderAsDetailPane` shell (already width-bounded by the pane)... not a confirmed defect,"
+and the guidelines checklist itself allows skipping breakpoint logic where it doesn't apply. Left as-is,
+consistent with that judgment and with Home/Agenda's own "Done" promotions not having added anything here
+either.
+
+**Elevation/Components/States** — re-confirmed no off-scale elevation, no deprecated components, and no
+custom-highlight-instead-of-state-layer anywhere in the group (all interaction feedback comes from
+`Card`/`MenuIconButton`/`FilterChip`'s built-in ripple/state-layer handling) — matches §9's original
+"cleanest baseline of any group audited" finding, still true.
+
+**Deliberately left open, not required for "Done"**: the three individually-legitimate role-choice
+divergences §9/§33 already named and judged non-defects — `GroupListItem`'s plain default container color
+vs. `TagListItem`'s explicit `surfaceContainer`, `EditPlaceScreen.kt`'s overflow-menu delete placement vs.
+`EditGroupScreen.kt`/`TagEditScreen.kt`'s direct app-bar icon, and `TagEditScreen.kt`'s icon-only save button
+component choice vs. its siblings' `MenuTextButton`. Also unchanged: `ColorPickerCard.kt`'s `modifier`
+position (a wider convention gap §66 explicitly declined to fix, reaffirmed in §78) and
+`EditGroupScreen.kt`'s hand-rolled `DelayMinutes` dialog (§66's "doesn't fit `SeekValueDialog`'s shape
+without growing its API for one caller," still valid).
+
+Verified via `./gradlew :feature:feature-group:compileDebugKotlin :app:compileProDebugKotlin
+:feature:feature-group:testDebugUnitTest` (all clean/passing) and detekt, checked against unmodified HEAD
+via stash-and-rerun: identical finding count (8) before and after — zero new findings from the one-line
+shape swap.
+
+**Promoted "Groups / Tags / Places" from "In progress" to "Done"** in `docs/m3-expressive-screen-inventory.md`
+— all 8 rows (Groups List, Group Details, Group Editor, Tags Manage, Tag Editor, Tag Details, Places List,
+Place Editor).
+
+**Suggested next step**: Workflow/Routines or Settings are the other two groups that came back clean in the
+re-verification series (§76, §77) and are the next candidates for this same "full adoption pass" treatment —
+Workflow/Routines is the smaller of the two (10 files vs. Settings' 29 screens), so a natural next pick.
+
+## 80. Workflow/Routines — full adoption pass, promoted to "Done"
+
+Second group in the "promote clean groups to Done" arc (after Groups/Tags/Places, §79), per the user's
+explicit request to continue with this group next. Same starting position: §76's re-verification had already
+confirmed every §7/§40-§43/§69 claim held with zero gaps, so this pass's job was the same as §79's — work the
+non-mechanical items in the guidelines' §10 screen-audit checklist, and this time also read the supporting
+`ui-routine` module components no prior audit of this group had ever examined directly (`RoutineCard.kt`,
+`CircularStepTimer.kt`, `RoutineColorPicker.kt`, `RoutineIconPicker.kt`) — every prior pass scoped to
+`feature-workflow`/`feature-routine` only, never the shared UI library backing Routines' cards/pickers.
+
+**Typography** — same checklist item as §79 ("emphasized type used, or *deliberately not* used, for
+selection/primary-action moments"), same conclusion reached differently: `CircularStepTimer.kt`'s countdown
+text (`displaySmall`, confirmed `displaySmallEmphasized` is a real `Typography` property via the actual
+`material3-android-1.5.0-alpha27-sources.jar`, same diligence as §37/§69/§61) is arguably this group's
+strongest hero-moment candidate — the single largest, most-watched piece of content on the Routine Execution
+running screen. Considered and deliberately left as-is: `RoutineExecutionScreen.kt` already has its
+one designated hero element from §69 (the step title, `headlineSmallEmphasized`), and per guidelines'
+own "1-2 hero moments, don't make everything loud" principle, promoting a second element on the same screen
+risks diluting rather than reinforcing that hierarchy — a product call, not a mechanical gap, so left open
+rather than forced in.
+
+**Accessibility — new finding, fixed**: `RoutineIconPicker.kt`'s circular trigger bubble (`BUBBLE_SIZE`) was
+sized `44.dp` — under the 48×48dp minimum touch target (guidelines §8), never previously flagged since no
+audit of this group had read `ui-routine` before. Bumped to `48.dp`, a simple constant change since the
+bubble is a single standalone control, not a dense grid (unlike the picker's own `IconOption` grid tiles,
+`40.dp` each across a 6-column/33-option layout inside a `DropdownMenu` — reviewed and deliberately left
+open: bumping every grid cell to 48dp would meaningfully widen the whole grid, a real layout trade-off
+needing design input, the same category of judgment call `TimelinePager.kt`'s sub-48dp event blocks were
+left with in the Calendar audit, not a same-shape mechanical fix like the bubble).
+
+**`modifier`-parameter-order — new finding, fixed**: `BuilderListItemCard.kt` (`ui-common`, both overloads)
+had `modifier` as its 6th parameter, after 5 required ones — the same convention violation this doc's been
+finding and fixing in shared components throughout the "Done"-promotion and re-verification passes (§78's
+`ColorSlider.kt`/`WidgetConfigScaffold.kt`/etc.). This component is shared between `WorkflowRuleBuilderScreen.kt`
+(this group) and `BuildReminderScreen.kt` (Reminders, already "Done"-adjacent) — confirmed all of both
+files' call sites use named arguments (`BuildReminderScreen.kt` passes `modifier = modifier` explicitly at
+both its call sites) before reordering, a pure parameter reorder with zero behavior change.
+
+**Re-confirmed clean, no changes needed**: `RoutineCard.kt` (token-driven shape, default elevation, no
+manual `FontWeight`, correct `Button` component, badge tint is a legitimate translucent-fill-on-brand-color
+use rather than the de-emphasis anti-pattern); `RoutineColorPicker.kt` (thin, correctly-typed wrapper over
+the already-spec-correct `ColorPickerCard`); `RoutineIconSet.kt` (already fully `DrawableCatalog`-sourced,
+32 cataloged icons, no raw drawable bypass). No breakpoint/max-width work added to any of the 8 screens,
+matching §79's identical reasoning: these are simple list/form screens that don't need it, and the
+guidelines checklist itself permits skipping breakpoint logic where it doesn't apply.
+
+**Deliberately left open, not required for "Done"**: `RoutineEditScreen.kt`'s indirect "move up" control
+(rotating a chevron-down icon 180° instead of using a distinct icon, §7) and `WorkflowTemplateCard.kt`'s
+`titleSmall`-for-description type-role mismatch (§7) — both already explicitly logged as low-severity,
+non-defect notes, not open work.
+
+Verified via `./gradlew :feature:feature-workflow:compileDebugKotlin :feature:feature-routine:compileDebugKotlin
+:ui:ui-routine:compileDebugKotlin :ui:ui-common:compileDebugKotlin :feature:feature-reminder:compileDebugKotlin
+:app:compileProDebugKotlin` (all clean — confirms `BuilderListItemCard.kt`'s reorder didn't break either
+consumer module) and `testDebugUnitTest` on all touched modules with test source (`feature-workflow`,
+`feature-routine`, `feature-reminder`; `ui-routine` has none). `:ui:ui-routine:detekt --rerun` reports one
+finding, on `RoutineColorPicker.kt`'s `routineColorSliderTestTag` naming — already documented pre-existing
+in §16, a file this pass never touched. `:ui:ui-common:detekt` reproduces the same pre-existing
+`PermissionRequester.kt` crash already documented in §47/§78 (confirmed unrelated); correctness for
+`BuilderListItemCard.kt` rests on the compile-clean result plus manual review, the same limitation those
+sections already flagged as an open tooling gap.
+
+**Promoted "Workflow (automation rules)" and "Routines" from "In progress" to "Done"** in
+`docs/m3-expressive-screen-inventory.md` — all 8 rows (Workflow Gallery, Workflow Rules for Group, Workflow
+Rules for Reminder, Workflow Rule Builder, Routines List, Routine Editor, Routine Preview, Routine
+Execution).
+
+**Suggested next step**: Settings is the last group that came back clean in the re-verification series
+(§77) and hasn't had this "full adoption pass" treatment yet — the largest at 29 screens, so likely the
+longest of the three, but the same methodology applies directly.
+
+## 81. Settings — full adoption pass, promoted to "Done"
+
+Third and last group in the "promote clean groups to Done" arc, per the user's explicit request. By far the
+largest of the three (29 screens across `feature-settings`, plus `RemindersSettingsScreen.kt`/
+`ManagePresetsScreen.kt` in `feature-reminder` and `BirthdaySettingsScreen.kt` in `feature-birthday`), and it
+surfaced far more than §79/§80 did — this group had never had a dedicated `modifier`-order sweep or a
+systematic `DrawableCatalog` re-check the way Groups/Tags/Places (§66/§33) and Calendar/Google Tasks (§67/§68)
+each got, so both gaps had accumulated widely and silently across nearly every screen.
+
+**`modifier`-parameter-order — the largest fix in this whole "Done"-promotion arc**: read every screen with
+its own `modifier` parameter and reordered it to first wherever it wasn't, after confirming every call site
+uses named arguments (verified exhaustively for the two highest-reach shared components specifically, since
+a mistake there would ripple furthest):
+
+- **`SettingsScaffold.kt`** — the shared scaffold behind ~24 of this group's 29 screens. Grepped all 26 real
+  call sites across `SettingsNavGraph.kt`, `SecurityNavGraph.kt`, `OtherNavGraph.kt`, `LocationNavGraph.kt`,
+  `ExportNavGraph.kt`, `HolidayCountryScreen.kt`, and `app`'s `SettingsCrossFeatureEntries.kt` — every one
+  uses named arguments (`title =`, `onBackClick =`, `navigationIcon =`, etc.), so this was safe to reorder.
+- **20 individual screen composables** — `SettingsHubScreen.kt` (+ its private `SettingsBanner`/
+  `SettingsSearchResults`), `BackupSettingsScreen.kt`, `CalendarSettingsScreen.kt`, `MapStyleScreen.kt`,
+  `SecuritySettingsScreen.kt`, `AddPinScreen.kt`, `ChangePinScreen.kt`, `DisablePinScreen.kt`,
+  `CloudBackupSettingsScreen.kt`, `DigestSettingsScreen.kt`, `TroubleshootingScreen.kt`,
+  `GeneralSettingsScreen.kt`, `HeaderItemsSettingsScreen.kt` (+ its private `PinnedHeaderItemRow`),
+  `OtherSettingsScreen.kt`, `HolidayCountryScreen.kt` (+ its private `CountryListItem`),
+  `NoteSettingsScreen.kt`, `LocationSettingsScreen.kt`, `OtherNavGraph.kt`'s private `SettingsWebView`,
+  `RemindersSettingsScreen.kt` (`feature-reminder`), `ManagePresetsScreen.kt` (`feature-reminder`), and
+  `BirthdaySettingsScreen.kt` (`feature-birthday`) — each checked individually against its own (usually
+  single) call site before reordering.
+- **Deliberately not touched**: `SettingsItem.kt`/`SettingsSwitchItem`/`SettingsCheckboxItem`/
+  `SettingsSectionHeader` (`ui-common`) — the single most-used shared component in this whole app (26+ files
+  across `feature-googletask`, `feature-birthday`, `feature-reminder`, `feature-workflow`, `feature-group`,
+  and every `feature-settings` screen). Unlike every other fix in this arc, many call sites pass the row's
+  `title` as a single, unnamed positional argument (e.g. `SettingsSectionHeader(stringResource(...))`) —
+  reordering `modifier` to first would silently require touching upwards of 100 individual call sites across
+  those same 26+ files just to add `title = ` everywhere, a fundamentally different scope than "the
+  composable already has a trailing `modifier` param, just move it." Matches §66's own established
+  distinction for exactly this shape of gap (`ColorPickerCard.kt`, reaffirmed in §79) — deferred, not fixed.
+  `DeveloperScreen.kt`/`ObjectExportScreen.kt` (`feature-settings/debug`) also still have the same gap but
+  are explicitly out of scope per the screen-inventory doc's own "debug-only" note — left untouched.
+
+**`DrawableCatalog`/`AppIcons` convention — the second-largest fix, ~35 call sites across 8 files**: this
+group had never had a dedicated cleanup pass the way Groups/Tags/Places (§33) or Calendar/Google Tasks (§68)
+did. Every icon found was already cataloged (checked `DrawableCatalog.kt` before touching any call site, same
+discipline as §33/§47/§68 — zero new catalog entries needed):
+
+- **`SettingsHubScreen.kt`** (8 sites) — every category row (`ic_fluent_system`, `ic_builder_by_monthday`,
+  `ic_fluent_clock_alarm`, `ic_fluent_food_cake`, `ic_fluent_lock`, `ic_fluent_note`,
+  `ic_fluent_launcher_settings`) plus the Do Not Disturb banner icon (`ic_moon`) — the file's other icon
+  (`AppIcons.Fluent.CloudSyncComplete`) was already correct, making the inconsistency visible in the file
+  itself.
+- **`GeneralSettingsScreen.kt`** (7 sites) and **`RemindersSettingsScreen.kt`** (9 sites) — the latter mixed
+  raw `painterResource` and correct `AppIcons` calls side by side throughout the same file.
+- **`CalendarSettingsScreen.kt`** (9 sites, one file with zero `AppIcons` usage at all beforehand),
+  **`SecuritySettingsScreen.kt`** (4 sites, same), **`CloudBackupSettingsScreen.kt`** (4 sites, same),
+  **`BirthdaySettingsScreen.kt`** (7 sites, same), **`LocationSettingsScreen.kt`** (5 real icon sites — its
+  two `ic_fluent_place` sites shared one `replace_all`; its map-style-preview thumbnail correctly stayed on
+  bare `painterResource`, the same "decorative mock-preview pixel" exception §13 already established for
+  Widget Configuration's own previews), **`NoteSettingsScreen.kt`** (2 sites in an otherwise-mixed file),
+  and **`TroubleshootingScreen.kt`** (2 sites, one an `Icon`'s `painter =`, one a `SettingsItem`'s `icon =`).
+
+**Motion — `SettingsItem.kt`'s literal `tween()`, flagged by §11 itself but never landed**: the shared
+component's search-highlight flash (`animateColorAsState` between `Color.Transparent` and
+`tertiaryContainer`) used `tween(durationMillis = if (isFlashing) 150 else 900)` — an internal
+implementation detail with zero public-API surface, so unlike the `modifier`-order gap this carried none of
+that fix's ripple risk. Replaced with two `MaterialTheme.motionScheme` specs selected by direction: the
+150ms attention-grabbing flash-in now resolves `fastEffectsSpec()`, the 900ms settle-back-to-normal now
+resolves `defaultEffectsSpec()` — both small-list-row-scale color changes, not partial-screen surfaces, so
+"fast"/"default" rather than any slower tier. Both are `Color`-typed `FiniteAnimationSpec`s resolved once
+per composition and switched between via the same `if (isFlashing)` condition the original code already
+used to pick a duration.
+
+**Re-confirmed clean, nothing to fix**: every §77-verified claim (back buttons, `TopAppbarColor`,
+`GradientScreenHeader`/`GradientHeroCard`, `EmptyState`/`SingleChoiceDialog`/`SeekValueDialog` consolidations,
+the drag-handle a11y fix, `ProVersionScreen.kt`'s emphasized type, `OtherSettingsScreen.kt`'s icon fix) —
+none of this pass's edits touched any of that surface. `NotificationCustomizationHelpScreen.kt` has no
+`modifier` parameter at all (already "Done" via §48) and needed no change. `CloudServicesScreen.kt`/
+`WhatsNewScreen.kt`/`ProVersionScreen.kt` likewise have no `modifier` parameter (their layout is driven
+entirely by `AnimatedGradientBackground`'s own sizing) and were already fully migrated onto
+`GradientScreenHeader`/`GradientHeroCard` — no raw drawables, no gaps.
+
+Verified via `./gradlew :feature:feature-settings:compileDebugKotlin :feature:feature-reminder:compileDebugKotlin
+:feature:feature-birthday:compileDebugKotlin :ui:ui-common:compileDebugKotlin :app:compileProDebugKotlin`
+(all clean — confirms the `SettingsScaffold`/`SettingsItem` reorders and every icon-catalog swap compile
+across every consumer module) and `testDebugUnitTest` on all three touched feature modules (all passing).
+Detekt via stash-and-rerun on `feature-settings`/`feature-reminder`/`feature-birthday`: identical weighted-
+issue counts before and after in all three (352/931/91) — zero new findings across the entire batch.
+`:ui:ui-common:detekt` reproduces the same pre-existing `PermissionRequester.kt` crash already documented in
+§47/§78/§80 (confirmed unrelated — this pass's `ui-common` edits, `SettingsItem.kt`'s internal motion fix,
+never touch that file); correctness there rests on the compile-clean result plus manual review, the same
+established limitation.
+
+**Promoted all 29 "Settings" rows from "In progress" to "Done"** in `docs/m3-expressive-screen-inventory.md`
+— every row in the Settings section's tables, spanning Hub, General, Backup (Cloud/Local Export/Import),
+Reminders, Manage Presets, Calendar, Select Holiday Country, Birthdays, Notes, Location, Map Style, Security,
+Add/Change/Disable PIN, Notification Customization Help (already "Done" via §48), Cloud Backup, Other
+Settings, Permissions, Open Source Licenses, Privacy Policy, Terms, Gemini Functions, AI Digest, Header
+Items, Troubleshooting, Cloud Services, What's New, and Pro Version. `Developer`/`Object Export` remain
+explicitly out of scope (debug-only), unchanged.
+
+This closes out the "promote clean groups to Done" arc the user asked for across all three candidates
+(Groups/Tags/Places §79, Workflow/Routines §80, Settings §81) — every group that came back fully clean in
+the earlier re-verification series (§74/§76/§77) has now also cleared the higher "fully reflects the
+`ui-common` expressive foundation" bar.
+
+**Suggested next step**: no group-level promotion work remains queued from this arc. The screen-inventory
+doc's remaining "In progress" rows are the four groups that had real gaps corrected during re-verification
+rather than a clean pass (Notes/Birthdays, Home/Events already-Done-via-§70/§71 aside, Reminders,
+Calendar/Google Tasks, Backup/Insights/Onboarding/Widget Config) — each is a candidate for this same
+adoption-pass treatment if the user wants to continue promoting groups to "Done," or a different request
+entirely.

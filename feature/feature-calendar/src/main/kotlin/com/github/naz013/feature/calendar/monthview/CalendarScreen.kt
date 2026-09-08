@@ -141,8 +141,8 @@ internal fun CalendarScreen(
 
 @Composable
 private fun WeekdayHeaderRow(
-  labels: List<String>,
   modifier: Modifier = Modifier,
+  labels: List<String>,
 ) {
   Row(modifier = modifier) {
     labels.forEach { label ->
@@ -159,6 +159,7 @@ private fun WeekdayHeaderRow(
 
 @Composable
 private fun MonthPage(
+  modifier: Modifier = Modifier,
   monthDate: LocalDate,
   buildGrid: (LocalDate) -> List<MonthGridCell>,
   refreshSignal: Int,
@@ -167,7 +168,6 @@ private fun MonthPage(
   onDayClick: (LocalDate) -> Unit,
   onAddReminderClick: (LocalDate) -> Unit,
   onAddBirthdayClick: (LocalDate) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val grid = remember(monthDate) { buildGrid(monthDate) }
   var eventsByDay by remember(monthDate) { mutableStateOf<Map<LocalDate, List<Int>>?>(null) }
@@ -217,13 +217,13 @@ private fun MonthPage(
 
 @Composable
 private fun MonthDayCell(
+  modifier: Modifier = Modifier,
   cell: MonthGridCell,
   dotColors: List<Int>,
   holiday: PublicHoliday?,
   onClick: (LocalDate) -> Unit,
   onAddReminderClick: (LocalDate) -> Unit,
   onAddBirthdayClick: (LocalDate) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   var expanded by remember { mutableStateOf(false) }
   Box(

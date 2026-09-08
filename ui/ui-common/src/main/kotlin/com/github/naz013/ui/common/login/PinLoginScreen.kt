@@ -27,6 +27,7 @@ import com.github.naz013.ui.common.compose.foundation.component.PinInput
 
 @Composable
 internal fun PinLoginScreen(
+  modifier: Modifier = Modifier,
   pin: String,
   shuffleDigits: Boolean,
   showFingerprintButton: Boolean,
@@ -34,7 +35,6 @@ internal fun PinLoginScreen(
   onDeleteClick: () -> Unit,
   onFingerprintClick: () -> Unit,
   onCloseClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Box(
     modifier = modifier

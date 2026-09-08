@@ -9,9 +9,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
@@ -21,6 +21,7 @@ import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
 @Composable
 fun BirthdaySettingsScreen(
+  modifier: Modifier = Modifier,
   state: BirthdaySettingsState,
   onReminderToggle: () -> Unit,
   onDaysToBirthdayClick: () -> Unit,
@@ -41,7 +42,6 @@ fun BirthdaySettingsScreen(
   onUseContactsToggle: () -> Unit,
   onAutoScanToggle: () -> Unit,
   onDialogDismiss: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier = modifier
@@ -55,7 +55,7 @@ fun BirthdaySettingsScreen(
       onCheckedChange = { onReminderToggle() },
       subtitleOn = stringResource(R.string.show_reminder_about_birthdays),
       subtitleOff = stringResource(R.string.do_not_remind_about_birthdays),
-      icon = painterResource(R.drawable.ic_fluent_alert),
+      icon = AppIcons.Fluent.Alert,
       itemKey = SettingsSearchItemKeys.BIRTHDAY_REMINDER_TOGGLE,
       dividerBottom = true,
     )
@@ -76,7 +76,7 @@ fun BirthdaySettingsScreen(
     SettingsItem(
       title = stringResource(R.string.birthday_notification_priority),
       subtitle = state.priorityName,
-      icon = painterResource(R.drawable.ic_fluent_star),
+      icon = AppIcons.Fluent.Star,
       enabled = state.isDependentEnabled,
       itemKey = SettingsSearchItemKeys.BIRTHDAY_PRIORITY,
       dividerBottom = true,
@@ -85,7 +85,7 @@ fun BirthdaySettingsScreen(
     SettingsItem(
       title = stringResource(R.string.remind_at),
       subtitle = stringResource(R.string.birthday_remind_at_description),
-      icon = painterResource(R.drawable.ic_builder_time),
+      icon = AppIcons.Builder.Time,
       enabled = state.isDependentEnabled,
       itemKey = SettingsSearchItemKeys.BIRTHDAY_REMIND_TIME,
       dividerBottom = true,
@@ -115,7 +115,7 @@ fun BirthdaySettingsScreen(
       onCheckedChange = { onPermanentToggle() },
       subtitleOn = stringResource(R.string.show_when_available_birthdays),
       subtitleOff = stringResource(R.string.do_not_show_permanent_notification),
-      icon = painterResource(R.drawable.ic_fluent_phone_status_bar),
+      icon = AppIcons.Fluent.PhoneStatusBar,
       enabled = state.isDependentEnabled,
       dividerBottom = true,
     )
@@ -138,14 +138,14 @@ fun BirthdaySettingsScreen(
         onCheckedChange = { onLedToggle() },
         subtitleOn = stringResource(R.string.show_led_indication),
         subtitleOff = stringResource(R.string.do_not_show_led_indication),
-        icon = painterResource(R.drawable.ic_builder_led_color),
+        icon = AppIcons.Builder.LedColor,
         enabled = state.isLedRowEnabled,
         dividerBottom = true,
       )
       SettingsItem(
         title = stringResource(R.string.led_indication_color),
         subtitle = state.ledColorName,
-        icon = painterResource(R.drawable.ic_fluent_color),
+        icon = AppIcons.Fluent.Color,
         enabled = state.isLedColorRowEnabled,
         dividerBottom = true,
         onClick = onLedColorClick,
@@ -160,7 +160,7 @@ fun BirthdaySettingsScreen(
       onCheckedChange = { onUseContactsToggle() },
       subtitleOn = stringResource(R.string.retrieve_birthdays_from_contacts),
       subtitleOff = stringResource(R.string.use_only_my_birthdays),
-      icon = painterResource(R.drawable.ic_fluent_contacts),
+      icon = AppIcons.Fluent.Contacts,
       enabled = state.isDependentEnabled,
       itemKey = SettingsSearchItemKeys.BIRTHDAY_USE_CONTACTS,
       dividerBottom = true,

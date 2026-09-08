@@ -30,7 +30,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.icon.DrawableCatalog
 
-private val BUBBLE_SIZE = 44.dp
+private val BUBBLE_SIZE = 48.dp
 private val BUBBLE_ICON_SIZE = 22.dp
 private val OPTION_SIZE = 40.dp
 private val OPTION_ICON_SIZE = 20.dp

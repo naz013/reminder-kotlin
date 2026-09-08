@@ -22,7 +22,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.feature.settings.search.SettingsSearchResult
@@ -72,12 +71,11 @@ internal fun SettingsHubScreen(
   onDeveloperClick: () -> Unit,
 ) {
   Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState())
-        .padding(vertical = 8.dp),
+    modifier = modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background)
+      .verticalScroll(rememberScrollState())
+      .padding(vertical = 8.dp),
   ) {
     SearchBar(
       query = state.searchQuery,
@@ -143,20 +141,19 @@ internal fun SettingsHubScreen(
         text = stringResource(R.string.do_not_disturb),
         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
         contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
-        icon = painterResource(R.drawable.ic_moon),
+        icon = AppIcons.Moon,
       )
     }
 
     Card(
       colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-      modifier =
-        Modifier
-          .fillMaxWidth()
-          .padding(horizontal = BannerHorizontalPadding, vertical = BannerVerticalPadding),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = BannerHorizontalPadding, vertical = BannerVerticalPadding),
     ) {
       SettingsItem(
         title = stringResource(R.string.general),
-        icon = painterResource(R.drawable.ic_fluent_system),
+        icon = AppIcons.Fluent.System,
         selected = selectedCategory == SettingsCategory.General,
         dividerBottom = true,
         onClick = onGeneralClick,
@@ -170,42 +167,42 @@ internal fun SettingsHubScreen(
       )
       SettingsItem(
         title = stringResource(R.string.calendar),
-        icon = painterResource(R.drawable.ic_builder_by_monthday),
+        icon = AppIcons.Builder.ByMonthday,
         selected = selectedCategory == SettingsCategory.Calendar,
         dividerBottom = true,
         onClick = onCalendarClick,
       )
       SettingsItem(
         title = stringResource(R.string.reminders_),
-        icon = painterResource(R.drawable.ic_fluent_clock_alarm),
+        icon = AppIcons.Fluent.ClockAlarm,
         selected = selectedCategory == SettingsCategory.Reminders,
         dividerBottom = true,
         onClick = onRemindersClick,
       )
       SettingsItem(
         title = stringResource(R.string.birthdays),
-        icon = painterResource(R.drawable.ic_fluent_food_cake),
+        icon = AppIcons.Fluent.FoodCake,
         selected = selectedCategory == SettingsCategory.Birthdays,
         dividerBottom = true,
         onClick = onBirthdaysClick,
       )
       SettingsItem(
         title = stringResource(R.string.security),
-        icon = painterResource(R.drawable.ic_fluent_lock),
+        icon = AppIcons.Fluent.Lock,
         selected = selectedCategory == SettingsCategory.Security,
         dividerBottom = true,
         onClick = onSecurityClick,
       )
       SettingsItem(
         title = stringResource(R.string.notes),
-        icon = painterResource(R.drawable.ic_fluent_note),
+        icon = AppIcons.Fluent.Note,
         selected = selectedCategory == SettingsCategory.Notes,
         dividerBottom = true,
         onClick = onNotesClick,
       )
       SettingsItem(
         title = stringResource(R.string.other),
-        icon = painterResource(R.drawable.ic_fluent_launcher_settings),
+        icon = AppIcons.Fluent.LauncherSettings,
         selected = selectedCategory == SettingsCategory.Other,
         dividerBottom = state.isDeveloperOptionVisible,
         onClick = onOtherClick,
@@ -230,20 +227,19 @@ internal fun SettingsHubScreen(
  */
 @Composable
 private fun SettingsBanner(
+  modifier: Modifier = Modifier,
   text: String,
   containerColor: Color,
   contentColor: Color,
-  modifier: Modifier = Modifier,
   icon: Painter? = null,
   trailingIcon: Painter? = null,
   emphasized: Boolean = false,
   onClick: (() -> Unit)? = null,
 ) {
   val colors = CardDefaults.cardColors(containerColor = containerColor, contentColor = contentColor)
-  val cardModifier =
-    modifier
-      .fillMaxWidth()
-      .padding(horizontal = BannerHorizontalPadding, vertical = BannerVerticalPadding)
+  val cardModifier = modifier
+    .fillMaxWidth()
+    .padding(horizontal = BannerHorizontalPadding, vertical = BannerVerticalPadding)
   val content: @Composable () -> Unit = {
     Row(
       modifier = Modifier
@@ -283,9 +279,9 @@ private fun SettingsBanner(
 /** The Hub's search results list, shown in place of the category card while a search query is active. */
 @Composable
 private fun SettingsSearchResults(
+  modifier: Modifier = Modifier,
   results: List<SettingsSearchResult>,
   onResultClick: (SettingsSearchResult) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   if (results.isEmpty()) {
     Text(
@@ -299,10 +295,9 @@ private fun SettingsSearchResults(
 
   Card(
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .padding(horizontal = BannerHorizontalPadding, vertical = BannerVerticalPadding),
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(horizontal = BannerHorizontalPadding, vertical = BannerVerticalPadding),
   ) {
     results.forEachIndexed { index, result ->
       SettingsItem(

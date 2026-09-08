@@ -44,10 +44,10 @@ private val RowSpacing = 24.dp
  */
 @Composable
 fun PinInput(
+  modifier: Modifier = Modifier,
   pin: String,
   onDigitClick: (Int) -> Unit,
   onDeleteClick: () -> Unit,
-  modifier: Modifier = Modifier,
   pinLength: Int = 6,
   shuffleDigits: Boolean = false,
   fingerprintButton: (@Composable () -> Unit)? = null,

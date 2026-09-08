@@ -24,16 +24,15 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 
 @Composable
 internal fun MapStyleScreen(
+  modifier: Modifier = Modifier,
   state: MapStyleState,
   onOptionSelected: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState()),
+    modifier = modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background)
+      .verticalScroll(rememberScrollState()),
   ) {
     state.options.forEachIndexed { index, option ->
       val isSelected = option.index == state.selectedIndex
@@ -67,27 +66,24 @@ internal fun MapStyleScreen(
 private fun MapStyleScreenPreview() {
   AppTheme {
     MapStyleScreen(
-      state =
-        MapStyleState(
-          options =
-            listOf(
-              MapStyleOption(
-                index = 6,
-                titleRes = R.string.auto,
-                previews =
-                  listOf(
-                    R.drawable.preview_map_day,
-                    R.drawable.preview_map_night,
-                  ),
-              ),
-              MapStyleOption(
-                index = 0,
-                titleRes = R.string.day,
-                previews = listOf(R.drawable.preview_map_day),
-              ),
+      state = MapStyleState(
+        options = listOf(
+          MapStyleOption(
+            index = 6,
+            titleRes = R.string.auto,
+            previews = listOf(
+              R.drawable.preview_map_day,
+              R.drawable.preview_map_night,
             ),
-          selectedIndex = 0,
+          ),
+          MapStyleOption(
+            index = 0,
+            titleRes = R.string.day,
+            previews = listOf(R.drawable.preview_map_day),
+          ),
         ),
+        selectedIndex = 0,
+      ),
       onOptionSelected = {},
     )
   }

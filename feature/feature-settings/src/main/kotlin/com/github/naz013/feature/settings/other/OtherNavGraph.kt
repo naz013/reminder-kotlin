@@ -230,8 +230,8 @@ private fun WhatsNewEntry(backStack: MutableList<NavKey>) {
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 private fun SettingsWebView(
-  url: String,
   modifier: Modifier = Modifier,
+  url: String,
 ) {
   AndroidView(
     modifier = modifier.fillMaxSize(),

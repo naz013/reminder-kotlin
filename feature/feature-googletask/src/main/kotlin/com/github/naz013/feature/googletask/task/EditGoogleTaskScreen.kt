@@ -225,11 +225,11 @@ internal fun EditGoogleTaskScreen(
 
 @Composable
 private fun FieldCard(
+  modifier: Modifier = Modifier,
   label: String,
   value: String,
   enabled: Boolean,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Card(
     modifier = modifier

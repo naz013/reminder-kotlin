@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
@@ -24,6 +25,7 @@ import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
 @Composable
 internal fun LocationSettingsScreen(
+  modifier: Modifier = Modifier,
   state: LocationSettingsState,
   onNotificationToggle: () -> Unit,
   onRadiusClick: () -> Unit,
@@ -38,7 +40,6 @@ internal fun LocationSettingsScreen(
   onTrackerConfirm: () -> Unit,
   onPlacesClick: () -> Unit,
   onDialogDismiss: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier = modifier
@@ -52,14 +53,14 @@ internal fun LocationSettingsScreen(
       onCheckedChange = { onNotificationToggle() },
       subtitleOn = stringResource(R.string.show_notification_about_left_distance),
       subtitleOff = stringResource(R.string.do_not_show_notification),
-      icon = painterResource(R.drawable.ic_fluent_alert),
+      icon = AppIcons.Fluent.Alert,
       itemKey = SettingsSearchItemKeys.LOCATION_NOTIFICATION_TOGGLE,
       dividerBottom = true,
     )
     SettingsItem(
       title = stringResource(R.string.radius),
       subtitle = state.radiusText,
-      icon = painterResource(R.drawable.ic_builder_map_radius),
+      icon = AppIcons.Builder.MapRadius,
       itemKey = SettingsSearchItemKeys.LOCATION_RADIUS,
       dividerBottom = true,
       onClick = onRadiusClick,
@@ -67,7 +68,7 @@ internal fun LocationSettingsScreen(
     SettingsItem(
       title = stringResource(R.string.map_type),
       subtitle = state.mapTypeName,
-      icon = painterResource(R.drawable.ic_fluent_map),
+      icon = AppIcons.Fluent.Map,
       itemKey = SettingsSearchItemKeys.LOCATION_MAP_TYPE,
       dividerBottom = true,
       onClick = onMapTypeClick,
@@ -75,7 +76,7 @@ internal fun LocationSettingsScreen(
     SettingsItem(
       title = stringResource(R.string.map_style),
       subtitle = state.mapStyleName,
-      icon = painterResource(R.drawable.ic_fluent_style_guide),
+      icon = AppIcons.Fluent.StyleGuide,
       enabled = state.isMapStyleRowEnabled,
       dividerBottom = true,
       onClick = onMapStyleClick,
@@ -94,13 +95,13 @@ internal fun LocationSettingsScreen(
     if (state.isMarkerStyleVisible) {
       SettingsItem(
         title = stringResource(R.string.style_of_marker),
-        icon = painterResource(R.drawable.ic_fluent_color),
+        icon = AppIcons.Fluent.Color,
         itemKey = SettingsSearchItemKeys.LOCATION_MARKER_STYLE,
         dividerBottom = true,
         onClick = onMarkerStyleClick,
         trailing = {
           Icon(
-            painter = painterResource(R.drawable.ic_fluent_place),
+            painter = AppIcons.Fluent.Place,
             contentDescription = null,
             tint = Color(state.markerColor),
           )
@@ -109,7 +110,7 @@ internal fun LocationSettingsScreen(
     }
     SettingsItem(
       title = stringResource(R.string.tracking_settings),
-      icon = painterResource(R.drawable.ic_fluent_location_live),
+      icon = AppIcons.Fluent.LocationLive,
       itemKey = SettingsSearchItemKeys.LOCATION_TRACKING,
       dividerBottom = true,
       onClick = onTrackerClick,
@@ -117,7 +118,7 @@ internal fun LocationSettingsScreen(
     if (state.hasLocation) {
       SettingsItem(
         title = stringResource(R.string.places),
-        icon = painterResource(R.drawable.ic_fluent_place),
+        icon = AppIcons.Fluent.Place,
         dividerBottom = true,
         onClick = onPlacesClick,
       )

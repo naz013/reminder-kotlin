@@ -19,9 +19,9 @@ import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 
 @Composable
 fun ManagePresetsScreen(
+  modifier: Modifier = Modifier,
   presets: List<UiPresetList>,
   onDeleteClick: (UiPresetList) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier = modifier

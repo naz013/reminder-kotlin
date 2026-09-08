@@ -18,18 +18,17 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionH
  */
 @Composable
 internal fun BackupSettingsScreen(
+  modifier: Modifier = Modifier,
   isLocalBackupLocked: Boolean,
   onCloudBackupClick: () -> Unit,
   onExportBackupClick: () -> Unit,
   onImportBackupClick: () -> Unit,
   onLocalBackupLockedClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background),
+    modifier = modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background),
   ) {
     SettingsItem(
       title = stringResource(R.string.cloud_backup),

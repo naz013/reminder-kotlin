@@ -27,10 +27,10 @@ import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun WidgetConfigScaffold(
+  modifier: Modifier = Modifier,
   title: String,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
-  modifier: Modifier = Modifier,
   saveEnabled: Boolean = true,
   content: @Composable ColumnScope.() -> Unit,
 ) {

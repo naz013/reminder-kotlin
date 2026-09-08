@@ -8,29 +8,28 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
 
 @Composable
 internal fun SecuritySettingsScreen(
+  modifier: Modifier = Modifier,
   state: SecuritySettingsState,
   onPinRowClick: () -> Unit,
   onChangePinClick: () -> Unit,
   onFingerprintClick: () -> Unit,
   onShuffleToggle: () -> Unit,
   onTelephonyToggle: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState()),
+    modifier = modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background)
+      .verticalScroll(rememberScrollState()),
   ) {
     SettingsSwitchItem(
       title = stringResource(R.string.pin_protection),
@@ -38,13 +37,13 @@ internal fun SecuritySettingsScreen(
       onCheckedChange = { onPinRowClick() },
       subtitleOn = stringResource(R.string.protect_application_with_pin),
       subtitleOff = stringResource(R.string.do_not_use_pin_protection),
-      icon = painterResource(R.drawable.ic_fluent_password),
+      icon = AppIcons.Fluent.Password,
       itemKey = SettingsSearchItemKeys.SECURITY_PIN_PROTECTION,
       dividerBottom = true,
     )
     SettingsItem(
       title = stringResource(R.string.change_pin),
-      icon = painterResource(R.drawable.ic_fluent_edit),
+      icon = AppIcons.Fluent.Edit,
       enabled = state.isPinChecked,
       itemKey = SettingsSearchItemKeys.SECURITY_CHANGE_PIN,
       dividerBottom = true,
@@ -57,7 +56,7 @@ internal fun SecuritySettingsScreen(
         onCheckedChange = { onFingerprintClick() },
         subtitleOn = stringResource(R.string.allow_fingerprint_login),
         subtitleOff = stringResource(R.string.do_not_use_fingerprint_to_login),
-        icon = painterResource(R.drawable.ic_fluent_fingerprint),
+        icon = AppIcons.Fluent.Fingerprint,
         enabled = state.isPinChecked,
         itemKey = SettingsSearchItemKeys.SECURITY_FINGERPRINT,
         dividerBottom = true,
@@ -79,7 +78,7 @@ internal fun SecuritySettingsScreen(
       onCheckedChange = { onTelephonyToggle() },
       subtitleOn = stringResource(R.string.allow_phone_call_and_sms_func),
       subtitleOff = stringResource(R.string.hide_that_functionality),
-      icon = painterResource(R.drawable.ic_fluent_phone),
+      icon = AppIcons.Fluent.Phone,
       enabled = state.hasTelephony,
       itemKey = SettingsSearchItemKeys.SECURITY_PHONE_SMS,
       dividerBottom = true,
