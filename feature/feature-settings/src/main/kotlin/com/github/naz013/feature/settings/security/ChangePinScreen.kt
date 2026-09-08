@@ -20,29 +20,27 @@ import com.github.naz013.ui.common.compose.foundation.component.PinInput
 
 @Composable
 internal fun ChangePinScreen(
+  modifier: Modifier = Modifier,
   stage: ChangePinStage,
   pin: String,
   onDigitClick: (Int) -> Unit,
   onDeleteClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background),
+    modifier = modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background),
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     Spacer(modifier = Modifier.weight(1f))
     Text(
-      text =
-        stringResource(
-          when (stage) {
-            ChangePinStage.OLD -> R.string.old_pin
-            ChangePinStage.INPUT -> R.string.enter_pin
-            ChangePinStage.REPEAT -> R.string.repeat_pin
-          },
-        ).uppercase(),
+      text = stringResource(
+        when (stage) {
+          ChangePinStage.OLD -> R.string.old_pin
+          ChangePinStage.INPUT -> R.string.enter_pin
+          ChangePinStage.REPEAT -> R.string.repeat_pin
+        },
+      ).uppercase(),
       style = MaterialTheme.typography.headlineMedium,
       textAlign = TextAlign.Center,
     )

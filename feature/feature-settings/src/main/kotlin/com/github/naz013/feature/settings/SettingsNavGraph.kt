@@ -183,21 +183,20 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
   // immediately after Hub on the backstack, mapped to the row it corresponds to. Recomputes
   // whenever backStack's contents change, since Hub's own composition stays alive as the list
   // pane for as long as the two-pane scene is active.
-  val selectedCategory =
-    backStack.getOrNull(backStack.indexOf(SettingsNavKey.Hub) + 1).let { activeCategory ->
-      when (activeCategory) {
-        is SettingsNavKey.General -> SettingsCategory.General
-        is SettingsNavKey.Backup -> SettingsCategory.Backup
-        is SettingsNavKey.Calendar -> SettingsCategory.Calendar
-        is SettingsNavKey.Reminders -> SettingsCategory.Reminders
-        is SettingsNavKey.Birthday -> SettingsCategory.Birthdays
-        is SecurityNavKey.Security -> SettingsCategory.Security
-        is SettingsNavKey.Note -> SettingsCategory.Notes
-        is OtherNavKey.Other -> SettingsCategory.Other
-        is SettingsNavKey.Developer -> SettingsCategory.Developer
-        else -> null
-      }
+  val selectedCategory = backStack.getOrNull(backStack.indexOf(SettingsNavKey.Hub) + 1).let { activeCategory ->
+    when (activeCategory) {
+      is SettingsNavKey.General -> SettingsCategory.General
+      is SettingsNavKey.Backup -> SettingsCategory.Backup
+      is SettingsNavKey.Calendar -> SettingsCategory.Calendar
+      is SettingsNavKey.Reminders -> SettingsCategory.Reminders
+      is SettingsNavKey.Birthday -> SettingsCategory.Birthdays
+      is SecurityNavKey.Security -> SettingsCategory.Security
+      is SettingsNavKey.Note -> SettingsCategory.Notes
+      is OtherNavKey.Other -> SettingsCategory.Other
+      is SettingsNavKey.Developer -> SettingsCategory.Developer
+      else -> null
     }
+  }
 
   SettingsScaffold(
     title = stringResource(R.string.action_settings),
@@ -245,18 +244,19 @@ private fun BackupEntry(
   val buildInfo = koinInject<BuildInfo>()
   val analyticsEventSender = koinInject<AnalyticsEventSender>()
 
-  val exportBackupLauncher =
-    rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
-      if (uri != null) onOpenLocalBackupExport(uri.toString())
-    }
-  val importBackupLauncher =
-    rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-      if (uri != null) onOpenLocalBackupImport(uri.toString())
-    }
+  val exportBackupLauncher = rememberLauncherForActivityResult(
+    ActivityResultContracts.CreateDocument("application/octet-stream")
+  ) { uri ->
+    if (uri != null) onOpenLocalBackupExport(uri.toString())
+  }
+  val importBackupLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+    if (uri != null) onOpenLocalBackupImport(uri.toString())
+  }
 
   SettingsScaffold(
     title = stringResource(R.string.backup),
     navigationIcon = settingsNavigationIcon(renderAsDetailPane = renderAsDetailPane),
+    navigationContentDescription = settingsNavigationContentDescription(renderAsDetailPane = renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     BackupSettingsScreen(
@@ -299,6 +299,7 @@ private fun GeneralEntry(
   SettingsScaffold(
     title = stringResource(R.string.general),
     navigationIcon = settingsNavigationIcon(renderAsDetailPane = renderAsDetailPane),
+    navigationContentDescription = settingsNavigationContentDescription(renderAsDetailPane = renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SettingsHighlightScope {
@@ -366,6 +367,7 @@ private fun CalendarEntry(
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.calendar),
     navigationIcon = settingsNavigationIcon(key.screenTitle, renderAsDetailPane),
+    navigationContentDescription = settingsNavigationContentDescription(key.screenTitle, renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SettingsHighlightScope {
@@ -412,6 +414,7 @@ private fun DigestEntry(backStack: MutableList<NavKey>, renderAsDetailPane: Bool
   SettingsScaffold(
     title = stringResource(R.string.ai_digest),
     navigationIcon = settingsNavigationIcon(renderAsDetailPane = renderAsDetailPane),
+    navigationContentDescription = settingsNavigationContentDescription(renderAsDetailPane = renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     DigestSettingsScreen(
@@ -447,6 +450,7 @@ private fun NoteEntry(
   SettingsScaffold(
     title = key.screenTitle ?: stringResource(R.string.notes),
     navigationIcon = settingsNavigationIcon(key.screenTitle, renderAsDetailPane),
+    navigationContentDescription = settingsNavigationContentDescription(key.screenTitle, renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SettingsHighlightScope {
@@ -490,6 +494,7 @@ private fun DeveloperEntry(
           allowLogsAttachment = false,
         )
       }
+
       is DeveloperEvent.OpenReminderAction -> onOpenReminderActionTest(event.reminderId)
       is DeveloperEvent.OpenBirthdayAction -> onOpenBirthdayActionTest(event.birthdayId)
       DeveloperEvent.OpenProVersion -> backStack.add(SettingsNavKey.ProVersion)
@@ -501,6 +506,7 @@ private fun DeveloperEntry(
   SettingsScaffold(
     title = "Developer",
     navigationIcon = settingsNavigationIcon(renderAsDetailPane = renderAsDetailPane),
+    navigationContentDescription = settingsNavigationContentDescription(renderAsDetailPane = renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     DeveloperScreen(
@@ -549,6 +555,7 @@ private fun ObjectExportEntry(backStack: MutableList<NavKey>) {
         pendingItemId = event.itemId
         saveLocationLauncher.launch(event.fileName)
       }
+
       ObjectExportEvent.ObjectSaved -> Unit
     }
   }
@@ -616,6 +623,7 @@ private fun TroubleshootingEntry(
   SettingsScaffold(
     title = stringResource(R.string.troubleshooting),
     navigationIcon = settingsNavigationIcon(renderAsDetailPane = renderAsDetailPane),
+    navigationContentDescription = settingsNavigationContentDescription(renderAsDetailPane = renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     TroubleshootingScreen(

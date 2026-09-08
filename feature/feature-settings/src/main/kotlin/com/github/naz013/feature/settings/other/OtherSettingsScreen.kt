@@ -18,6 +18,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 
 @Composable
 internal fun OtherSettingsScreen(
+  modifier: Modifier = Modifier,
   state: OtherSettingsState,
   onPrivacyPolicyClick: () -> Unit,
   onTermsClick: () -> Unit,
@@ -34,7 +35,6 @@ internal fun OtherSettingsScreen(
   onGeminiFunctionsClick: () -> Unit,
   onDigestClick: () -> Unit,
   onBuyMeACoffeeClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier = modifier
@@ -113,11 +113,13 @@ internal fun OtherSettingsScreen(
     }
     SettingsItem(
       title = stringResource(R.string.permissions),
+      icon = AppIcons.Fluent.LockShield,
       dividerBottom = true,
       onClick = onPermissionsClick,
     )
     SettingsItem(
       title = stringResource(R.string.allow_permission),
+      icon = AppIcons.Fluent.Lock,
       dividerBottom = true,
       onClick = onAllowPermissionClick,
     )

@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -37,7 +37,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -51,6 +50,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.github.naz013.domain.note.NoteSpanAttribute
 import com.github.naz013.feature.note.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
 import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 import com.github.naz013.ui.note.NoteFontProvider
@@ -70,7 +70,7 @@ internal fun MicIcon(
   when (speechState) {
     SpeechUiState.IDLE -> {
       Icon(
-        painter = painterResource(R.drawable.ic_builder_mic_on),
+        painter = AppIcons.Builder.MicOn,
         contentDescription = stringResource(R.string.acc_type_by_voice),
         tint = contentColor,
       )
@@ -89,7 +89,7 @@ internal fun MicIcon(
 
     SpeechUiState.STARTED, SpeechUiState.STOPPED -> {
       Icon(
-        painter = painterResource(R.drawable.ic_fluent_recording_stop),
+        painter = AppIcons.Fluent.RecordingStop,
         contentDescription = stringResource(R.string.acc_type_by_voice),
         tint = contentColor,
       )
@@ -108,8 +108,7 @@ internal fun ReminderPanel(
       Switch(
         checked = state.isReminderAttached,
         onCheckedChange = actions.onReminderAttachedChanged,
-        colors =
-        SwitchDefaults.colors(
+        colors = SwitchDefaults.colors(
           checkedThumbColor = contentColor,
           checkedTrackColor = contentColor.copy(alpha = 0.5f),
         ),
@@ -133,8 +132,7 @@ internal fun ReminderPanel(
         text = state.reminderTimeFormatted,
         color = contentColor.copy(alpha = dateTimeAlpha),
         style = MaterialTheme.typography.titleLarge,
-        modifier =
-        Modifier
+        modifier = Modifier
           .padding(start = 24.dp)
           .clickableIfEnabled(state.isReminderAttached, actions.onTimeClick),
       )
@@ -174,8 +172,7 @@ internal fun TextFormatPanel(
         text = fontStyleName(fontStyle),
         color = contentColor,
         style = MaterialTheme.typography.titleMedium,
-        modifier =
-        Modifier
+        modifier = Modifier
           .padding(top = 8.dp)
           .clickableIfEnabled(true) { showFontPicker = true },
       )
@@ -208,8 +205,7 @@ internal fun TextFormatPanel(
       value = fontSize.toFloat(),
       onValueChange = { actions.onFontSizeChanged(it.toInt()) },
       valueRange = 6f..150f,
-      colors =
-      SliderDefaults.colors(
+      colors = SliderDefaults.colors(
         thumbColor = contentColor,
         activeTrackColor = contentColor,
         inactiveTrackColor = contentColor.copy(alpha = 0.24f),
@@ -223,7 +219,13 @@ internal fun TextFormatPanel(
       modifier = Modifier.padding(top = 16.dp),
     )
     Row(modifier = Modifier.padding(top = 4.dp)) {
-      GlyphToggleButton("B", FontWeight.Bold, active = activeFormat.bold, contentColor = contentColor, onClick = actions.onToggleBold)
+      GlyphToggleButton(
+        "B",
+        FontWeight.Bold,
+        active = activeFormat.bold,
+        contentColor = contentColor,
+        onClick = actions.onToggleBold
+      )
       GlyphToggleButton(
         "I",
         FontWeight.Normal,
@@ -323,8 +325,7 @@ private fun ImageSourceRow(
     text = text,
     color = contentColor,
     style = MaterialTheme.typography.titleMedium,
-    modifier =
-    Modifier
+    modifier = Modifier
       .fillMaxWidth()
       .clickable(onClick = onClick)
       .padding(vertical = 12.dp),
@@ -336,7 +337,11 @@ internal fun TagsPanel(
   state: NoteEditState,
   actions: NoteEditActions,
 ) {
-  Column(modifier = Modifier.padding(vertical = 8.dp).widthIn(max = 272.dp)) {
+  Column(
+    modifier = Modifier
+      .padding(vertical = 8.dp)
+      .widthIn(max = 272.dp)
+  ) {
     TagChipPicker(
       allTags = state.allTags,
       selectedTagIds = state.selectedTagIds,
@@ -364,7 +369,7 @@ internal fun ColorPanel(
       selectorColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
       modifier = Modifier
         .fillMaxWidth()
-        .height(36.dp),
+        .height(48.dp),
       hapticFeedbackEnabled = hapticFeedbackEnabled,
     )
     Text(
@@ -414,20 +419,16 @@ private fun FontPickerList(
 ) {
   val context = LocalContext.current
   val noteFontProvider = koinInject<NoteFontProvider>()
-  val fonts =
-    remember {
-      noteFontProvider.getFontNames().mapIndexed { index, name ->
-        val fontFamily =
-          noteFontProvider.getTypeface(context, index)?.let { FontFamily(it) }
-            ?: FontFamily.Default
-        name to fontFamily
-      }
+  val fonts = remember {
+    noteFontProvider.getFontNames().mapIndexed { index, name ->
+      val fontFamily = noteFontProvider.getTypeface(context, index)?.let { FontFamily(it) } ?: FontFamily.Default
+      name to fontFamily
     }
+  }
   LazyColumn(modifier = Modifier.heightIn(max = 280.dp)) {
     itemsIndexed(fonts, key = { index, _ -> index }) { index, (name, fontFamily) ->
       Row(
-        modifier =
-        Modifier
+        modifier = Modifier
           .fillMaxWidth()
           .clickable { onSelected(index) }
           .padding(vertical = 2.dp),
@@ -436,8 +437,7 @@ private fun FontPickerList(
         RadioButton(
           selected = selected == index,
           onClick = { onSelected(index) },
-          colors =
-          RadioButtonDefaults.colors(
+          colors = RadioButtonDefaults.colors(
             selectedColor = contentColor,
             unselectedColor = contentColor.copy(alpha = 0.6f),
           ),
@@ -466,7 +466,13 @@ internal fun FormatPanel(
 ) {
   Column(modifier = Modifier.padding(vertical = 8.dp)) {
     Row {
-      GlyphToggleButton("B", FontWeight.Bold, active = activeFormat.bold, contentColor = contentColor, onClick = actions.onToggleBold)
+      GlyphToggleButton(
+        "B",
+        FontWeight.Bold,
+        active = activeFormat.bold,
+        contentColor = contentColor,
+        onClick = actions.onToggleBold
+      )
       GlyphToggleButton(
         "I",
         FontWeight.Normal,
@@ -550,7 +556,7 @@ private fun GlyphToggleButton(
     textDecoration = decoration,
     style = MaterialTheme.typography.titleMedium,
     modifier = Modifier
-      .clip(RoundedCornerShape(8.dp))
+      .clip(MaterialTheme.shapes.small)
       .background(if (active) contentColor.copy(alpha = 0.2f) else Color.Transparent)
       .clickable(onClick = onClick)
       .padding(horizontal = 12.dp, vertical = 8.dp),
@@ -572,7 +578,7 @@ private fun LineFormatButton(
     fontWeight = FontWeight.Bold,
     style = MaterialTheme.typography.titleMedium,
     modifier = Modifier
-      .clip(RoundedCornerShape(8.dp))
+      .clip(MaterialTheme.shapes.small)
       .background(if (active) contentColor.copy(alpha = 0.2f) else Color.Transparent)
       .clickable(onClick = onClick)
       .padding(horizontal = 10.dp, vertical = 8.dp),
@@ -595,7 +601,11 @@ internal fun TextColorPanel(
 ) {
   var isGradientMode by remember { mutableStateOf(false) }
 
-  Column(modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth()) {
+  Column(
+    modifier = Modifier
+      .padding(vertical = 8.dp)
+      .fillMaxWidth()
+  ) {
     Row {
       TextColorModeChip(
         text = stringResource(R.string.text_color_mode_solid),
@@ -630,10 +640,13 @@ private fun TextColorModeChip(
   Text(
     text = text,
     color = contentColor,
-    fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-    style = MaterialTheme.typography.labelLarge,
+    style = if (selected) {
+      MaterialTheme.typography.labelLargeEmphasized
+    } else {
+      MaterialTheme.typography.labelLarge
+    },
     modifier = modifier
-      .clip(RoundedCornerShape(50))
+      .clip(CircleShape)
       .background(if (selected) contentColor.copy(alpha = 0.2f) else Color.Transparent)
       .clickable(onClick = onClick)
       .padding(horizontal = 16.dp, vertical = 8.dp),
@@ -662,7 +675,7 @@ private fun SolidColorControls(
     selectorColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
     modifier = Modifier
       .fillMaxWidth()
-      .height(36.dp)
+      .height(48.dp)
       .padding(top = 12.dp),
     hapticFeedbackEnabled = hapticFeedbackEnabled,
   )
@@ -689,8 +702,15 @@ private fun GradientColorControls(
       .fillMaxWidth()
       .height(28.dp)
       .padding(top = 12.dp)
-      .clip(RoundedCornerShape(8.dp))
-      .background(Brush.linearGradient(listOf(colors.getOrElse(startIndex) { contentColor }, colors.getOrElse(endIndex) { contentColor }))),
+      .clip(MaterialTheme.shapes.small)
+      .background(
+        Brush.linearGradient(
+          listOf(
+            colors.getOrElse(startIndex) { contentColor },
+            colors.getOrElse(endIndex) { contentColor }
+          )
+        )
+      ),
   )
   Text(
     text = stringResource(R.string.gradient_start_color),
@@ -702,8 +722,11 @@ private fun GradientColorControls(
     colors = colors,
     selectedIndex = startIndex,
     onColorSelected = { startIndex = it; apply() },
+    contentDescription = stringResource(R.string.gradient_start_color),
     selectorColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
-    modifier = Modifier.fillMaxWidth().height(36.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .height(48.dp),
     hapticFeedbackEnabled = hapticFeedbackEnabled,
   )
   Text(
@@ -716,8 +739,11 @@ private fun GradientColorControls(
     colors = colors,
     selectedIndex = endIndex,
     onColorSelected = { endIndex = it; apply() },
+    contentDescription = stringResource(R.string.gradient_end_color),
     selectorColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
-    modifier = Modifier.fillMaxWidth().height(36.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .height(48.dp),
     hapticFeedbackEnabled = hapticFeedbackEnabled,
   )
   Text(

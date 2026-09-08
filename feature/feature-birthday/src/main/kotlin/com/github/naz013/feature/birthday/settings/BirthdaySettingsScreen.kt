@@ -3,29 +3,25 @@ package com.github.naz013.feature.birthday.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSwitchItem
+import com.github.naz013.ui.common.compose.foundation.dialog.SeekValueDialog
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 
 @Composable
 fun BirthdaySettingsScreen(
+  modifier: Modifier = Modifier,
   state: BirthdaySettingsState,
   onReminderToggle: () -> Unit,
   onDaysToBirthdayClick: () -> Unit,
@@ -46,14 +42,12 @@ fun BirthdaySettingsScreen(
   onUseContactsToggle: () -> Unit,
   onAutoScanToggle: () -> Unit,
   onDialogDismiss: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState()),
+    modifier = modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background)
+      .verticalScroll(rememberScrollState()),
   ) {
     SettingsSwitchItem(
       title = stringResource(R.string.birthday_reminder),
@@ -61,7 +55,7 @@ fun BirthdaySettingsScreen(
       onCheckedChange = { onReminderToggle() },
       subtitleOn = stringResource(R.string.show_reminder_about_birthdays),
       subtitleOff = stringResource(R.string.do_not_remind_about_birthdays),
-      icon = painterResource(R.drawable.ic_fluent_alert),
+      icon = AppIcons.Fluent.Alert,
       itemKey = SettingsSearchItemKeys.BIRTHDAY_REMINDER_TOGGLE,
       dividerBottom = true,
     )
@@ -82,7 +76,7 @@ fun BirthdaySettingsScreen(
     SettingsItem(
       title = stringResource(R.string.birthday_notification_priority),
       subtitle = state.priorityName,
-      icon = painterResource(R.drawable.ic_fluent_star),
+      icon = AppIcons.Fluent.Star,
       enabled = state.isDependentEnabled,
       itemKey = SettingsSearchItemKeys.BIRTHDAY_PRIORITY,
       dividerBottom = true,
@@ -91,7 +85,7 @@ fun BirthdaySettingsScreen(
     SettingsItem(
       title = stringResource(R.string.remind_at),
       subtitle = stringResource(R.string.birthday_remind_at_description),
-      icon = painterResource(R.drawable.ic_builder_time),
+      icon = AppIcons.Builder.Time,
       enabled = state.isDependentEnabled,
       itemKey = SettingsSearchItemKeys.BIRTHDAY_REMIND_TIME,
       dividerBottom = true,
@@ -121,7 +115,7 @@ fun BirthdaySettingsScreen(
       onCheckedChange = { onPermanentToggle() },
       subtitleOn = stringResource(R.string.show_when_available_birthdays),
       subtitleOff = stringResource(R.string.do_not_show_permanent_notification),
-      icon = painterResource(R.drawable.ic_fluent_phone_status_bar),
+      icon = AppIcons.Fluent.PhoneStatusBar,
       enabled = state.isDependentEnabled,
       dividerBottom = true,
     )
@@ -144,14 +138,14 @@ fun BirthdaySettingsScreen(
         onCheckedChange = { onLedToggle() },
         subtitleOn = stringResource(R.string.show_led_indication),
         subtitleOff = stringResource(R.string.do_not_show_led_indication),
-        icon = painterResource(R.drawable.ic_builder_led_color),
+        icon = AppIcons.Builder.LedColor,
         enabled = state.isLedRowEnabled,
         dividerBottom = true,
       )
       SettingsItem(
         title = stringResource(R.string.led_indication_color),
         subtitle = state.ledColorName,
-        icon = painterResource(R.drawable.ic_fluent_color),
+        icon = AppIcons.Fluent.Color,
         enabled = state.isLedColorRowEnabled,
         dividerBottom = true,
         onClick = onLedColorClick,
@@ -166,7 +160,7 @@ fun BirthdaySettingsScreen(
       onCheckedChange = { onUseContactsToggle() },
       subtitleOn = stringResource(R.string.retrieve_birthdays_from_contacts),
       subtitleOff = stringResource(R.string.use_only_my_birthdays),
-      icon = painterResource(R.drawable.ic_fluent_contacts),
+      icon = AppIcons.Fluent.Contacts,
       enabled = state.isDependentEnabled,
       itemKey = SettingsSearchItemKeys.BIRTHDAY_USE_CONTACTS,
       dividerBottom = true,
@@ -190,10 +184,12 @@ fun BirthdaySettingsScreen(
         value = dialog.previewValue,
         valueRange = 0f..5f,
         valueText = dialog.previewValue.toString(),
+        steps = 4,
         onValueChange = onDaysToBirthdayPreviewChange,
         onConfirm = onDaysToBirthdayConfirm,
         onDismiss = onDialogDismiss,
         hapticFeedbackEnabled = dialog.hapticFeedbackEnabled,
+        confirmText = stringResource(R.string.save),
       )
     }
 
@@ -203,10 +199,12 @@ fun BirthdaySettingsScreen(
         value = dialog.previewValue,
         valueRange = 0f..5f,
         valueText = dialog.previewValue.toString(),
+        steps = 4,
         onValueChange = onHomeDaysPreviewChange,
         onConfirm = onHomeDaysConfirm,
         onDismiss = onDialogDismiss,
         hapticFeedbackEnabled = dialog.hapticFeedbackEnabled,
+        confirmText = stringResource(R.string.save),
       )
     }
 
@@ -232,42 +230,4 @@ fun BirthdaySettingsScreen(
 
     null -> Unit
   }
-}
-
-@Composable
-private fun SeekValueDialog(
-  title: String,
-  value: Int,
-  valueRange: ClosedFloatingPointRange<Float>,
-  valueText: String,
-  hapticFeedbackEnabled: Boolean,
-  onValueChange: (Int) -> Unit,
-  onConfirm: () -> Unit,
-  onDismiss: () -> Unit,
-) {
-  val hapticFeedback = LocalHapticFeedback.current
-
-  AlertDialog(
-    onDismissRequest = onDismiss,
-    title = { Text(title) },
-    text = {
-      Column {
-        Text(text = valueText, style = MaterialTheme.typography.bodyLarge)
-        Slider(
-          value = value.toFloat(),
-          onValueChange = { index ->
-            if (index.toInt() != value && hapticFeedbackEnabled) {
-              hapticFeedback.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-            }
-            onValueChange(index.toInt())
-          },
-          valueRange = valueRange,
-          steps = (valueRange.endInclusive - valueRange.start).toInt() - 1,
-          modifier = Modifier.fillMaxWidth(),
-        )
-      }
-    },
-    confirmButton = { TextButton(onClick = onConfirm) { Text(stringResource(R.string.save)) } },
-    dismissButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.cancel)) } },
-  )
 }

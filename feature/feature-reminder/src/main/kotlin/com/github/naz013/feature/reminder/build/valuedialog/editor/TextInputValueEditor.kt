@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -45,12 +43,13 @@ import com.github.naz013.common.speech.SpeechEngine
 import com.github.naz013.common.speech.SpeechEngineCallback
 import com.github.naz013.common.speech.SpeechError
 import com.github.naz013.common.speech.SpeechText
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.GradientHighlightTextField
 import com.github.naz013.ui.common.compose.foundation.component.TextHighlight
 
 private const val MAX_CHARACTERS = 1000
-private val MIC_BUTTON_SIZE = 40.dp
+private val MIC_BUTTON_SIZE = 48.dp
 
 private enum class SpeechUiState { IDLE, STARTED, SPEAKING, STOPPED }
 
@@ -142,7 +141,7 @@ internal fun TextInputValueEditor(
         modifier = Modifier
           .weight(1f)
           .heightIn(min = 96.dp)
-          .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(4.dp))
+          .border(1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.extraSmall)
           .padding(12.dp),
       )
       if (supportsSpeech) {
@@ -183,7 +182,7 @@ internal fun TextInputValueEditor(
 
               SpeechUiState.STARTED, SpeechUiState.STOPPED -> {
                 Icon(
-                  painter = painterResource(R.drawable.ic_fluent_recording_stop),
+                  painter = AppIcons.Fluent.RecordingStop,
                   contentDescription = null,
                   tint = MaterialTheme.colorScheme.error,
                 )
@@ -191,7 +190,7 @@ internal fun TextInputValueEditor(
 
               SpeechUiState.IDLE -> {
                 Icon(
-                  painter = painterResource(R.drawable.ic_builder_mic_on),
+                  painter = AppIcons.Builder.MicOn,
                   contentDescription = null,
                   tint = MaterialTheme.colorScheme.onSurface,
                 )

@@ -15,18 +15,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.PinInput
 
 @Composable
 internal fun PinLoginScreen(
+  modifier: Modifier = Modifier,
   pin: String,
   shuffleDigits: Boolean,
   showFingerprintButton: Boolean,
@@ -34,7 +35,6 @@ internal fun PinLoginScreen(
   onDeleteClick: () -> Unit,
   onFingerprintClick: () -> Unit,
   onCloseClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Box(
     modifier = modifier
@@ -62,7 +62,7 @@ internal fun PinLoginScreen(
             TooltipIconButton(contentDescription = stringResource(R.string.enter_your_pin)) {
               IconButton(onClick = onFingerprintClick) {
                 Icon(
-                  painter = painterResource(R.drawable.ic_fluent_fingerprint),
+                  painter = AppIcons.Fluent.Fingerprint,
                   contentDescription = stringResource(R.string.enter_your_pin),
                   tint = MaterialTheme.colorScheme.onBackground,
                 )
@@ -85,7 +85,7 @@ internal fun PinLoginScreen(
     ) {
       IconButton(onClick = onCloseClick) {
         Icon(
-          painter = painterResource(R.drawable.ic_fluent_dismiss),
+          painter = AppIcons.Fluent.Dismiss,
           contentDescription = stringResource(R.string.cd_back),
           tint = MaterialTheme.colorScheme.onBackground,
         )

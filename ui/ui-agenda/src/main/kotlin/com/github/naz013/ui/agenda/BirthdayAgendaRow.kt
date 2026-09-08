@@ -13,6 +13,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.AgendaListItem
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.toColor
+import com.github.naz013.ui.common.icon.DrawableCatalog
 
 private val COLOR_DOT_SIZE = 12.dp
 
@@ -55,11 +56,10 @@ private fun ColorDot(
   modifier: Modifier = Modifier,
 ) {
   Box(
-    modifier =
-      modifier
-        .size(COLOR_DOT_SIZE)
-        .clip(CircleShape)
-        .background(color.toColor()),
+    modifier = modifier
+      .size(COLOR_DOT_SIZE)
+      .clip(CircleShape)
+      .background(color.toColor()),
   )
 }
 
@@ -75,10 +75,10 @@ private fun birthdayMenuItems(): List<PopupMenuItem> =
 
 private fun AgendaMenuAction.iconResOrNull(): Int? =
   when (this) {
-    AgendaMenuAction.OPEN -> R.drawable.ic_fluent_open
-    AgendaMenuAction.EDIT -> R.drawable.ic_fluent_edit
-    AgendaMenuAction.DELETE -> R.drawable.ic_fluent_delete
+    AgendaMenuAction.OPEN -> DrawableCatalog.Fluent.Open
+    AgendaMenuAction.EDIT -> DrawableCatalog.Fluent.Edit
+    AgendaMenuAction.DELETE -> DrawableCatalog.Fluent.Delete
     AgendaMenuAction.ARCHIVE, AgendaMenuAction.SKIP, AgendaMenuAction.TURN_OFF,
     AgendaMenuAction.PIN, AgendaMenuAction.UNPIN,
-    -> null
+      -> null
   }

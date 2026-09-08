@@ -38,7 +38,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -108,14 +107,14 @@ internal fun NoteEditScreen(
             onClick = actions.onSaveClick,
           )
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_share_android),
+            icon = AppIcons.Fluent.ShareAndroid,
             iconColor = contentColor,
             contentDescription = stringResource(R.string.share),
             onClick = actions.onShareClick,
           )
           if (state.canDelete) {
             MenuIconButton(
-              icon = painterResource(R.drawable.ic_fluent_delete),
+              icon = AppIcons.Fluent.Delete,
               iconColor = contentColor,
               contentDescription = stringResource(R.string.delete),
               onClick = actions.onDeleteClick,

@@ -86,6 +86,7 @@ private val WEEKDAY_LABELS = listOf(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun RoutineEditScreen(
+  modifier: Modifier = Modifier,
   state: RoutineEditState,
   // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
   // leading icon (close vs. back), onBackClick pops the entry either way.
@@ -107,7 +108,6 @@ internal fun RoutineEditScreen(
   onManageTagsClick: () -> Unit,
   onSaveClick: () -> Unit,
   onDeleteClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
@@ -117,7 +117,11 @@ internal fun RoutineEditScreen(
         navigationIcon = {
           MenuIconButton(
             icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
-            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
+            contentDescription = if (renderAsDetailPane) {
+              stringResource(R.string.acc_close)
+            } else {
+              stringResource(R.string.cd_back)
+            },
             onClick = onBackClick,
           )
         },
@@ -246,9 +250,9 @@ private fun EditOverflowMenu(onDeleteClick: () -> Unit) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun RecurrenceOptionPicker(
+  modifier: Modifier = Modifier,
   option: RoutineRecurrenceOption,
   onOptionChange: (RoutineRecurrenceOption) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(modifier = modifier) {
     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -309,9 +313,9 @@ private fun RecurrenceOptionPicker(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun WeekdaySelector(
+  modifier: Modifier = Modifier,
   selectedWeekdays: Set<Int>,
   onToggle: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   FlowRow(modifier = modifier, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
     WEEKDAY_LABELS.forEach { (day, labelRes) ->
@@ -326,9 +330,9 @@ private fun WeekdaySelector(
 
 @Composable
 private fun DayOfMonthPicker(
+  modifier: Modifier = Modifier,
   dayOfMonth: Int,
   onDayChange: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
     Text(text = stringResource(R.string.day_of_month), modifier = Modifier.weight(1f))
@@ -354,6 +358,7 @@ private fun SectionHeader(text: String) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun RoutineStepRow(
+  modifier: Modifier = Modifier,
   step: RoutineStepUiState,
   isFirst: Boolean,
   isLast: Boolean,
@@ -363,7 +368,6 @@ private fun RoutineStepRow(
   onRemoveClick: () -> Unit,
   onMoveUpClick: () -> Unit,
   onMoveDownClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val dateTimePicker = rememberDateTimePicker()
   val timeLabel = step.scheduledTime ?: stringResource(R.string.no_time)

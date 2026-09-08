@@ -50,10 +50,10 @@ private enum class BubbleEdge {
  */
 @Composable
 fun CloudBubble(
+  modifier: Modifier = Modifier,
   onDismissRequest: () -> Unit,
   containerColor: Color,
   contentColor: Color,
-  modifier: Modifier = Modifier,
   content: @Composable () -> Unit,
 ) {
   val density = LocalDensity.current
@@ -75,16 +75,26 @@ fun CloudBubble(
       color = containerColor,
       contentColor = contentColor,
       shadowElevation = 6.dp,
-      tonalElevation = 4.dp,
+      tonalElevation = 6.dp,
     ) {
       Box(
-        modifier =
-          Modifier.padding(
-            when (edge) {
-              BubbleEdge.ANCHOR_BELOW -> PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp + TAIL_HEIGHT)
-              BubbleEdge.ANCHOR_ABOVE -> PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp + TAIL_HEIGHT, bottom = 12.dp)
-            },
-          ),
+        modifier = Modifier.padding(
+          when (edge) {
+            BubbleEdge.ANCHOR_BELOW -> PaddingValues(
+              start = 16.dp,
+              end = 16.dp,
+              top = 12.dp,
+              bottom = 12.dp + TAIL_HEIGHT
+            )
+
+            BubbleEdge.ANCHOR_ABOVE -> PaddingValues(
+              start = 16.dp,
+              end = 16.dp,
+              top = 12.dp + TAIL_HEIGHT,
+              bottom = 12.dp
+            )
+          },
+        ),
       ) {
         content()
       }
@@ -101,11 +111,10 @@ private fun cloudBubbleShape(
   val tailHeightPx = with(density) { TAIL_HEIGHT.toPx() }
   val cornerPx = with(density) { BUBBLE_CORNER_RADIUS.toPx() }
   val bodyHeight = (size.height - tailHeightPx).coerceAtLeast(0f)
-  val arrowX =
-    (size.width * arrowFraction).coerceIn(
-      tailWidthPx,
-      (size.width - tailWidthPx).coerceAtLeast(tailWidthPx),
-    )
+  val arrowX = (size.width * arrowFraction).coerceIn(
+    tailWidthPx,
+    (size.width - tailWidthPx).coerceAtLeast(tailWidthPx),
+  )
 
   when (edge) {
     BubbleEdge.ANCHOR_BELOW -> {
@@ -162,12 +171,11 @@ private class CloudBubblePositionProvider(
     val clampedLeft = idealLeft.coerceIn(marginPx, maxLeft)
 
     val arrowX = anchorCenterX - clampedLeft
-    val fraction =
-      if (popupContentSize.width > 0) {
-        arrowX.toFloat() / popupContentSize.width
-      } else {
-        0.5f
-      }
+    val fraction = if (popupContentSize.width > 0) {
+      arrowX.toFloat() / popupContentSize.width
+    } else {
+      0.5f
+    }
     onArrowFraction(fraction.coerceIn(0.12f, 0.88f))
 
     // Prefer sitting above the anchor (tail pointing down at it); only flip to below (tail
@@ -178,12 +186,11 @@ private class CloudBubblePositionProvider(
     val edge = if (fitsAbove) BubbleEdge.ANCHOR_BELOW else BubbleEdge.ANCHOR_ABOVE
     onEdge(edge)
 
-    val idealTop =
-      if (edge == BubbleEdge.ANCHOR_BELOW) {
-        anchorBounds.top - popupContentSize.height - spacingPx
-      } else {
-        anchorBounds.bottom + spacingPx
-      }
+    val idealTop = if (edge == BubbleEdge.ANCHOR_BELOW) {
+      anchorBounds.top - popupContentSize.height - spacingPx
+    } else {
+      anchorBounds.bottom + spacingPx
+    }
     val maxTop = (windowSize.height - popupContentSize.height - marginPx).coerceAtLeast(marginPx)
     val clampedTop = idealTop.coerceIn(marginPx, maxTop)
 

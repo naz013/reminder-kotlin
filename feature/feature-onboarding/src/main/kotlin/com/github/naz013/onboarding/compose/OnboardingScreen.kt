@@ -45,21 +45,20 @@ private const val GET_STARTED_PAGE = 2
 
 @Composable
 fun OnboardingScreen(
+  modifier: Modifier = Modifier,
   onSkip: () -> Unit,
   onCreateFirstReminder: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val pagerState = rememberPagerState(pageCount = { ONBOARDING_PAGE_COUNT })
 
   AnimatedGradientBackground(modifier = modifier.fillMaxSize()) {
     Column(modifier = Modifier.fillMaxSize()) {
       Row(
-        modifier =
-          Modifier
-            .statusBarsPadding()
-            .fillMaxWidth()
-            .height(56.dp)
-            .padding(horizontal = 8.dp),
+        modifier = Modifier
+          .statusBarsPadding()
+          .fillMaxWidth()
+          .height(56.dp)
+          .padding(horizontal = 8.dp),
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically,
       ) {
@@ -72,7 +71,9 @@ fun OnboardingScreen(
 
       HorizontalPager(
         state = pagerState,
-        modifier = Modifier.weight(1f).fillMaxWidth(),
+        modifier = Modifier
+          .weight(1f)
+          .fillMaxWidth(),
       ) { page ->
         when (page) {
           WELCOME_PAGE -> OnboardingWelcomePage()
@@ -87,7 +88,9 @@ fun OnboardingScreen(
       OnboardingPageIndicator(
         pageCount = ONBOARDING_PAGE_COUNT,
         currentPage = pagerState.currentPage,
-        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(vertical = 16.dp),
       )
 
       Spacer(modifier = Modifier.navigationBarsPadding())
@@ -108,7 +111,9 @@ private fun OnboardingWelcomePage(modifier: Modifier = Modifier) {
 @Composable
 private fun OnboardingCapabilitiesPage(modifier: Modifier = Modifier) {
   Column(
-    modifier = modifier.fillMaxSize().padding(horizontal = 32.dp),
+    modifier = modifier
+      .fillMaxSize()
+      .padding(horizontal = 32.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Center,
   ) {
@@ -147,9 +152,9 @@ private fun OnboardingCapabilitiesPage(modifier: Modifier = Modifier) {
 
 @Composable
 private fun OnboardingCapabilityCaption(
+  modifier: Modifier = Modifier,
   icon: Painter,
   caption: String,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier = modifier.width(88.dp),
@@ -162,7 +167,9 @@ private fun OnboardingCapabilityCaption(
       Icon(
         painter = icon,
         contentDescription = null,
-        modifier = Modifier.padding(14.dp).size(24.dp),
+        modifier = Modifier
+          .padding(14.dp)
+          .size(24.dp),
         tint = MaterialTheme.colorScheme.primary,
       )
     }
@@ -178,12 +185,14 @@ private fun OnboardingCapabilityCaption(
 
 @Composable
 private fun OnboardingGetStartedPage(
+  modifier: Modifier = Modifier,
   onCreateFirstReminder: () -> Unit,
   onMaybeLater: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier.fillMaxSize().padding(horizontal = 32.dp),
+    modifier = modifier
+      .fillMaxSize()
+      .padding(horizontal = 32.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Center,
   ) {
@@ -222,13 +231,15 @@ private fun OnboardingGetStartedPage(
 
 @Composable
 private fun OnboardingPageContent(
+  modifier: Modifier = Modifier,
   icon: Painter,
   title: String,
   subtitle: String,
-  modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier = modifier.fillMaxSize().padding(horizontal = 32.dp),
+    modifier = modifier
+      .fillMaxSize()
+      .padding(horizontal = 32.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Center,
   ) {
@@ -256,9 +267,9 @@ private fun OnboardingPageContent(
 
 @Composable
 private fun OnboardingPageIndicator(
+  modifier: Modifier = Modifier,
   pageCount: Int,
   currentPage: Int,
-  modifier: Modifier = Modifier,
 ) {
   Row(
     modifier = modifier,
@@ -266,19 +277,17 @@ private fun OnboardingPageIndicator(
   ) {
     repeat(pageCount) { page ->
       val isSelected = page == currentPage
-      val color =
-        if (isSelected) {
-          MaterialTheme.colorScheme.primary
-        } else {
-          MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
-        }
+      val color = if (isSelected) {
+        MaterialTheme.colorScheme.primary
+      } else {
+        MaterialTheme.colorScheme.outlineVariant
+      }
       Box(
-        modifier =
-          Modifier
-            .padding(horizontal = 4.dp)
-            .size(if (isSelected) 10.dp else 8.dp)
-            .clip(CircleShape)
-            .background(color),
+        modifier = Modifier
+          .padding(horizontal = 4.dp)
+          .size(if (isSelected) 10.dp else 8.dp)
+          .clip(CircleShape)
+          .background(color),
       )
     }
   }

@@ -1,7 +1,6 @@
 package com.github.naz013.feature.routine.preview
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -21,14 +20,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +42,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
@@ -51,11 +50,10 @@ import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.tag.TagChipRow
 
-private const val CHECK_ANIMATION_MS = 150
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun RoutinePreviewScreen(
+  modifier: Modifier = Modifier,
   state: RoutinePreviewState,
   // True when shown as a two-pane detail pane rather than pushed full-screen - only changes the
   // leading icon (close vs. back), onBackClick pops the entry either way.
@@ -68,13 +66,12 @@ internal fun RoutinePreviewScreen(
   onStepCheckToggle: (stepId: String) -> Unit,
   onStartClick: () -> Unit,
   adsContent: @Composable () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
     floatingActionButton = {
       if (state is RoutinePreviewState.Ready) {
-        ExtendedFloatingActionButton(
+        SmallExtendedFloatingActionButton(
           onClick = onStartClick,
           icon = { Icon(AppIcons.Fluent.Play, contentDescription = null) },
           text = { Text(stringResource(R.string.start_routine)) },
@@ -87,7 +84,11 @@ internal fun RoutinePreviewScreen(
         navigationIcon = {
           MenuIconButton(
             icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
-            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
+            contentDescription = if (renderAsDetailPane) {
+              stringResource(R.string.acc_close)
+            } else {
+              stringResource(R.string.cd_back)
+            },
             onClick = onBackClick,
           )
         },
@@ -106,7 +107,7 @@ internal fun RoutinePreviewScreen(
             )
           }
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
@@ -193,13 +194,15 @@ private fun RoutineStepChecklistRow(
       IconButton(
         onClick = onCheckToggle,
         modifier = Modifier
-          .size(40.dp)
+          .size(48.dp)
           .semantics { contentDescription = checkToggleDescription },
       ) {
         AnimatedVisibility(
           visible = step.isCompleted,
-          enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
-          exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+          enter = scaleIn(MaterialTheme.motionScheme.defaultSpatialSpec()) +
+            fadeIn(MaterialTheme.motionScheme.defaultEffectsSpec()),
+          exit = scaleOut(MaterialTheme.motionScheme.defaultSpatialSpec()) +
+            fadeOut(MaterialTheme.motionScheme.defaultEffectsSpec()),
         ) {
           Icon(
             painter = AppIcons.Fluent.CheckboxChecked,
@@ -209,8 +212,10 @@ private fun RoutineStepChecklistRow(
         }
         AnimatedVisibility(
           visible = !step.isCompleted,
-          enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
-          exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+          enter = scaleIn(MaterialTheme.motionScheme.defaultSpatialSpec()) +
+            fadeIn(MaterialTheme.motionScheme.defaultEffectsSpec()),
+          exit = scaleOut(MaterialTheme.motionScheme.defaultSpatialSpec()) +
+            fadeOut(MaterialTheme.motionScheme.defaultEffectsSpec()),
         ) {
           Icon(
             painter = AppIcons.Fluent.CheckboxUnchecked,

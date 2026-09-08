@@ -67,14 +67,14 @@ fun ColorPickerCard(
         colors = colors,
         selectedIndex = selectedIndex,
         onColorSelected = onColorSelected,
+        contentDescription = title,
         enabled = enabled,
         hapticFeedbackEnabled = hapticFeedbackEnabled,
-        modifier =
-          Modifier
-            .fillMaxWidth()
-            .height(40.dp)
-            .padding(top = 8.dp)
-            .let { if (sliderTestTag != null) it.testTag(sliderTestTag) else it },
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(48.dp)
+          .padding(top = 8.dp)
+          .let { if (sliderTestTag != null) it.testTag(sliderTestTag) else it },
       )
     }
   }
@@ -86,26 +86,24 @@ private fun SelectedColorDot(
   modifier: Modifier = Modifier,
 ) {
   Box(
-    modifier =
-      modifier
-        .size(SelectedColorDotSize)
-        .clip(CircleShape)
-        .background(color)
-        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape),
+    modifier = modifier
+      .size(SelectedColorDotSize)
+      .clip(CircleShape)
+      .background(color)
+      .border(1.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape),
   )
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun ColorPickerCardPreview() {
-  val colors =
-    listOf(
-      Color(0xFF86E3CE),
-      Color(0xFFD0E6A5),
-      Color(0xFFFFDD94),
-      Color(0xFFFA897B),
-      Color(0xFFCCABD8),
-    )
+  val colors = listOf(
+    Color(0xFF86E3CE),
+    Color(0xFFD0E6A5),
+    Color(0xFFFFDD94),
+    Color(0xFFFA897B),
+    Color(0xFFCCABD8),
+  )
   AppTheme {
     ColorPickerCard(
       colors = colors,

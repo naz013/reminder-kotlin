@@ -5,37 +5,31 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.group.UiGroupList
 import com.github.naz013.feature.reminder.build.SubTasksBuilderItem
 import com.github.naz013.feature.reminder.build.valuedialog.editor.SubTasksValueEditor
+import com.github.naz013.feature.reminder.compose.OfflineOnlyRow
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.AppShapes
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
@@ -45,6 +39,7 @@ import com.github.naz013.ui.tag.TagChipState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun TodoEditScreen(
+  modifier: Modifier = Modifier,
   state: TodoEditState,
   dateTimeManager: DateTimeManager,
   onBackClick: () -> Unit,
@@ -57,7 +52,6 @@ internal fun TodoEditScreen(
   onExtendClick: () -> Unit,
   onDeleteClick: () -> Unit,
   onOfflineOnlyChange: (Boolean) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
@@ -67,7 +61,7 @@ internal fun TodoEditScreen(
         navigationIcon = {
           MenuIconButton(
             icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_back),
             onClick = onBackClick,
           )
         },
@@ -79,7 +73,7 @@ internal fun TodoEditScreen(
           )
           if (state.isEditing) {
             MenuIconButton(
-              icon = painterResource(R.drawable.ic_fluent_delete),
+              icon = AppIcons.Fluent.Delete,
               contentDescription = stringResource(R.string.delete),
               onClick = onDeleteClick,
             )
@@ -90,13 +84,12 @@ internal fun TodoEditScreen(
     },
   ) { padding ->
     Column(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .background(MaterialTheme.colorScheme.background)
-          .padding(padding)
-          .verticalScroll(rememberScrollState())
-          .padding(16.dp),
+      modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .padding(padding)
+        .verticalScroll(rememberScrollState())
+        .padding(16.dp),
     ) {
       OutlinedTextField(
         value = state.title,
@@ -145,45 +138,14 @@ internal fun TodoEditScreen(
       FilledTonalButton(
         onClick = onExtendClick,
         enabled = state.canSave,
-        shape = RoundedCornerShape(24.dp),
-        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+        shape = AppShapes.pill,
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(top = 24.dp),
       ) {
         Text(stringResource(R.string.more_options))
       }
     }
-  }
-}
-
-@Composable
-private fun OfflineOnlyRow(
-  checked: Boolean,
-  onCheckedChange: (Boolean) -> Unit,
-  modifier: Modifier = Modifier,
-) {
-  Column(modifier = modifier.fillMaxWidth()) {
-    Row(
-      modifier = Modifier.fillMaxWidth(),
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      Icon(
-        painter = AppIcons.Fluent.Cloud,
-        contentDescription = null,
-        tint = MaterialTheme.colorScheme.onBackground,
-      )
-      Spacer(modifier = Modifier.width(16.dp))
-      Text(
-        text = stringResource(R.string.offline_only_reminder),
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier.weight(1f),
-      )
-      Switch(checked = checked, onCheckedChange = onCheckedChange)
-    }
-    Text(
-      text = stringResource(R.string.offline_only_reminder_description),
-      style = MaterialTheme.typography.bodySmall,
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
   }
 }
 
@@ -195,7 +157,9 @@ private fun TodoSectionHeader(text: String) {
     text = text,
     style = MaterialTheme.typography.titleSmall,
     color = MaterialTheme.colorScheme.tertiary,
-    modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 8.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(top = 24.dp, bottom = 8.dp),
   )
 }
 

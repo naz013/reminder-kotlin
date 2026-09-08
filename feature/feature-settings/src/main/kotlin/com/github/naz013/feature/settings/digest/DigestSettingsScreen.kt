@@ -16,10 +16,10 @@ import org.threeten.bp.LocalTime
 
 @Composable
 internal fun DigestSettingsScreen(
+  modifier: Modifier = Modifier,
   state: DigestSettingsState,
   onDailyToggle: () -> Unit,
   onHourSelected: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val dateTimePicker = rememberDateTimePicker()
   val timePickerTitle = stringResource(R.string.ai_digest_time)

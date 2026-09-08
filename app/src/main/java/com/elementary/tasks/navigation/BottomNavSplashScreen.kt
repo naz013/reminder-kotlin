@@ -32,6 +32,9 @@ fun BottomNavSplashScreen(modifier: Modifier = Modifier) {
     nameVisible = true
   }
 
+  val nameEnterTransition = fadeIn(animationSpec = MaterialTheme.motionScheme.defaultEffectsSpec()) +
+    slideInVertically(animationSpec = MaterialTheme.motionScheme.defaultSpatialSpec()) { it / 2 }
+
   AnimatedGradientBackground(modifier = modifier) {
     Column(
       modifier = Modifier.align(Alignment.Center),
@@ -41,7 +44,7 @@ fun BottomNavSplashScreen(modifier: Modifier = Modifier) {
       Spacer(Modifier.height(36.dp))
       AnimatedVisibility(
         visible = nameVisible,
-        enter = fadeIn() + slideInVertically { it / 2 },
+        enter = nameEnterTransition,
       ) {
         Text(
           text = stringResource(R.string.app_title),

@@ -1,11 +1,9 @@
 package com.github.naz013.feature.note.create
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
@@ -21,8 +19,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
 
-private const val FLOATING_BAR_ANIMATION_DURATION_MS = 300
 private const val BAR_PRESSED_SCALE = 1.05f
 
 /**
@@ -66,44 +63,37 @@ private val BAR_ITEM_SIZE = 52.dp
 
 @Composable
 internal fun NoteEditFloatingBar(
+  modifier: Modifier = Modifier,
   items: List<NoteEditBarItem>,
   containerColor: Color,
   contentColor: Color,
-  modifier: Modifier = Modifier,
 ) {
   val visibleState = remember { MutableTransitionState(false) }
   LaunchedEffect(Unit) {
     visibleState.targetState = true
   }
   var pressedCount by remember { mutableStateOf(0) }
+  // "Fast" speed per guidelines - this bar and its press-scale feedback are small floating
+  // controls (closer to a button/FAB than a partial-screen surface like a bottom sheet), so both
+  // its entrance and its per-press scale use the fast tier.
+  val barSpatialSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastSpatialSpec()
+  val barEffectsSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastEffectsSpec()
   val barScale by animateFloatAsState(
     targetValue = if (pressedCount > 0) BAR_PRESSED_SCALE else 1f,
-    animationSpec =
-    spring(
-      dampingRatio = Spring.DampingRatioMediumBouncy,
-      stiffness = Spring.StiffnessMedium,
-    ),
+    animationSpec = barSpatialSpec,
     label = "bar_scale",
   )
   AnimatedVisibility(
     modifier = modifier,
     visibleState = visibleState,
-    enter =
-    scaleIn(
-      animationSpec =
-      spring(
-        dampingRatio = Spring.DampingRatioMediumBouncy,
-        stiffness = Spring.StiffnessLow,
-      ),
-      initialScale = 0f,
-    ) + fadeIn(animationSpec = tween(FLOATING_BAR_ANIMATION_DURATION_MS / 2)),
+    enter = scaleIn(animationSpec = barSpatialSpec, initialScale = 0f) + fadeIn(animationSpec = barEffectsSpec),
   ) {
     Surface(
       modifier = Modifier.scale(barScale),
-      shape = RoundedCornerShape(percent = 50),
+      shape = CircleShape,
       color = containerColor,
-      shadowElevation = 4.dp,
-      tonalElevation = 4.dp,
+      shadowElevation = 3.dp,
+      tonalElevation = 3.dp,
     ) {
       Row(
         modifier =

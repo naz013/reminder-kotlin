@@ -17,11 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 
@@ -44,10 +44,10 @@ private val RowSpacing = 24.dp
  */
 @Composable
 fun PinInput(
+  modifier: Modifier = Modifier,
   pin: String,
   onDigitClick: (Int) -> Unit,
   onDeleteClick: () -> Unit,
-  modifier: Modifier = Modifier,
   pinLength: Int = 6,
   shuffleDigits: Boolean = false,
   fingerprintButton: (@Composable () -> Unit)? = null,
@@ -96,7 +96,7 @@ fun PinInput(
       ) {
         IconButton(onClick = onDeleteClick) {
           Icon(
-            painter = painterResource(R.drawable.ic_fluent_dismiss),
+            painter = AppIcons.Fluent.Dismiss,
             contentDescription = stringResource(R.string.delete),
             tint = MaterialTheme.colorScheme.onSurface,
           )
@@ -114,7 +114,7 @@ private fun PinDots(enteredCount: Int, pinLength: Int) {
         Spacer(modifier = Modifier.width(if (index == pinLength / 2) 16.dp else 4.dp))
       }
       Icon(
-        painter = painterResource(R.drawable.ic_fluent_text_asterisk),
+        painter = AppIcons.Fluent.TextAsterisk,
         contentDescription = null,
         tint = if (index < enteredCount) {
           MaterialTheme.colorScheme.onBackground
@@ -134,7 +134,7 @@ private fun PinDigitButton(digit: Int, onClick: (Int) -> Unit) {
     modifier = Modifier.size(DigitButtonSize),
     shape = CircleShape,
     color = MaterialTheme.colorScheme.surface,
-    tonalElevation = 2.dp,
+    tonalElevation = 1.dp,
     shadowElevation = 1.dp,
   ) {
     Box(contentAlignment = Alignment.Center) {

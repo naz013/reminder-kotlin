@@ -12,14 +12,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,7 +33,10 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
+import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.tag.TagChipRow
 import com.github.naz013.ui.tag.TagChipState
 
@@ -59,31 +61,31 @@ internal fun PreviewGoogleTaskScreen(
         navigationIcon = {
           MenuIconButton(
             icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_back),
             onClick = onBackClick,
           )
         },
         actions = {
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_edit),
+            icon = AppIcons.Fluent.Edit,
             contentDescription = stringResource(R.string.edit),
             onClick = onEditClick,
           )
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_delete),
+            icon = AppIcons.Fluent.Delete,
             contentDescription = stringResource(R.string.delete),
             onClick = onDeleteClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
     floatingActionButton = {
       val task = state.task
       if (task != null && !task.isCompleted) {
-        ExtendedFloatingActionButton(
+        SmallExtendedFloatingActionButton(
           onClick = onCompleteClick,
-          icon = { Icon(painterResource(R.drawable.ic_fluent_checkmark), contentDescription = null) },
+          icon = { Icon(AppIcons.Fluent.Checkmark, contentDescription = null) },
           text = { Text(stringResource(R.string.complete)) },
         )
       }
@@ -92,10 +94,9 @@ internal fun PreviewGoogleTaskScreen(
     val task = state.task
     if (task == null) {
       Box(
-        modifier =
-          Modifier
-            .fillMaxSize()
-            .padding(padding),
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(padding),
         contentAlignment = Alignment.Center,
       ) {
         CircularProgressIndicator()
@@ -103,48 +104,53 @@ internal fun PreviewGoogleTaskScreen(
       return@Scaffold
     }
 
-    Column(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(padding)
-          .verticalScroll(rememberScrollState()),
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding),
+      contentAlignment = Alignment.TopCenter,
     ) {
-      DetailRow(
-        icon = R.drawable.ic_fluent_text,
-        text = task.text,
-        iconTint = MaterialTheme.colorScheme.primary,
-        textStyle = MaterialTheme.typography.titleLarge,
-        textColor = MaterialTheme.colorScheme.primary,
-        topPadding = 24.dp,
-      )
-      task.notes?.let {
-        DetailRow(icon = R.drawable.ic_fluent_note, text = it)
-      }
-      DetailRow(
-        icon = R.drawable.ic_fluent_list,
-        text = task.taskListName,
-        iconTint = Color(task.taskListColor),
-        textColor = Color(task.taskListColor),
-      )
-      task.dueDate?.let {
-        DetailRow(icon = R.drawable.ic_builder_by_monthday, text = it)
-      }
-      task.createdDate?.let {
-        DetailRow(icon = R.drawable.ic_builder_google_calendar_add, text = it)
-      }
-      task.completedDate?.let {
-        DetailRow(icon = R.drawable.ic_fluent_calendar_checkmark, text = it)
-      }
-      DetailRow(
-        icon = R.drawable.ic_fluent_flag,
-        text = stringResource(if (task.isCompleted) R.string.completed else R.string.not_completed),
-      )
-      if (state.tags.isNotEmpty()) {
-        TagsRow(tags = state.tags)
-      }
+      Column(
+        modifier = Modifier
+          .detailScreenContentWidth()
+          .verticalScroll(rememberScrollState()),
+      ) {
+        DetailRow(
+          icon = DrawableCatalog.Fluent.Text,
+          text = task.text,
+          iconTint = MaterialTheme.colorScheme.primary,
+          textStyle = MaterialTheme.typography.titleLarge,
+          textColor = MaterialTheme.colorScheme.primary,
+          topPadding = 24.dp,
+        )
+        task.notes?.let {
+          DetailRow(icon = DrawableCatalog.Fluent.Note, text = it)
+        }
+        DetailRow(
+          icon = DrawableCatalog.Fluent.List,
+          text = task.taskListName,
+          iconTint = Color(task.taskListColor),
+          textColor = Color(task.taskListColor),
+        )
+        task.dueDate?.let {
+          DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = it)
+        }
+        task.createdDate?.let {
+          DetailRow(icon = DrawableCatalog.Builder.GoogleCalendarAdd, text = it)
+        }
+        task.completedDate?.let {
+          DetailRow(icon = DrawableCatalog.Fluent.CalendarCheckmark, text = it)
+        }
+        DetailRow(
+          icon = DrawableCatalog.Fluent.Flag,
+          text = stringResource(if (task.isCompleted) R.string.completed else R.string.not_completed),
+        )
+        if (state.tags.isNotEmpty()) {
+          TagsRow(tags = state.tags)
+        }
 
-      adsContent()
+        adsContent()
+      }
     }
   }
 
@@ -166,13 +172,12 @@ internal fun PreviewGoogleTaskScreen(
 private fun TagsRow(tags: List<TagChipState>) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 6.dp),
   ) {
     Icon(
-      painter = painterResource(R.drawable.ic_builder_group),
+      painter = AppIcons.Builder.Tag,
       contentDescription = null,
       tint = MaterialTheme.colorScheme.onSurfaceVariant,
       modifier = Modifier.size(32.dp),
@@ -183,9 +188,9 @@ private fun TagsRow(tags: List<TagChipState>) {
 
 @Composable
 private fun DetailRow(
+  modifier: Modifier = Modifier,
   icon: Int,
   text: String,
-  modifier: Modifier = Modifier,
   iconTint: Color = MaterialTheme.colorScheme.onBackground,
   textColor: Color = MaterialTheme.colorScheme.onBackground,
   textStyle: TextStyle = MaterialTheme.typography.titleMedium,
@@ -193,10 +198,9 @@ private fun DetailRow(
 ) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp, top = topPadding),
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(start = 16.dp, end = 16.dp, top = topPadding),
   ) {
     Icon(
       painter = painterResource(icon),
@@ -208,10 +212,9 @@ private fun DetailRow(
       text = text,
       style = textStyle,
       color = textColor,
-      modifier =
-        Modifier
-          .weight(1f)
-          .padding(start = 16.dp),
+      modifier = Modifier
+        .weight(1f)
+        .padding(start = 16.dp),
     )
   }
 }
@@ -221,22 +224,20 @@ private fun DetailRow(
 private fun PreviewGoogleTaskScreenPreview() {
   AppTheme {
     PreviewGoogleTaskScreen(
-      state =
-        PreviewGoogleTaskState(
-          task =
-            GoogleTaskPreviewState(
-              id = "1",
-              text = "Buy milk",
-              notes = "2 liters, whole",
-              dueDate = "Tomorrow",
-              createdDate = "Today",
-              completedDate = null,
-              isCompleted = false,
-              taskListName = "Groceries",
-              taskListColor = Color(0xFF4CAF50).toArgb(),
-            ),
-          tags = listOf(TagChipState(id = "1", name = "Errands", color = Color(0xFF4CAF50))),
+      state = PreviewGoogleTaskState(
+        task = GoogleTaskPreviewState(
+          id = "1",
+          text = "Buy milk",
+          notes = "2 liters, whole",
+          dueDate = "Tomorrow",
+          createdDate = "Today",
+          completedDate = null,
+          isCompleted = false,
+          taskListName = "Groceries",
+          taskListColor = Color(0xFF4CAF50).toArgb(),
         ),
+        tags = listOf(TagChipState(id = "1", name = "Errands", color = Color(0xFF4CAF50))),
+      ),
       onBackClick = {},
       onEditClick = {},
       onDeleteClick = {},

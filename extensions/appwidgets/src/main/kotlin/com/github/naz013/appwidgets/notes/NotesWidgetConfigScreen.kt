@@ -31,11 +31,11 @@ import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 
 @Composable
 internal fun NotesWidgetConfigScreen(
+  modifier: Modifier = Modifier,
   state: NotesWidgetConfigState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
   onBackgroundColorSelected: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   WidgetConfigScaffold(
     title = stringResource(R.string.notes),
@@ -61,7 +61,8 @@ internal fun NotesWidgetConfigScreen(
         onColorSelected = { index ->
           onBackgroundColorSelected(index)
         },
-        modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
+        contentDescription = stringResource(R.string.background),
+        modifier = Modifier.fillMaxWidth().height(48.dp).padding(8.dp),
         hapticFeedbackEnabled = state.hapticFeedbackEnabled,
       )
     }
@@ -70,9 +71,9 @@ internal fun NotesWidgetConfigScreen(
 
 @Composable
 private fun NotesWidgetMockPreview(
+  modifier: Modifier = Modifier,
   headerColor: Color,
   contentColor: Color,
-  modifier: Modifier = Modifier,
 ) {
   Box(
     modifier = modifier

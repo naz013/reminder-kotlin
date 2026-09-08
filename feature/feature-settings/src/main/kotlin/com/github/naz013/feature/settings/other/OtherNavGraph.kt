@@ -22,6 +22,7 @@ import com.github.naz013.feature.settings.other.whatsnew.WhatsNewScreen
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewState
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewViewModel
 import com.github.naz013.feature.settings.proversion.rememberGooglePlayMarketLauncher
+import com.github.naz013.feature.settings.settingsNavigationContentDescription
 import com.github.naz013.feature.settings.settingsNavigationIcon
 import com.github.naz013.ui.common.compose.foundation.intent.rememberSendIntentResolver
 import com.github.naz013.ui.common.compose.foundation.telephony.rememberUrlLauncher
@@ -114,6 +115,7 @@ private fun OtherEntry(
   SettingsScaffold(
     title = stringResource(R.string.other),
     navigationIcon = settingsNavigationIcon(renderAsDetailPane = renderAsDetailPane),
+    navigationContentDescription = settingsNavigationContentDescription(renderAsDetailPane = renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     OtherSettingsScreen(
@@ -228,33 +230,32 @@ private fun WhatsNewEntry(backStack: MutableList<NavKey>) {
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 private fun SettingsWebView(
-  url: String,
   modifier: Modifier = Modifier,
+  url: String,
 ) {
   AndroidView(
     modifier = modifier.fillMaxSize(),
     factory = { context ->
       WebView(context).apply {
         settings.javaScriptEnabled = true
-        webViewClient =
-          object : WebViewClient() {
-            @Deprecated("Deprecated in Java")
-            override fun onReceivedError(
-              view: WebView,
-              errorCode: Int,
-              description: String,
-              failingUrl: String,
-            ) = Unit
+        webViewClient = object : WebViewClient() {
+          @Deprecated("Deprecated in Java")
+          override fun onReceivedError(
+            view: WebView,
+            errorCode: Int,
+            description: String,
+            failingUrl: String,
+          ) = Unit
 
-            @Deprecated("Deprecated in Java")
-            override fun shouldOverrideUrlLoading(
-              view: WebView,
-              loadUrl: String,
-            ): Boolean {
-              view.loadUrl(loadUrl)
-              return true
-            }
+          @Deprecated("Deprecated in Java")
+          override fun shouldOverrideUrlLoading(
+            view: WebView,
+            loadUrl: String,
+          ): Boolean {
+            view.loadUrl(loadUrl)
+            return true
           }
+        }
         webChromeClient = WebChromeClient()
         loadUrl(url)
       }

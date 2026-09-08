@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -56,9 +55,11 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.github.naz013.feature.reminder.build.logic.builderstate.ReminderPrediction
 import com.github.naz013.feature.reminder.build.quickstart.QuickStartOption
+import com.github.naz013.feature.reminder.compose.OfflineOnlyRow
 import com.github.naz013.feature.reminder.note.UiNoteList
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.AppShapes
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
@@ -156,14 +157,13 @@ internal fun BuildReminderScreen(
           AppDropdownMenu(
             expanded = overflowExpanded,
             onDismissRequest = { overflowExpanded = false },
-            items =
-              listOf(
-                PopupMenuItem(id = OVERFLOW_ITEM_HELP, title = stringResource(R.string.help)),
-                PopupMenuItem(
-                  id = OVERFLOW_ITEM_REPORT_ISSUE,
-                  title = stringResource(R.string.report_an_issue),
-                ),
+            items = listOf(
+              PopupMenuItem(id = OVERFLOW_ITEM_HELP, title = stringResource(R.string.help)),
+              PopupMenuItem(
+                id = OVERFLOW_ITEM_REPORT_ISSUE,
+                title = stringResource(R.string.report_an_issue),
               ),
+            ),
             onItemClick = { id ->
               overflowExpanded = false
               when (id) {
@@ -189,7 +189,9 @@ internal fun BuildReminderScreen(
   ) { padding ->
     if (isLoadingForEdit) {
       Box(
-        modifier = Modifier.fillMaxSize().padding(padding),
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(padding),
         contentAlignment = Alignment.Center,
       ) {
         CircularProgressIndicator()
@@ -199,18 +201,19 @@ internal fun BuildReminderScreen(
         quickStartOptions = quickStartOptions,
         onQuickStartClick = onQuickStartClick,
         onMoreOptionsClick = onAddClick,
-        modifier = Modifier.fillMaxSize().padding(padding),
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(padding),
       )
     } else {
       LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding =
-          PaddingValues(
-            start = 8.dp,
-            end = 8.dp,
-            top = padding.calculateTopPadding() + 8.dp,
-            bottom = padding.calculateBottomPadding() + 16.dp,
-          ),
+        contentPadding = PaddingValues(
+          start = 8.dp,
+          end = 8.dp,
+          top = padding.calculateTopPadding() + 8.dp,
+          bottom = padding.calculateBottomPadding() + 16.dp,
+        ),
         verticalArrangement = Arrangement.spacedBy(8.dp),
       ) {
         itemsIndexed(builderItems, key = { _, item -> item.key }) { index, item ->
@@ -265,12 +268,11 @@ private fun BuilderItemRow(
   onRemoveClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  val status =
-    when (item.state) {
-      is UiListBuilderItemState.EmptyState -> BuilderItemStatus.EMPTY
-      is UiListBuilderItemState.DoneState -> BuilderItemStatus.DONE
-      is UiListBuilderItemState.ErrorState -> BuilderItemStatus.ERROR
-    }
+  val status = when (item.state) {
+    is UiListBuilderItemState.EmptyState -> BuilderItemStatus.EMPTY
+    is UiListBuilderItemState.DoneState -> BuilderItemStatus.DONE
+    is UiListBuilderItemState.ErrorState -> BuilderItemStatus.ERROR
+  }
   val errorText = if (item.state is UiListBuilderItemState.ErrorState) item.errorText else null
 
   when (item) {
@@ -317,23 +319,20 @@ private fun NoteBuilderItemPreview(noteData: UiNoteList?, fallbackText: String) 
   }
 
   Column(
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .background(Color(noteData.backgroundColor), MaterialTheme.shapes.small)
-        .padding(8.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .background(Color(noteData.backgroundColor), MaterialTheme.shapes.small)
+      .padding(8.dp),
   ) {
-    val bodyText =
-      if (noteData.text.length > NOTE_BODY_MAX_CHARS) {
-        noteData.text.substring(0, NOTE_BODY_MAX_CHARS) + "..."
-      } else {
-        noteData.text
-      }
+    val bodyText = if (noteData.text.length > NOTE_BODY_MAX_CHARS) {
+      noteData.text.substring(0, NOTE_BODY_MAX_CHARS) + "..."
+    } else {
+      noteData.text
+    }
     if (bodyText.isNotEmpty()) {
-      val fontFamily =
-        remember(noteData.typeface) {
-          noteData.typeface?.let { FontFamily(ComposeTypeface(it)) }
-        }
+      val fontFamily = remember(noteData.typeface) {
+        noteData.typeface?.let { FontFamily(ComposeTypeface(it)) }
+      }
       Text(
         text = bodyText,
         color = Color(noteData.textColor),
@@ -351,29 +350,26 @@ private fun NoteBuilderItemPreview(noteData: UiNoteList?, fallbackText: String) 
         model = images.first().filePath,
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier =
-          Modifier
-            .fillMaxWidth()
-            .height(128.dp)
-            .clip(MaterialTheme.shapes.small),
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(128.dp)
+          .clip(MaterialTheme.shapes.small),
       )
       if (images.size > 1) {
         Row(
-          modifier =
-            Modifier
-              .horizontalScroll(rememberScrollState())
-              .padding(top = 4.dp),
+          modifier = Modifier
+            .horizontalScroll(rememberScrollState())
+            .padding(top = 4.dp),
         ) {
           images.drop(1).forEach { image ->
             AsyncImage(
               model = image.filePath,
               contentDescription = null,
               contentScale = ContentScale.Crop,
-              modifier =
-                Modifier
-                  .size(72.dp)
-                  .padding(end = 4.dp)
-                  .clip(MaterialTheme.shapes.small),
+              modifier = Modifier
+                .size(72.dp)
+                .padding(end = 4.dp)
+                .clip(MaterialTheme.shapes.small),
             )
           }
         }
@@ -384,26 +380,31 @@ private fun NoteBuilderItemPreview(noteData: UiNoteList?, fallbackText: String) 
 
 @Composable
 private fun ForecastRow(prediction: ReminderPrediction, modifier: Modifier = Modifier) {
-  val (icon, message) =
-    when (prediction) {
-      is ReminderPrediction.SuccessPrediction -> prediction.icon to prediction.message
-      is ReminderPrediction.FailedPrediction -> prediction.icon to prediction.message
-    }
+  val (icon, message) = when (prediction) {
+    is ReminderPrediction.SuccessPrediction -> prediction.icon to prediction.message
+    is ReminderPrediction.FailedPrediction -> prediction.icon to prediction.message
+  }
   Row(
-    modifier = modifier.fillMaxWidth().padding(8.dp),
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(8.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     Icon(
       painter = painterResource(icon),
       contentDescription = null,
       tint = MaterialTheme.colorScheme.onBackground,
-      modifier = Modifier.padding(start = 8.dp).size(24.dp),
+      modifier = Modifier
+        .padding(start = 8.dp)
+        .size(24.dp),
     )
     Text(
       text = message,
       style = MaterialTheme.typography.titleMedium,
       color = MaterialTheme.colorScheme.onBackground,
-      modifier = Modifier.weight(1f).padding(horizontal = 16.dp),
+      modifier = Modifier
+        .weight(1f)
+        .padding(horizontal = 16.dp),
     )
   }
 }
@@ -417,21 +418,27 @@ private fun TagsRow(
   modifier: Modifier = Modifier,
 ) {
   Row(
-    modifier = modifier.fillMaxWidth().padding(8.dp),
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(8.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     Icon(
       painter = AppIcons.Builder.Tag,
       contentDescription = null,
       tint = MaterialTheme.colorScheme.onBackground,
-      modifier = Modifier.padding(start = 8.dp).size(24.dp),
+      modifier = Modifier
+        .padding(start = 8.dp)
+        .size(24.dp),
     )
     TagChipPicker(
       allTags = allTags,
       selectedTagIds = selectedTagIds,
       onToggle = onToggle,
       onManageTagsClick = onManageTagsClick,
-      modifier = Modifier.weight(1f).padding(horizontal = 16.dp),
+      modifier = Modifier
+        .weight(1f)
+        .padding(horizontal = 16.dp),
     )
   }
 }
@@ -446,7 +453,9 @@ private fun SaveAsPresetRow(
 ) {
   Column(modifier = modifier.fillMaxWidth()) {
     Row(
-      modifier = Modifier.fillMaxWidth().padding(8.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(8.dp),
       verticalAlignment = Alignment.CenterVertically,
     ) {
       Icon(
@@ -467,45 +476,12 @@ private fun SaveAsPresetRow(
     OutlinedTextField(
       value = presetName,
       onValueChange = onPresetNameChange,
-      modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp),
       enabled = checked,
       label = { Text(stringResource(R.string.recur_preset_name_hint)) },
       singleLine = true,
-    )
-  }
-}
-
-@Composable
-private fun OfflineOnlyRow(
-  checked: Boolean,
-  onCheckedChange: (Boolean) -> Unit,
-  modifier: Modifier = Modifier,
-) {
-  Column(modifier = modifier.fillMaxWidth()) {
-    Row(
-      modifier = Modifier.fillMaxWidth().padding(8.dp),
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      Icon(
-        painter = AppIcons.Fluent.Cloud,
-        contentDescription = null,
-        tint = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier.padding(start = 8.dp),
-      )
-      Spacer(modifier = Modifier.width(16.dp))
-      Text(
-        text = stringResource(R.string.offline_only_reminder),
-        style = MaterialTheme.typography.bodyLarge,
-        color = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier.weight(1f),
-      )
-      Switch(checked = checked, onCheckedChange = onCheckedChange)
-    }
-    Text(
-      text = stringResource(R.string.offline_only_reminder_description),
-      style = MaterialTheme.typography.bodySmall,
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-      modifier = Modifier.fillMaxWidth().padding(start = 56.dp, end = 16.dp),
     )
   }
 }
@@ -537,7 +513,9 @@ private fun BuilderEmptyState(
       modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp),
     )
     Column(
-      modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 24.dp),
       verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
       quickStartOptions.forEach { option ->
@@ -557,13 +535,13 @@ private fun BuilderEmptyState(
 
 @Composable
 private fun QuickStartButton(
+  modifier: Modifier = Modifier,
   text: String,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   FilledTonalButton(
     onClick = onClick,
-    shape = RoundedCornerShape(24.dp),
+    shape = AppShapes.pill,
     modifier = modifier,
   ) {
     Text(text = text)

@@ -28,7 +28,8 @@ interface BirthdayDateCalculator {
    *
    * @param birthDate The birth date (only month/day are used)
    * @param time The time of day the birthday should be observed
-   * @param occurrenceCount The number of additional years to calculate after [fromYear] (inclusive range of occurrenceCount + 1 results)
+   * @param occurrenceCount The number of additional years to calculate
+   * after [fromYear] (inclusive range of occurrenceCount + 1 results)
    * @param fromYear The first year to calculate an occurrence for
    * @return One occurrence per year, each resolved independently so a Feb 29 birthday reappears in later leap years
    */

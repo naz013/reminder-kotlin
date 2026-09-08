@@ -10,12 +10,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,6 +26,7 @@ import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.feature.workflow.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.BuilderItemStatus
 import com.github.naz013.ui.common.compose.foundation.component.BuilderListItemCard
@@ -78,12 +77,12 @@ internal fun WorkflowRuleBuilderScreen(
             contentDescription = if (renderAsDetailPane) {
               stringResource(com.github.naz013.ui.common.R.string.acc_close)
             } else {
-              null
+              stringResource(com.github.naz013.ui.common.R.string.cd_back)
             },
             onClick = onBackClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->

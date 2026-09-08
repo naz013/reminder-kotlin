@@ -7,9 +7,9 @@ import com.github.naz013.ui.reminder.UiReminderList
 
 @Composable
 internal fun GroupReminderRow(
+  modifier: Modifier = Modifier,
   item: UiReminderList,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   AgendaListItem(
     mainText = item.mainText.text,

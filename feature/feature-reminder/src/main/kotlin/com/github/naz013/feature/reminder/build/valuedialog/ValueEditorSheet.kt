@@ -138,6 +138,7 @@ const val valueEditorSheetCloseTestTag = "value_editor_sheet_close"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ValueEditorSheet(
+  modifier: Modifier = Modifier,
   builderItem: BuilderItem<*>,
   onDismissRequest: () -> Unit,
   onValueChange: (BuilderItem<*>) -> Unit,
@@ -149,7 +150,6 @@ internal fun ValueEditorSheet(
   onPickApplication: () -> Unit,
   onPickContact: (onResult: (phone: String) -> Unit) -> Unit,
   onPickFiles: (onResult: (List<Uri>) -> Unit) -> Unit,
-  modifier: Modifier = Modifier,
   is24HourFormat: Boolean = false,
   hapticFeedbackEnabled: Boolean = true,
   onHelpClick: (() -> Unit)? = null,

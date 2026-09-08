@@ -2,10 +2,8 @@ package com.github.naz013.feature.birthday.preview
 
 import android.graphics.Bitmap
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
@@ -32,7 +30,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -50,6 +47,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -59,6 +57,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.birthday.UiBirthdayPreview
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
 import com.github.naz013.ui.tag.TagChipRow
@@ -67,7 +66,6 @@ import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
 /** Matches the stagger pattern already used for list rows in `ChronologicalHomeScreen`. */
-private const val DETAIL_ROW_ANIMATION_DURATION_MS = 250
 private const val DETAIL_ROW_STAGGER_DELAY_MS = 30L
 private const val DETAIL_ROW_MAX_STAGGER_DELAY_MS = 180L
 
@@ -96,30 +94,36 @@ internal fun PreviewBirthdayScreen(
         navigationIcon = {
           MenuIconButton(
             icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
-            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
+            contentDescription = if (renderAsDetailPane) {
+              stringResource(R.string.acc_close)
+            } else {
+              stringResource(R.string.cd_back)
+            },
             onClick = onBackClick,
           )
         },
         actions = {
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_edit),
+            icon = AppIcons.Fluent.Edit,
             contentDescription = stringResource(R.string.edit),
             onClick = onEditClick,
           )
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_fluent_delete),
+            icon = AppIcons.Fluent.Delete,
             contentDescription = stringResource(R.string.delete),
             onClick = onDeleteClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
     val birthday = state.birthday
     if (birthday == null) {
       Box(
-        modifier = Modifier.fillMaxSize().padding(padding),
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(padding),
         contentAlignment = Alignment.Center,
       ) {
         CircularProgressIndicator()
@@ -128,27 +132,24 @@ internal fun PreviewBirthdayScreen(
     }
 
     Box(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(padding),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding),
       contentAlignment = Alignment.TopCenter,
     ) {
       Column(
-        modifier =
-          Modifier
-            .fillMaxHeight()
-            .detailScreenContentWidth()
-            .verticalScroll(rememberScrollState()),
+        modifier = Modifier
+          .fillMaxHeight()
+          .detailScreenContentWidth()
+          .verticalScroll(rememberScrollState()),
       ) {
         BirthdayDetails(birthday = birthday, tags = state.tags)
 
         if (birthday.hasBirthdayToday && birthday.number != null) {
           Row(
-            modifier =
-              Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp),
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(horizontal = 16.dp, vertical = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
           ) {
             OutlinedButton(onClick = onCallClick, modifier = Modifier.weight(1f)) {
@@ -204,12 +205,11 @@ private fun BirthdayDetails(
   }
   val number = birthday.number
   if (number != null) {
-    val displayName =
-      if (birthday.contactName != null) {
-        "${birthday.contactName} ($number)"
-      } else {
-        number
-      }
+    val displayName = if (birthday.contactName != null) {
+      "${birthday.contactName} ($number)"
+    } else {
+      number
+    }
     AnimatedDetailRow(index = 1) {
       DetailRow(icon = R.drawable.ic_fluent_phone, text = displayName)
     }
@@ -222,7 +222,11 @@ private fun BirthdayDetails(
   }
   birthday.nextBirthdayDate?.let {
     AnimatedDetailRow(index = 4) {
-      DetailRow(icon = R.drawable.ic_fluent_alert, text = it, contentDescription = stringResource(R.string.estimated_next_reminder))
+      DetailRow(
+        icon = R.drawable.ic_fluent_alert,
+        text = it,
+        contentDescription = stringResource(R.string.estimated_next_reminder)
+      )
     }
   }
   if (tags.isNotEmpty()) {
@@ -234,13 +238,12 @@ private fun BirthdayDetails(
 private fun TagsRow(tags: List<TagChipState>) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp, top = 12.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(start = 16.dp, end = 16.dp, top = 12.dp),
   ) {
     Icon(
-      painter = painterResource(R.drawable.ic_builder_group),
+      painter = AppIcons.Builder.Tag,
       contentDescription = null,
       tint = MaterialTheme.colorScheme.onBackground,
       modifier = Modifier.size(32.dp),
@@ -254,25 +257,24 @@ private fun TagsRow(tags: List<TagChipState>) {
 private fun AnimatedAvatar(photo: Bitmap) {
   val visibleState = remember { MutableTransitionState(false) }
   LaunchedEffect(Unit) { visibleState.targetState = true }
+  // "Fast" speed per guidelines - a single compact avatar pop-in is a small-component-scale
+  // entrance, not a partial-screen animation, regardless of its role as this screen's hero moment.
+  val avatarSpatialSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastSpatialSpec()
+  val avatarEffectsSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastEffectsSpec()
   Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
     AnimatedVisibility(
       visibleState = visibleState,
-      enter =
-        fadeIn() +
-          scaleIn(
-            animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
-            initialScale = 0.6f,
-          ),
+      enter = fadeIn(animationSpec = avatarEffectsSpec) +
+        scaleIn(animationSpec = avatarSpatialSpec, initialScale = 0.6f),
     ) {
       Image(
         bitmap = photo.asImageBitmap(),
         contentDescription = stringResource(R.string.acc_contact_photo),
         contentScale = ContentScale.Crop,
-        modifier =
-          Modifier
-            .padding(top = 32.dp)
-            .size(72.dp)
-            .clip(CircleShape),
+        modifier = Modifier
+          .padding(top = 32.dp)
+          .size(72.dp)
+          .clip(CircleShape),
       )
     }
   }
@@ -289,11 +291,13 @@ private fun AnimatedDetailRow(
     delay((index * DETAIL_ROW_STAGGER_DELAY_MS).coerceAtMost(DETAIL_ROW_MAX_STAGGER_DELAY_MS).milliseconds)
     visibleState.targetState = true
   }
+  // "Fast" speed per guidelines - matches PreviewNoteReminderRow's identical per-row stagger fix.
+  val rowSpatialSpec: FiniteAnimationSpec<IntOffset> = MaterialTheme.motionScheme.fastSpatialSpec()
+  val rowEffectsSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastEffectsSpec()
   AnimatedVisibility(
     visibleState = visibleState,
-    enter =
-      fadeIn(animationSpec = tween(DETAIL_ROW_ANIMATION_DURATION_MS)) +
-        slideInVertically(animationSpec = tween(DETAIL_ROW_ANIMATION_DURATION_MS)) { fullHeight -> fullHeight / 6 },
+    enter = fadeIn(animationSpec = rowEffectsSpec) +
+      slideInVertically(animationSpec = rowSpatialSpec) { fullHeight -> fullHeight / 6 },
   ) {
     content()
   }
@@ -312,10 +316,9 @@ private fun DetailRow(
 ) {
   Row(
     verticalAlignment = Alignment.CenterVertically,
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .padding(start = 16.dp, end = 16.dp, top = topPadding),
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(start = 16.dp, end = 16.dp, top = topPadding),
   ) {
     Icon(
       painter = painterResource(icon),
@@ -327,10 +330,9 @@ private fun DetailRow(
       text = text,
       style = textStyle,
       color = textColor,
-      modifier =
-        Modifier
-          .weight(1f)
-          .padding(start = 16.dp),
+      modifier = Modifier
+        .weight(1f)
+        .padding(start = 16.dp),
     )
   }
 }
@@ -342,9 +344,9 @@ private fun ConfettiOverlay(modifier: Modifier = Modifier) {
   var isPlaying by remember { mutableStateOf(false) }
   var isVisible by remember { mutableStateOf(true) }
   LaunchedEffect(Unit) {
-    delay(1000L)
+    delay(1000L.milliseconds)
     isPlaying = true
-    delay(2500L)
+    delay(2500L.milliseconds)
     isVisible = false
   }
   if (isVisible) {
@@ -363,21 +365,19 @@ private fun ConfettiOverlay(modifier: Modifier = Modifier) {
 private fun PreviewBirthdayScreenPreview() {
   AppTheme {
     PreviewBirthdayScreen(
-      state =
-        PreviewBirthdayState(
-          birthday =
-            UiBirthdayPreview(
-              uuId = "1",
-              name = "Test User",
-              number = "1234567890",
-              photo = null,
-              contactName = "Test User",
-              ageFormatted = "25 years",
-              dateOfBirth = "25 May, 2000",
-              nextBirthdayDate = "25 May, 2026",
-              hasBirthdayToday = false,
-            ),
+      state = PreviewBirthdayState(
+        birthday = UiBirthdayPreview(
+          uuId = "1",
+          name = "Test User",
+          number = "1234567890",
+          photo = null,
+          contactName = "Test User",
+          ageFormatted = "25 years",
+          dateOfBirth = "25 May, 2000",
+          nextBirthdayDate = "25 May, 2026",
+          hasBirthdayToday = false,
         ),
+      ),
       onBackClick = {},
       onEditClick = {},
       onDeleteClick = {},

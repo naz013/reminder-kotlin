@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,9 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
@@ -40,14 +39,14 @@ import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
  */
 @Composable
 internal fun CalendarModeToggleButton(
+  modifier: Modifier = Modifier,
   currentMode: CalendarViewMode,
   onModeSelected: (CalendarViewMode) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   var expanded by remember { mutableStateOf(false) }
   Box(modifier = modifier) {
     MenuIconButton(
-      icon = painterResource(R.drawable.ic_fluent_calendar),
+      icon = AppIcons.Fluent.Calendar,
       contentDescription = stringResource(R.string.calendar_switch_view_mode),
       onClick = { expanded = true },
     )
@@ -90,13 +89,13 @@ private fun CalendarModeRow(
   Row(
     horizontalArrangement = Arrangement.spacedBy(12.dp),
     verticalAlignment = Alignment.CenterVertically,
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .clip(MaterialTheme.shapes.small)
-        .background(if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent)
-        .clickable(onClick = onClick)
-        .padding(horizontal = 12.dp, vertical = 12.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .heightIn(min = 48.dp)
+      .clip(MaterialTheme.shapes.small)
+      .background(if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent)
+      .clickable(onClick = onClick)
+      .padding(horizontal = 12.dp, vertical = 12.dp),
   ) {
     val rowContentColor = if (selected) MaterialTheme.colorScheme.onSecondaryContainer else contentColor
     Icon(
@@ -108,13 +107,16 @@ private fun CalendarModeRow(
     Text(
       text = label,
       color = rowContentColor,
-      style = MaterialTheme.typography.titleMedium,
-      fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal,
+      style = if (selected) {
+        MaterialTheme.typography.titleMediumEmphasized
+      } else {
+        MaterialTheme.typography.titleMedium
+      },
       modifier = Modifier.weight(1f),
     )
     if (selected) {
       Icon(
-        painter = painterResource(R.drawable.ic_fluent_checkmark),
+        painter = AppIcons.Fluent.Checkmark,
         contentDescription = null,
         tint = rowContentColor,
         modifier = Modifier.size(20.dp),

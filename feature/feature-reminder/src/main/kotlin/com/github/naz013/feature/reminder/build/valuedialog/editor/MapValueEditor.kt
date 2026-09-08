@@ -24,12 +24,12 @@ data class ReminderMapMarker(
 /** Location picker for the Arriving/Leaving coordinates editor. */
 @Composable
 internal fun MapValueEditor(
-  builderItem: BuilderItem<Place>,
-  dateTimeManager: DateTimeManager,
-  onValueChange: (BuilderItem<*>) -> Unit,
   modifier: Modifier = Modifier
     .fillMaxWidth()
     .aspectRatio(1f),
+  builderItem: BuilderItem<Place>,
+  dateTimeManager: DateTimeManager,
+  onValueChange: (BuilderItem<*>) -> Unit,
 ) {
   val markers = remember(builderItem) {
     builderItem.modifier.getValue()?.let { place ->

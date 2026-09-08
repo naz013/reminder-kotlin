@@ -14,10 +14,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSearchItemKeys
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
@@ -28,6 +28,7 @@ import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPicker
 
 @Composable
 internal fun CalendarSettingsScreen(
+  modifier: Modifier = Modifier,
   state: CalendarSettingsState,
   onFirstDayClick: () -> Unit,
   onFirstDayOptionSelected: (Int) -> Unit,
@@ -48,21 +49,19 @@ internal fun CalendarSettingsScreen(
   onHolidaysToggle: () -> Unit,
   onHolidaysLockedClick: () -> Unit,
   onHolidayCountryClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
 
   Column(
-    modifier =
-      modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .verticalScroll(rememberScrollState()),
+    modifier = modifier
+      .fillMaxSize()
+      .background(MaterialTheme.colorScheme.background)
+      .verticalScroll(rememberScrollState()),
   ) {
     SettingsItem(
       title = stringResource(R.string.first_day_of_the_week),
       subtitle = state.firstDayName,
-      icon = painterResource(R.drawable.ic_fluent_calendar_week_start),
+      icon = AppIcons.Fluent.CalendarWeekStart,
       itemKey = SettingsSearchItemKeys.CALENDAR_FIRST_DAY,
       dividerBottom = true,
       onClick = onFirstDayClick,
@@ -72,7 +71,7 @@ internal fun CalendarSettingsScreen(
 
     SettingsItem(
       title = stringResource(R.string.today_color),
-      icon = painterResource(R.drawable.ic_fluent_color),
+      icon = AppIcons.Fluent.Color,
       itemKey = SettingsSearchItemKeys.CALENDAR_TODAY_COLOR,
       dividerBottom = true,
       onClick = onTodayColorClick,
@@ -80,7 +79,7 @@ internal fun CalendarSettingsScreen(
     )
     SettingsItem(
       title = stringResource(R.string.reminders_color),
-      icon = painterResource(R.drawable.ic_fluent_color_fill),
+      icon = AppIcons.Fluent.ColorFill,
       itemKey = SettingsSearchItemKeys.CALENDAR_REMINDER_COLOR,
       dividerBottom = true,
       onClick = onReminderColorClick,
@@ -88,7 +87,7 @@ internal fun CalendarSettingsScreen(
     )
     SettingsItem(
       title = stringResource(R.string.birthdays_color),
-      icon = painterResource(R.drawable.ic_fluent_food_cake),
+      icon = AppIcons.Fluent.FoodCake,
       itemKey = SettingsSearchItemKeys.CALENDAR_BIRTHDAY_COLOR,
       dividerBottom = true,
       onClick = onBirthdayColorClick,
@@ -96,7 +95,7 @@ internal fun CalendarSettingsScreen(
     )
     SettingsItem(
       title = stringResource(R.string.google_calendar_events_color),
-      icon = painterResource(R.drawable.ic_fluent_calendar_star),
+      icon = AppIcons.Fluent.CalendarStar,
       itemKey = SettingsSearchItemKeys.CALENDAR_EVENT_COLOR,
       dividerBottom = true,
       onClick = onCalendarEventColorClick,
@@ -108,22 +107,21 @@ internal fun CalendarSettingsScreen(
     SettingsItem(
       title = stringResource(R.string.choose_calendar),
       subtitle = state.selectedCalendarsLabel,
-      icon = painterResource(R.drawable.ic_fluent_calendar_star),
+      icon = AppIcons.Fluent.CalendarStar,
       itemKey = SettingsSearchItemKeys.CALENDAR_CHOOSE_CALENDAR,
       dividerBottom = true,
       onClick = onSelectCalendarClick,
-      trailing =
-        if (state.isCalendarSelected) {
-          { TextButton(onClick = onCalendarResetClick) { Text(stringResource(R.string.reset_calendar)) } }
-        } else {
-          null
-        },
+      trailing = if (state.isCalendarSelected) {
+        { TextButton(onClick = onCalendarResetClick) { Text(stringResource(R.string.reset_calendar)) } }
+      } else {
+        null
+      },
     )
     SettingsSwitchItem(
       title = stringResource(R.string.add_reminders_to_google_calendar),
       checked = state.isExportChecked,
       onCheckedChange = { onExportToggle() },
-      icon = painterResource(R.drawable.ic_builder_google_calendar_add),
+      icon = AppIcons.Builder.GoogleCalendarAdd,
       enabled = state.isCalendarSelected,
       itemKey = SettingsSearchItemKeys.CALENDAR_EXPORT_TOGGLE,
       dividerBottom = true,
@@ -132,7 +130,7 @@ internal fun CalendarSettingsScreen(
       title = stringResource(R.string.scan_google_calendar_for_the_new_events),
       checked = state.isScanChecked,
       onCheckedChange = { onScanToggle() },
-      icon = painterResource(R.drawable.ic_fluent_calendar_sync),
+      icon = AppIcons.Fluent.CalendarSync,
       enabled = state.isCalendarSelected,
       itemKey = SettingsSearchItemKeys.CALENDAR_SCAN_TOGGLE,
       dividerBottom = true,
@@ -145,7 +143,7 @@ internal fun CalendarSettingsScreen(
         SettingsItem(
           title = stringResource(R.string.show_public_holidays),
           subtitle = stringResource(R.string.public_holidays_locked_description),
-          icon = painterResource(R.drawable.ic_fluent_globe),
+          icon = AppIcons.Fluent.Globe,
           locked = true,
           dividerBottom = true,
           onClick = onHolidaysLockedClick,
@@ -155,14 +153,14 @@ internal fun CalendarSettingsScreen(
           title = stringResource(R.string.show_public_holidays),
           checked = state.isHolidaysEnabled,
           onCheckedChange = { onHolidaysToggle() },
-          icon = painterResource(R.drawable.ic_fluent_globe),
+          icon = AppIcons.Fluent.Globe,
           itemKey = SettingsSearchItemKeys.CALENDAR_PUBLIC_HOLIDAYS,
           dividerBottom = true,
         )
         SettingsItem(
           title = stringResource(R.string.public_holidays_country),
           subtitle = state.holidayCountryLabel,
-          icon = painterResource(R.drawable.ic_fluent_calendar_star),
+          icon = AppIcons.Fluent.CalendarStar,
           enabled = state.isHolidaysEnabled,
           dividerBottom = true,
           onClick = onHolidayCountryClick,
@@ -211,9 +209,8 @@ internal fun CalendarSettingsScreen(
 @Composable
 private fun ColorSwatch(color: Color) {
   Box(
-    modifier =
-      Modifier
-        .size(24.dp)
-        .background(color, CircleShape),
+    modifier = Modifier
+      .size(24.dp)
+      .background(color, CircleShape),
   )
 }

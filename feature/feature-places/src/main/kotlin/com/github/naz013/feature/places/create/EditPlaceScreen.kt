@@ -12,22 +12,22 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.icon.DrawableCatalog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +50,11 @@ internal fun EditPlaceScreen(
         navigationIcon = {
           MenuIconButton(
             icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
-            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
+            contentDescription = if (renderAsDetailPane) {
+              stringResource(R.string.acc_close)
+            } else {
+              stringResource(R.string.cd_back)
+            },
             onClick = onBackClick,
           )
         },
@@ -66,16 +70,15 @@ internal fun EditPlaceScreen(
             )
           }
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
     Column(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(padding)
-          .background(MaterialTheme.colorScheme.background),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding)
+        .background(MaterialTheme.colorScheme.background),
     ) {
       OutlinedTextField(
         value = state.name,
@@ -88,17 +91,15 @@ internal fun EditPlaceScreen(
           }
         },
         singleLine = true,
-        modifier =
-          Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(horizontal = 16.dp, vertical = 8.dp),
       )
       adsContent()
       Box(
-        modifier =
-          Modifier
-            .fillMaxWidth()
-            .weight(1f),
+        modifier = Modifier
+          .fillMaxWidth()
+          .weight(1f),
       ) {
         mapContent()
       }
@@ -111,20 +112,25 @@ private fun OverflowMenuButton(
   onDeleteClick: () -> Unit,
 ) {
   var expanded by remember { mutableStateOf(false) }
-  val actions =
-    listOf(
-      Triple(0, stringResource(R.string.action_delete), R.drawable.ic_fluent_delete) to onDeleteClick,
-    )
+  val actions = listOf(
+    Triple(0, stringResource(R.string.action_delete), DrawableCatalog.Fluent.Delete) to onDeleteClick,
+  )
   Box {
     MenuIconButton(
-      icon = painterResource(R.drawable.ic_fluent_more_vertical),
+      icon = AppIcons.Fluent.MoreVertical,
       contentDescription = stringResource(R.string.more_options),
       onClick = { expanded = true },
     )
     AppDropdownMenu(
       expanded = expanded,
       onDismissRequest = { expanded = false },
-      items = actions.map { (triple, _) -> PopupMenuItem(id = triple.first, title = triple.second, iconRes = triple.third) },
+      items = actions.map { (triple, _) ->
+        PopupMenuItem(
+          id = triple.first,
+          title = triple.second,
+          iconRes = triple.third
+        )
+      },
       onItemClick = { id -> actions.firstOrNull { it.first.first == id }?.second?.invoke() },
     )
   }

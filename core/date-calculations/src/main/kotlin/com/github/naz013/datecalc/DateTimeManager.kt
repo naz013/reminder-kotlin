@@ -58,7 +58,8 @@ class DateTimeManager(
       null
     }
 
-  fun fromMillis(millis: Long): LocalDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault())
+  fun fromMillis(millis: Long): LocalDateTime =
+    LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault())
 
   /** `ReminderV2`'s schedule fields are stored as UTC wall-clock [org.threeten.bp.LocalDateTime]s (the same real
    * instant as V1's GMT string, just expressed in the UTC zone instead of parsed on demand) -
@@ -150,17 +151,6 @@ class DateTimeManager(
       ""
     }
 
-  fun getGmtFromDateTime(date: LocalDate): String =
-    try {
-      LocalDateTime
-        .of(date, nowDateTimeProvider.nowTime())
-        .atZone(ZoneId.systemDefault())
-        .format(GMT_DATE_FORMATTER.withZone(ZoneId.of(GMT)))
-    } catch (e: Throwable) {
-      e.printStackTrace()
-      ""
-    }
-
   fun getGmtFromDateTime(dateTime: LocalDateTime): String =
     try {
       dateTime.atZone(ZoneId.systemDefault()).format(GMT_DATE_FORMATTER.withZone(ZoneId.of(GMT)))
@@ -169,7 +159,8 @@ class DateTimeManager(
       ""
     }
 
-  fun toMillis(localDateTime: LocalDateTime): Long = ZonedDateTime.of(localDateTime, ZoneId.systemDefault()).toInstant().toEpochMilli()
+  fun toMillis(localDateTime: LocalDateTime): Long =
+    ZonedDateTime.of(localDateTime, ZoneId.systemDefault()).toInstant().toEpochMilli()
 
   fun toMillis(zonedDateTime: ZonedDateTime): Long = zonedDateTime.toInstant().toEpochMilli()
 
@@ -179,7 +170,8 @@ class DateTimeManager(
 
   fun getDate(date: LocalDate): String = date.format(dateFormatter())
 
-  fun logDateTime(dateTime: LocalDateTime = LocalDateTime.now()): String = dateTime.format(fullDateTime24Formatter())
+  fun logDateTime(dateTime: LocalDateTime = LocalDateTime.now()): String =
+    dateTime.format(fullDateTime24Formatter())
 
   fun getFullDateTime(millis: Long): String = getFullDateTime(fromMillis(millis))
 
@@ -202,12 +194,11 @@ class DateTimeManager(
     ignoreYear: Boolean,
   ): String {
     if (dateOfBirth == null) return ""
-    val formatter =
-      if (ignoreYear) {
-        dayMonthBirthdayUiFormatter()
-      } else {
-        headerDateFormatter()
-      }
+    val formatter = if (ignoreYear) {
+      dayMonthBirthdayUiFormatter()
+    } else {
+      headerDateFormatter()
+    }
     return try {
       dateOfBirth.format(formatter)
     } catch (_: Throwable) {
@@ -234,16 +225,8 @@ class DateTimeManager(
 
   fun getBirthdayVisualTime(): String = getBirthdayLocalTime()?.let { getTime(it) } ?: ""
 
-  fun getDayStart(dateTime: LocalDateTime = getCurrentDateTime()): String =
-    dateTime
-      .withHour(0)
-      .withMinute(0)
-      .withSecond(0)
-      .let { getGmtFromDateTime(it) }
-
-  fun getDayEnd(dateTime: LocalDateTime = getCurrentDateTime()): String = getDayStart(dateTime.plusDays(1))
-
-  fun getBirthdayDayMonth(dateTime: LocalDateTime = getCurrentDateTime()): String = "${dateTime.dayOfMonth}|${dateTime.monthValue - 1}"
+  fun getBirthdayDayMonth(dateTime: LocalDateTime = getCurrentDateTime()): String =
+    "${dateTime.dayOfMonth}|${dateTime.monthValue - 1}"
 
   fun toLocalTime(time24: String?): LocalTime? =
     try {
@@ -293,8 +276,6 @@ class DateTimeManager(
       dayOfWeek.value + 1
     }
   }
-
-  fun getBirthdayDateSearch(date: LocalDate): String = date.format(birthdaySearchDayMonth())
 
   fun formatCalendarDate(date: LocalDate): String = date.format(calendarFullDate())
 
@@ -347,8 +328,6 @@ class DateTimeManager(
 
   private fun dateFormatter(): DateTimeFormatter = localizedDateFormatter("dd MMM yyyy")
 
-  private fun birthdaySearchDayMonth(): DateTimeFormatter = localizedDateFormatter("dd|MM")
-
   private fun calendarFullDate(): DateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
 
   private fun calendarMonthYear(): DateTimeFormatter = localizedDateFormatter("MMMM yyyy")
@@ -372,8 +351,7 @@ class DateTimeManager(
     private const val GMT = "GMT"
 
     private val BIRTH_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US)
-    private val GMT_DATE_FORMATTER =
-      DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
+    private val GMT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)
     private val TIME_24_FORMATTER = DateTimeFormatter.ofPattern("HH:mm", Locale.US)
     private val TIME_24_FORMATTER_SHORT = DateTimeFormatter.ofPattern("H[H]:m[m]", Locale.US)
 

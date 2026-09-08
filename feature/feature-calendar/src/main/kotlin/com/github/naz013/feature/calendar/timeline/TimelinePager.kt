@@ -21,7 +21,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -43,7 +42,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -52,7 +50,7 @@ import com.github.naz013.ui.agenda.UiAgendaBirthday
 import com.github.naz013.ui.agenda.UiAgendaGoogleCalendarEvent
 import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.ui.agenda.UiAgendaReminder
-import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
 import com.github.naz013.domain.PublicHoliday
 import kotlinx.coroutines.delay
@@ -76,6 +74,7 @@ private const val NOW_LINE_REFRESH_INTERVAL_MS = 30_000L
  */
 @Composable
 internal fun TimelinePager(
+  modifier: Modifier = Modifier,
   initialPagerPosition: Int,
   pagerJumpRequest: Int?,
   onPagerJumpConsumed: () -> Unit,
@@ -90,7 +89,6 @@ internal fun TimelinePager(
   onDayHeaderClick: (LocalDate) -> Unit,
   initialScrollOffset: Int,
   onScrollOffsetChanged: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val pagerState = rememberPagerState(initialPage = initialPagerPosition) { Int.MAX_VALUE }
   // Hoisted above the pager so swiping between windows keeps the same vertical scroll offset.
@@ -140,6 +138,7 @@ internal fun TimelinePager(
 
 @Composable
 private fun TimelinePage(
+  modifier: Modifier = Modifier,
   windowStart: LocalDate,
   daysForWindow: (LocalDate) -> List<TimelineDay>,
   hourLabels: List<String>,
@@ -151,7 +150,6 @@ private fun TimelinePage(
   loadWindowHolidays: suspend (LocalDate) -> Map<LocalDate, PublicHoliday>,
   onItemClick: (UiAgendaItem) -> Unit,
   onDayHeaderClick: (LocalDate) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val days = remember(windowStart) { daysForWindow(windowStart) }
   var eventsByDay by remember(windowStart) { mutableStateOf<Map<LocalDate, List<UiAgendaItem>>?>(null) }
@@ -205,11 +203,10 @@ private fun TimelinePage(
       }
     }
     Row(
-      modifier =
-        Modifier
-          .weight(1f)
-          .fillMaxWidth()
-          .verticalScroll(scrollState),
+      modifier = Modifier
+        .weight(1f)
+        .fillMaxWidth()
+        .verticalScroll(scrollState),
     ) {
       HourAxis(hourLabels = hourLabels, modifier = Modifier.width(AXIS_WIDTH))
       days.forEach { day ->
@@ -226,16 +223,15 @@ private fun TimelinePage(
 
 @Composable
 private fun TimelineDayHeader(
+  modifier: Modifier = Modifier,
   day: TimelineDay,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
-    modifier =
-      modifier
-        .clip(MaterialTheme.shapes.medium)
-        .clickable(onClick = onClick)
-        .padding(vertical = 6.dp),
+    modifier = modifier
+      .clip(MaterialTheme.shapes.medium)
+      .clickable(onClick = onClick)
+      .padding(vertical = 6.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     Text(
@@ -244,12 +240,11 @@ private fun TimelineDayHeader(
       color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     Box(
-      modifier =
-        Modifier
-          .padding(top = 4.dp)
-          .size(28.dp)
-          .clip(CircleShape)
-          .background(if (day.isToday) MaterialTheme.colorScheme.primary else Color.Transparent),
+      modifier = Modifier
+        .padding(top = 4.dp)
+        .size(28.dp)
+        .clip(CircleShape)
+        .background(if (day.isToday) MaterialTheme.colorScheme.primary else Color.Transparent),
       contentAlignment = Alignment.Center,
     ) {
       Text(
@@ -269,15 +264,17 @@ private fun TimelineDayHeader(
  */
 @Composable
 private fun TimelineHolidayRow(
+  modifier: Modifier = Modifier,
   days: List<TimelineDay>,
   holidaysByDay: Map<LocalDate, PublicHoliday>,
-  modifier: Modifier = Modifier,
 ) {
   if (holidaysByDay.isEmpty()) return
   Row(modifier = modifier) {
     Spacer(modifier = Modifier.width(AXIS_WIDTH))
     days.forEach { day ->
-      Box(modifier = Modifier.weight(1f).padding(horizontal = 2.dp, vertical = 2.dp)) {
+      Box(modifier = Modifier
+        .weight(1f)
+        .padding(horizontal = 2.dp, vertical = 2.dp)) {
         holidaysByDay[day.date]?.let { holiday -> HolidayChip(holiday = holiday) }
       }
     }
@@ -286,8 +283,8 @@ private fun TimelineHolidayRow(
 
 @Composable
 private fun HolidayChip(
-  holiday: PublicHoliday,
   modifier: Modifier = Modifier,
+  holiday: PublicHoliday,
 ) {
   var expanded by remember { mutableStateOf(false) }
   val containerColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -295,18 +292,17 @@ private fun HolidayChip(
 
   Box(modifier = modifier) {
     Row(
-      modifier =
-        Modifier
-          .fillMaxWidth()
-          .clip(RoundedCornerShape(6.dp))
-          .background(containerColor)
-          .clickable { expanded = true }
-          .padding(horizontal = 4.dp, vertical = 3.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .clip(MaterialTheme.shapes.extraSmall)
+        .background(containerColor)
+        .clickable { expanded = true }
+        .padding(horizontal = 4.dp, vertical = 3.dp),
       horizontalArrangement = Arrangement.spacedBy(3.dp),
       verticalAlignment = Alignment.CenterVertically,
     ) {
       Icon(
-        painter = painterResource(R.drawable.ic_fluent_globe),
+        painter = AppIcons.Fluent.Globe,
         contentDescription = null,
         tint = contentColor,
         modifier = Modifier.size(12.dp),
@@ -339,8 +335,8 @@ private fun HolidayChip(
 
 @Composable
 private fun HourAxis(
-  hourLabels: List<String>,
   modifier: Modifier = Modifier,
+  hourLabels: List<String>,
 ) {
   Box(modifier = modifier.height(HOUR_HEIGHT * HOURS_IN_DAY)) {
     hourLabels.forEachIndexed { hour, label ->
@@ -349,11 +345,10 @@ private fun HourAxis(
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         textAlign = TextAlign.End,
-        modifier =
-          Modifier
-            .offset(y = HOUR_HEIGHT * hour)
-            .width(AXIS_WIDTH)
-            .padding(end = 6.dp, top = 2.dp),
+        modifier = Modifier
+          .offset(y = HOUR_HEIGHT * hour)
+          .width(AXIS_WIDTH)
+          .padding(end = 6.dp, top = 2.dp),
       )
     }
   }
@@ -361,10 +356,10 @@ private fun HourAxis(
 
 @Composable
 private fun TimelineDayColumn(
+  modifier: Modifier = Modifier,
   items: List<UiAgendaItem>,
   isToday: Boolean,
   onItemClick: (UiAgendaItem) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val positioned = remember(items) { layoutDayEvents(items, MINUTES_IN_HOUR) }
   val density = LocalDensity.current
@@ -383,35 +378,34 @@ private fun TimelineDayColumn(
   }
 
   BoxWithConstraints(
-    modifier =
-      modifier
-        .height(HOUR_HEIGHT * HOURS_IN_DAY)
-        .drawBehind {
-          val hourHeightPx = with(density) { HOUR_HEIGHT.toPx() }
-          for (hour in 0..HOURS_IN_DAY) {
-            val y = hourHeightPx * hour
-            drawLine(
-              color = gridColor,
-              start = Offset(0f, y),
-              end = Offset(size.width, y),
-              strokeWidth = 1f,
-            )
-          }
-          if (isToday) {
-            val nowY = hourHeightPx * (now.hour + now.minute / 60f + now.second / 3600f)
-            drawLine(
-              color = nowColor,
-              start = Offset(0f, nowY),
-              end = Offset(size.width, nowY),
-              strokeWidth = with(density) { NOW_LINE_STROKE_WIDTH.toPx() },
-            )
-            drawCircle(
-              color = nowColor,
-              radius = with(density) { NOW_LINE_DOT_RADIUS.toPx() },
-              center = Offset(0f, nowY),
-            )
-          }
-        },
+    modifier = modifier
+      .height(HOUR_HEIGHT * HOURS_IN_DAY)
+      .drawBehind {
+        val hourHeightPx = with(density) { HOUR_HEIGHT.toPx() }
+        for (hour in 0..HOURS_IN_DAY) {
+          val y = hourHeightPx * hour
+          drawLine(
+            color = gridColor,
+            start = Offset(0f, y),
+            end = Offset(size.width, y),
+            strokeWidth = 1f,
+          )
+        }
+        if (isToday) {
+          val nowY = hourHeightPx * (now.hour + now.minute / 60f + now.second / 3600f)
+          drawLine(
+            color = nowColor,
+            start = Offset(0f, nowY),
+            end = Offset(size.width, nowY),
+            strokeWidth = with(density) { NOW_LINE_STROKE_WIDTH.toPx() },
+          )
+          drawCircle(
+            color = nowColor,
+            radius = with(density) { NOW_LINE_DOT_RADIUS.toPx() },
+            center = Offset(0f, nowY),
+          )
+        }
+      },
   ) {
     positioned.forEach { positionedEvent ->
       val eventLaneWidth = maxWidth / positionedEvent.laneCount
@@ -447,42 +441,41 @@ private fun TimelineEventBlock(
       container = Color(item.color)
       content = Color(item.contrastColor)
     }
+
     is UiAgendaGoogleCalendarEvent -> {
       container = MaterialTheme.colorScheme.tertiaryContainer
       content = MaterialTheme.colorScheme.onTertiaryContainer
     }
+
     else -> {
       container = MaterialTheme.colorScheme.primaryContainer
       content = MaterialTheme.colorScheme.onPrimaryContainer
     }
   }
-  val title =
-    when (item) {
-      is UiAgendaReminder -> item.mainText.text
-      is UiAgendaBirthday -> item.name
-      is UiAgendaGoogleCalendarEvent -> item.title
-      else -> ""
-    }
-  val subtitle =
-    when (item) {
-      is UiAgendaReminder -> item.secondaryText?.text
-      is UiAgendaBirthday -> item.ageFormatted
-      is UiAgendaGoogleCalendarEvent -> item.calendarName.ifEmpty { null }
-      else -> null
-    }
+  val title = when (item) {
+    is UiAgendaReminder -> item.mainText.text
+    is UiAgendaBirthday -> item.name
+    is UiAgendaGoogleCalendarEvent -> item.title
+    else -> ""
+  }
+  val subtitle = when (item) {
+    is UiAgendaReminder -> item.secondaryText?.text
+    is UiAgendaBirthday -> item.ageFormatted
+    is UiAgendaGoogleCalendarEvent -> item.calendarName.ifEmpty { null }
+    else -> null
+  }
 
   Box(
-    modifier =
-      Modifier
-        .offset(x = xOffset, y = topOffset)
-        .width(width)
-        .height(HOUR_HEIGHT)
-        .heightIn(min = EVENT_BLOCK_MIN_HEIGHT)
-        .padding(horizontal = 1.dp, vertical = 1.dp)
-        .clip(RoundedCornerShape(6.dp))
-        .background(container)
-        .clickable { expanded = true }
-        .padding(horizontal = 6.dp, vertical = 3.dp),
+    modifier = Modifier
+      .offset(x = xOffset, y = topOffset)
+      .width(width)
+      .height(HOUR_HEIGHT)
+      .heightIn(min = EVENT_BLOCK_MIN_HEIGHT)
+      .padding(horizontal = 1.dp, vertical = 1.dp)
+      .clip(MaterialTheme.shapes.extraSmall)
+      .background(container)
+      .clickable { expanded = true }
+      .padding(horizontal = 6.dp, vertical = 3.dp),
   ) {
     Text(
       text = title,
@@ -500,13 +493,12 @@ private fun TimelineEventBlock(
         modifier = Modifier.widthIn(min = 160.dp, max = 260.dp),
       ) {
         Column(
-          modifier =
-            Modifier
-              .clip(MaterialTheme.shapes.small)
-              .clickable {
-                expanded = false
-                onItemClick(item)
-              },
+          modifier = Modifier
+            .clip(MaterialTheme.shapes.small)
+            .clickable {
+              expanded = false
+              onItemClick(item)
+            },
         ) {
           Text(text = title, style = MaterialTheme.typography.titleMedium, color = content)
           if (!subtitle.isNullOrBlank()) {

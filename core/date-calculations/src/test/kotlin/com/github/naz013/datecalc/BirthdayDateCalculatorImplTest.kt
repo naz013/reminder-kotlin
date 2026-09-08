@@ -23,7 +23,13 @@ class BirthdayDateCalculatorImplTest {
     val time = LocalTime.of(12, 0)
     val nowDateTime = LocalDateTime.of(2023, 5, 8, 15, 0)
 
-    val result = calculator.getNextOccurrence(birthDate, time, ignoreYear = false, showedYear = 0, nowDateTime = nowDateTime)
+    val result = calculator.getNextOccurrence(
+      birthDate,
+      time,
+      ignoreYear = false,
+      showedYear = 0,
+      nowDateTime = nowDateTime
+    )
 
     assertEquals(LocalDateTime.of(2023, 6, 17, 12, 0), result)
   }
@@ -34,7 +40,8 @@ class BirthdayDateCalculatorImplTest {
     val time = LocalTime.of(12, 0)
     val nowDateTime = LocalDateTime.of(2020, 6, 17, 13, 0)
 
-    val result = calculator.getNextOccurrence(birthDate, time, ignoreYear = false, showedYear = 0, nowDateTime = nowDateTime)
+    val result =
+      calculator.getNextOccurrence(birthDate, time, ignoreYear = false, showedYear = 0, nowDateTime = nowDateTime)
 
     assertEquals(LocalDateTime.of(2021, 6, 17, 12, 0), result)
   }
@@ -45,7 +52,8 @@ class BirthdayDateCalculatorImplTest {
     val time = LocalTime.of(12, 0)
     val nowDateTime = LocalDateTime.of(2023, 5, 8, 15, 0)
 
-    val result = calculator.getNextOccurrence(birthDate, time, ignoreYear = true, showedYear = 0, nowDateTime = nowDateTime)
+    val result =
+      calculator.getNextOccurrence(birthDate, time, ignoreYear = true, showedYear = 0, nowDateTime = nowDateTime)
 
     assertEquals(LocalDateTime.of(2023, 7, 17, 12, 0), result)
   }
@@ -56,7 +64,8 @@ class BirthdayDateCalculatorImplTest {
     val time = LocalTime.of(9, 0)
     val nowDateTime = LocalDateTime.of(2023, 3, 1, 0, 0) // 2023 is not a leap year
 
-    val result = calculator.getNextOccurrence(birthDate, time, ignoreYear = false, showedYear = 0, nowDateTime = nowDateTime)
+    val result =
+      calculator.getNextOccurrence(birthDate, time, ignoreYear = false, showedYear = 0, nowDateTime = nowDateTime)
 
     // Birthday already passed (clamped to Feb 28 in 2023), so it should roll to 2024 (a leap year) and land on Feb 29
     assertEquals(LocalDateTime.of(2024, 2, 29, 9, 0), result)

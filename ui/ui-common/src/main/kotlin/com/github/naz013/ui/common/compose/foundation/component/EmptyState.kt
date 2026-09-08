@@ -28,12 +28,12 @@ fun EmptyState(
       painter = icon,
       contentDescription = null,
       modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+      tint = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     Text(
       text = message,
       style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
       modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp),
     )
   }

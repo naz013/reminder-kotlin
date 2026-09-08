@@ -126,9 +126,9 @@ private const val KEY_SIZE_DP = 64
 
 @Composable
 private fun KeypadKey(
+  modifier: Modifier = Modifier,
   text: String,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
   onLongClick: (() -> Unit)? = null,
   enabled: Boolean = true,
 ) {

@@ -31,11 +31,11 @@ import com.github.naz013.ui.common.compose.foundation.component.ColorSlider
 
 @Composable
 internal fun TasksWidgetConfigScreen(
+  modifier: Modifier = Modifier,
   state: TasksWidgetConfigState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
   onBackgroundColorSelected: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   WidgetConfigScaffold(
     title = stringResource(R.string.google_tasks),
@@ -64,7 +64,8 @@ internal fun TasksWidgetConfigScreen(
         onColorSelected = { index ->
           onBackgroundColorSelected(index)
         },
-        modifier = Modifier.fillMaxWidth().height(40.dp).padding(8.dp),
+        contentDescription = stringResource(R.string.background),
+        modifier = Modifier.fillMaxWidth().height(48.dp).padding(8.dp),
         hapticFeedbackEnabled = state.hapticFeedbackEnabled,
       )
     }
@@ -73,9 +74,9 @@ internal fun TasksWidgetConfigScreen(
 
 @Composable
 private fun TasksWidgetMockPreview(
+  modifier: Modifier = Modifier,
   backgroundColor: Color,
   foregroundColor: Color,
-  modifier: Modifier = Modifier,
 ) {
   Box(
     modifier = modifier

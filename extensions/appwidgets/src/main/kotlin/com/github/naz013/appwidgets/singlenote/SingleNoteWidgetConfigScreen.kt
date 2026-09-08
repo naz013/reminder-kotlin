@@ -39,6 +39,7 @@ import kotlin.math.roundToInt
 
 @Composable
 internal fun SingleNoteWidgetConfigScreen(
+  modifier: Modifier = Modifier,
   state: SingleNoteWidgetConfigState,
   onBackClick: () -> Unit,
   onSaveClick: () -> Unit,
@@ -50,7 +51,6 @@ internal fun SingleNoteWidgetConfigScreen(
   onTextColorOpacityChanged: (Float) -> Unit,
   onOverlayColorSelected: (Int) -> Unit,
   onOverlayColorOpacityChanged: (Float) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val hapticFeedback = LocalHapticFeedback.current
 
@@ -103,7 +103,8 @@ internal fun SingleNoteWidgetConfigScreen(
       onColorSelected = { index ->
         onTextColorSelected(index)
       },
-      modifier = Modifier.fillMaxWidth().height(36.dp).padding(top = 4.dp),
+      contentDescription = stringResource(R.string.text_color),
+      modifier = Modifier.fillMaxWidth().height(48.dp).padding(top = 4.dp),
       hapticFeedbackEnabled = state.hapticFeedbackEnabled,
     )
 
@@ -148,7 +149,8 @@ internal fun SingleNoteWidgetConfigScreen(
       onColorSelected = { index ->
         onOverlayColorSelected(index)
       },
-      modifier = Modifier.fillMaxWidth().height(36.dp).padding(top = 4.dp),
+      contentDescription = stringResource(R.string.foreground_color),
+      modifier = Modifier.fillMaxWidth().height(48.dp).padding(top = 4.dp),
       hapticFeedbackEnabled = state.hapticFeedbackEnabled,
     )
 

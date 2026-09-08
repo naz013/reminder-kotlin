@@ -12,6 +12,7 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.feature.settings.SettingsDetailPane
 import com.github.naz013.feature.settings.SettingsScaffold
+import com.github.naz013.feature.settings.settingsNavigationContentDescription
 import com.github.naz013.feature.settings.settingsNavigationIcon
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.SettingsHighlightScope
@@ -59,6 +60,7 @@ private fun SecurityEntry(backStack: MutableList<NavKey>, renderAsDetailPane: Bo
   SettingsScaffold(
     title = stringResource(R.string.security),
     navigationIcon = settingsNavigationIcon(renderAsDetailPane = renderAsDetailPane),
+    navigationContentDescription = settingsNavigationContentDescription(renderAsDetailPane = renderAsDetailPane),
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
   ) { padding ->
     SettingsHighlightScope {

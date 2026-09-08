@@ -9,6 +9,7 @@ object AppIcons {
 
   val RocketWhatsNew: Painter @Composable get() = painterResource(DrawableCatalog.RocketWhatsNew)
   val Moon: Painter @Composable get() = painterResource(DrawableCatalog.Moon)
+  val HumanResources: Painter @Composable get() = painterResource(DrawableCatalog.HumanResources)
 
   object Fluent {
     val Add: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Add)

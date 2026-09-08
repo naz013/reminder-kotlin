@@ -1,7 +1,7 @@
 package com.github.naz013.ui.common.compose.foundation.component
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -97,9 +97,13 @@ fun SettingsItem(
   val bringIntoViewRequester = remember { BringIntoViewRequester() }
   val flashColor = MaterialTheme.colorScheme.tertiaryContainer
   var isFlashing by remember { mutableStateOf(false) }
+  // "Fast" for the attention-grabbing flash-in, "default" for the slower settle back to normal -
+  // small-component-scale colors on a single list row either way, not a partial-screen surface.
+  val flashInSpec: FiniteAnimationSpec<Color> = MaterialTheme.motionScheme.fastEffectsSpec()
+  val flashOutSpec: FiniteAnimationSpec<Color> = MaterialTheme.motionScheme.defaultEffectsSpec()
   val highlightBackground by animateColorAsState(
     targetValue = if (isFlashing) flashColor else Color.Transparent,
-    animationSpec = tween(durationMillis = if (isFlashing) 150 else 900),
+    animationSpec = if (isFlashing) flashInSpec else flashOutSpec,
     label = "settingsItemHighlight",
   )
 

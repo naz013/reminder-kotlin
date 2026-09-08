@@ -1,20 +1,18 @@
 package com.github.naz013.ui.common.compose.foundation
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
@@ -52,7 +50,7 @@ fun SelectionTopBar(
     actions = {
       var menuExpanded by remember { mutableStateOf(false) }
       MenuIconButton(
-        icon = painterResource(R.drawable.ic_fluent_more_vertical),
+        icon = AppIcons.Fluent.MoreVertical,
         contentDescription = stringResource(R.string.more_options),
         onClick = { menuExpanded = true },
       )
@@ -63,9 +61,6 @@ fun SelectionTopBar(
         onItemClick = onActionClick,
       )
     },
-    colors =
-    TopAppBarDefaults.topAppBarColors(
-      containerColor = MaterialTheme.colorScheme.background,
-    ),
+    colors = TopAppbarColor,
   )
 }

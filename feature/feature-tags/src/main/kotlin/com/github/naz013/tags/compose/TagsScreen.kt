@@ -8,7 +8,6 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
@@ -21,12 +20,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,15 +39,19 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.tags.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.SelectionOverlay
 import com.github.naz013.ui.common.compose.foundation.SelectionTopBar
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
+import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.icon.DrawableCatalog
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 internal fun TagsScreen(
+  modifier: Modifier = Modifier,
   state: TagsScreenState,
   onBackClick: () -> Unit,
   onAddClick: () -> Unit,
@@ -61,7 +61,6 @@ internal fun TagsScreen(
   onSelectionCancel: () -> Unit,
   onDeleteSelectedClick: () -> Unit,
   onChangeColorClick: () -> Unit,
-  modifier: Modifier = Modifier
 ) {
   val isSelectionMode = state.selectedCount > 0
 
@@ -83,7 +82,7 @@ internal fun TagsScreen(
           navigationIcon = {
             MenuIconButton(
               icon = AppIcons.Builder.ArrowLeft,
-              contentDescription = null,
+              contentDescription = stringResource(com.github.naz013.ui.common.R.string.cd_back),
               onClick = onBackClick
             )
           },
@@ -95,7 +94,7 @@ internal fun TagsScreen(
               iconColor = MaterialTheme.colorScheme.primary,
             )
           },
-          colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+          colors = TopAppbarColor
         )
       }
     },
@@ -108,7 +107,11 @@ internal fun TagsScreen(
       }
 
       is TagsListState.Empty -> {
-        TagsEmptyState(modifier = Modifier.fillMaxSize().padding(padding))
+        EmptyState(
+          icon = AppIcons.Builder.Tag,
+          message = stringResource(R.string.no_tags),
+          modifier = Modifier.fillMaxSize().padding(padding),
+        )
       }
 
       is TagsListState.Ready -> {
@@ -168,24 +171,24 @@ private fun tagsSelectionMenuItems(): List<PopupMenuItem> =
     PopupMenuItem(
       id = TagsSelectionAction.CHANGE_COLOR.ordinal,
       title = stringResource(R.string.change_color),
-      iconRes = R.drawable.ic_fluent_color_background,
+      iconRes = DrawableCatalog.Fluent.ColorBackground,
     ),
     PopupMenuItem(
       id = TagsSelectionAction.DELETE.ordinal,
       title = stringResource(R.string.delete),
-      iconRes = R.drawable.ic_fluent_delete,
+      iconRes = DrawableCatalog.Fluent.Delete,
     ),
   )
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TagListItem(
+  modifier: Modifier = Modifier,
   tag: TagState,
   isSelectionMode: Boolean,
   onClick: () -> Unit,
   onLongClick: () -> Unit,
   onMenuAction: (TagMenuAction) -> Unit,
-  modifier: Modifier = Modifier
 ) {
   Card(
     modifier = modifier.combinedClickable(onClick = onClick, onLongClick = onLongClick),
@@ -202,7 +205,7 @@ private fun TagListItem(
       Canvas(modifier = Modifier.size(20.dp)) {
         drawCircle(color = tag.color)
       }
-      Text(text = tag.name, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f, fill = false))
+      Text(text = tag.name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f, fill = false))
       Box {
         SelectionOverlay(
           isSelectionMode = isSelectionMode,
@@ -220,11 +223,11 @@ private fun TagListItem(
 private fun BoxScope.TagMenu(onMenuAction: (TagMenuAction) -> Unit) {
   var expanded by remember { mutableStateOf(false) }
   val items = listOf(
-    PopupMenuItem(id = TagMenuAction.EDIT.ordinal, title = stringResource(R.string.edit), iconRes = R.drawable.ic_fluent_edit),
-    PopupMenuItem(id = TagMenuAction.DELETE.ordinal, title = stringResource(R.string.delete), iconRes = R.drawable.ic_fluent_delete),
+    PopupMenuItem(id = TagMenuAction.EDIT.ordinal, title = stringResource(R.string.edit), iconRes = DrawableCatalog.Fluent.Edit),
+    PopupMenuItem(id = TagMenuAction.DELETE.ordinal, title = stringResource(R.string.delete), iconRes = DrawableCatalog.Fluent.Delete),
   )
   MenuIconButton(
-    icon = painterResource(R.drawable.ic_fluent_more_vertical),
+    icon = AppIcons.Fluent.MoreVertical,
     contentDescription = stringResource(R.string.more_options),
     onClick = { expanded = true },
   )
@@ -237,28 +240,6 @@ private fun BoxScope.TagMenu(onMenuAction: (TagMenuAction) -> Unit) {
       onMenuAction(TagMenuAction.entries[id])
     },
   )
-}
-
-@Composable
-private fun TagsEmptyState(modifier: Modifier = Modifier) {
-  Column(
-    modifier = modifier,
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.Center
-  ) {
-    Icon(
-      painter = AppIcons.Builder.Tag,
-      contentDescription = null,
-      modifier = Modifier.size(64.dp),
-      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-    )
-    Text(
-      text = stringResource(R.string.no_tags),
-      style = MaterialTheme.typography.bodyLarge,
-      color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-      modifier = Modifier.padding(top = 12.dp, start = 24.dp, end = 24.dp)
-    )
-  }
 }
 
 @Preview(showBackground = true)

@@ -3,8 +3,6 @@ package com.github.naz013.localbackup.compose
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,7 +11,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -23,17 +20,18 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.localbackup.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocalBackupScreen(
+  modifier: Modifier = Modifier,
   state: LocalBackupState,
   onBackClick: () -> Unit,
   onPassphraseChange: (String) -> Unit,
   onConfirmPassphraseChange: (String) -> Unit,
   onActionClick: () -> Unit,
-  modifier: Modifier = Modifier
 ) {
   val isExport = state.mode == LocalBackupMode.EXPORT
   Scaffold(
@@ -42,9 +40,13 @@ fun LocalBackupScreen(
       TopAppBar(
         title = { Text(stringResource(if (isExport) R.string.backup_export_title else R.string.backup_import_title)) },
         navigationIcon = {
-          MenuIconButton(icon = AppIcons.Builder.ArrowLeft, contentDescription = null, onClick = onBackClick)
+          MenuIconButton(
+            icon = AppIcons.Builder.ArrowLeft,
+            contentDescription = stringResource(R.string.cd_back),
+            onClick = onBackClick,
+          )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+        colors = TopAppbarColor
       )
     }
   ) { padding ->

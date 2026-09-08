@@ -2,7 +2,7 @@ package com.github.naz013.feature.home
 
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.feature.home.scheduleview.ScheduleHomeViewModel
-import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
@@ -65,11 +65,11 @@ data class HomeEvent(
     val value: ResolvedEventAction,
   ) {
     companion object IconRes {
-      val MakeCall = R.drawable.ic_fluent_phone
-      val SendSms = R.drawable.ic_fluent_send
-      val SendEmail = R.drawable.ic_fluent_send
-      val OpenLink = R.drawable.ic_fluent_globe
-      val OpenApp = R.drawable.ic_fluent_open
+      val MakeCall = DrawableCatalog.Fluent.Phone
+      val SendSms = DrawableCatalog.Fluent.Send
+      val SendEmail = DrawableCatalog.Fluent.Send
+      val OpenLink = DrawableCatalog.Fluent.Globe
+      val OpenApp = DrawableCatalog.Fluent.Open
     }
   }
 

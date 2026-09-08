@@ -2,7 +2,6 @@ package com.github.naz013.feature.reminder.apps
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -29,7 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +35,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 import org.koin.androidx.compose.koinViewModel
@@ -46,9 +44,9 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SelectApplicationScreen(
+  modifier: Modifier = Modifier,
   onBackClick: () -> Unit,
   onAppSelected: (String) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val viewModel = koinViewModel<SelectApplicationViewModel>()
   val state by viewModel.state.collectAsState()
@@ -69,37 +67,34 @@ internal fun SelectApplicationScreen(
         navigationIcon = {
           MenuIconButton(
             icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_back),
             onClick = onBackClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
     Column(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(padding),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding),
     ) {
       SearchBar(
         query = state.searchQuery,
         onQueryChange = viewModel::onSearchQueryChange,
         placeholder = stringResource(R.string.search),
-        modifier =
-          Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(horizontal = 16.dp, vertical = 8.dp),
       )
 
       when (val listState = state.listState) {
         is AppListState.Loading -> {
           Box(
-            modifier =
-              Modifier
-                .fillMaxSize()
-                .weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
             contentAlignment = Alignment.Center,
           ) {
             CircularProgressIndicator()
@@ -108,19 +103,17 @@ internal fun SelectApplicationScreen(
 
         is AppListState.Empty -> {
           SelectApplicationEmptyState(
-            modifier =
-              Modifier
-                .fillMaxSize()
-                .weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
           )
         }
 
         is AppListState.Ready -> {
           LazyColumn(
-            modifier =
-              Modifier
-                .fillMaxSize()
-                .weight(1f),
+            modifier = Modifier
+              .fillMaxSize()
+              .weight(1f),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
           ) {
@@ -141,17 +134,14 @@ private fun ApplicationListItem(
   modifier: Modifier = Modifier,
 ) {
   Card(
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .clickable(onClick = onClick),
+    onClick = onClick,
+    modifier = modifier.fillMaxWidth(),
   ) {
     Row(
       verticalAlignment = Alignment.CenterVertically,
-      modifier =
-        Modifier
-          .fillMaxWidth()
-          .padding(horizontal = 16.dp, vertical = 8.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
       if (app.icon != null) {
         Image(
@@ -167,10 +157,9 @@ private fun ApplicationListItem(
         style = MaterialTheme.typography.titleMedium,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        modifier =
-          Modifier
-            .weight(1f)
-            .padding(start = 16.dp),
+        modifier = Modifier
+          .weight(1f)
+          .padding(start = 16.dp),
       )
     }
   }
@@ -184,7 +173,7 @@ private fun SelectApplicationEmptyState(modifier: Modifier = Modifier) {
     verticalArrangement = Arrangement.Center,
   ) {
     Image(
-      painter = painterResource(R.drawable.ic_human_resources),
+      painter = AppIcons.HumanResources,
       contentDescription = null,
       modifier = Modifier.size(dimensionResource(R.dimen.empty_image_size)),
     )

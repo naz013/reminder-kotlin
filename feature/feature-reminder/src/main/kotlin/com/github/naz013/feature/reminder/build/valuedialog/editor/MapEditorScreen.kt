@@ -2,7 +2,7 @@ package com.github.naz013.feature.reminder.build.valuedialog.editor
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,10 +27,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -37,12 +36,14 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.feature.reminder.build.BuilderItem
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Place
+import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import kotlinx.coroutines.launch
 
 private const val SHEET_HEIGHT_FRACTION = 0.94f
 private const val SCRIM_MAX_ALPHA = 0.32f
 private val DISMISS_DRAG_THRESHOLD = 120.dp
+private val SHEET_MAX_WIDTH = 640.dp
 
 /**
  * Bottom-sheet-styled, swipe-to-dismiss host for [MapValueEditor], used instead of
@@ -68,10 +69,13 @@ internal fun MapEditorScreen(
     val dismissThresholdPx = with(density) { DISMISS_DRAG_THRESHOLD.toPx() }
     val scope = rememberCoroutineScope()
     val offsetY = remember { Animatable(0f) }
+    // "Default" speed per guidelines - the spec's own example for this spring tier is a bottom
+    // sheet, which is exactly what this hand-rolled sheet is standing in for.
+    val sheetMotionSpec: AnimationSpec<Float> = MaterialTheme.motionScheme.defaultSpatialSpec()
 
     fun dismiss() {
       scope.launch {
-        offsetY.animateTo(sheetHeightPx, animationSpec = tween(200))
+        offsetY.animateTo(sheetHeightPx, animationSpec = sheetMotionSpec)
         onDismissRequest()
       }
     }
@@ -81,7 +85,7 @@ internal fun MapEditorScreen(
         if (offsetY.value > dismissThresholdPx) {
           dismiss()
         } else {
-          offsetY.animateTo(0f, animationSpec = tween(200))
+          offsetY.animateTo(0f, animationSpec = sheetMotionSpec)
         }
       }
     }
@@ -91,7 +95,7 @@ internal fun MapEditorScreen(
     Box(
       modifier = Modifier
         .fillMaxSize()
-        .background(Color.Black.copy(alpha = scrimAlpha))
+        .background(MaterialTheme.colorScheme.scrim.copy(alpha = scrimAlpha))
         .pointerInput(Unit) {
           detectTapGestures(onTap = { dismiss() })
         },
@@ -101,6 +105,7 @@ internal fun MapEditorScreen(
       modifier = Modifier
         .align(Alignment.BottomCenter)
         .fillMaxWidth()
+        .widthIn(max = SHEET_MAX_WIDTH)
         .fillMaxHeight(SHEET_HEIGHT_FRACTION)
         .offset { IntOffset(0, offsetY.value.toInt()) }
         .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
@@ -138,7 +143,7 @@ internal fun MapEditorScreen(
             modifier = Modifier.weight(1f),
           )
           MenuIconButton(
-            icon = painterResource(R.drawable.ic_builder_chevron_down),
+            icon = AppIcons.Builder.ChevronDown,
             contentDescription = stringResource(R.string.cd_collapse),
             onClick = ::dismiss,
           )

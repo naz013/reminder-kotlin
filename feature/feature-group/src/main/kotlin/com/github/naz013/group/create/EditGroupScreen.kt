@@ -17,18 +17,17 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.component.ColorPickerCard
@@ -79,7 +78,11 @@ internal fun EditGroupScreen(
         navigationIcon = {
           MenuIconButton(
             icon = if (renderAsDetailPane) AppIcons.Fluent.Dismiss else AppIcons.Builder.ArrowLeft,
-            contentDescription = if (renderAsDetailPane) stringResource(R.string.acc_close) else null,
+            contentDescription = if (renderAsDetailPane) {
+              stringResource(R.string.acc_close)
+            } else {
+              stringResource(R.string.cd_back)
+            },
             enabled = !state.isLoading,
             onClick = onBackClick,
           )
@@ -87,7 +90,7 @@ internal fun EditGroupScreen(
         actions = {
           if (state.canDelete) {
             MenuIconButton(
-              icon = painterResource(R.drawable.ic_fluent_delete),
+              icon = AppIcons.Fluent.Delete,
               contentDescription = stringResource(R.string.delete),
               enabled = !state.isLoading,
               onClick = onDeleteMenuClick,
@@ -99,17 +102,16 @@ internal fun EditGroupScreen(
             onClick = onSaveClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
     Column(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .padding(padding)
-          .verticalScroll(rememberScrollState())
-          .padding(16.dp),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding)
+        .verticalScroll(rememberScrollState())
+        .padding(16.dp),
     ) {
       OutlinedTextField(
         value = state.title,
@@ -126,7 +128,9 @@ internal fun EditGroupScreen(
 
       Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(top = 16.dp),
       ) {
         Text(
           text = stringResource(R.string.make_default),
@@ -315,13 +319,12 @@ internal fun EditGroupScreen(
 private fun EditGroupScreenPreview() {
   AppTheme {
     EditGroupScreen(
-      state =
-        EditGroupState(
-          title = "Work",
-          colorPosition = 5,
-          sliderColors = listOf(Color.Red, Color.Magenta, Color.Blue, Color.Cyan, Color.Green, Color.Yellow),
-          canDelete = true,
-        ),
+      state = EditGroupState(
+        title = "Work",
+        colorPosition = 5,
+        sliderColors = listOf(Color.Red, Color.Magenta, Color.Blue, Color.Cyan, Color.Green, Color.Yellow),
+        canDelete = true,
+      ),
       onBackClick = {},
       onSaveClick = {},
       onDeleteMenuClick = {},

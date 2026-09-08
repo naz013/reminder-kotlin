@@ -8,14 +8,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
 import com.github.naz013.feature.calendar.CalendarModeToggleButton
@@ -23,14 +21,17 @@ import com.github.naz013.feature.calendar.CalendarViewMode
 import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.domain.PublicHoliday
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import org.threeten.bp.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun TimelineScreen(
+  modifier: Modifier = Modifier,
   state: TimelineScreenState,
   currentMode: CalendarViewMode,
   onModeSelected: (CalendarViewMode) -> Unit,
@@ -50,7 +51,6 @@ internal fun TimelineScreen(
   onBackClick: () -> Unit,
   initialScrollOffset: Int,
   onScrollOffsetChanged: (Int) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
@@ -60,7 +60,7 @@ internal fun TimelineScreen(
         navigationIcon = {
           MenuIconButton(
             icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_back),
             onClick = onBackClick,
           )
         },
@@ -71,11 +71,15 @@ internal fun TimelineScreen(
             onAddBirthdayClick = onAddBirthdayClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
-    Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding)
+    ) {
       TimelinePager(
         initialPagerPosition = initialPagerPosition,
         pagerJumpRequest = pagerJumpRequest,
@@ -112,11 +116,18 @@ private fun AddMenuButton(
     AppDropdownMenu(
       expanded = expanded,
       onDismissRequest = { expanded = false },
-      items =
-        listOf(
-          PopupMenuItem(id = 0, title = stringResource(R.string.new_reminder), iconRes = R.drawable.ic_fluent_alert),
-          PopupMenuItem(id = 1, title = stringResource(R.string.add_birthday), iconRes = R.drawable.ic_fluent_food_cake),
+      items = listOf(
+        PopupMenuItem(
+          id = 0,
+          title = stringResource(R.string.new_reminder),
+          iconRes = DrawableCatalog.Fluent.Alert,
         ),
+        PopupMenuItem(
+          id = 1,
+          title = stringResource(R.string.add_birthday),
+          iconRes = DrawableCatalog.Fluent.FoodCake,
+        ),
+      ),
       onItemClick = { id ->
         when (id) {
           0 -> onAddReminderClick()

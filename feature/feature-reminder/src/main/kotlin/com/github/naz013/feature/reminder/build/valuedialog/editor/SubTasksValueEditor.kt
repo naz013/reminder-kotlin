@@ -1,8 +1,8 @@
 package com.github.naz013.feature.reminder.build.valuedialog.editor
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -55,7 +54,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.contentDescription
@@ -75,7 +73,7 @@ import com.github.naz013.ui.common.livedata.ObserveNonNull
 
 private val LIST_MAX_HEIGHT = 400.dp
 private val ROW_HEIGHT = 40.dp
-private const val CHECK_ANIMATION_MS = 150
+private val ROW_BUTTON_SIZE = 48.dp
 
 /** Semantics test tag for a shopping-list row's checkbox, parameterized by [itemId] (`ShopItem
  *  .uuId`) since a list can have several rows and the checkbox itself carries no text/content
@@ -247,6 +245,10 @@ private fun ShopItemRow(
   val focusRequester = remember { FocusRequester() }
   val keyboardController = LocalSoftwareKeyboardController.current
   val hapticFeedback = LocalHapticFeedback.current
+  // "Fast" speed per guidelines - this row's check-toggle icon swap is exactly the small-component
+  // case the fast tier is meant for (switches, buttons), not a partial- or full-screen animation.
+  val checkSpatialSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastSpatialSpec()
+  val checkEffectsSpec: FiniteAnimationSpec<Float> = MaterialTheme.motionScheme.fastEffectsSpec()
 
   LaunchedEffect(item.showInput) {
     if (item.showInput) {
@@ -301,28 +303,28 @@ private fun ShopItemRow(
           onCheckClick()
         },
         modifier = Modifier
-          .size(40.dp)
+          .size(ROW_BUTTON_SIZE)
           .semantics { contentDescription = checkToggleDescription }
           .testTag(shopItemCheckTestTag(item.uuId)),
       ) {
         AnimatedVisibility(
           visible = item.isChecked,
-          enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
-          exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+          enter = scaleIn(checkSpatialSpec) + fadeIn(checkEffectsSpec),
+          exit = scaleOut(checkSpatialSpec) + fadeOut(checkEffectsSpec),
         ) {
           Icon(
-            painter = painterResource(R.drawable.ic_fluent_checkbox_checked),
+            painter = AppIcons.Fluent.CheckboxChecked,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface,
           )
         }
         AnimatedVisibility(
           visible = !item.isChecked,
-          enter = scaleIn(tween(CHECK_ANIMATION_MS)) + fadeIn(tween(CHECK_ANIMATION_MS)),
-          exit = scaleOut(tween(CHECK_ANIMATION_MS)) + fadeOut(tween(CHECK_ANIMATION_MS)),
+          enter = scaleIn(checkSpatialSpec) + fadeIn(checkEffectsSpec),
+          exit = scaleOut(checkSpatialSpec) + fadeOut(checkEffectsSpec),
         ) {
           Icon(
-            painter = painterResource(R.drawable.ic_fluent_checkbox_unchecked),
+            painter = AppIcons.Fluent.CheckboxUnchecked,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurface,
           )
@@ -379,7 +381,7 @@ private fun ShopItemRow(
         IconButton(
           onClick = onRemoveClick,
           modifier = Modifier
-            .size(40.dp)
+            .size(ROW_BUTTON_SIZE)
             .testTag(shopItemRemoveTestTag(item.uuId)),
         ) {
           Icon(
@@ -434,7 +436,7 @@ private fun AllDoneRow(modifier: Modifier = Modifier) {
     modifier = modifier
       .fillMaxWidth()
       .padding(vertical = 6.dp)
-      .background(MaterialTheme.colorScheme.primaryContainer, RoundedCornerShape(8.dp))
+      .background(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.shapes.small)
       .padding(horizontal = 12.dp, vertical = 8.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {

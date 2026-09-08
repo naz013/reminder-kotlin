@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -46,10 +45,12 @@ import com.github.naz013.feature.calendar.monthview.monthgrid.MonthGridCell
 import com.github.naz013.domain.PublicHoliday
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import org.threeten.bp.LocalDate
 
 private val DOT_SIZE = 5.dp
@@ -58,6 +59,7 @@ private const val MAX_DOTS = 4
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CalendarScreen(
+  modifier: Modifier = Modifier,
   state: CalendarScreenState,
   currentMode: CalendarViewMode,
   onModeSelected: (CalendarViewMode) -> Unit,
@@ -75,7 +77,6 @@ internal fun CalendarScreen(
   onAddBirthdayClick: (LocalDate) -> Unit,
   onSettingsClick: () -> Unit,
   onBackClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val pagerState = rememberPagerState(initialPage = initialPagerPosition) { Int.MAX_VALUE }
 
@@ -98,7 +99,7 @@ internal fun CalendarScreen(
           navigationIcon = {
             MenuIconButton(
               icon = AppIcons.Builder.ArrowLeft,
-              contentDescription = null,
+              contentDescription = stringResource(R.string.cd_back),
               onClick = onBackClick,
             )
           },
@@ -106,18 +107,22 @@ internal fun CalendarScreen(
             CalendarModeToggleButton(currentMode = currentMode, onModeSelected = onModeSelected)
             OverflowMenuButton(onSettingsClick = onSettingsClick)
           },
-          colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
+          colors = TopAppbarColor,
         )
         WeekdayHeaderRow(
           labels = state.weekdayLabels,
-          modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp),
         )
       }
     },
   ) { padding ->
     HorizontalPager(
       state = pagerState,
-      modifier = Modifier.fillMaxSize().padding(padding),
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding),
     ) { position ->
       MonthPage(
         monthDate = monthForPosition(position),
@@ -136,8 +141,8 @@ internal fun CalendarScreen(
 
 @Composable
 private fun WeekdayHeaderRow(
-  labels: List<String>,
   modifier: Modifier = Modifier,
+  labels: List<String>,
 ) {
   Row(modifier = modifier) {
     labels.forEach { label ->
@@ -154,6 +159,7 @@ private fun WeekdayHeaderRow(
 
 @Composable
 private fun MonthPage(
+  modifier: Modifier = Modifier,
   monthDate: LocalDate,
   buildGrid: (LocalDate) -> List<MonthGridCell>,
   refreshSignal: Int,
@@ -162,7 +168,6 @@ private fun MonthPage(
   onDayClick: (LocalDate) -> Unit,
   onAddReminderClick: (LocalDate) -> Unit,
   onAddBirthdayClick: (LocalDate) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val grid = remember(monthDate) { buildGrid(monthDate) }
   var eventsByDay by remember(monthDate) { mutableStateOf<Map<LocalDate, List<Int>>?>(null) }
@@ -187,7 +192,11 @@ private fun MonthPage(
       LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
     }
     grid.chunked(WEEK_LENGTH).forEach { week ->
-      Row(modifier = Modifier.fillMaxWidth().weight(1f)) {
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .weight(1f)
+      ) {
         week.forEach { cell ->
           MonthDayCell(
             cell = cell,
@@ -196,7 +205,9 @@ private fun MonthPage(
             onClick = onDayClick,
             onAddReminderClick = onAddReminderClick,
             onAddBirthdayClick = onAddBirthdayClick,
-            modifier = Modifier.weight(1f).fillMaxSize(),
+            modifier = Modifier
+              .weight(1f)
+              .fillMaxSize(),
           )
         }
       }
@@ -206,41 +217,38 @@ private fun MonthPage(
 
 @Composable
 private fun MonthDayCell(
+  modifier: Modifier = Modifier,
   cell: MonthGridCell,
   dotColors: List<Int>,
   holiday: PublicHoliday?,
   onClick: (LocalDate) -> Unit,
   onAddReminderClick: (LocalDate) -> Unit,
   onAddBirthdayClick: (LocalDate) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   var expanded by remember { mutableStateOf(false) }
   Box(
-    modifier =
-      modifier.combinedClickable(
-        onClick = { onClick(cell.date) },
-        onLongClick = { expanded = true },
-      ),
+    modifier = modifier.combinedClickable(
+      onClick = { onClick(cell.date) },
+      onLongClick = { expanded = true },
+    ),
     contentAlignment = Alignment.Center,
   ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
       Box(
-        modifier =
-          Modifier
-            .size(28.dp)
-            .clip(CircleShape)
-            .background(if (cell.isToday) MaterialTheme.colorScheme.primary else Color.Transparent),
+        modifier = Modifier
+          .size(28.dp)
+          .clip(CircleShape)
+          .background(if (cell.isToday) MaterialTheme.colorScheme.primary else Color.Transparent),
         contentAlignment = Alignment.Center,
       ) {
         Text(
           text = cell.date.dayOfMonth.toString(),
           style = MaterialTheme.typography.bodyMedium,
-          color =
-            when {
-              cell.isToday -> MaterialTheme.colorScheme.onPrimary
-              cell.isCurrentMonth -> MaterialTheme.colorScheme.onSurface
-              else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.35f)
-            },
+          color = when {
+            cell.isToday -> MaterialTheme.colorScheme.onPrimary
+            cell.isCurrentMonth -> MaterialTheme.colorScheme.onSurface
+            else -> MaterialTheme.colorScheme.outlineVariant
+          },
         )
       }
       Row(
@@ -249,20 +257,18 @@ private fun MonthDayCell(
       ) {
         dotColors.take(MAX_DOTS).forEach { color ->
           Box(
-            modifier =
-              Modifier
-                .size(DOT_SIZE)
-                .clip(CircleShape)
-                .background(Color(color)),
+            modifier = Modifier
+              .size(DOT_SIZE)
+              .clip(CircleShape)
+              .background(Color(color)),
           )
         }
         if (holiday != null) {
           Box(
-            modifier =
-              Modifier
-                .size(DOT_SIZE)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.tertiary),
+            modifier = Modifier
+              .size(DOT_SIZE)
+              .clip(CircleShape)
+              .background(MaterialTheme.colorScheme.tertiary),
           )
         }
       }
@@ -280,13 +286,13 @@ private fun MonthDayCell(
         Column {
           AddEventRow(
             text = stringResource(R.string.add_reminder_menu),
-            iconRes = R.drawable.ic_fluent_alert,
+            iconRes = DrawableCatalog.Fluent.Alert,
             contentColor = bubbleContentColor,
             onClick = { expanded = false; onAddReminderClick(cell.date) },
           )
           AddEventRow(
             text = stringResource(R.string.add_birthday),
-            iconRes = R.drawable.ic_fluent_food_cake,
+            iconRes = DrawableCatalog.Fluent.FoodCake,
             contentColor = bubbleContentColor,
             onClick = { expanded = false; onAddBirthdayClick(cell.date) },
           )
@@ -306,11 +312,10 @@ private fun AddEventRow(
   Row(
     horizontalArrangement = Arrangement.spacedBy(12.dp),
     verticalAlignment = Alignment.CenterVertically,
-    modifier =
-      Modifier
-        .fillMaxWidth()
-        .clickable(onClick = onClick)
-        .padding(vertical = 12.dp),
+    modifier = Modifier
+      .fillMaxWidth()
+      .clickable(onClick = onClick)
+      .padding(vertical = 12.dp),
   ) {
     Icon(painter = painterResource(iconRes), contentDescription = null, tint = contentColor)
     Text(text = text, color = contentColor, style = MaterialTheme.typography.titleMedium)
@@ -322,17 +327,20 @@ private fun OverflowMenuButton(onSettingsClick: () -> Unit) {
   var expanded by remember { mutableStateOf(false) }
   Box {
     MenuIconButton(
-      icon = painterResource(R.drawable.ic_fluent_more_vertical),
+      icon = AppIcons.Fluent.MoreVertical,
       contentDescription = stringResource(R.string.more_options),
       onClick = { expanded = true },
     )
     AppDropdownMenu(
       expanded = expanded,
       onDismissRequest = { expanded = false },
-      items =
-        listOf(
-          PopupMenuItem(id = 0, title = stringResource(R.string.action_settings), iconRes = R.drawable.ic_fluent_settings),
+      items = listOf(
+        PopupMenuItem(
+          id = 0,
+          title = stringResource(R.string.action_settings),
+          iconRes = DrawableCatalog.Fluent.Settings,
         ),
+      ),
       onItemClick = { onSettingsClick() },
     )
   }
@@ -345,11 +353,10 @@ private const val WEEK_LENGTH = 7
 private fun CalendarScreenPreview() {
   AppTheme {
     CalendarScreen(
-      state =
-        CalendarScreenState(
-          title = "July 2026",
-          weekdayLabels = listOf("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"),
-        ),
+      state = CalendarScreenState(
+        title = "July 2026",
+        weekdayLabels = listOf("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"),
+      ),
       currentMode = CalendarViewMode.MONTH,
       onModeSelected = {},
       initialPagerPosition = 0,
@@ -361,7 +368,11 @@ private fun CalendarScreenPreview() {
         val first = monthDate.withDayOfMonth(1)
         (0 until 42).map { offset ->
           val date = first.minusDays(first.dayOfWeek.value.toLong() - 1).plusDays(offset.toLong())
-          MonthGridCell(date = date, isCurrentMonth = date.monthValue == monthDate.monthValue, isToday = date == LocalDate.now())
+          MonthGridCell(
+            date = date,
+            isCurrentMonth = date.monthValue == monthDate.monthValue,
+            isToday = date == LocalDate.now()
+          )
         }
       },
       refreshSignal = 0,

@@ -1,6 +1,7 @@
 package com.github.naz013.feature.googletask.tasklist
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,21 +18,21 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.component.ColorPickerCard
+import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +57,7 @@ internal fun EditGoogleTaskListScreen(
         navigationIcon = {
           MenuIconButton(
             icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_back),
             enabled = !state.isLoading,
             onClick = onBackClick,
           )
@@ -64,7 +65,7 @@ internal fun EditGoogleTaskListScreen(
         actions = {
           if (state.canDelete) {
             MenuIconButton(
-              icon = painterResource(R.drawable.ic_fluent_delete),
+              icon = AppIcons.Fluent.Delete,
               contentDescription = stringResource(R.string.delete),
               enabled = !state.isLoading,
               onClick = onDeleteMenuClick,
@@ -76,61 +77,64 @@ internal fun EditGoogleTaskListScreen(
             onClick = onSaveClick,
           )
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+        colors = TopAppbarColor,
       )
     },
   ) { padding ->
-    Column(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .background(MaterialTheme.colorScheme.background)
-          .padding(padding)
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colorScheme.background)
+        .padding(padding),
+      contentAlignment = Alignment.TopCenter,
+    ) {
+      Column(
+        modifier = Modifier
+          .detailScreenContentWidth()
           .verticalScroll(rememberScrollState())
           .padding(16.dp),
-    ) {
-      OutlinedTextField(
-        value = state.name,
-        onValueChange = onNameChange,
-        label = { Text(stringResource(R.string.name)) },
-        isError = state.nameError,
-        supportingText = {
-          if (state.nameError) Text(stringResource(R.string.must_be_not_empty))
-        },
-        enabled = !state.isLoading,
-        modifier =
-          Modifier
-            .fillMaxWidth(),
-      )
-
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier =
-          Modifier
-            .fillMaxWidth(),
       ) {
-        Text(
-          text = stringResource(R.string.make_default),
-          style = MaterialTheme.typography.bodyLarge,
-          modifier = Modifier.weight(1f),
+        OutlinedTextField(
+          value = state.name,
+          onValueChange = onNameChange,
+          label = { Text(stringResource(R.string.name)) },
+          isError = state.nameError,
+          supportingText = {
+            if (state.nameError) Text(stringResource(R.string.must_be_not_empty))
+          },
+          enabled = !state.isLoading,
+          modifier = Modifier
+            .fillMaxWidth(),
         )
-        Switch(
-          checked = state.isDefault,
-          onCheckedChange = { onDefaultToggle() },
-          enabled = !state.isLoading && !state.isDefaultLocked,
+
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          modifier = Modifier
+            .fillMaxWidth(),
+        ) {
+          Text(
+            text = stringResource(R.string.make_default),
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f),
+          )
+          Switch(
+            checked = state.isDefault,
+            onCheckedChange = { onDefaultToggle() },
+            enabled = !state.isLoading && !state.isDefaultLocked,
+          )
+        }
+
+        ColorPickerCard(
+          colors = state.sliderColors,
+          selectedIndex = state.colorIndex,
+          onColorSelected = onColorSelected,
+          enabled = !state.isLoading,
+          hapticFeedbackEnabled = state.hapticFeedbackEnabled,
+          modifier = Modifier.padding(top = 16.dp),
         )
+
+        adsContent()
       }
-
-      ColorPickerCard(
-        colors = state.sliderColors,
-        selectedIndex = state.colorIndex,
-        onColorSelected = onColorSelected,
-        enabled = !state.isLoading,
-        hapticFeedbackEnabled = state.hapticFeedbackEnabled,
-        modifier = Modifier.padding(top = 16.dp),
-      )
-
-      adsContent()
     }
   }
 
@@ -153,25 +157,23 @@ internal fun EditGoogleTaskListScreen(
 private fun EditGoogleTaskListScreenPreview() {
   AppTheme {
     EditGoogleTaskListScreen(
-      state =
-        EditGoogleTaskListState(
-          name = "Groceries",
-          sliderColors =
-            listOf(
-              Color(0xFFF44336),
-              Color(0xFFE91E63),
-              Color(0xFF9C27B0),
-              Color(0xFF673AB7),
-              Color(0xFF3F51B5),
-              Color(0xFF2196F3),
-              Color(0xFF4CAF50),
-              Color(0xFFFFEB3B),
-              Color(0xFFFF9800),
-            ),
-          colorIndex = 6,
-          isDefault = true,
-          canDelete = true,
+      state = EditGoogleTaskListState(
+        name = "Groceries",
+        sliderColors = listOf(
+          Color(0xFFF44336),
+          Color(0xFFE91E63),
+          Color(0xFF9C27B0),
+          Color(0xFF673AB7),
+          Color(0xFF3F51B5),
+          Color(0xFF2196F3),
+          Color(0xFF4CAF50),
+          Color(0xFFFFEB3B),
+          Color(0xFFFF9800),
         ),
+        colorIndex = 6,
+        isDefault = true,
+        canDelete = true,
+      ),
       onBackClick = {},
       onSaveClick = {},
       onDeleteMenuClick = {},

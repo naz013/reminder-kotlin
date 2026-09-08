@@ -11,5 +11,6 @@ import androidx.compose.ui.unit.dp
 object AppShapes {
   val tile: Shape = RoundedCornerShape(12.dp)
   val card: Shape = RoundedCornerShape(16.dp)
+  val largeIncreased: Shape = RoundedCornerShape(20.dp)
   val pill: Shape = RoundedCornerShape(28.dp)
 }

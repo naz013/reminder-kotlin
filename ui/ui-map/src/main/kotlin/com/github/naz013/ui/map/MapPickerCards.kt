@@ -139,16 +139,17 @@ internal fun MarkerStyleCard(
 ) {
   PickerCard(modifier = modifier) {
     // padding() must come before height() - applied the other way around, the 16dp padding on
-    // each side eats into the fixed 40dp height, leaving only 8dp for the slider itself.
+    // each side eats into the fixed 48dp height, leaving only 16dp for the slider itself.
     ColorSlider(
       colors = colors,
       selectedIndex = selectedIndex,
       onColorSelected = onStyleSelected,
+      contentDescription = stringResource(R.string.style_of_marker),
       selectorColor = selectorColor,
       modifier = Modifier
         .padding(16.dp)
         .fillMaxWidth()
-        .height(40.dp),
+        .height(48.dp),
       hapticFeedbackEnabled = hapticFeedbackEnabled,
     )
   }

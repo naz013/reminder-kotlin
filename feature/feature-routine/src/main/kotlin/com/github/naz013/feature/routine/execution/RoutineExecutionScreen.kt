@@ -28,7 +28,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
@@ -41,6 +40,7 @@ private val COMPLETE_BUTTON_HEIGHT = 56.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun RoutineExecutionScreen(
+  modifier: Modifier = Modifier,
   state: RoutineExecutionState,
   onBackClick: () -> Unit,
   onPlayPauseClick: () -> Unit,
@@ -49,7 +49,6 @@ internal fun RoutineExecutionScreen(
   onPreviousStepClick: () -> Unit,
   onCompleteStepClick: () -> Unit,
   adsContent: @Composable () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Scaffold(
     modifier = modifier,
@@ -59,7 +58,7 @@ internal fun RoutineExecutionScreen(
         navigationIcon = {
           MenuIconButton(
             icon = AppIcons.Builder.ArrowLeft,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_back),
             onClick = onBackClick,
           )
         },
@@ -68,7 +67,7 @@ internal fun RoutineExecutionScreen(
     },
     bottomBar = {
       if (state is RoutineExecutionState.Running) {
-        Surface(shadowElevation = 4.dp) {
+        Surface(color = MaterialTheme.colorScheme.surfaceContainer) {
           Button(
             onClick = onCompleteStepClick,
             modifier = Modifier
@@ -78,8 +77,7 @@ internal fun RoutineExecutionScreen(
           ) {
             Text(
               text = stringResource(R.string.complete_step),
-              style = MaterialTheme.typography.titleMedium,
-              fontWeight = FontWeight.Bold,
+              style = MaterialTheme.typography.titleMediumEmphasized,
             )
           }
         }
@@ -118,13 +116,13 @@ internal fun RoutineExecutionScreen(
 
 @Composable
 private fun RunningContent(
+  modifier: Modifier = Modifier,
   state: RoutineExecutionState.Running,
   onPlayPauseClick: () -> Unit,
   onAddMinuteClick: () -> Unit,
   onSkipClick: () -> Unit,
   onPreviousStepClick: () -> Unit,
   adsContent: @Composable () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier = modifier.verticalScroll(rememberScrollState()).padding(24.dp),
@@ -140,14 +138,12 @@ private fun RunningContent(
       ) {
         Text(
           text = stringResource(R.string.step_of_count, state.stepIndex + 1, state.stepCount),
-          style = MaterialTheme.typography.labelLarge,
-          fontWeight = FontWeight.Bold,
+          style = MaterialTheme.typography.labelLargeEmphasized,
           color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
           text = state.stepTitle,
-          style = MaterialTheme.typography.headlineSmall,
-          fontWeight = FontWeight.Bold,
+          style = MaterialTheme.typography.headlineSmallEmphasized,
           color = MaterialTheme.colorScheme.onSurface,
           modifier = Modifier.padding(top = 4.dp),
         )
@@ -208,9 +204,9 @@ private fun RunningContent(
 
 @Composable
 private fun FinishedContent(
+  modifier: Modifier = Modifier,
   state: RoutineExecutionState.Finished,
   onDoneClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Column(
     modifier = modifier.padding(24.dp),
@@ -225,8 +221,7 @@ private fun FinishedContent(
     )
     Text(
       text = stringResource(R.string.routine_finished_title),
-      style = MaterialTheme.typography.headlineSmall,
-      fontWeight = FontWeight.Bold,
+      style = MaterialTheme.typography.headlineSmallEmphasized,
       modifier = Modifier.padding(top = 16.dp),
     )
     Text(
