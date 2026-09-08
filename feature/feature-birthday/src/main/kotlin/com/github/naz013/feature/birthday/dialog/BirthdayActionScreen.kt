@@ -30,6 +30,7 @@ import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.foundation.component.ActionButtonsSection
 import com.github.naz013.ui.common.compose.foundation.component.ActionDialogScaffold
 import com.github.naz013.ui.common.compose.foundation.component.ContactAvatarHeader
+import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.common.livedata.ObserveEvent
@@ -153,7 +154,8 @@ private fun BirthdayActionScreenLandscape(
       modifier = Modifier
         .weight(1f)
         .fillMaxSize()
-        .verticalScroll(rememberScrollState()),
+        .verticalScroll(rememberScrollState())
+        .detailScreenContentWidth(),
       verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
       // Header section
@@ -286,6 +288,7 @@ private fun BirthdayActionScreenPortraitPreview() {
 }
 
 @Preview(showBackground = true, widthDp = 800, heightDp = 400)
+@Preview(showBackground = true, widthDp = 1200, heightDp = 900)
 @Composable
 private fun BirthdayActionScreenLandscapePreview() {
   AppTheme {
