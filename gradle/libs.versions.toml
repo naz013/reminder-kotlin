@@ -9,7 +9,7 @@ detekt = "1.23.8"
 detekt-compose = "0.6.6"
 
 # Plugins
-agp = "9.4.0"
+agp = "9.3.2"
 kotlin = "2.4.10"
 google-services = "4.5.0"
 crashlytics-gradle = "3.0.8"
