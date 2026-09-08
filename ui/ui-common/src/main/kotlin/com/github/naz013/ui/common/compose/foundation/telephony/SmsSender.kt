@@ -1,5 +1,6 @@
 package com.github.naz013.ui.common.compose.foundation.telephony
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
@@ -7,6 +8,7 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
+import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.R
 
 interface SmsSender {
@@ -26,7 +28,8 @@ class SmsSenderImpl(
     smsIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     try {
       context.startActivity(smsIntent)
-    } catch (e: Exception) {
+    } catch (e: ActivityNotFoundException) {
+      Logger.w("SmsSender", "App not found, exception: ${e.message}")
       Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
     }
   }

@@ -3,9 +3,7 @@ package com.github.naz013.ui.common.context
 import android.content.Context
 import android.content.Intent
 import android.util.TypedValue
-import androidx.annotation.ColorRes
 import androidx.annotation.Px
-import androidx.core.content.ContextCompat
 
 @Px
 fun Context.dp2px(dp: Int): Int {

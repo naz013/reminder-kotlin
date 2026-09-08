@@ -34,36 +34,31 @@ fun GoogleTaskRow(
 ) {
   val accentColor = task.taskListColor?.let { Color(it) } ?: MaterialTheme.colorScheme.primary
   Card(
-    modifier =
-      modifier
-        .fillMaxWidth()
-        .clickable(onClick = onClick),
+    modifier = modifier
+      .fillMaxWidth()
+      .clickable(onClick = onClick),
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
   ) {
     Row(
       verticalAlignment = Alignment.CenterVertically,
-      modifier =
-        Modifier
-          .fillMaxWidth()
-          .padding(vertical = 8.dp, horizontal = 12.dp),
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = 8.dp, horizontal = 12.dp),
     ) {
       Icon(
-        painter =
-          painterResource(
-            if (task.isCompleted) R.drawable.ic_fluent_checkbox_checked else R.drawable.ic_fluent_checkbox_unchecked,
-          ),
+        painter = painterResource(
+          if (task.isCompleted) R.drawable.ic_fluent_checkbox_checked else R.drawable.ic_fluent_checkbox_unchecked,
+        ),
         contentDescription = null,
         tint = accentColor,
-        modifier =
-          Modifier
-            .size(28.dp)
-            .let { if (onToggle != null) it.clickable(onClick = onToggle) else it },
+        modifier = Modifier
+          .size(28.dp)
+          .let { if (onToggle != null) it.clickable(onClick = onToggle) else it },
       )
       Column(
-        modifier =
-          Modifier
-            .weight(1f)
-            .padding(start = 12.dp),
+        modifier = Modifier
+          .weight(1f)
+          .padding(start = 12.dp),
       ) {
         Text(
           text = task.text,

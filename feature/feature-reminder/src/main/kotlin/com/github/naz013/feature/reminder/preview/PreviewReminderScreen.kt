@@ -58,9 +58,9 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
-import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
 import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.googletask.GoogleTaskItemState
 import com.github.naz013.ui.reminder.UiAppTarget
@@ -474,7 +474,12 @@ private fun detailRows(state: PreviewReminderState): List<@Composable () -> Unit
     state.groupTitle?.let { text -> add { DetailRow(icon = DrawableCatalog.Fluent.Group, text = text) } }
     add { DetailRow(icon = DrawableCatalog.Fluent.Star, text = state.priorityTitle) }
     if (state.isOfflineOnly) {
-      add { DetailRow(icon = DrawableCatalog.Fluent.Cloud, text = stringResource(R.string.offline_only_reminder_description)) }
+      add {
+        DetailRow(
+          icon = DrawableCatalog.Fluent.Cloud,
+          text = stringResource(R.string.offline_only_reminder_description)
+        )
+      }
     }
     if (state.tags.isNotEmpty()) {
       add { TagsDetailRow(tags = state.tags) }

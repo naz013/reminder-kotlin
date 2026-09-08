@@ -52,6 +52,3 @@ fun rememberGoogleTasksLogin(
     )
   }
 }
-
-@Composable
-fun rememberGoogleTasksAuthManager(): GoogleTasksAuthManager = koinInject()

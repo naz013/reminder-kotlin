@@ -2,87 +2,104 @@ package com.github.naz013.ui.common.compose.foundation
 
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowSizeClass
 import com.github.naz013.logging.Logger
 
 enum class DeviceScreenConfiguration {
-    MobilePortrait,
-    MobileLandscape,
-    TabletPortrait,
-    TabletLandscape,
-    DesktopSmall,
-    DesktopNormal;
+  MobilePortrait,
+  MobileLandscape,
+  TabletPortrait,
+  TabletLandscape,
+  DesktopSmall,
+  DesktopNormal;
 
-    companion object {
-        fun fromWindowSizeClass(windowSizeClass: WindowSizeClass): DeviceScreenConfiguration {
-          Logger.d("DeviceScreenConfiguration", "fromWindowSizeClass: width=${windowSizeClass.minWidthDp}, height=${windowSizeClass.minHeightDp}")
-            return when {
-                // Order matters: DesktopSmall's bounds (width/height >= MEDIUM) are a superset of
-                // TabletLandscape's and TabletPortrait's, so those two must be checked first or
-                // they're unreachable.
-                windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) &&
-                        windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND) -> DesktopNormal
-                windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) &&
-                        windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND) -> TabletLandscape
-                windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) &&
-                        windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND) -> TabletPortrait
-                windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) &&
-                        windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND) -> DesktopSmall
-                windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) &&
-                   windowSizeClass.minHeightDp < 480 -> MobileLandscape
-                else -> MobilePortrait
-            }
+  companion object {
+    fun fromWindowSizeClass(windowSizeClass: WindowSizeClass): DeviceScreenConfiguration {
+      Logger.d(
+        "DeviceScreenConfiguration",
+        "fromWindowSizeClass: width=${windowSizeClass.minWidthDp}, height=${windowSizeClass.minHeightDp}"
+      )
+      return when {
+        // Order matters: DesktopSmall's bounds (width/height >= MEDIUM) are a superset of
+        // TabletLandscape's and TabletPortrait's, so those two must be checked first or
+        // they're unreachable.
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) &&
+          windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND) -> {
+          DesktopNormal
         }
+
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) &&
+          windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND) -> {
+          TabletLandscape
+        }
+
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) &&
+          windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_EXPANDED_LOWER_BOUND) -> {
+          TabletPortrait
+        }
+
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) &&
+          windowSizeClass.isHeightAtLeastBreakpoint(WindowSizeClass.HEIGHT_DP_MEDIUM_LOWER_BOUND) -> {
+          DesktopSmall
+        }
+
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) &&
+          windowSizeClass.minHeightDp < 480 -> {
+          MobileLandscape
+        }
+
+        else -> MobilePortrait
+      }
     }
+  }
 }
 
 @Composable
 fun deviceScreenConfiguration(): DeviceScreenConfiguration {
-    return DeviceScreenConfiguration.fromWindowSizeClass(currentWindowAdaptiveInfo().windowSizeClass)
+  return DeviceScreenConfiguration.fromWindowSizeClass(currentWindowAdaptiveInfo().windowSizeClass)
 }
 
 @Composable
 fun isMobilePortraitScreen(): Boolean {
-    return deviceScreenConfiguration() == DeviceScreenConfiguration.MobilePortrait
+  return deviceScreenConfiguration() == DeviceScreenConfiguration.MobilePortrait
 }
 
 @Composable
 fun isMobileLandscapeScreen(): Boolean {
-    return deviceScreenConfiguration() == DeviceScreenConfiguration.MobileLandscape
+  return deviceScreenConfiguration() == DeviceScreenConfiguration.MobileLandscape
 }
 
 @Composable
 fun isMobileScreen(): Boolean {
-    return isMobilePortraitScreen() || isMobileLandscapeScreen()
+  return isMobilePortraitScreen() || isMobileLandscapeScreen()
 }
 
 @Composable
 fun isTabletPortraitScreen(): Boolean {
-    return deviceScreenConfiguration() == DeviceScreenConfiguration.TabletPortrait
+  return deviceScreenConfiguration() == DeviceScreenConfiguration.TabletPortrait
 }
 
 @Composable
 fun isTabletLandscapeScreen(): Boolean {
-    return deviceScreenConfiguration() == DeviceScreenConfiguration.TabletLandscape
+  return deviceScreenConfiguration() == DeviceScreenConfiguration.TabletLandscape
 }
 
 @Composable
 fun isTabletScreen(): Boolean {
-    return isTabletPortraitScreen() || isTabletLandscapeScreen()
+  return isTabletPortraitScreen() || isTabletLandscapeScreen()
 }
 
 @Composable
 fun isDesktopSmallScreen(): Boolean {
-    return deviceScreenConfiguration() == DeviceScreenConfiguration.DesktopSmall
+  return deviceScreenConfiguration() == DeviceScreenConfiguration.DesktopSmall
 }
 
 @Composable
 fun isDesktopNormalScreen(): Boolean {
-    return deviceScreenConfiguration() == DeviceScreenConfiguration.DesktopNormal
+  return deviceScreenConfiguration() == DeviceScreenConfiguration.DesktopNormal
 }
 
 @Composable
 fun isDesktopScreen(): Boolean {
-    return isDesktopSmallScreen() || isDesktopNormalScreen()
+  return isDesktopSmallScreen() || isDesktopNormalScreen()
 }

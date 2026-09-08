@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.github.naz013.domain.Tag
 import com.github.naz013.ui.common.compose.AppIcons
 
 /**

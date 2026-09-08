@@ -138,14 +138,13 @@ fun rememberPermissionRequesterRationale(): PermissionRequester {
   requireNotNull(activity) { "rememberPermissionRequester must be called from an Activity-backed composition" }
 
   val requester = remember(activity) { PermissionRequester(activity) }
-  val launcher =
-    rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
-      if (results.entries.isEmpty()) {
-        return@rememberLauncherForActivityResult
-      }
-      val [permission, isGranted] = results.entries.first()
-      requester.onSystemResult(permission, isGranted)
+  val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { results ->
+    if (results.entries.isEmpty()) {
+      return@rememberLauncherForActivityResult
     }
+    val (permission, isGranted) = results.entries.first()
+    requester.onSystemResult(permission, isGranted)
+  }
   requester.launchSystemPrompt = { permission -> launcher.launch(arrayOf(permission)) }
   PermissionRationaleDialog(requester)
   return requester

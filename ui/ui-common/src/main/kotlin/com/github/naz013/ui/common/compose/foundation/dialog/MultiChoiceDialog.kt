@@ -40,10 +40,10 @@ fun MultiChoiceDialog(
           Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier =
-              Modifier
-                .fillMaxWidth()
-                .toggleable(value = checked, onValueChange = { onOptionToggled(index) }, role = Role.Checkbox)
-                .padding(vertical = 8.dp),
+            Modifier
+              .fillMaxWidth()
+              .toggleable(value = checked, onValueChange = { onOptionToggled(index) }, role = Role.Checkbox)
+              .padding(vertical = 8.dp),
           ) {
             Checkbox(checked = checked, onCheckedChange = null)
             Text(

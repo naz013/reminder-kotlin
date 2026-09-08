@@ -2,6 +2,7 @@
 <SmellBaseline>
   <ManuallySuppressedIssues/>
   <CurrentIssues>
-    <ID>SpreadOperator:GoogleTasksLogin.kt$(scopes.first(), *scopes.drop(1).toTypedArray())</ID>
+    <ID>Filename:GoogleTasksLogin.kt$com.github.naz013.ui.googletask.GoogleTasksLogin.kt</ID>
+    <ID>MatchingDeclarationName:GoogleTasksLogin.kt$GoogleTasksLoginState</ID>
   </CurrentIssues>
 </SmellBaseline>

@@ -44,11 +44,10 @@ fun AnimatedGradientBackground(
   val animatedProgress by infiniteTransition.animateFloat(
     initialValue = 0f,
     targetValue = 1f,
-    animationSpec =
-      infiniteRepeatable(
-        animation = tween(durationMillis = durationMillis, easing = LinearEasing),
-        repeatMode = RepeatMode.Reverse,
-      ),
+    animationSpec = infiniteRepeatable(
+      animation = tween(durationMillis = durationMillis, easing = LinearEasing),
+      repeatMode = RepeatMode.Reverse,
+    ),
     label = "animatedGradientProgress",
   )
 
@@ -59,17 +58,15 @@ fun AnimatedGradientBackground(
     val shift = animatedProgress * widthPx
 
     Box(
-      modifier =
-        Modifier
-          .fillMaxSize()
-          .background(
-            brush =
-              Brush.linearGradient(
-                colors = colors,
-                start = Offset(-widthPx + shift, 0f),
-                end = Offset(shift, heightPx),
-              ),
+      modifier = Modifier
+        .fillMaxSize()
+        .background(
+          brush = Brush.linearGradient(
+            colors = colors,
+            start = Offset(-widthPx + shift, 0f),
+            end = Offset(shift, heightPx),
           ),
+        ),
       content = content,
     )
   }

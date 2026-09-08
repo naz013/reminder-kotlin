@@ -21,9 +21,9 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.withAlpha
 
-private const val HeaderHeight = 64
-private const val LeadingSpacer = 16
-private const val ChipBackgroundAlpha = 0.25f
+private const val HEADER_HEIGHT = 64
+private const val LEADING_SPACER = 16
+private const val CHIP_BACKGROUND_ALPHA = 0.25f
 
 /**
  * Leading back/close action row for a screen rendered on top of [AnimatedGradientBackground] —
@@ -40,16 +40,16 @@ fun GradientScreenHeader(
     modifier = modifier
       .statusBarsPadding()
       .fillMaxWidth()
-      .height(HeaderHeight.dp),
+      .height(HEADER_HEIGHT.dp),
     verticalAlignment = Alignment.CenterVertically,
   ) {
-    Spacer(modifier = Modifier.width(LeadingSpacer.dp))
+    Spacer(modifier = Modifier.width(LEADING_SPACER.dp))
     TooltipIconButton(contentDescription = contentDescription) {
       IconButton(
         onClick = onBackClick,
         modifier = Modifier
           .clip(CircleShape)
-          .background(MaterialTheme.colorScheme.background.withAlpha(ChipBackgroundAlpha)),
+          .background(MaterialTheme.colorScheme.background.withAlpha(CHIP_BACKGROUND_ALPHA)),
       ) {
         Icon(
           painter = icon,

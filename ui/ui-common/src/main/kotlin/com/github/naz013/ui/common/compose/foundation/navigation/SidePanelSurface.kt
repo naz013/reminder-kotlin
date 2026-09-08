@@ -32,8 +32,8 @@ fun SidePanelSurface(modifier: Modifier = Modifier, content: @Composable () -> U
   )
 }
 
-private const val SidePanelHostKey = "com.github.naz013.ui.common.compose.foundation.navigation.SidePanelHost"
-private const val SidePanelSupportingKey =
+private const val SIDE_PANEL_HOST_KEY = "com.github.naz013.ui.common.compose.foundation.navigation.SidePanelHost"
+private const val SIDE_PANEL_SUPPORTING_KEY =
   "com.github.naz013.ui.common.compose.foundation.navigation.SidePanelSupporting"
 
 /**
@@ -41,17 +41,17 @@ private const val SidePanelSupportingKey =
  * `CalendarNavGraph.kt`). Paired with [sidePanelSupporting] by `SidePanelSceneStrategy` (`app`
  * module) - a plain `Map<String, Any>` here since this module doesn't depend on Nav3.
  */
-fun sidePanelHost(): Map<String, Any> = mapOf(SidePanelHostKey to true)
+fun sidePanelHost(): Map<String, Any> = mapOf(SIDE_PANEL_HOST_KEY to true)
 
 /**
  * Marks a Nav3 entry as one that, when pushed directly on top of a [sidePanelHost] entry on
  * Medium+ width, renders inside a [SidePanelSurface] floating over the host instead of pushing
  * full-screen (see `BuildReminderNavGraph.kt`/`BirthdaysNavGraph.kt`/`ReminderPreviewNavGraph.kt`).
  */
-fun sidePanelSupporting(): Map<String, Any> = mapOf(SidePanelSupportingKey to true)
+fun sidePanelSupporting(): Map<String, Any> = mapOf(SIDE_PANEL_SUPPORTING_KEY to true)
 
 /** Whether [metadata] (a Nav3 `NavEntry.metadata`) carries the [sidePanelHost] tag. */
-fun isSidePanelHost(metadata: Map<String, Any>): Boolean = metadata[SidePanelHostKey] == true
+fun isSidePanelHost(metadata: Map<String, Any>): Boolean = metadata[SIDE_PANEL_HOST_KEY] == true
 
 /** Whether [metadata] (a Nav3 `NavEntry.metadata`) carries the [sidePanelSupporting] tag. */
-fun isSidePanelSupporting(metadata: Map<String, Any>): Boolean = metadata[SidePanelSupportingKey] == true
+fun isSidePanelSupporting(metadata: Map<String, Any>): Boolean = metadata[SIDE_PANEL_SUPPORTING_KEY] == true

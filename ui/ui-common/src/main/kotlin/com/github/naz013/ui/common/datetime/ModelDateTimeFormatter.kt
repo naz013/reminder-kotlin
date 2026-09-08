@@ -19,15 +19,6 @@ class ModelDateTimeFormatter(
   private val nowDateTimeProvider: NowDateTimeProvider,
   private val birthdayDateCalculator: BirthdayDateCalculator,
 ) {
-  fun getRemaining(
-    dateTime: String?,
-    delay: Int,
-  ): String {
-    if (dateTime.isNullOrEmpty()) {
-      return getRemaining(null)
-    }
-    return getRemaining(dateTimeManager.fromGmtToLocal(dateTime)?.plusMinutes(delay.toLong()))
-  }
 
   fun getBirthdayRemaining(
     futureBirthdayDateTime: LocalDateTime,

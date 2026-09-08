@@ -1,13 +1,15 @@
 package com.github.naz013.ui.common.compose.foundation.telephony
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.github.naz013.ui.common.R
 import androidx.core.net.toUri
+import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.R
 
 interface PhoneCaller {
   fun call(number: String)
@@ -25,7 +27,8 @@ class PhoneCallerImpl(
     callIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     try {
       context.startActivity(callIntent)
-    } catch (e: Exception) {
+    } catch (e: ActivityNotFoundException) {
+      Logger.w("PhoneCaller", "App not found, exception: ${e.message}")
       Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
     }
   }

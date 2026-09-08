@@ -1,14 +1,15 @@
 package com.github.naz013.ui.common.compose.foundation.share
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import com.github.naz013.ui.common.R
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.common.uri.UriUtil
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.R
 import org.koin.compose.koinInject
 import java.io.File
 
@@ -34,7 +35,7 @@ class FileIntentSenderImpl(
           context.getString(R.string.share_send_email)
         )
       )
-    } catch (e: Exception) {
+    } catch (e: ActivityNotFoundException) {
       Logger.w("FileIntentSender", "App not found, exception: ${e.message}")
       Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
     }

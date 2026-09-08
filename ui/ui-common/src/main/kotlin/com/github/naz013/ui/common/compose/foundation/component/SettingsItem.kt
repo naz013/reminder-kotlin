@@ -45,6 +45,35 @@ private val IconSize = 24.dp
 private val IconSpacing = 20.dp
 private val TrailingSpacing = 16.dp
 
+private fun settingsItemContentAlpha(enabled: Boolean, locked: Boolean): Float =
+  if (enabled && !locked) 1f else DisabledAlpha
+
+private fun settingsItemTrailing(
+  trailing: @Composable (() -> Unit)?,
+  locked: Boolean,
+): @Composable (() -> Unit)? =
+  trailing ?: if (locked) { @Composable { ProBadgeChip() } } else null
+
+@Composable
+private fun Modifier.settingsItemHighlight(
+  highlightBackground: Color,
+  isFlashing: Boolean,
+  selected: Boolean,
+): Modifier = when {
+  isFlashing || highlightBackground != Color.Transparent -> background(highlightBackground)
+  selected -> background(MaterialTheme.colorScheme.secondaryContainer)
+  else -> this
+}
+
+private fun Modifier.settingsItemClickable(
+  enabled: Boolean,
+  onClick: (() -> Unit)?,
+): Modifier = if (onClick != null) {
+  clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+} else {
+  this
+}
+
 /**
  * A single settings list row: leading icon, title/subtitle, and an optional trailing slot
  * (switch, checkbox, value text, custom button, chevron, etc). This is the Compose replacement
@@ -91,8 +120,8 @@ fun SettingsItem(
   onClick: (() -> Unit)? = null,
   trailing: @Composable (() -> Unit)? = null
 ) {
-  val contentAlpha = if (enabled && !locked) 1f else DisabledAlpha
-  val effectiveTrailing = trailing ?: if (locked) { @Composable { ProBadgeChip() } } else null
+  val contentAlpha = settingsItemContentAlpha(enabled, locked)
+  val effectiveTrailing = settingsItemTrailing(trailing, locked)
 
   val bringIntoViewRequester = remember { BringIntoViewRequester() }
   val flashColor = MaterialTheme.colorScheme.tertiaryContainer
@@ -124,22 +153,8 @@ fun SettingsItem(
       modifier = Modifier
         .fillMaxWidth()
         .bringIntoViewRequester(bringIntoViewRequester)
-        .then(
-          if (isFlashing || highlightBackground != Color.Transparent) {
-            Modifier.background(highlightBackground)
-          } else if (selected) {
-            Modifier.background(MaterialTheme.colorScheme.secondaryContainer)
-          } else {
-            Modifier
-          }
-        )
-        .then(
-          if (onClick != null) {
-            Modifier.clickable(enabled = enabled, role = Role.Button, onClick = onClick)
-          } else {
-            Modifier
-          }
-        )
+        .settingsItemHighlight(highlightBackground, isFlashing, selected)
+        .settingsItemClickable(enabled, onClick)
         .padding(ItemPadding),
       verticalAlignment = Alignment.CenterVertically
     ) {

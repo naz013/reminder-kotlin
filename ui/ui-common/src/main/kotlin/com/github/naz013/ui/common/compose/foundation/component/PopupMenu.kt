@@ -35,9 +35,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.IntOffset
@@ -117,7 +117,8 @@ fun PopupMenu(
 
   // Use standard DropdownMenu for default positioning (Start + Auto)
   if (horizontalAlignment == PopupMenuAlignment.Start &&
-      verticalAlignment == PopupMenuVerticalAlignment.Auto) {
+    verticalAlignment == PopupMenuVerticalAlignment.Auto
+  ) {
     DropdownMenu(
       expanded = expanded,
       onDismissRequest = onDismissRequest,
@@ -406,6 +407,7 @@ private class EdgeAlignedPositionProvider(
         // Place above anchor
         (anchorTop - popupContentSize.height + offset.y).coerceAtLeast(0)
       }
+
       PopupMenuVerticalAlignment.Below -> {
         // Place below anchor
         val yBelow = anchorBottom + offset.y
@@ -416,6 +418,7 @@ private class EdgeAlignedPositionProvider(
           yBelow
         }
       }
+
       PopupMenuVerticalAlignment.Auto -> {
         // Automatically choose best position based on available space
         if (spaceBelow >= popupContentSize.height) {
@@ -482,7 +485,8 @@ fun AnchoredPopupMenu(
 
     // Use standard DropdownMenu for default positioning (Start + Auto)
     if (horizontalAlignment == PopupMenuAlignment.Start &&
-        verticalAlignment == PopupMenuVerticalAlignment.Auto) {
+      verticalAlignment == PopupMenuVerticalAlignment.Auto
+    ) {
       PopupMenu(
         expanded = expanded,
         onDismissRequest = { expanded = false },
@@ -945,4 +949,3 @@ private fun PopupMenuWithAboveAlignmentPreview() {
     }
   }
 }
-

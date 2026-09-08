@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.compose.AppShapes
 import com.github.naz013.ui.common.compose.withAlpha
 
-private const val CardFillAlpha = 0.85f
-private const val ContentPadding = 20
+private const val CARD_FILL_ALPHA = 0.85f
+private const val CONTENT_PADDING = 20
 
 /**
  * Translucent content card used on top of [AnimatedGradientBackground] — shared by the app's
@@ -28,11 +28,11 @@ fun GradientHeroCard(
 ) {
   Surface(
     shape = AppShapes.largeIncreased,
-    color = MaterialTheme.colorScheme.surface.withAlpha(CardFillAlpha),
+    color = MaterialTheme.colorScheme.surface.withAlpha(CARD_FILL_ALPHA),
     modifier = modifier.fillMaxWidth(),
   ) {
     Column(
-      modifier = Modifier.padding(ContentPadding.dp),
+      modifier = Modifier.padding(CONTENT_PADDING.dp),
       verticalArrangement = verticalArrangement,
       content = content,
     )

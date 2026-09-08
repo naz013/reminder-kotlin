@@ -37,8 +37,8 @@ import com.github.naz013.ui.common.compose.AppTheme
 import kotlin.math.cos
 import kotlin.math.sin
 
-private const val BladeCount = 12
-private const val SpinDurationMillis = 900
+private const val BLADE_COUNT = 12
+private const val SPIN_DURATION_MILLIS = 900
 private val ContentPullOffset = 56.dp
 
 /**
@@ -68,19 +68,19 @@ fun AppPullToRefreshBox(
         isRefreshing = isRefreshing,
         state = state,
         modifier =
-          Modifier
-            .align(Alignment.TopCenter)
-            .padding(top = 20.dp),
+        Modifier
+          .align(Alignment.TopCenter)
+          .padding(top = 20.dp),
       )
     },
     content = {
       Box(
         modifier =
-          Modifier
-            .fillMaxSize()
-            .graphicsLayer {
-              translationY = state.distanceFraction.coerceIn(0f, 1f) * ContentPullOffset.toPx()
-            },
+        Modifier
+          .fillMaxSize()
+          .graphicsLayer {
+            translationY = state.distanceFraction.coerceIn(0f, 1f) * ContentPullOffset.toPx()
+          },
       ) {
         content()
       }
@@ -113,32 +113,32 @@ fun IosStylePullToRefreshIndicator(
         .animateFloat(
           initialValue = 0f,
           targetValue = 360f,
-          animationSpec = infiniteRepeatable(tween(durationMillis = SpinDurationMillis, easing = LinearEasing)),
+          animationSpec = infiniteRepeatable(tween(durationMillis = SPIN_DURATION_MILLIS, easing = LinearEasing)),
           label = "rotation",
         ).value
     } else {
       remember { mutableFloatStateOf(0f) }.floatValue
     }
-  val highlightedBlade = (pullProgress * BladeCount).toInt().coerceIn(0, BladeCount - 1)
+  val highlightedBlade = (pullProgress * BLADE_COUNT).toInt().coerceIn(0, BLADE_COUNT - 1)
 
   Canvas(
     modifier =
-      modifier
-        .size(size)
-        .graphicsLayer {
-          scaleX = scale
-          scaleY = scale
-          alpha = scale
-          rotationZ = rotation
-        },
+    modifier
+      .size(size)
+      .graphicsLayer {
+        scaleX = scale
+        scaleY = scale
+        alpha = scale
+        rotationZ = rotation
+      },
   ) {
     val bladeLength = this.size.minDimension * 0.28f
     val bladeWidth = this.size.minDimension * 0.09f
     val radius = this.size.minDimension / 2f - bladeLength / 2f
     val center = Offset(this.size.width / 2f, this.size.height / 2f)
 
-    for (i in 0 until BladeCount) {
-      val angleDegrees = (360f / BladeCount) * i
+    for (i in 0 until BLADE_COUNT) {
+      val angleDegrees = (360f / BLADE_COUNT) * i
       val angleRadians = Math.toRadians(angleDegrees.toDouble())
       val bladeCenter =
         Offset(
@@ -147,12 +147,12 @@ fun IosStylePullToRefreshIndicator(
         )
       val bladeAlpha =
         if (isRefreshing) {
-          MinBladeAlpha + (1f - MinBladeAlpha) * (i.toFloat() / BladeCount)
+          MIN_BLADE_ALPHA + (1f - MIN_BLADE_ALPHA) * (i.toFloat() / BLADE_COUNT)
         } else {
           if (i <= highlightedBlade) {
-            MinBladeAlpha + (1f - MinBladeAlpha) * (i.toFloat() / BladeCount)
+            MIN_BLADE_ALPHA + (1f - MIN_BLADE_ALPHA) * (i.toFloat() / BLADE_COUNT)
           } else {
-            MinBladeAlpha
+            MIN_BLADE_ALPHA
           }
         }
 
@@ -168,7 +168,7 @@ fun IosStylePullToRefreshIndicator(
   }
 }
 
-private const val MinBladeAlpha = 0.15f
+private const val MIN_BLADE_ALPHA = 0.15f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)

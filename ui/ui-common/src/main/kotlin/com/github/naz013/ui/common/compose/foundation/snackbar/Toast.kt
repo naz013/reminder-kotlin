@@ -49,5 +49,3 @@ private data class ToastData(
   val message: String? = null,
   val duration: ToastDuration = ToastDuration.Short,
 )
-
-
