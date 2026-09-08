@@ -2,10 +2,8 @@
 <resources>
     <string name="whats_new_version_and_date" translatable="false">%s\n%s</string>
     <string name="whats_new_text" translatable="false">
-        ✅ Added the escalated Reminder notifications;\n
-        ✅ Added Workflows (for PRO only);\n
-        ✅ Added multiselect actions to Groups and Tags;\n
-        ⭐ Improved Note editing;\n
+        ✅ Added multiselect actions to Agenda;\n
+        ✅ Added settings search;\n
         🐞 Bug fixes and improvements.
     </string>
     <string name="whats_new_emoji_set" translatable="false">

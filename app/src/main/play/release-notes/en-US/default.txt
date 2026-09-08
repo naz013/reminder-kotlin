@@ -1,6 +1,4 @@
 - Refreshed the application look
-- Added the escalated Reminder notifications
-- Added Workflows (for PRO only)
-- Added multiselect actions to Groups and Tags
-- Improved Note editing
+- Added multiselect actions to Agenda
+- Added settings search
 - Bug fixes and improvements
