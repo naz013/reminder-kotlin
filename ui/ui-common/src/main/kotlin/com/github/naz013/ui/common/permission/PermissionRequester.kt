@@ -131,6 +131,14 @@ class PermissionRequester internal constructor(
     }
 }
 
+/**
+ * Requests [Permissions.CALL_PHONE], showing the rationale dialog if needed.
+ */
+fun PermissionRequester.requestCallPermission(
+  onGranted: () -> Unit,
+  onDenied: (permission: String) -> Unit = {},
+) = request(Permissions.CALL_PHONE, onGranted = onGranted, onDenied = onDenied)
+
 @Composable
 fun rememberPermissionRequesterRationale(): PermissionRequester {
   val context = LocalContext.current

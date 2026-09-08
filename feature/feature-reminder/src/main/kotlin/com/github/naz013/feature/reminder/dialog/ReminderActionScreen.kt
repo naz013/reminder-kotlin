@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -26,7 +24,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -44,33 +41,31 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
-import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
-import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.feature.reminder.actions.ReminderAction
-import com.github.naz013.common.Permissions
-import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
+import com.github.naz013.ui.common.compose.AppShapes
 import com.github.naz013.ui.common.compose.AppTheme
-import com.github.naz013.ui.common.compose.foundation.DeviceScreenConfiguration
 import com.github.naz013.ui.common.compose.foundation.PrimaryIconButton
-import com.github.naz013.ui.common.compose.foundation.SplitButton
+import com.github.naz013.ui.common.compose.foundation.component.ActionButtonsSection
+import com.github.naz013.ui.common.compose.foundation.component.ActionDialogScaffold
 import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
 import com.github.naz013.ui.common.compose.foundation.component.BottomSheetItem
 import com.github.naz013.ui.common.compose.foundation.component.BottomSheetList
-import com.github.naz013.ui.common.compose.foundation.component.PopupMenu
-import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
-import com.github.naz013.ui.common.compose.foundation.deviceScreenConfiguration
+import com.github.naz013.ui.common.compose.foundation.component.ContactAvatarHeader
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.icon.DrawableCatalog
+import com.github.naz013.ui.common.livedata.ObserveEvent
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
+import com.github.naz013.ui.common.permission.requestCallPermission
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -95,7 +90,6 @@ fun ReminderActionScreen(
   val snoozeSheetState = rememberBottomSheetState(SheetValue.Hidden)
   val scope = rememberCoroutineScope()
 
-  val screenConfiguration = deviceScreenConfiguration()
   val permissionRequester = rememberPermissionRequesterRationale()
   val toastDispatcher = rememberToastDispatcher()
 
@@ -105,12 +99,11 @@ fun ReminderActionScreen(
       is ReminderActionActivityViewModel.ViewModelEvent.Edit -> onEdit(event.id)
 
       is ReminderActionActivityViewModel.ViewModelEvent.MakeCall -> {
-        permissionRequester.request(
-          Permissions.CALL_PHONE,
+        permissionRequester.requestCallPermission(
           onGranted = {
             onCallClick(event.target)
             onFinish()
-          }
+          },
         )
       }
 
@@ -146,77 +139,58 @@ fun ReminderActionScreen(
 
   val state by viewModel.state.observeAsState()
 
-  Scaffold { paddingValues ->
-    Surface(
-      modifier = modifier
-        .fillMaxSize()
-        .padding(paddingValues),
-      color = MaterialTheme.colorScheme.background,
-    ) {
-      // Early return if state is not available yet
-      val screenState = state ?: return@Surface
-
-      Logger.d("ReminderActionScreen", "Rendering screen with configuration: $screenConfiguration")
-
-      // Choose layout based on screen configuration
-      when (screenConfiguration) {
-        DeviceScreenConfiguration.MobileLandscape -> {
-          ReminderActionScreenLandscape(
-            screenState = screenState,
-            onTodoItemClick = { itemId ->
-              // Input validation: ignore blank ids
-              if (itemId.isBlank()) return@ReminderActionScreenLandscape
-              viewModel.onTodoItemClick(itemId)
+  ActionDialogScaffold(
+    modifier = modifier,
+    state = state,
+    logTag = "ReminderActionScreen",
+    overlayContent = {
+      if (showSnoozeBottomSheet) {
+        AppModalBottomSheet(
+          onDismissRequest = { showSnoozeBottomSheet = false },
+          sheetState = snoozeSheetState,
+          dragHandle = null,
+        ) {
+          SnoozeDialogContent(
+            onDismiss = {
+              scope.launch {
+                snoozeSheetState.hide()
+                showSnoozeBottomSheet = false
+              }
             },
-            onActionClick = { action ->
-              viewModel.onActionClick(action)
+            onSnooze = {
+              viewModel.onCustomSnooze(it)
+              scope.launch {
+                snoozeSheetState.hide()
+                showSnoozeBottomSheet = false
+              }
             },
-            adsContent = adsContent,
-          )
-        }
-
-        else -> {
-          ReminderActionScreenPortrait(
-            screenState = screenState,
-            onTodoItemClick = { itemId ->
-              // Input validation: ignore blank ids
-              if (itemId.isBlank()) return@ReminderActionScreenPortrait
-              viewModel.onTodoItemClick(itemId)
-            },
-            onActionClick = { action ->
-              viewModel.onActionClick(action)
-            },
-            adsContent = adsContent,
           )
         }
       }
-    }
-
-    // Snooze Bottom Sheet
-    if (showSnoozeBottomSheet) {
-      AppModalBottomSheet(
-        onDismissRequest = { showSnoozeBottomSheet = false },
-        sheetState = snoozeSheetState,
-        dragHandle = null,
-      ) {
-        SnoozeDialogContent(
-          onDismiss = {
-            scope.launch {
-              snoozeSheetState.hide()
-              showSnoozeBottomSheet = false
-            }
-          },
-          onSnooze = {
-            viewModel.onCustomSnooze(it)
-            scope.launch {
-              snoozeSheetState.hide()
-              showSnoozeBottomSheet = false
-            }
-          },
-        )
-      }
-    }
-  }
+    },
+    portrait = { screenState ->
+      ReminderActionScreenPortrait(
+        screenState = screenState,
+        onTodoItemClick = { itemId ->
+          if (itemId.isBlank()) return@ReminderActionScreenPortrait
+          viewModel.onTodoItemClick(itemId)
+        },
+        onActionClick = { action -> viewModel.onActionClick(action) },
+        adsContent = adsContent,
+      )
+    },
+    landscape = { screenState ->
+      ReminderActionScreenLandscape(
+        screenState = screenState,
+        onTodoItemClick = { itemId ->
+          if (itemId.isBlank()) return@ReminderActionScreenLandscape
+          viewModel.onTodoItemClick(itemId)
+        },
+        onActionClick = { action -> viewModel.onActionClick(action) },
+        adsContent = adsContent,
+      )
+    },
+  )
 }
 
 @Composable
@@ -255,7 +229,7 @@ private fun ReminderActionScreenPortrait(
     Spacer(modifier = Modifier.height(16.dp))
 
     // Action buttons section
-    ActionsSection(
+    ActionButtonsSection(
       mainAction = screenState.mainAction,
       secondaryActions = screenState.secondaryActions,
       onActionClick = onActionClick,
@@ -305,7 +279,7 @@ private fun ReminderActionScreenLandscape(
         .fillMaxSize(),
       verticalArrangement = Arrangement.Bottom,
     ) {
-      ActionsSection(
+      ActionButtonsSection(
         mainAction = screenState.mainAction,
         secondaryActions = screenState.secondaryActions,
         onActionClick = onActionClick,
@@ -405,16 +379,11 @@ private fun SnoozeDialogContent(
   }
 }
 
-/**
- * Displays the reminder header based on its type.
- *
- * @param header The header data containing reminder information
- */
 @Composable
 private fun ReminderHeader(header: ReminderActionScreenHeader) {
   Card(
     modifier = Modifier.fillMaxWidth(),
-    shape = MaterialTheme.shapes.medium,
+    shape = AppShapes.tile,
     colors = CardDefaults.cardColors(
       containerColor = MaterialTheme.colorScheme.surfaceVariant,
     ),
@@ -430,22 +399,20 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
         }
 
         is ReminderActionScreenHeader.MakeCall -> {
-          ContactHeaderContent(
+          ContactAvatarHeader(
             text = header.text,
-            contactName = header.contactName,
-            contactInfo = header.phoneNumber,
             contactPhoto = header.contactPhoto,
-            icon = DrawableCatalog.Fluent.Phone,
+            fallbackIconRes = DrawableCatalog.Fluent.Phone,
+            extraContent = { ContactDetailLines(header.contactName, header.phoneNumber) },
           )
         }
 
         is ReminderActionScreenHeader.SendSms -> {
-          ContactHeaderContent(
+          ContactAvatarHeader(
             text = header.text,
-            contactName = header.contactName,
-            contactInfo = header.phoneNumber,
             contactPhoto = header.contactPhoto,
-            icon = DrawableCatalog.Fluent.Send,
+            fallbackIconRes = DrawableCatalog.Fluent.Send,
+            extraContent = { ContactDetailLines(header.contactName, header.phoneNumber) },
           )
         }
 
@@ -478,11 +445,6 @@ private fun ReminderHeader(header: ReminderActionScreenHeader) {
   }
 }
 
-/**
- * Displays simple text header content.
- *
- * @param text The reminder text to display
- */
 @Composable
 private fun SimpleHeaderContent(text: String) {
   Text(
@@ -492,91 +454,23 @@ private fun SimpleHeaderContent(text: String) {
   )
 }
 
-/**
- * Displays contact-related header content with optional photo.
- *
- * @param text The reminder text
- * @param contactName The contact name if available
- * @param contactInfo The phone number or contact info
- * @param contactPhoto Optional contact photo bitmap
- * @param icon Icon resource for the contact type
- */
 @Composable
-private fun ContactHeaderContent(
-  text: String,
-  contactName: String?,
-  contactInfo: String,
-  contactPhoto: Bitmap?,
-  icon: Int,
-) {
-  Row(
-    modifier = Modifier.fillMaxWidth(),
-    horizontalArrangement = Arrangement.spacedBy(12.dp),
-    verticalAlignment = Alignment.CenterVertically,
-  ) {
-    // Contact photo or icon
-    if (contactPhoto != null) {
-      Image(
-        bitmap = contactPhoto.asImageBitmap(),
-        contentDescription = contactName ?: contactInfo,
-        modifier = Modifier
-          .size(56.dp)
-          .clip(CircleShape),
-        contentScale = ContentScale.Crop,
-      )
-    } else {
-      Box(
-        modifier = Modifier
-          .size(56.dp)
-          .clip(CircleShape)
-          .background(MaterialTheme.colorScheme.primaryContainer),
-        contentAlignment = Alignment.Center,
-      ) {
-        Icon(
-          painter = painterResource(id = icon),
-          contentDescription = null,
-          modifier = Modifier.size(28.dp),
-          tint = MaterialTheme.colorScheme.onPrimaryContainer,
-        )
-      }
-    }
-
-    // Contact info
-    Column(modifier = Modifier.weight(1f)) {
-      Text(
-        text = text,
-        style = MaterialTheme.typography.bodyLargeEmphasized,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        maxLines = 2,
-        overflow = TextOverflow.Ellipsis,
-      )
-
-      if (contactName != null) {
-        Text(
-          text = contactName,
-          style = MaterialTheme.typography.titleMediumEmphasized,
-          color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-      }
-
-      Text(
-        text = contactInfo,
-        style = MaterialTheme.typography.bodyMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-      )
-    }
+private fun ContactDetailLines(contactName: String?, contactInfo: String) {
+  if (contactName != null) {
+    Text(
+      text = contactName,
+      style = MaterialTheme.typography.titleMediumEmphasized,
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
   }
+
+  Text(
+    text = contactInfo,
+    style = MaterialTheme.typography.bodyMedium,
+    color = MaterialTheme.colorScheme.onSurfaceVariant,
+  )
 }
 
-/**
- * Displays email header content.
- *
- * @param text The reminder text
- * @param emailAddress The email address
- * @param contactName Optional contact name
- * @param subject Optional email subject
- * @param contactPhoto Optional contact photo
- */
 @Composable
 private fun EmailHeaderContent(
   text: String,
@@ -653,13 +547,6 @@ private fun EmailHeaderContent(
   }
 }
 
-/**
- * Displays app header content.
- *
- * @param text The reminder text
- * @param appName The application name
- * @param appIcon Optional app icon resource
- */
 @Composable
 private fun AppHeaderContent(
   text: String,
@@ -715,12 +602,6 @@ private fun AppHeaderContent(
   }
 }
 
-/**
- * Displays link header content.
- *
- * @param text The reminder text
- * @param url The URL to open
- */
 @Composable
 private fun LinkHeaderContent(
   text: String,
@@ -768,14 +649,6 @@ private fun LinkHeaderContent(
   }
 }
 
-/**
- * Displays the todo list section.
- *
- * Scrollable when content exceeds available space to ensure all items are accessible.
- *
- * @param todoList The list of todo items
- * @param onItemClick Callback when a todo item is clicked
- */
 @Composable
 private fun TodoListSection(
   todoList: ReminderActionScreenTodoList,
@@ -806,12 +679,6 @@ private fun TodoListSection(
   }
 }
 
-/**
- * Displays a single todo item row.
- *
- * @param item The todo item data
- * @param onItemClick Callback when the item is clicked
- */
 @Composable
 private fun TodoItemRow(
   item: ReminderActionScreenTodoItem,
@@ -837,7 +704,7 @@ private fun TodoItemRow(
         MaterialTheme.colorScheme.onSurface
       },
       textDecoration = if (item.isCompleted) {
-        androidx.compose.ui.text.style.TextDecoration.LineThrough
+        TextDecoration.LineThrough
       } else {
         null
       },
@@ -845,99 +712,6 @@ private fun TodoItemRow(
   }
 }
 
-/**
- * Displays the action buttons section.
- *
- * @param mainAction The main action button
- * @param secondaryActions List of secondary action buttons
- * @param onActionClick Callback when an action is clicked
- */
-@Composable
-private fun ActionsSection(
-  mainAction: ReminderActionScreenActionItem,
-  secondaryActions: List<ReminderActionScreenActionItem>,
-  onActionClick: (ReminderAction) -> Unit,
-) {
-  if (secondaryActions.isEmpty()) {
-    Button(
-      onClick = { onActionClick(mainAction.action) },
-      modifier = Modifier
-        .fillMaxWidth()
-        .height(56.dp),
-      shape = ButtonDefaults.shape,
-      colors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.primary,
-      ),
-    ) {
-      Icon(
-        painter = painterResource(id = mainAction.iconRes),
-        contentDescription = null,
-        modifier = Modifier.size(24.dp),
-      )
-      Spacer(modifier = Modifier.width(8.dp))
-      Text(
-        text = mainAction.text,
-        style = MaterialTheme.typography.titleMediumEmphasized,
-      )
-    }
-  } else {
-    var expanded by remember { mutableStateOf(false) }
-    Box(
-      modifier = Modifier.fillMaxWidth(),
-    ) {
-      SplitButton(
-        onLeftClick = { onActionClick(mainAction.action) },
-        onRightClick = { expanded = true },
-        leftContent = {
-          Icon(
-            painter = painterResource(id = mainAction.iconRes),
-            contentDescription = mainAction.text,
-          )
-          Text(
-            text = mainAction.text,
-            modifier = Modifier.padding(start = 8.dp),
-          )
-        },
-        rightContent = {
-          Box {
-            Icon(
-              painter = AppIcons.Fluent.MoreHor,
-              contentDescription = stringResource(R.string.more_options),
-            )
-            PopupMenu(
-              expanded = expanded,
-              onDismissRequest = { expanded = false },
-              items = secondaryActions.mapIndexed { index, item ->
-                PopupMenuItem(
-                  id = index,
-                  title = item.text,
-                  iconRes = item.iconRes,
-                )
-              },
-              onItemClick = { itemId ->
-                val actionItem = secondaryActions.getOrNull(itemId)
-                actionItem?.let {
-                  onActionClick(it.action)
-                }
-              },
-            )
-          }
-        },
-        modifier = Modifier
-          .fillMaxWidth()
-          .height(56.dp),
-        cornerRadius = 28.dp,
-      )
-    }
-  }
-}
-
-/**
- * Preview for ActionsSection showing different action button layouts.
- *
- * Displays the main action button with various secondary action combinations
- * to visualize button layout and spacing.
- */
 @Preview(showBackground = true, widthDp = 360)
 @Composable
 private fun ActionsSectionPreview() {
@@ -946,7 +720,7 @@ private fun ActionsSectionPreview() {
       modifier = Modifier.padding(16.dp),
       color = MaterialTheme.colorScheme.background,
     ) {
-      ActionsSection(
+      ActionButtonsSection(
         mainAction = ReminderActionScreenActionItem(
           action = ReminderAction.Complete,
           text = "Mark as Complete",
@@ -975,11 +749,6 @@ private fun ActionsSectionPreview() {
   }
 }
 
-/**
- * Preview for ActionsSection with only main action (no secondary actions).
- *
- * Shows the layout when there are no secondary actions available.
- */
 @Preview(showBackground = true, widthDp = 360)
 @Composable
 private fun ActionsSectionWithoutSecondaryPreview() {
@@ -988,7 +757,7 @@ private fun ActionsSectionWithoutSecondaryPreview() {
       modifier = Modifier.padding(16.dp),
       color = MaterialTheme.colorScheme.background,
     ) {
-      ActionsSection(
+      ActionButtonsSection(
         mainAction = ReminderActionScreenActionItem(
           action = ReminderAction.MakeCall,
           text = "Make Call",
@@ -1001,11 +770,6 @@ private fun ActionsSectionWithoutSecondaryPreview() {
   }
 }
 
-/**
- * Preview for ActionsSection with two secondary actions.
- *
- * Shows a common layout with the main action and two secondary buttons.
- */
 @Preview(showBackground = true, widthDp = 360)
 @Composable
 private fun ActionsSectionTwoSecondaryPreview() {
@@ -1014,7 +778,7 @@ private fun ActionsSectionTwoSecondaryPreview() {
       modifier = Modifier.padding(16.dp),
       color = MaterialTheme.colorScheme.background,
     ) {
-      ActionsSection(
+      ActionButtonsSection(
         mainAction = ReminderActionScreenActionItem(
           action = ReminderAction.SendEmail,
           text = "Send Email",
@@ -1038,12 +802,6 @@ private fun ActionsSectionTwoSecondaryPreview() {
   }
 }
 
-/**
- * Preview for SnoozeDialogContent showing snooze time options.
- *
- * Displays the snooze dialog content with various time options
- * including minutes, hours, and days to visualize the layout.
- */
 @Preview(showBackground = true, widthDp = 360)
 @Composable
 private fun SnoozeDialogContentPreview() {
@@ -1059,12 +817,6 @@ private fun SnoozeDialogContentPreview() {
   }
 }
 
-/**
- * Preview for ReminderActionScreenPortrait layout.
- *
- * Shows the vertical layout optimized for portrait orientation
- * with header, todo list, and actions arranged vertically.
- */
 @Preview(showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 private fun ReminderActionScreenPortraitPreview() {
@@ -1118,12 +870,6 @@ private fun ReminderActionScreenPortraitPreview() {
   }
 }
 
-/**
- * Preview for ReminderActionScreenLandscape layout.
- *
- * Shows the horizontal two-column layout optimized for landscape orientation
- * with content on left and actions on right.
- */
 @Preview(showBackground = true, widthDp = 800, heightDp = 400)
 @Composable
 private fun ReminderActionScreenLandscapePreview() {

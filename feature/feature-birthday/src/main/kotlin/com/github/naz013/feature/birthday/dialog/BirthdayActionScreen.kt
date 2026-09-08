@@ -1,10 +1,6 @@
 package com.github.naz013.feature.birthday.dialog
 
-import android.graphics.Bitmap
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,52 +8,33 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.feature.birthday.actions.BirthdayAction
-import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
-import com.github.naz013.ui.common.livedata.ObserveEvent
-import com.github.naz013.common.Permissions
-import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.R
-import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppShapes
-import com.github.naz013.ui.common.compose.foundation.DeviceScreenConfiguration
-import com.github.naz013.ui.common.compose.foundation.SplitButton
-import com.github.naz013.ui.common.compose.foundation.component.PopupMenu
-import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
-import com.github.naz013.ui.common.compose.foundation.deviceScreenConfiguration
+import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.foundation.component.ActionButtonsSection
+import com.github.naz013.ui.common.compose.foundation.component.ActionDialogScaffold
+import com.github.naz013.ui.common.compose.foundation.component.ContactAvatarHeader
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import com.github.naz013.ui.common.icon.DrawableCatalog
+import com.github.naz013.ui.common.livedata.ObserveEvent
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
+import com.github.naz013.ui.common.permission.requestCallPermission
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -73,7 +50,6 @@ fun BirthdayActionScreen(
 ) {
   val viewModel = koinViewModel<BirthdayActionViewModel> { parametersOf(id) }
 
-  val screenConfiguration = deviceScreenConfiguration()
   val toastDispatcher = rememberToastDispatcher()
   val permissionRequester = rememberPermissionRequesterRationale()
 
@@ -88,12 +64,11 @@ fun BirthdayActionScreen(
       }
 
       is BirthdayActionViewModel.ViewModelEvent.MakeCall -> {
-        permissionRequester.request(
-          Permissions.CALL_PHONE,
+        permissionRequester.requestCallPermission(
           onGranted = {
             onCallClick(event.phoneNumber)
             onFinish()
-          }
+          },
         )
       }
 
@@ -105,42 +80,26 @@ fun BirthdayActionScreen(
   }
 
   val state by viewModel.state.observeAsState()
-  Scaffold { paddingValues ->
-    Surface(
-      modifier = modifier
-        .fillMaxSize()
-        .padding(paddingValues),
-      color = MaterialTheme.colorScheme.background,
-    ) {
-      // Early return if state is not available yet
-      val screenState = state ?: return@Surface
 
-      Logger.d("ReminderActionScreen", "Rendering screen with configuration: $screenConfiguration")
-
-      // Choose layout based on screen configuration
-      when (screenConfiguration) {
-        DeviceScreenConfiguration.MobileLandscape -> {
-          BirthdayActionScreenLandscape(
-            screenState = screenState,
-            onActionClick = { action ->
-              viewModel.onActionClick(action)
-            },
-            adsContent = adsContent,
-          )
-        }
-
-        else -> {
-          BirthdayActionScreenPortrait(
-            screenState = screenState,
-            onActionClick = { action ->
-              viewModel.onActionClick(action)
-            },
-            adsContent = adsContent,
-          )
-        }
-      }
-    }
-  }
+  ActionDialogScaffold(
+    modifier = modifier,
+    state = state,
+    logTag = "BirthdayActionScreen",
+    portrait = { screenState ->
+      BirthdayActionScreenPortrait(
+        screenState = screenState,
+        onActionClick = { action -> viewModel.onActionClick(action) },
+        adsContent = adsContent,
+      )
+    },
+    landscape = { screenState ->
+      BirthdayActionScreenLandscape(
+        screenState = screenState,
+        onActionClick = { action -> viewModel.onActionClick(action) },
+        adsContent = adsContent,
+      )
+    },
+  )
 }
 
 @Composable
@@ -163,14 +122,14 @@ private fun BirthdayActionScreenPortrait(
     ) {
       // Header section
       BirthdayHeader(header = screenState.header)
-    }
 
-    adsContent()
+      adsContent()
+    }
 
     Spacer(modifier = Modifier.height(16.dp))
 
     // Action buttons section
-    ActionsSection(
+    ActionButtonsSection(
       mainAction = screenState.mainAction,
       secondaryActions = screenState.secondaryActions,
       onActionClick = onActionClick,
@@ -209,7 +168,7 @@ private fun BirthdayActionScreenLandscape(
         .fillMaxSize(),
       verticalArrangement = Arrangement.Bottom,
     ) {
-      ActionsSection(
+      ActionButtonsSection(
         mainAction = screenState.mainAction,
         secondaryActions = screenState.secondaryActions,
         onActionClick = onActionClick,
@@ -218,11 +177,6 @@ private fun BirthdayActionScreenLandscape(
   }
 }
 
-/**
- * Displays the birthday header with contact information.
- *
- * @param header The header data containing birthday contact information
- */
 @Composable
 private fun BirthdayHeader(header: BirthdayActionScreenHeader) {
   Card(
@@ -237,204 +191,45 @@ private fun BirthdayHeader(header: BirthdayActionScreenHeader) {
         .fillMaxWidth()
         .padding(16.dp),
     ) {
-      ContactHeaderContent(
+      ContactAvatarHeader(
         text = header.text,
-        contactName = header.contactName,
-        contactInfo = header.phoneNumber,
+        textStyle = MaterialTheme.typography.titleLargeEmphasized,
         contactPhoto = header.contactPhoto,
-        birthdayDate = header.birthdayDate,
-        age = header.age,
-        icon = DrawableCatalog.Fluent.Phone,
-      )
-    }
-  }
-}
-
-/**
- * Displays contact-related header content with optional photo.
- *
- * @param text The birthday person's name
- * @param contactName The contact name if available
- * @param contactInfo The phone number or contact info
- * @param contactPhoto Optional contact photo bitmap
- * @param birthdayDate Formatted birthday date
- * @param age Formatted age (null if year is ignored)
- * @param icon Icon resource for the contact type
- */
-@Composable
-private fun ContactHeaderContent(
-  text: String,
-  contactName: String?,
-  contactInfo: String,
-  contactPhoto: Bitmap?,
-  birthdayDate: String,
-  age: String?,
-  icon: Int,
-) {
-  Row(
-    modifier = Modifier.fillMaxWidth(),
-    horizontalArrangement = Arrangement.spacedBy(12.dp),
-    verticalAlignment = Alignment.CenterVertically,
-  ) {
-    // Contact photo or icon
-    if (contactPhoto != null) {
-      Image(
-        bitmap = contactPhoto.asImageBitmap(),
-        contentDescription = contactName ?: contactInfo,
-        modifier = Modifier
-          .size(56.dp)
-          .clip(CircleShape),
-        contentScale = ContentScale.Crop,
-      )
-    } else {
-      Box(
-        modifier = Modifier
-          .size(56.dp)
-          .clip(CircleShape)
-          .background(MaterialTheme.colorScheme.primaryContainer),
-        contentAlignment = Alignment.Center,
-      ) {
-        Icon(
-          painter = painterResource(id = icon),
-          contentDescription = null,
-          modifier = Modifier.size(28.dp),
-          tint = MaterialTheme.colorScheme.onPrimaryContainer,
-        )
-      }
-    }
-
-    // Contact info
-    Column(modifier = Modifier.weight(1f)) {
-      Text(
-        text = text,
-        style = MaterialTheme.typography.titleLargeEmphasized,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
-        maxLines = 2,
-        overflow = TextOverflow.Ellipsis,
-      )
-
-      // Birthday date
-      if (birthdayDate.isNotEmpty()) {
-        Text(
-          text = birthdayDate,
-          style = MaterialTheme.typography.bodyLargeEmphasized,
-          color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-      }
-
-      // Age
-      if (age != null) {
-        Text(
-          text = age,
-          style = MaterialTheme.typography.bodyMediumEmphasized,
-          color = MaterialTheme.colorScheme.primary,
-        )
-      }
-
-      // Contact name if different from text
-      if (contactName != null && contactName != text) {
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-          text = contactName,
-          style = MaterialTheme.typography.bodyMedium,
-          color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-      }
-
-      // Phone number
-      if (contactInfo.isNotEmpty()) {
-        Text(
-          text = contactInfo,
-          style = MaterialTheme.typography.bodySmall,
-          color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-      }
-    }
-  }
-}
-
-/**
- * Displays the action buttons section.
- *
- * @param mainAction The main action button
- * @param secondaryActions List of secondary action buttons
- * @param onActionClick Callback when an action is clicked
- */
-@Composable
-private fun ActionsSection(
-  mainAction: BirthdayActionScreenActionItem,
-  secondaryActions: List<BirthdayActionScreenActionItem>,
-  onActionClick: (BirthdayAction) -> Unit,
-) {
-  if (secondaryActions.isEmpty()) {
-    Button(
-      onClick = { onActionClick(mainAction.action) },
-      modifier = Modifier
-        .fillMaxWidth()
-        .height(56.dp),
-      shape = ButtonDefaults.shape,
-      colors = ButtonDefaults.buttonColors(
-        containerColor = MaterialTheme.colorScheme.primary,
-      ),
-    ) {
-      Icon(
-        painter = painterResource(id = mainAction.iconRes),
-        contentDescription = null,
-        modifier = Modifier.size(24.dp),
-      )
-      Spacer(modifier = Modifier.width(8.dp))
-      Text(
-        text = mainAction.text,
-        style = MaterialTheme.typography.titleMediumEmphasized,
-      )
-    }
-  } else {
-    var expanded by remember { mutableStateOf(false) }
-    Box(
-      modifier = Modifier.fillMaxWidth(),
-    ) {
-      SplitButton(
-        onLeftClick = { onActionClick(mainAction.action) },
-        onRightClick = { expanded = true },
-        leftContent = {
-          Icon(
-            painter = painterResource(id = mainAction.iconRes),
-            contentDescription = mainAction.text,
-          )
-          Text(
-            text = mainAction.text,
-            modifier = Modifier.padding(start = 8.dp),
-          )
-        },
-        rightContent = {
-          Box {
-            Icon(
-              painter = AppIcons.Fluent.MoreHor,
-              contentDescription = stringResource(R.string.more_options),
+        fallbackIconRes = DrawableCatalog.Fluent.Phone,
+        extraContent = {
+          if (header.birthdayDate.isNotEmpty()) {
+            Text(
+              text = header.birthdayDate,
+              style = MaterialTheme.typography.bodyLargeEmphasized,
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            PopupMenu(
-              expanded = expanded,
-              onDismissRequest = { expanded = false },
-              items = secondaryActions.mapIndexed { index, item ->
-                PopupMenuItem(
-                  id = index,
-                  title = item.text,
-                  iconRes = item.iconRes,
-                )
-              },
-              onItemClick = { itemId ->
-                val actionItem = secondaryActions.getOrNull(itemId)
-                actionItem?.let {
-                  onActionClick(it.action)
-                }
-              },
+          }
+
+          if (header.age != null) {
+            Text(
+              text = header.age,
+              style = MaterialTheme.typography.bodyMediumEmphasized,
+              color = MaterialTheme.colorScheme.primary,
+            )
+          }
+
+          if (header.contactName != null && header.contactName != header.text) {
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+              text = header.contactName,
+              style = MaterialTheme.typography.bodyMedium,
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+          }
+
+          if (header.phoneNumber.isNotEmpty()) {
+            Text(
+              text = header.phoneNumber,
+              style = MaterialTheme.typography.bodySmall,
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
           }
         },
-        modifier = Modifier
-          .fillMaxWidth()
-          .height(56.dp),
-        cornerRadius = 28.dp,
       )
     }
   }
@@ -444,7 +239,7 @@ private fun ActionsSection(
 @Preview(showBackground = true)
 @Composable
 private fun BirthdayActionScreenPortraitPreview() {
-  MaterialTheme {
+  AppTheme {
     Surface(
       modifier = Modifier.fillMaxSize(),
       color = MaterialTheme.colorScheme.background,
@@ -493,7 +288,7 @@ private fun BirthdayActionScreenPortraitPreview() {
 @Preview(showBackground = true, widthDp = 800, heightDp = 400)
 @Composable
 private fun BirthdayActionScreenLandscapePreview() {
-  MaterialTheme {
+  AppTheme {
     Surface(
       modifier = Modifier.fillMaxSize(),
       color = MaterialTheme.colorScheme.background,

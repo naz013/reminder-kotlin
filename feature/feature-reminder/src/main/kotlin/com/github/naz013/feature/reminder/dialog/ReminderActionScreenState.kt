@@ -3,6 +3,9 @@ package com.github.naz013.feature.reminder.dialog
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import com.github.naz013.feature.reminder.actions.ReminderAction
+import com.github.naz013.ui.common.compose.foundation.component.ScreenActionItem
+
+internal typealias ReminderActionScreenActionItem = ScreenActionItem<ReminderAction>
 
 internal data class ReminderActionScreenState(
   val id: String,
@@ -10,12 +13,6 @@ internal data class ReminderActionScreenState(
   val todoList: ReminderActionScreenTodoList?,
   val mainAction: ReminderActionScreenActionItem,
   val secondaryActions: List<ReminderActionScreenActionItem>,
-)
-
-internal data class ReminderActionScreenActionItem(
-  val action: ReminderAction,
-  val text: String,
-  val iconRes: Int,
 )
 
 internal data class ReminderActionScreenTodoList(
