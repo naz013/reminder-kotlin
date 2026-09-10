@@ -5,9 +5,12 @@ import com.github.naz013.domain.note.NoteSpanAttribute
 import com.github.naz013.domain.note.NoteTextSpan
 import com.github.naz013.files.model.NoteV4Span
 
-internal fun NoteDocument.toV4Spans(): List<NoteV4Span> = spans.map { it.toV4Span() }
+/** Public (not internal) because `extensions:localbackup`'s cross-app transfer feature reuses this
+ * exact span mapping for its own Note<->NoteV4Json conversion, rather than duplicating the
+ * bold/italic/color/etc. `when` below in a second module. */
+fun NoteDocument.toV4Spans(): List<NoteV4Span> = spans.map { it.toV4Span() }
 
-internal fun List<NoteV4Span>.toNoteTextSpans(): List<NoteTextSpan> = mapNotNull { it.toDomain() }
+fun List<NoteV4Span>.toNoteTextSpans(): List<NoteTextSpan> = mapNotNull { it.toDomain() }
 
 private fun NoteTextSpan.toV4Span(): NoteV4Span = when (val attribute = attribute) {
   NoteSpanAttribute.Bold -> NoteV4Span(start = start, end = end, type = "Bold")

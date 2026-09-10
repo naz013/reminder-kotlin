@@ -20,10 +20,13 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionH
 internal fun BackupSettingsScreen(
   modifier: Modifier = Modifier,
   isLocalBackupLocked: Boolean,
+  isTransferVisible: Boolean,
+  transferTitleRes: Int,
   onCloudBackupClick: () -> Unit,
   onExportBackupClick: () -> Unit,
   onImportBackupClick: () -> Unit,
   onLocalBackupLockedClick: () -> Unit,
+  onTransferClick: () -> Unit,
 ) {
   Column(
     modifier = modifier
@@ -59,6 +62,17 @@ internal fun BackupSettingsScreen(
         icon = AppIcons.Fluent.DocumentTopRight,
         dividerBottom = true,
         onClick = onImportBackupClick,
+      )
+    }
+
+    if (isTransferVisible) {
+      SettingsSectionHeader(stringResource(R.string.backup_transfer_section))
+      SettingsItem(
+        title = stringResource(transferTitleRes),
+        subtitle = stringResource(R.string.backup_transfer_description),
+        icon = AppIcons.Fluent.FolderMove,
+        dividerBottom = true,
+        onClick = onTransferClick,
       )
     }
   }

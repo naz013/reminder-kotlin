@@ -106,6 +106,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(
   notificationCustomizationHelpEntry: @Composable (onBackClick: () -> Unit) -> Unit,
   onOpenLocalBackupExport: (String) -> Unit,
   onOpenLocalBackupImport: (String) -> Unit,
+  onTransferClick: () -> Unit,
   onOpenReminderActionTest: (String) -> Unit,
   onOpenBirthdayActionTest: (String) -> Unit,
 ) {
@@ -127,7 +128,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(
   entry<SettingsNavKey.HeaderItems>(metadata = SettingsDetailPane) { HeaderItemsEntry(backStack) }
   entry<SettingsNavKey.Backup>(metadata = SettingsDetailPane) {
     val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.Backup) }
-    BackupEntry(backStack, renderAsDetailPane, onOpenLocalBackupExport, onOpenLocalBackupImport)
+    BackupEntry(backStack, renderAsDetailPane, onOpenLocalBackupExport, onOpenLocalBackupImport, onTransferClick)
   }
   entry<SettingsNavKey.Reminders>(metadata = SettingsDetailPane) { key ->
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
@@ -240,8 +241,10 @@ private fun BackupEntry(
   renderAsDetailPane: Boolean,
   onOpenLocalBackupExport: (String) -> Unit,
   onOpenLocalBackupImport: (String) -> Unit,
+  onTransferClick: () -> Unit,
 ) {
   val buildInfo = koinInject<BuildInfo>()
+  val systemInfo = koinInject<SystemInfo>()
   val analyticsEventSender = koinInject<AnalyticsEventSender>()
 
   val exportBackupLauncher = rememberLauncherForActivityResult(
@@ -253,6 +256,11 @@ private fun BackupEntry(
     if (uri != null) onOpenLocalBackupImport(uri.toString())
   }
 
+  val counterpartPackage = remember(buildInfo.isPro) {
+    if (buildInfo.isPro) SystemInfo.FREE_PACKAGE_NAME else SystemInfo.PRO_PACKAGE_NAME
+  }
+  val isTransferVisible = remember(counterpartPackage) { systemInfo.isAppInstalled(counterpartPackage) }
+
   SettingsScaffold(
     title = stringResource(R.string.backup),
     navigationIcon = settingsNavigationIcon(renderAsDetailPane = renderAsDetailPane),
@@ -261,6 +269,8 @@ private fun BackupEntry(
   ) { padding ->
     BackupSettingsScreen(
       isLocalBackupLocked = !buildInfo.isPro,
+      isTransferVisible = isTransferVisible,
+      transferTitleRes = if (buildInfo.isPro) R.string.backup_transfer_to_free else R.string.backup_transfer_to_pro,
       onCloudBackupClick = { backStack.add(ExportNavKey.CloudBackup) },
       onExportBackupClick = { exportBackupLauncher.launch(BACKUP_FILE_NAME) },
       onImportBackupClick = { importBackupLauncher.launch(arrayOf("*/*")) },
@@ -268,6 +278,7 @@ private fun BackupEntry(
         analyticsEventSender.send(FeatureGateTappedEvent(Feature.LOCAL_BACKUP))
         backStack.add(SettingsNavKey.ProVersion)
       },
+      onTransferClick = onTransferClick,
       modifier = Modifier.padding(padding),
     )
   }

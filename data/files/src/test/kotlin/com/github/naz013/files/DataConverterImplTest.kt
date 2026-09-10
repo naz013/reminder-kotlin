@@ -1,5 +1,7 @@
 package com.github.naz013.files
 
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.Place
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.sync.SyncState
@@ -229,5 +231,40 @@ class DataConverterImplTest {
     val result = template.toJson().toDomain()
 
     assertEquals(template.copy(syncState = SyncState.Synced), result)
+  }
+
+  /**
+   * Birthday/Place are Gson-serialized directly rather than through a *Json DTO, and their
+   * `syncState` field is `@Transient` with no default - Gson's reflective, constructor-bypassing
+   * `fromJson()` never populates a transient field, so it stays at Java's raw null regardless of
+   * the Kotlin type being non-nullable. This is exactly what crashed the cross-app transfer
+   * feature's receiving side with an NPE on `SyncState.name()`. Reflection forces that same null
+   * into an already-constructed instance here, rather than mocking Gson, so the test reproduces
+   * the actual defect instead of just asserting the fix-up runs on an already-valid value.
+   */
+  private fun <T : Any> T.withNullSyncStateField(fieldName: String): T = apply {
+    val field = javaClass.getDeclaredField(fieldName)
+    field.isAccessible = true
+    field.set(this, null)
+  }
+
+  @Test
+  fun `fixes up a Birthday whose transient syncState came back null from Gson`() {
+    val birthday = Birthday(name = "Alex", syncState = SyncState.Synced).withNullSyncStateField("syncState")
+
+    val result = birthday.toDomain() as Birthday
+
+    assertEquals(SyncState.WaitingForUpload, result.syncState)
+    assertEquals(birthday.copy(syncState = SyncState.WaitingForUpload), result)
+  }
+
+  @Test
+  fun `fixes up a Place whose transient syncState came back null from Gson`() {
+    val place = Place(name = "Home", syncState = SyncState.Synced).withNullSyncStateField("syncState")
+
+    val result = place.toDomain() as Place
+
+    assertEquals(SyncState.WaitingForUpload, result.syncState)
+    assertEquals(place.copy(syncState = SyncState.WaitingForUpload), result)
   }
 }

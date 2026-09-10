@@ -9,6 +9,11 @@
     <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
 
+    <queries>
+        <!-- Lets this build see and launch the Free build for the "Transfer to Free" feature. -->
+        <package android:name="com.cray.software.justreminder" />
+    </queries>
+
     <application tools:ignore="GoogleAppIndexingWarning">
         <receiver
             android:name="com.elementary.tasks.core.services.PermanentReminderReceiver"

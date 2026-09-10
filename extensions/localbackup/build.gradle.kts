@@ -12,8 +12,12 @@ dependencies {
   implementation(project(":core:domain"))
   implementation(project(":data:repository-api"))
   implementation(project(":data:files-api"))
+  implementation(project(":data:sync"))
   implementation(project(":core:logging-api"))
   implementation(project(":core:feature-common"))
+  implementation(project(":core:platform-api"))
+  implementation(project(":core:platform-common"))
+  implementation(project(":logic:logic-note"))
   implementation(project(":ui:ui-common"))
 
   implementation(libs.koin.android)

@@ -1,36 +1,12 @@
 package com.github.naz013.localbackup
 
-import com.github.naz013.domain.Birthday
-import com.github.naz013.domain.Tag
-import com.github.naz013.domain.TagAssignment
-import com.github.naz013.domain.TaggedItemType
-import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
-import com.github.naz013.domain.routine.Routine
-import com.github.naz013.domain.routine.RoutineExecutionRecord
-import com.github.naz013.domain.sync.SyncState
-import com.github.naz013.domain.workflow.WorkflowAction
-import com.github.naz013.domain.workflow.WorkflowRule
-import com.github.naz013.domain.workflow.WorkflowScope
-import com.github.naz013.domain.workflow.WorkflowTemplate
-import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.files.DataConverter
 import com.github.naz013.localbackup.archive.BackupArchiveReader
 import com.github.naz013.localbackup.archive.BackupArchiveWriter
-import com.github.naz013.repository.BirthdayRepository
-import com.github.naz013.repository.GroupV2Repository
-import com.github.naz013.repository.PlaceRepository
-import com.github.naz013.repository.RecurPresetRepository
-import com.github.naz013.repository.ReminderV2Repository
-import com.github.naz013.repository.RoutineExecutionRepository
-import com.github.naz013.repository.RoutineRepository
-import com.github.naz013.repository.TagAssignmentRepository
-import com.github.naz013.repository.TagRepository
-import com.github.naz013.repository.WorkflowRuleRepository
-import com.github.naz013.repository.WorkflowTemplateRepository
+import com.github.naz013.localbackup.archive.BackupEnvelope
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -48,14 +24,6 @@ private class FakeDataConverter : DataConverter {
   override suspend fun toOutputStream(any: Any, outputStream: OutputStream) {
     val encoded = when (any) {
       is ReminderV2 -> "R|${any.uuId}|${any.summary}"
-      is GroupV2 -> "G|${any.uuId}|${any.title}"
-      is Birthday -> "B|${any.uuId}|${any.name}"
-      is Tag -> "T|${any.id}|${any.name}"
-      is TagAssignment -> "A|${any.tagId}|${any.itemId}::${any.itemType}"
-      is Routine -> "O|${any.id}|${any.title}"
-      is RoutineExecutionRecord -> "E|${any.id}|${any.routineId}"
-      is WorkflowRule -> "WR|${any.uuId}|${any.title}"
-      is WorkflowTemplate -> "WT|${any.id}|${any.title}"
       else -> error("FakeDataConverter does not support ${any::class.java}")
     }
     outputStream.use { it.write(encoded.toByteArray()) }
@@ -71,29 +39,6 @@ private class FakeDataConverter : DataConverter {
     val (tag, id, label) = stream.readBytes().decodeToString().split("|", limit = 3)
     return when (tag) {
       "R" -> ReminderV2(uuId = id, summary = label, schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
-      "G" -> GroupV2(uuId = id, title = label, createdAt = LocalDateTime.now(), syncState = SyncState.Synced)
-      "B" -> Birthday(uuId = id, name = label, syncState = SyncState.Synced)
-      "T" -> Tag(id = id, name = label, color = 0, syncState = SyncState.Synced)
-      "A" -> {
-        val (itemId, itemType) = label.split("::", limit = 2)
-        TagAssignment(tagId = id, itemId = itemId, itemType = TaggedItemType.valueOf(itemType))
-      }
-      "O" -> Routine(id = id, title = label, createdAt = LocalDateTime.now(), updatedAt = LocalDateTime.now())
-      "E" -> RoutineExecutionRecord(id = id, routineId = label, executedAt = LocalDateTime.now(), totalTimeSpentSeconds = 0, totalStepsCount = 0)
-      "WR" -> WorkflowRule(
-        uuId = id,
-        title = label,
-        trigger = WorkflowTrigger.ReminderCompleted,
-        action = WorkflowAction.ArchiveReminder,
-        syncState = SyncState.Synced
-      )
-      "WT" -> WorkflowTemplate(
-        id = id,
-        title = label,
-        trigger = WorkflowTrigger.ReminderCompleted,
-        action = WorkflowAction.ArchiveReminder,
-        syncState = SyncState.Synced
-      )
       else -> error("FakeDataConverter does not support tag $tag")
     }
   }
@@ -101,17 +46,8 @@ private class FakeDataConverter : DataConverter {
 
 class LocalBackupApiImplTest {
 
-  private val reminderV2Repository = mockk<ReminderV2Repository>(relaxed = true)
-  private val groupV2Repository = mockk<GroupV2Repository>(relaxed = true)
-  private val birthdayRepository = mockk<BirthdayRepository>(relaxed = true)
-  private val placeRepository = mockk<PlaceRepository>(relaxed = true)
-  private val recurPresetRepository = mockk<RecurPresetRepository>(relaxed = true)
-  private val tagRepository = mockk<TagRepository>(relaxed = true)
-  private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
-  private val routineRepository = mockk<RoutineRepository>(relaxed = true)
-  private val routineExecutionRepository = mockk<RoutineExecutionRepository>(relaxed = true)
-  private val workflowRuleRepository = mockk<WorkflowRuleRepository>(relaxed = true)
-  private val workflowTemplateRepository = mockk<WorkflowTemplateRepository>(relaxed = true)
+  private val buildBackupEnvelopeUseCase = mockk<BuildBackupEnvelopeUseCase>()
+  private val applyBackupEnvelopeUseCase = mockk<ApplyBackupEnvelopeUseCase>()
   private val dataConverter = FakeDataConverter()
 
   private lateinit var api: LocalBackupApiImpl
@@ -119,17 +55,8 @@ class LocalBackupApiImplTest {
   @Before
   fun setUp() {
     api = LocalBackupApiImpl(
-      reminderV2Repository = reminderV2Repository,
-      groupV2Repository = groupV2Repository,
-      birthdayRepository = birthdayRepository,
-      placeRepository = placeRepository,
-      recurPresetRepository = recurPresetRepository,
-      tagRepository = tagRepository,
-      tagAssignmentRepository = tagAssignmentRepository,
-      routineRepository = routineRepository,
-      routineExecutionRepository = routineExecutionRepository,
-      workflowRuleRepository = workflowRuleRepository,
-      workflowTemplateRepository = workflowTemplateRepository,
+      buildBackupEnvelopeUseCase = buildBackupEnvelopeUseCase,
+      applyBackupEnvelopeUseCase = applyBackupEnvelopeUseCase,
       archiveWriter = BackupArchiveWriter(dataConverter),
       archiveReader = BackupArchiveReader(dataConverter)
     )
@@ -142,46 +69,19 @@ class LocalBackupApiImplTest {
   )
 
   @Test
-  fun `export reads every repository and writes a non-empty encrypted file`() = runTest {
-    coEvery { reminderV2Repository.getAll() } returns listOf(reminder("r1"))
+  fun `export builds the envelope and writes a non-empty encrypted file`() = runTest {
+    coEvery { buildBackupEnvelopeUseCase() } returns BackupEnvelope(reminders = listOf(reminder("r1")))
     val output = ByteArrayOutputStream()
 
     val result = api.export(output, "correct horse".toCharArray())
 
     assertTrue(result.isSuccess)
-    coVerify { reminderV2Repository.getAll() }
-    coVerify { groupV2Repository.getAll() }
-    coVerify { birthdayRepository.getAll() }
-    coVerify { placeRepository.getAll() }
-    coVerify { recurPresetRepository.getAll() }
-    coVerify { tagRepository.getAll() }
-    coVerify { tagAssignmentRepository.getAll() }
-    coVerify { routineRepository.getAll() }
-    coVerify { routineExecutionRepository.getAll() }
-    coVerify { workflowRuleRepository.getAll() }
-    coVerify { workflowTemplateRepository.getAll() }
     assertTrue(output.toByteArray().isNotEmpty())
   }
 
   @Test
-  fun `export excludes reminders flagged offline-only`() = runTest {
-    coEvery { reminderV2Repository.getAll() } returns listOf(
-      reminder("r1"),
-      reminder("r2").copy(offlineOnly = true),
-    )
-    val output = ByteArrayOutputStream()
-    api.export(output, "correct horse".toCharArray())
-
-    val result = api.import(ByteArrayInputStream(output.toByteArray()), "correct horse".toCharArray())
-
-    assertTrue(result.isSuccess)
-    assertEquals(1, result.getOrThrow().remindersImported)
-    coVerify { reminderV2Repository.save(match { it.uuId == "r1" }) }
-    coVerify(exactly = 0) { reminderV2Repository.save(match { it.uuId == "r2" }) }
-  }
-
-  @Test
   fun `export zeroes the passphrase array afterwards`() = runTest {
+    coEvery { buildBackupEnvelopeUseCase() } returns BackupEnvelope()
     val passphrase = "correct horse".toCharArray()
 
     api.export(ByteArrayOutputStream(), passphrase)
@@ -191,9 +91,15 @@ class LocalBackupApiImplTest {
 
   @Test
   fun `round trips an export through import with the same passphrase`() = runTest {
-    coEvery { reminderV2Repository.getAll() } returns listOf(reminder("r1"))
-    coEvery { groupV2Repository.getAll() } returns listOf(
-      GroupV2(uuId = "g1", title = "Work", createdAt = LocalDateTime.now(), syncState = SyncState.Synced)
+    coEvery { buildBackupEnvelopeUseCase() } returns BackupEnvelope(reminders = listOf(reminder("r1")))
+    coEvery { applyBackupEnvelopeUseCase(any()) } returns ImportSummary(
+      remindersImported = 1,
+      groupsImported = 0,
+      birthdaysImported = 0,
+      placesImported = 0,
+      presetsImported = 0,
+      tagsImported = 0,
+      tagAssignmentsImported = 0
     )
     val output = ByteArrayOutputStream()
     api.export(output, "correct horse".toCharArray())
@@ -201,90 +107,12 @@ class LocalBackupApiImplTest {
     val result = api.import(ByteArrayInputStream(output.toByteArray()), "correct horse".toCharArray())
 
     assertTrue(result.isSuccess)
-    val summary = result.getOrThrow()
-    assertEquals(1, summary.remindersImported)
-    assertEquals(1, summary.groupsImported)
-    coVerify { reminderV2Repository.save(match { it.uuId == "r1" }) }
-    coVerify { groupV2Repository.save(match { it.uuId == "g1" }) }
-  }
-
-  @Test
-  fun `round trips tags and tag assignments through import`() = runTest {
-    coEvery { tagRepository.getAll() } returns listOf(
-      Tag(id = "t1", name = "Work", color = 1, syncState = SyncState.Synced)
-    )
-    coEvery { tagAssignmentRepository.getAll() } returns listOf(
-      TagAssignment(tagId = "t1", itemId = "r1", itemType = TaggedItemType.REMINDER)
-    )
-    val output = ByteArrayOutputStream()
-    api.export(output, "correct horse".toCharArray())
-
-    val result = api.import(ByteArrayInputStream(output.toByteArray()), "correct horse".toCharArray())
-
-    assertTrue(result.isSuccess)
-    val summary = result.getOrThrow()
-    assertEquals(1, summary.tagsImported)
-    assertEquals(1, summary.tagAssignmentsImported)
-    coVerify { tagRepository.save(match { it.id == "t1" }) }
-    coVerify { tagAssignmentRepository.replaceAll(match { it.size == 1 && it[0].tagId == "t1" }) }
-  }
-
-  @Test
-  fun `round trips routines and routine executions through import`() = runTest {
-    coEvery { routineRepository.getAll() } returns listOf(
-      Routine(id = "o1", title = "Morning routine", createdAt = LocalDateTime.now(), updatedAt = LocalDateTime.now())
-    )
-    coEvery { routineExecutionRepository.getAll() } returns listOf(
-      RoutineExecutionRecord(id = "e1", routineId = "o1", executedAt = LocalDateTime.now(), totalTimeSpentSeconds = 60, totalStepsCount = 2)
-    )
-    val output = ByteArrayOutputStream()
-    api.export(output, "correct horse".toCharArray())
-
-    val result = api.import(ByteArrayInputStream(output.toByteArray()), "correct horse".toCharArray())
-
-    assertTrue(result.isSuccess)
-    val summary = result.getOrThrow()
-    assertEquals(1, summary.routinesImported)
-    assertEquals(1, summary.routineExecutionsImported)
-    coVerify { routineRepository.save(match { it.id == "o1" }) }
-    coVerify { routineExecutionRepository.save(match { it.id == "e1" }) }
-  }
-
-  @Test
-  fun `round trips workflow rules and templates through import`() = runTest {
-    coEvery { workflowRuleRepository.getAll() } returns listOf(
-      WorkflowRule(
-        uuId = "wr1",
-        title = "Archive after 30 days",
-        scope = WorkflowScope.Global,
-        trigger = WorkflowTrigger.ReminderAgeExceeded(days = 30),
-        action = WorkflowAction.ArchiveReminder
-      )
-    )
-    coEvery { workflowTemplateRepository.getAll() } returns listOf(
-      WorkflowTemplate(
-        id = "wt1",
-        title = "Archive template",
-        trigger = WorkflowTrigger.ReminderAgeExceeded(days = 30),
-        action = WorkflowAction.ArchiveReminder
-      )
-    )
-    val output = ByteArrayOutputStream()
-    api.export(output, "correct horse".toCharArray())
-
-    val result = api.import(ByteArrayInputStream(output.toByteArray()), "correct horse".toCharArray())
-
-    assertTrue(result.isSuccess)
-    val summary = result.getOrThrow()
-    assertEquals(1, summary.workflowRulesImported)
-    assertEquals(1, summary.workflowTemplatesImported)
-    coVerify { workflowRuleRepository.save(match { it.uuId == "wr1" }) }
-    coVerify { workflowTemplateRepository.save(match { it.id == "wt1" }) }
+    assertEquals(1, result.getOrThrow().remindersImported)
   }
 
   @Test
   fun `import fails with WrongPassphraseException when the passphrase is wrong`() = runTest {
-    coEvery { reminderV2Repository.getAll() } returns listOf(reminder("r1"))
+    coEvery { buildBackupEnvelopeUseCase() } returns BackupEnvelope(reminders = listOf(reminder("r1")))
     val output = ByteArrayOutputStream()
     api.export(output, "correct horse".toCharArray())
 
@@ -306,7 +134,16 @@ class LocalBackupApiImplTest {
 
   @Test
   fun `import zeroes the passphrase array afterwards`() = runTest {
-    coEvery { reminderV2Repository.getAll() } returns listOf(reminder("r1"))
+    coEvery { buildBackupEnvelopeUseCase() } returns BackupEnvelope(reminders = listOf(reminder("r1")))
+    coEvery { applyBackupEnvelopeUseCase(any()) } returns ImportSummary(
+      remindersImported = 1,
+      groupsImported = 0,
+      birthdaysImported = 0,
+      placesImported = 0,
+      presetsImported = 0,
+      tagsImported = 0,
+      tagAssignmentsImported = 0
+    )
     val output = ByteArrayOutputStream()
     api.export(output, "correct horse".toCharArray())
     val importPassphrase = "correct horse".toCharArray()
