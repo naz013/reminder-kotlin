@@ -1,4 +1,2 @@
-- Refreshed the application look
-- Added multiselect actions to Agenda
-- Added settings search
+- Added an easy way to transfer data between Free and Pro
 - Bug fixes and improvements
