@@ -183,7 +183,9 @@ private fun detectClass(json: JsonObject): Class<*> = when {
   else -> throw IllegalArgumentException("Unable to determine object type from JSON structure: ${json.keySet()}")
 }
 
-private fun Any.toDomain(): Any {
+/** Internal, not private, so [DataConverterImplTest] can exercise the Birthday/Place syncState
+ * fix-up directly - same reasoning as [WorkflowRuleJson.toDomain] above. */
+internal fun Any.toDomain(): Any {
   return when (this) {
     is GroupV2Json -> this.toDomain()
     is ReminderV2Json -> this.toDomain()
@@ -194,6 +196,14 @@ private fun Any.toDomain(): Any {
     is WorkflowTemplateJson -> this.toDomain()
     is ReminderGroup -> this.toGroupV2()
     is Reminder -> this.toReminderV2()
+    // Birthday/Place are Gson-serialized directly (no intermediate *Json DTO - see toJson()
+    // below), and their syncState field is @Transient so Gson's reflective, constructor-
+    // bypassing fromJson() never populates it, leaving it null despite the non-nullable Kotlin
+    // type. Reassigning it here is the same fix-up TagJson/WorkflowRuleJson/WorkflowTemplateJson
+    // already apply for their own syncState field, just done post-deserialization since these two
+    // types have no *Json wrapper to do it in.
+    is Birthday -> this.copy(syncState = SyncState.WaitingForUpload)
+    is Place -> this.copy(syncState = SyncState.WaitingForUpload)
     else -> this
   }
 }

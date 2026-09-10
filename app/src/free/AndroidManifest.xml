@@ -7,6 +7,11 @@
 
     <uses-permission android:name="com.cray.software.justreminder.maps.permission.MAPS_RECEIVE" />
 
+    <queries>
+        <!-- Lets this build see and launch the PRO build for the "Transfer to PRO" feature. -->
+        <package android:name="com.cray.software.justreminderpro" />
+    </queries>
+
     <application tools:ignore="GoogleAppIndexingWarning">
         <receiver
             android:name="com.elementary.tasks.core.services.PermanentReminderReceiver"

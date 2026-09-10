@@ -87,6 +87,8 @@ import com.github.naz013.group.groupsEntries
 import com.github.naz013.insights.insightsEntries
 import com.github.naz013.localbackup.LocalBackupNavKey
 import com.github.naz013.localbackup.localBackupEntries
+import com.github.naz013.localbackup.transfer.TransferNavKey
+import com.github.naz013.localbackup.transfer.transferEntries
 import com.github.naz013.onboarding.OnboardingNavKey
 import com.github.naz013.onboarding.onboardingEntries
 import com.github.naz013.feature.routine.RoutineNavKey
@@ -436,6 +438,13 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
           },
           onOpenLocalBackupExport = { uri -> backStack.add(LocalBackupNavKey.Export(uri)) },
           onOpenLocalBackupImport = { uri -> backStack.add(LocalBackupNavKey.Import(uri)) },
+          onTransferClick = {
+            // A double-tap here (nothing visibly changes until the zip is built) must not push
+            // this twice - each push independently reads every repository, builds a transfer zip
+            // and launches the sibling app, so a duplicate push means two receiving screens stack
+            // up on the other side, each needing its own dismissal.
+            if (backStack.lastOrNull() != TransferNavKey) backStack.add(TransferNavKey)
+          },
           onOpenReminderActionTest = { reminderId -> ReminderActionActivity.mockTest(context, reminderId) },
           onOpenBirthdayActionTest = { birthdayId -> BirthdayActionActivity.mockTest(context, birthdayId) },
         )
@@ -464,6 +473,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
         )
         insightsEntries(backStack)
         localBackupEntries(backStack)
+        transferEntries(backStack)
         onboardingEntries(
           backStack = backStack,
           onFinished = {

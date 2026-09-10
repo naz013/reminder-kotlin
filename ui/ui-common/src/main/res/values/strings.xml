@@ -1372,4 +1372,16 @@
     <string name="reminders_deleted_count">%1$d reminders deleted</string>
     <string name="cd_move_item_up">Move up</string>
     <string name="cd_move_item_down">Move down</string>
+    <string name="backup_transfer_section">Transfer</string>
+    <string name="backup_transfer_to_pro">Transfer to PRO</string>
+    <string name="backup_transfer_to_free">Transfer to Free</string>
+    <string name="backup_transfer_description">Send a copy of your reminders, notes, groups, birthdays, places and presets directly to the other app installed on this device - nothing leaves the device.</string>
+    <string name="transfer_receiving_title">Receiving data</string>
+    <string name="transfer_receiving_message">Receiving your data…</string>
+    <string name="transfer_sending_title">Sending data</string>
+    <string name="transfer_sending_message">Preparing your data… this can take a moment if you have a lot of reminders, notes or photos.</string>
+    <string name="transfer_invalid_package">This doesn\'t look like a Reminder transfer file.</string>
+    <string name="transfer_failed">Transfer failed.</string>
+    <string name="transfer_sent_success">Sent %1$d items successfully.</string>
+    <string name="transfer_send_failed">Could not start the transfer.</string>
 </resources>
