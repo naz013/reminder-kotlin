@@ -18,6 +18,8 @@ dependencies {
   implementation(project(":core:platform-api"))
   implementation(project(":core:platform-common"))
   implementation(project(":logic:logic-note"))
+  implementation(project(":logic:logic-reminder"))
+  implementation(project(":logic:logic-birthday"))
   implementation(project(":ui:ui-common"))
 
   implementation(libs.koin.android)

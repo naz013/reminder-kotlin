@@ -1,5 +1,6 @@
 package com.github.naz013.localbackup
 
+import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TagAssignment
 import com.github.naz013.domain.TaggedItemType
@@ -15,6 +16,8 @@ import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.localbackup.archive.BackupEnvelope
+import com.github.naz013.logic.birthday.CalculateBirthdayOccurrencesUseCase
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.PlaceRepository
@@ -47,6 +50,8 @@ class ApplyBackupEnvelopeUseCaseTest {
   private val routineExecutionRepository = mockk<RoutineExecutionRepository>(relaxed = true)
   private val workflowRuleRepository = mockk<WorkflowRuleRepository>(relaxed = true)
   private val workflowTemplateRepository = mockk<WorkflowTemplateRepository>(relaxed = true)
+  private val activateReminderUseCase = mockk<ActivateReminderUseCase>(relaxed = true)
+  private val calculateBirthdayOccurrencesUseCase = mockk<CalculateBirthdayOccurrencesUseCase>(relaxed = true)
 
   private lateinit var useCase: ApplyBackupEnvelopeUseCase
 
@@ -63,7 +68,9 @@ class ApplyBackupEnvelopeUseCaseTest {
       routineRepository = routineRepository,
       routineExecutionRepository = routineExecutionRepository,
       workflowRuleRepository = workflowRuleRepository,
-      workflowTemplateRepository = workflowTemplateRepository
+      workflowTemplateRepository = workflowTemplateRepository,
+      activateReminderUseCase = activateReminderUseCase,
+      calculateBirthdayOccurrencesUseCase = calculateBirthdayOccurrencesUseCase
     )
   }
 
@@ -139,5 +146,65 @@ class ApplyBackupEnvelopeUseCaseTest {
     coVerify { routineExecutionRepository.save(match { it.id == "e1" }) }
     coVerify { workflowRuleRepository.save(match { it.uuId == "wr1" }) }
     coVerify { workflowTemplateRepository.save(match { it.id == "wt1" }) }
+  }
+
+  @Test
+  fun `activates imported reminders that are active and not removed`() = runTest {
+    val envelope = BackupEnvelope(
+      reminders = listOf(
+        ReminderV2(
+          uuId = "r1",
+          summary = "Take pills",
+          isActive = true,
+          isRemoved = false,
+          schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 1, 1, 9, 0))
+        )
+      )
+    )
+
+    useCase(envelope)
+
+    coVerify { activateReminderUseCase(match { it.uuId == "r1" }) }
+  }
+
+  @Test
+  fun `does not activate imported reminders that are inactive or removed`() = runTest {
+    val envelope = BackupEnvelope(
+      reminders = listOf(
+        ReminderV2(
+          uuId = "inactive",
+          summary = "Completed",
+          isActive = false,
+          isRemoved = false,
+          schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 1, 1, 9, 0))
+        ),
+        ReminderV2(
+          uuId = "removed",
+          summary = "Deleted",
+          isActive = true,
+          isRemoved = true,
+          schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 1, 1, 9, 0))
+        )
+      )
+    )
+
+    useCase(envelope)
+
+    coVerify(exactly = 0) { activateReminderUseCase(any()) }
+  }
+
+  @Test
+  fun `recalculates occurrence caches for every imported birthday`() = runTest {
+    val envelope = BackupEnvelope(
+      birthdays = listOf(
+        Birthday(uuId = "b1", name = "Alex", syncState = SyncState.Synced),
+        Birthday(uuId = "b2", name = "Sam", syncState = SyncState.Synced)
+      )
+    )
+
+    useCase(envelope)
+
+    coVerify { calculateBirthdayOccurrencesUseCase("b1") }
+    coVerify { calculateBirthdayOccurrencesUseCase("b2") }
   }
 }
