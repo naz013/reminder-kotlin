@@ -1,6 +1,8 @@
 package com.github.naz013.localbackup
 
 import com.github.naz013.localbackup.archive.BackupEnvelope
+import com.github.naz013.logic.birthday.CalculateBirthdayOccurrencesUseCase
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.PlaceRepository
@@ -29,7 +31,9 @@ internal class ApplyBackupEnvelopeUseCase(
   private val routineRepository: RoutineRepository,
   private val routineExecutionRepository: RoutineExecutionRepository,
   private val workflowRuleRepository: WorkflowRuleRepository,
-  private val workflowTemplateRepository: WorkflowTemplateRepository
+  private val workflowTemplateRepository: WorkflowTemplateRepository,
+  private val activateReminderUseCase: ActivateReminderUseCase,
+  private val calculateBirthdayOccurrencesUseCase: CalculateBirthdayOccurrencesUseCase
 ) {
   suspend operator fun invoke(envelope: BackupEnvelope): ImportSummary {
     envelope.reminders.forEach { reminderV2Repository.save(it) }
@@ -45,6 +49,18 @@ internal class ApplyBackupEnvelopeUseCase(
     envelope.routineExecutions.forEach { routineExecutionRepository.save(it) }
     envelope.workflowRules.forEach { workflowRuleRepository.save(it) }
     envelope.workflowTemplates.forEach { workflowTemplateRepository.save(it) }
+
+    // Saving only writes the row - it doesn't schedule the AlarmManager alarm (or start location
+    // tracking) a reminder needs to actually fire, or recompute a birthday's upcoming-occurrence
+    // cache used by widgets/smart lists. Same use case and filter as the app's own boot-time mass
+    // reactivation (ActivateAllActiveRemindersUseCase: getAll(active = true, removed = false) ->
+    // activateReminderUseCase per row), deliberately not special-cased here either - an imported
+    // reminder that would re-export to Google Tasks/Calendar on reactivation does so exactly like
+    // one reactivated at boot would.
+    envelope.reminders
+      .filter { it.isActive && !it.isRemoved }
+      .forEach { activateReminderUseCase(it) }
+    envelope.birthdays.forEach { calculateBirthdayOccurrencesUseCase(it.uuId) }
 
     return ImportSummary(
       remindersImported = envelope.reminders.size,
