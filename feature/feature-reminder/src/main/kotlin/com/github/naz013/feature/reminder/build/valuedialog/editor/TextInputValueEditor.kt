@@ -1,9 +1,5 @@
 package com.github.naz013.feature.reminder.build.valuedialog.editor
 
-import android.Manifest
-import android.content.pm.PackageManager
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,13 +28,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.github.naz013.ui.common.R
 import com.github.naz013.feature.reminder.build.BuilderItem
+import com.github.naz013.common.Permissions
 import com.github.naz013.common.speech.SpeechEngine
 import com.github.naz013.common.speech.SpeechEngineCallback
 import com.github.naz013.common.speech.SpeechError
@@ -47,6 +43,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.GradientHighlightTextField
 import com.github.naz013.ui.common.compose.foundation.component.TextHighlight
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 
 private const val MAX_CHARACTERS = 1000
 private val MIC_BUTTON_SIZE = 48.dp
@@ -115,9 +112,7 @@ internal fun TextInputValueEditor(
     }
   }
 
-  val permissionLauncher = rememberLauncherForActivityResult(
-    ActivityResultContracts.RequestPermission(),
-  ) { granted -> if (granted) speechEngine.startListening(callback) }
+  val permissionRequester = rememberPermissionRequesterRationale()
 
   DisposableEffect(speechEngine) {
     onDispose { speechEngine.stopListening() }
@@ -157,14 +152,13 @@ internal fun TextInputValueEditor(
               .size(MIC_BUTTON_SIZE)
               .semantics { contentDescription = micButtonDescription },
             onClick = {
-              when {
-                speechEngine.isStarted() -> speechEngine.stopListening()
-
-                ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) ==
-                  PackageManager.PERMISSION_GRANTED
-                -> speechEngine.startListening(callback)
-
-                else -> permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+              if (speechEngine.isStarted()) {
+                speechEngine.stopListening()
+              } else {
+                permissionRequester.request(
+                  Permissions.RECORD_AUDIO,
+                  onGranted = { speechEngine.startListening(callback) },
+                )
               }
             },
           ) {
