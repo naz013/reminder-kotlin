@@ -777,7 +777,7 @@
     <string name="builder_arriving_destination">Ankomstposisjon</string>
     <string name="builder_arriving_destination_description">Angi posisjonen der påminnelsen skal utløses. Ved ankomst til destinasjonen vises påminnelsen</string>
     <string name="builder_leaving_place">Avreiseposisjon</string>
-    <string name="builder_leaving_place_description">Angi posisjonen der påminnelsen skal utløses. Påminnelsen utløses når du forlater stedet innenfor en radius</string>
+    <string name="builder_leaving_place_description">Angi posisjonen der påminnelsen skal utløses. Påminnelsen utløses når du forlater stedet innenfor en radius. Du må ha vært innenfor radiusen minst én gang før det kan registreres at du forlater stedet</string>
     <string name="builder_sub_tasks">Underoppgaver (handleliste)</string>
     <string name="builder_delay_date">Utsettelsesdato</string>
     <string name="builder_delay_date_description">Angi startdato for posisjonssporing</string>

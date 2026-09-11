@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">Příjezdové místo</string>
     <string name="builder_arriving_destination_description">Nastavte místo, kde se má spustit připomenutí. Po příjezdu do cíle se zobrazí připomenutí</string>
     <string name="builder_leaving_place">Odcházející místo</string>
-    <string name="builder_leaving_place_description">Nastavte místo, kde se má spustit připomenutí. Připomenutí se spustí, když opustíte místo v dosahu</string>
+    <string name="builder_leaving_place_description">Nastavte místo, kde se má spustit připomenutí. Připomenutí se spustí, když opustíte místo v dosahu. Musíte být alespoň jednou v dosahu, než bude opuštění zjištěno</string>
     <string name="builder_sub_tasks">Podúkoly (Nákupní seznam)</string>
     <string name="builder_delay_date">Datum zpoždění</string>
     <string name="builder_delay_date_description">Nastavit datum začátku sledování polohy</string>

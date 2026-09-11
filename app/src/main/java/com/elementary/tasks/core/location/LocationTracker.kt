@@ -2,14 +2,8 @@ package com.elementary.tasks.core.location
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Criteria
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
-import android.os.Bundle
 import android.os.Looper
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.feature.common.android.SystemServiceProvider
 import com.github.naz013.logging.Logger
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -22,52 +16,38 @@ class LocationTracker(
   private val listener: Listener,
   private val prefs: Prefs,
   private val context: Context,
-  private val systemServiceProvider: SystemServiceProvider,
-) : LocationListener {
-  private var mLocationManager: LocationManager? = null
+) {
   private var mFusedLocationClient: FusedLocationProviderClient? = null
+  private var isTracking = false
   private val mLocationCallback =
     object : LocationCallback() {
       override fun onLocationResult(locationResult: LocationResult) {
         Logger.d(TAG, "onLocationResult: $locationResult")
-        for (location in locationResult.locations) {
-          val latitude = location.latitude
-          val longitude = location.longitude
-          listener.onUpdate(latitude, longitude)
-          break
-        }
+        val location = locationResult.locations.firstOrNull() ?: return
+        listener.onUpdate(location.latitude, location.longitude)
       }
     }
 
   fun startUpdates() {
+    if (isTracking) {
+      Logger.d(TAG, "startUpdates: already tracking, ignoring")
+      return
+    }
+    isTracking = true
     updateListener()
   }
 
   fun removeUpdates() {
+    isTracking = false
     mFusedLocationClient?.removeLocationUpdates(mLocationCallback)
-    mLocationManager?.removeUpdates(this)
   }
 
   @SuppressLint("MissingPermission")
   private fun updateListener() {
     val time = (prefs.trackTime * 1000 * 2).toLong()
-    val locationManager = systemServiceProvider.provideLocationManager()
-    if (locationManager != null) {
-      val criteria = Criteria()
-      val bestProvider = locationManager.getBestProvider(criteria, false)
-      if (bestProvider != null) {
-        locationManager.requestLocationUpdates(
-          bestProvider,
-          time,
-          3.0f,
-          this,
-          Looper.getMainLooper(),
-        )
-      }
-    }
-    this.mLocationManager = locationManager
+    val client = LocationServices.getFusedLocationProviderClient(context)
+    mFusedLocationClient = client
 
-    mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     val locationRequest = LocationRequest()
     locationRequest.interval = time
     locationRequest.fastestInterval = 5000
@@ -76,42 +56,14 @@ class LocationTracker(
       LocationSettingsRequest
         .Builder()
         .addLocationRequest(locationRequest)
-    val client = LocationServices.getSettingsClient(context)
-    val task = client.checkLocationSettings(builder.build())
-    task.addOnSuccessListener {
-      mFusedLocationClient?.requestLocationUpdates(
+    val settingsClient = LocationServices.getSettingsClient(context)
+    settingsClient.checkLocationSettings(builder.build()).addOnSuccessListener {
+      client.requestLocationUpdates(
         locationRequest,
         mLocationCallback,
-        Looper.myLooper(),
+        Looper.getMainLooper(),
       )
     }
-  }
-
-  override fun onLocationChanged(location: Location) {
-    Logger.d(TAG, "onLocationResult: $location")
-    val latitude = location.latitude
-    val longitude = location.longitude
-    listener.onUpdate(latitude, longitude)
-  }
-
-  @Deprecated("Deprecated in Java")
-  override fun onStatusChanged(
-    provider: String,
-    status: Int,
-    extras: Bundle,
-  ) {
-    Logger.d(TAG, "onStatusChanged: $provider")
-    updateListener()
-  }
-
-  override fun onProviderEnabled(provider: String) {
-    Logger.d(TAG, "onProviderEnabled: $provider")
-    updateListener()
-  }
-
-  override fun onProviderDisabled(provider: String) {
-    Logger.d(TAG, "onProviderDisabled: $provider")
-    updateListener()
   }
 
   interface Listener {

@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">Chegando ao destino</string>
     <string name="builder_arriving_destination_description">Definir a localização, onde disparar o lembrete. Na chegada ao destino, o lembrete será mostrado</string>
     <string name="builder_leaving_place">Saindo do local</string>
-    <string name="builder_leaving_place_description">Definir a localização, onde disparar o lembrete. O lembrete será disparado quando você sair do local dentro de um raio</string>
+    <string name="builder_leaving_place_description">Definir a localização, onde disparar o lembrete. O lembrete será disparado quando você sair do local dentro de um raio. Você precisa estar dentro do raio pelo menos uma vez antes que a saída possa ser detectada</string>
     <string name="builder_sub_tasks">Subtarefas (Lista de Compras)</string>
     <string name="builder_delay_date">Data de atraso</string>
     <string name="builder_delay_date_description">Definir data de início do rastreamento de localização</string>

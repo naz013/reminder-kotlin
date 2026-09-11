@@ -9,8 +9,8 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.LocationSettings
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.logic.reminder.usecase.StopLocationTrackingUseCase
 import com.github.naz013.repository.ReminderV2Repository
-import kotlin.math.roundToInt
 
 class CheckLocationReminderUseCase(
   context: Context,
@@ -18,6 +18,8 @@ class CheckLocationReminderUseCase(
   private val dateTimeManager: DateTimeManager,
   private val workflowTriggerRunner: WorkflowTriggerRunner,
   prefs: Prefs,
+  private val stopLocationTrackingUseCase: StopLocationTrackingUseCase,
+  private val placeDistanceCalculator: PlaceDistanceCalculator,
 ) {
   private val distanceFormatter: DefaultDistanceFormatter =
     DefaultDistanceFormatter(
@@ -37,15 +39,19 @@ class CheckLocationReminderUseCase(
       if (shouldCheckDistance(reminder)) {
         when {
           destinationReached(location, reminder) -> {
-            reminderV2Repository.save(
-              reminder.copy(location = (reminder.location ?: LocationSettings()).copy(isNotificationShown = true)),
-            )
+            val firedReminder =
+              reminder.copy(location = (reminder.location ?: LocationSettings()).copy(isNotificationShown = true))
+            reminderV2Repository.save(firedReminder)
             showReminderNotifications.add(ShowReminderNotification(reminder.uuId))
             if (reminder.isLeavingType()) {
               workflowTriggerRunner.onLocationExited(reminder.uuId)
             } else {
               workflowTriggerRunner.onLocationEntered(reminder.uuId)
             }
+            // Notification for this reminder is done firing; wind the service down immediately
+            // if no other GPS reminder is still pending, instead of waiting for the user to tap
+            // "complete" on the notification.
+            stopLocationTrackingUseCase(reminder = firedReminder, isPaused = false)
           }
 
           shouldShowDistanceNotification(reminder) -> {
@@ -118,32 +124,14 @@ class CheckLocationReminderUseCase(
   private fun getDistance(
     location: Location,
     reminder: ReminderV2,
-  ): Int =
-    if (reminder.isLeavingType()) {
-      val place = reminder.places[0]
-      val loc =
-        Location("point B").apply {
-          latitude = place.latitude
-          longitude = place.longitude
-        }
-
-      val distance = location.distanceTo(loc)
-      distance.roundToInt()
-    } else {
-      val place = reminder.places[0]
-      val loc =
-        Location("point B").apply {
-          latitude = place.latitude
-          longitude = place.longitude
-        }
-
-      val distance = location.distanceTo(loc)
-      distance.roundToInt()
-    }
+  ): Int = placeDistanceCalculator.metersTo(location, reminder.places[0])
 
   private fun shouldCheckDistance(reminder: ReminderV2): Boolean {
+    // eventDateTime on a GPS reminder is the "delayed reminder" start threshold (see
+    // RecurrenceRuleCalculator.fromLocation()); isCurrent() is true while that threshold is
+    // still upcoming, so distance checks should only start once it's no longer current.
     val eventDateTime = reminder.schedule.eventDateTime ?: return true
-    return dateTimeManager.isCurrent(dateTimeManager.utcToLocal(eventDateTime))
+    return !dateTimeManager.isCurrent(dateTimeManager.utcToLocal(eventDateTime))
   }
 
   private fun ReminderV2.isLeavingType(): Boolean = recurrence is RecurrenceRule.LocationExit

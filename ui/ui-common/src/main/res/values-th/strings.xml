@@ -777,7 +777,7 @@
     <string name="builder_arriving_destination">ตำแหน่งที่มาถึง</string>
     <string name="builder_arriving_destination_description">ตั้งค่าตำแหน่งที่จะทริกเกอร์การเตือนความจำ เมื่อมาถึงจุดหมาย การเตือนความจำจะแสดงขึ้น</string>
     <string name="builder_leaving_place">ตำแหน่งที่ออกเดินทาง</string>
-    <string name="builder_leaving_place_description">ตั้งค่าตำแหน่งที่จะทริกเกอร์การเตือนความจำ การเตือนความจำจะทริกเกอร์เมื่อคุณออกจากสถานที่ภายในรัศมี</string>
+    <string name="builder_leaving_place_description">ตั้งค่าตำแหน่งที่จะทริกเกอร์การเตือนความจำ การเตือนความจำจะทริกเกอร์เมื่อคุณออกจากสถานที่ภายในรัศมี คุณต้องอยู่ภายในรัศมีอย่างน้อยหนึ่งครั้งก่อนที่ระบบจะตรวจพบการออกจากพื้นที่</string>
     <string name="builder_sub_tasks">งานย่อย (รายการซื้อของ)</string>
     <string name="builder_delay_date">วันที่หน่วง</string>
     <string name="builder_delay_date_description">ตั้งค่าวันที่เริ่มติดตามตำแหน่ง</string>

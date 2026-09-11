@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">Arrivée à destination</string>
     <string name="builder_arriving_destination_description">Définir le lieu où déclencher le rappel. À l\'arrivée à destination, le rappel sera affiché</string>
     <string name="builder_leaving_place">Quitter le lieu</string>
-    <string name="builder_leaving_place_description">Définir le lieu où déclencher le rappel. Le rappel se déclenchera quand vous quitterez le lieu dans un rayon</string>
+    <string name="builder_leaving_place_description">Définir le lieu où déclencher le rappel. Le rappel se déclenchera quand vous quitterez le lieu dans un rayon. Vous devez être entré dans le rayon au moins une fois avant que votre départ puisse être détecté</string>
     <string name="builder_sub_tasks">Sous-tâches (Liste de courses)</string>
     <string name="builder_delay_date">Date de délai</string>
     <string name="builder_delay_date_description">Définir la date de début du suivi de localisation</string>

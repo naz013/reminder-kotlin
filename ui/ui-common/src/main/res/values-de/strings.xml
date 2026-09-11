@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">Ankunft am Ziel</string>
     <string name="builder_arriving_destination_description">Standort festlegen, wo die Erinnerung ausgelöst werden soll. Bei Ankunft am Ziel wird die Erinnerung angezeigt</string>
     <string name="builder_leaving_place">Ort verlassen</string>
-    <string name="builder_leaving_place_description">Standort festlegen, wo die Erinnerung ausgelöst werden soll. Die Erinnerung wird ausgelöst, wenn Sie den Ort innerhalb eines Radius verlassen</string>
+    <string name="builder_leaving_place_description">Standort festlegen, wo die Erinnerung ausgelöst werden soll. Die Erinnerung wird ausgelöst, wenn Sie den Ort innerhalb eines Radius verlassen. Sie müssen sich mindestens einmal innerhalb des Radius befunden haben, bevor das Verlassen erkannt werden kann</string>
     <string name="builder_sub_tasks">Unteraufgaben (Einkaufsliste)</string>
     <string name="builder_delay_date">Verzögerungsdatum</string>
     <string name="builder_delay_date_description">Startdatum der Standortverfolgung festlegen</string>

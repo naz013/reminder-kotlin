@@ -777,7 +777,7 @@
     <string name="builder_arriving_destination">Ankomstplacering</string>
     <string name="builder_arriving_destination_description">Angiv placeringen, hvor påmindelsen skal udløses. Ved ankomst til destinationen vises påmindelsen</string>
     <string name="builder_leaving_place">Afrejseplacering</string>
-    <string name="builder_leaving_place_description">Angiv placeringen, hvor påmindelsen skal udløses. Påmindelsen udløses, når du forlader stedet inden for en radius</string>
+    <string name="builder_leaving_place_description">Angiv placeringen, hvor påmindelsen skal udløses. Påmindelsen udløses, når du forlader stedet inden for en radius. Du skal have været inden for radius mindst én gang, før det kan registreres, at du forlader stedet</string>
     <string name="builder_sub_tasks">Underopgaver (indkøbsliste)</string>
     <string name="builder_delay_date">Forsinkelsesdato</string>
     <string name="builder_delay_date_description">Angiv startdato for placeringssporing</string>

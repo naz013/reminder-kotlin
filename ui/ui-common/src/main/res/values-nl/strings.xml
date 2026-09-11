@@ -777,7 +777,7 @@
     <string name="builder_arriving_destination">Aankomstlocatie</string>
     <string name="builder_arriving_destination_description">Stel de locatie in waar de herinnering moet worden geactiveerd. Bij aankomst op de bestemming wordt de herinnering weergegeven</string>
     <string name="builder_leaving_place">Vertreklocatie</string>
-    <string name="builder_leaving_place_description">Stel de locatie in waar de herinnering moet worden geactiveerd. De herinnering wordt geactiveerd wanneer je de locatie binnen een straal verlaat</string>
+    <string name="builder_leaving_place_description">Stel de locatie in waar de herinnering moet worden geactiveerd. De herinnering wordt geactiveerd wanneer je de locatie binnen een straal verlaat. Je moet minstens één keer binnen de straal zijn geweest voordat het verlaten kan worden gedetecteerd</string>
     <string name="builder_sub_tasks">Subtaken (boodschappenlijst)</string>
     <string name="builder_delay_date">Vertragingsdatum</string>
     <string name="builder_delay_date_description">Stel de startdatum voor locatietracking in</string>

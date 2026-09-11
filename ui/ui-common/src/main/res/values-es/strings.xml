@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">Llegando a destino</string>
     <string name="builder_arriving_destination_description">Establecer la ubicación, donde activar el recordatorio. Al llegar al destino, se mostrará el recordatorio</string>
     <string name="builder_leaving_place">Saliendo de ubicación</string>
-    <string name="builder_leaving_place_description">Establecer la ubicación, donde activar el recordatorio. El recordatorio se activará cuando salgas del lugar dentro de un radio</string>
+    <string name="builder_leaving_place_description">Establecer la ubicación, donde activar el recordatorio. El recordatorio se activará cuando salgas del lugar dentro de un radio. Debes haber estado dentro del radio al menos una vez antes de que se pueda detectar que lo abandonas</string>
     <string name="builder_sub_tasks">Sub tareas (Lista de Compras)</string>
     <string name="builder_delay_date">Fecha de retraso</string>
     <string name="builder_delay_date_description">Establecer fecha de inicio del seguimiento de ubicación</string>

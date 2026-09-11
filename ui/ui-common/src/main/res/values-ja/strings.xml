@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">到着地点</string>
     <string name="builder_arriving_destination_description">リマインダーをトリガーする場所を設定します。目的地への到着時にリマインダーが表示されます</string>
     <string name="builder_leaving_place">出発地点</string>
-    <string name="builder_leaving_place_description">リマインダーをトリガーする場所を設定します。半径内の場所を離れるときにリマインダーがトリガーされます</string>
+    <string name="builder_leaving_place_description">リマインダーをトリガーする場所を設定します。半径内の場所を離れるときにリマインダーがトリガーされます。離脱を検知するには、少なくとも一度は半径内にいる必要があります</string>
     <string name="builder_sub_tasks">サブタスク（買い物リスト）</string>
     <string name="builder_delay_date">遅延日付</string>
     <string name="builder_delay_date_description">位置追跡開始の日付を設定</string>

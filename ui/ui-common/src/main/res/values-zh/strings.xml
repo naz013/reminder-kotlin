@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">到达目的地</string>
     <string name="builder_arriving_destination_description">设置触发提醒的位置。到达目的地时将显示提醒</string>
     <string name="builder_leaving_place">离开地点</string>
-    <string name="builder_leaving_place_description">设置触发提醒的位置。当您在半径范围内离开该地点时将触发提醒</string>
+    <string name="builder_leaving_place_description">设置触发提醒的位置。当您在半径范围内离开该地点时将触发提醒。您需要至少进入过该范围一次，才能检测到您离开</string>
     <string name="builder_sub_tasks">子任务（购物清单）</string>
     <string name="builder_delay_date">延迟日期</string>
     <string name="builder_delay_date_description">设置开始位置跟踪的日期</string>

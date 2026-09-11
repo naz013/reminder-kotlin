@@ -171,11 +171,12 @@ internal fun MarkerRadiusCard(
         style = MaterialTheme.typography.titleMedium,
         modifier = Modifier.align(Alignment.CenterHorizontally),
       )
+      val minRadius = MapConfig.Radius.MIN_METERS.toFloat()
       Slider(
-        value = radius.toFloat().coerceIn(0f, valueTo),
+        value = radius.toFloat().coerceIn(minRadius, valueTo),
         onValueChange = onValueChange,
         onValueChangeFinished = onValueChangeFinished,
-        valueRange = 0f..valueTo,
+        valueRange = minRadius..valueTo,
       )
     }
   }

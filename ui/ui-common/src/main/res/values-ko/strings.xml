@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">도착 위치</string>
     <string name="builder_arriving_destination_description">알림을 트리거할 위치를 설정합니다. 목적지에 도착하면 알림이 표시됩니다</string>
     <string name="builder_leaving_place">이탈 위치</string>
-    <string name="builder_leaving_place_description">알림을 트리거할 위치를 설정합니다. 반경 내에서 장소를 떠날 때 알림이 트리거됩니다</string>
+    <string name="builder_leaving_place_description">알림을 트리거할 위치를 설정합니다. 반경 내에서 장소를 떠날 때 알림이 트리거됩니다. 떠나는 것을 감지하려면 먼저 반경 내에 한 번 이상 있어야 합니다</string>
     <string name="builder_sub_tasks">하위 작업 (쇼핑 목록)</string>
     <string name="builder_delay_date">지연 날짜</string>
     <string name="builder_delay_date_description">위치 추적 시작 날짜 설정</string>

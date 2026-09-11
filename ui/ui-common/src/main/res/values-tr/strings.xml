@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">Varış konumu</string>
     <string name="builder_arriving_destination_description">Hatırlatıcıyı tetikleyecek konumu ayarlayın. Hedefe varışta, hatırlatıcı gösterilecek</string>
     <string name="builder_leaving_place">Ayrılan konum</string>
-    <string name="builder_leaving_place_description">Hatırlatıcıyı tetikleyecek konumu ayarlayın. Yeri yarıçap içinde terk ettiğinizde hatırlatıcı tetiklenecek</string>
+    <string name="builder_leaving_place_description">Hatırlatıcıyı tetikleyecek konumu ayarlayın. Yeri yarıçap içinde terk ettiğinizde hatırlatıcı tetiklenecek. Ayrılmanızın algılanabilmesi için önce en az bir kez yarıçapın içinde bulunmanız gerekir</string>
     <string name="builder_sub_tasks">Alt görevler (Alışveriş Listesi)</string>
     <string name="builder_delay_date">Gecikme tarihi</string>
     <string name="builder_delay_date_description">Konum takibinin başlangıç tarihini ayarla</string>

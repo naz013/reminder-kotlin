@@ -778,7 +778,7 @@
     <string name="builder_arriving_destination">Место прибытия</string>
     <string name="builder_arriving_destination_description">Укажите место, где сработает напоминание. При прибытии в точку напоминание отобразится</string>
     <string name="builder_leaving_place">Выход из места</string>
-    <string name="builder_leaving_place_description">Укажите место, где сработает напоминание. Напоминание сработает, когда вы покинете место в радиусе</string>
+    <string name="builder_leaving_place_description">Укажите место, где сработает напоминание. Напоминание сработает, когда вы покинете место в радиусе. Вам нужно хотя бы раз оказаться в радиусе действия, прежде чем можно будет обнаружить, что вы его покинули</string>
     <string name="builder_sub_tasks">Подзадачи (Список покупок)</string>
     <string name="builder_delay_date">Дата начала</string>
     <string name="builder_delay_date_description">Установите дату начала отслеживания местоположения</string>
