@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +26,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
@@ -46,6 +50,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.feature.home.scheduleview.ScheduleHomeViewModel
@@ -56,7 +61,6 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
-import com.github.naz013.ui.common.compose.foundation.dynamicParameter
 import com.github.naz013.ui.common.compose.foundation.isDesktopScreen
 import com.github.naz013.ui.common.compose.foundation.isTabletScreen
 import com.github.naz013.ui.common.icon.DrawableCatalog
@@ -126,7 +130,7 @@ fun ChronologicalHomeScreen(
     ) {
       if (showHeaderNavigation) {
         item {
-          HeaderNavigationGrid(
+          HeaderNavigationCarousel(
             modifier = Modifier.padding(top = 4.dp),
             items = state.headerNavigationItems,
             onItemClick = onHeaderNavigationItemClick,
@@ -251,45 +255,39 @@ private fun AddButton(
   }
 }
 
+private val HEADER_NAV_ITEM_WIDTH = 128.dp
+private val HEADER_NAV_ITEM_SPACING = 8.dp
+private val HEADER_NAV_CAROUSEL_HEIGHT = 56.dp
+
+// A single fixed-height row regardless of how many sections are enabled - the tile count used to
+// drive a wrapping grid's height directly, which could push the event list below the fold once a
+// user enabled more than a few sections. The trailing tile gets naturally cut off by the viewport
+// (contentPadding keeps that cut consistent with the 16dp side margins elsewhere on Home) to
+// signal there's more to scroll.
 @Composable
-private fun HeaderNavigationGrid(
+private fun HeaderNavigationCarousel(
   modifier: Modifier = Modifier,
   items: List<HeaderNavigationItem>,
   onItemClick: (HeaderNavigationItem) -> Unit,
   onItemLongClick: () -> Unit,
 ) {
-  val columns = dynamicParameter(
-    mobilePortrait = { 2 },
-    mobileLandscape = { 3 },
-    tabletPortrait = { 4 },
-    tabletLandscape = { 4 },
-    desktopSmall = { 4 },
-    desktopNormal = { 4 },
-  )
-  Column(
+  LazyRow(
     modifier = modifier
       .fillMaxWidth()
-      .padding(horizontal = 16.dp),
-    verticalArrangement = Arrangement.spacedBy(8.dp),
+      .height(HEADER_NAV_CAROUSEL_HEIGHT),
+    horizontalArrangement = Arrangement.spacedBy(HEADER_NAV_ITEM_SPACING),
+    contentPadding = PaddingValues(horizontal = 16.dp),
   ) {
-    items.chunked(columns).forEachIndexed { rowIndex, rowItems ->
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-      ) {
-        rowItems.forEachIndexed { columnIndex, item ->
-          HeaderNavigationTile(
-            modifier = Modifier.weight(1f),
-            item = item,
-            index = rowIndex * columns + columnIndex,
-            onClick = { onItemClick(item) },
-            onLongClick = onItemLongClick,
-          )
-        }
-        repeat(columns - rowItems.size) {
-          Spacer(modifier = Modifier.weight(1f))
-        }
-      }
+    itemsIndexed(items) { index, item ->
+      HeaderNavigationTile(
+        modifier = Modifier
+          .width(HEADER_NAV_ITEM_WIDTH)
+          .fillMaxHeight(),
+        item = item,
+        index = index,
+        onClick = { onItemClick(item) },
+        onLongClick = onItemLongClick,
+      )
     }
   }
 }
@@ -345,15 +343,20 @@ private fun HeaderNavigationTile(
           )
         }
         Column(
+          modifier = Modifier.weight(1f),
           verticalArrangement = Arrangement.spacedBy(1.dp),
         ) {
           Text(
             text = stringResource(item.titleRes),
             style = MaterialTheme.typography.labelSmallEmphasized,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
           )
           Text(
             text = item.subtitle,
             style = MaterialTheme.typography.titleMediumEmphasized,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
           )
         }
       }
@@ -756,8 +759,8 @@ private fun HeaderWithPopupPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun HeaderNavigationGridPreview() {
-  HeaderNavigationGrid(
+private fun HeaderNavigationCarouselPreview() {
+  HeaderNavigationCarousel(
     items = listOf(
       HeaderNavigationItem(
         titleRes = R.string.calendar,
