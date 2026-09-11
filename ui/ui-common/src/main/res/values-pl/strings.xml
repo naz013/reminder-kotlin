@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">Miejsce docelowe przybycia</string>
     <string name="builder_arriving_destination_description">Ustaw lokalizację, gdzie wyzwolić przypomnienie. Po przybyciu do miejsca docelowego, przypomnienie zostanie pokazane</string>
     <string name="builder_leaving_place">Miejsce opuszczania</string>
-    <string name="builder_leaving_place_description">Ustaw lokalizację, gdzie wyzwolić przypomnienie. Przypomnienie zostanie wyzwolone gdy opuścisz miejsce w promieniu</string>
+    <string name="builder_leaving_place_description">Ustaw lokalizację, gdzie wyzwolić przypomnienie. Przypomnienie zostanie wyzwolone gdy opuścisz miejsce w promieniu. Musisz co najmniej raz znaleźć się w promieniu, zanim opuszczenie miejsca zostanie wykryte</string>
     <string name="builder_sub_tasks">Podzadania (Lista zakupów)</string>
     <string name="builder_delay_date">Data opóźnienia</string>
     <string name="builder_delay_date_description">Ustaw datę rozpoczęcia śledzenia lokalizacji</string>

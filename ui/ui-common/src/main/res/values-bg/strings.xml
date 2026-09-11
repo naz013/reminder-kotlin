@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">Пристигащо местоположение</string>
     <string name="builder_arriving_destination_description">Задайте местоположението, където да се задейства напомнянето. При пристигане до дестинацията, напомнянето ще бъде показано</string>
     <string name="builder_leaving_place">Напускащо местоположение</string>
-    <string name="builder_leaving_place_description">Задайте местоположението, където да се задейства напомнянето. Напомнянето ще се задейства, когато напуснете мястото в рамките на радиуса</string>
+    <string name="builder_leaving_place_description">Задайте местоположението, където да се задейства напомнянето. Напомнянето ще се задейства, когато напуснете мястото в рамките на радиуса. Трябва да сте били в радиуса поне веднъж, преди напускането да бъде открито</string>
     <string name="builder_sub_tasks">Подзадачи (Списък за пазаруване)</string>
     <string name="builder_delay_date">Дата на забавяне</string>
     <string name="builder_delay_date_description">Задайте дата на започване на проследяването на местоположението</string>

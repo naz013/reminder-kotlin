@@ -777,7 +777,7 @@
     <string name="builder_arriving_destination">موقع الوصول</string>
     <string name="builder_arriving_destination_description">حدد الموقع الذي سيؤدي إلى تفعيل التذكير. عند الوصول إلى الوجهة، سيظهر التذكير</string>
     <string name="builder_leaving_place">موقع المغادرة</string>
-    <string name="builder_leaving_place_description">حدد الموقع الذي سيؤدي إلى تفعيل التذكير. سيتم تفعيل التذكير عند مغادرة المكان ضمن نطاق</string>
+    <string name="builder_leaving_place_description">حدد الموقع الذي سيؤدي إلى تفعيل التذكير. سيتم تفعيل التذكير عند مغادرة المكان ضمن نطاق. يجب أن تكون داخل النطاق مرة واحدة على الأقل قبل أن يتم اكتشاف مغادرتك</string>
     <string name="builder_sub_tasks">مهام فرعية (قائمة تسوق)</string>
     <string name="builder_delay_date">تاريخ التأخير</string>
     <string name="builder_delay_date_description">حدد تاريخ بدء تتبع الموقع</string>

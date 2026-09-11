@@ -777,7 +777,7 @@
     <string name="builder_arriving_destination">Arriving location</string>
     <string name="builder_arriving_destination_description">Set the location, where to trigger the reminder. On arrival to the destination, the reminder will be shown</string>
     <string name="builder_leaving_place">Leaving location</string>
-    <string name="builder_leaving_place_description">Set the location, where to trigger the reminder. The reminder will trigger when you leave the place within a radius</string>
+    <string name="builder_leaving_place_description">Set the location, where to trigger the reminder. The reminder will trigger when you leave the place within a radius. You need to enter the radius at least once before leaving it can be detected</string>
     <string name="builder_sub_tasks">Sub tasks (Shopping List)</string>
     <string name="builder_delay_date">Delay date</string>
     <string name="builder_delay_date_description">Set date of beginning of location tracking</string>

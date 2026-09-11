@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">Прибуття до місця призначення</string>
     <string name="builder_arriving_destination_description">Встановіть місце, де запускати нагадування. При прибутті до місця призначення нагадування буде показано</string>
     <string name="builder_leaving_place">Вихід з місця</string>
-    <string name="builder_leaving_place_description">Встановіть місце, де запускати нагадування. Нагадування спрацює, коли ви покинете місце в межах радіуса</string>
+    <string name="builder_leaving_place_description">Встановіть місце, де запускати нагадування. Нагадування спрацює, коли ви покинете місце в межах радіуса. Ви маєте хоча б раз побувати в межах радіуса, перш ніж можна буде виявити, що ви його залишили</string>
     <string name="builder_sub_tasks">Підзавдання (Список покупок)</string>
     <string name="builder_delay_date">Дата затримки</string>
     <string name="builder_delay_date_description">Встановіть дату початку відстеження місцезнаходження</string>

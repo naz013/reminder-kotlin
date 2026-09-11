@@ -777,7 +777,7 @@
     <string name="builder_arriving_destination">Vị trí đến</string>
     <string name="builder_arriving_destination_description">Đặt vị trí kích hoạt lời nhắc. Khi đến điểm đến, lời nhắc sẽ hiển thị</string>
     <string name="builder_leaving_place">Vị trí rời đi</string>
-    <string name="builder_leaving_place_description">Đặt vị trí kích hoạt lời nhắc. Lời nhắc sẽ kích hoạt khi bạn rời khỏi nơi đó trong bán kính</string>
+    <string name="builder_leaving_place_description">Đặt vị trí kích hoạt lời nhắc. Lời nhắc sẽ kích hoạt khi bạn rời khỏi nơi đó trong bán kính. Bạn cần ở trong bán kính ít nhất một lần trước khi việc rời đi có thể được phát hiện</string>
     <string name="builder_sub_tasks">Nhiệm vụ con (Danh sách mua sắm)</string>
     <string name="builder_delay_date">Ngày trì hoãn</string>
     <string name="builder_delay_date_description">Đặt ngày bắt đầu theo dõi vị trí</string>

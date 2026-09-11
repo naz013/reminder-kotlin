@@ -777,7 +777,7 @@
     <string name="builder_arriving_destination">Lokasi kedatangan</string>
     <string name="builder_arriving_destination_description">Atur lokasi, tempat memicu pengingat. Saat tiba di tujuan, pengingat akan ditampilkan</string>
     <string name="builder_leaving_place">Lokasi keberangkatan</string>
-    <string name="builder_leaving_place_description">Atur lokasi, tempat memicu pengingat. Pengingat akan aktif saat Anda meninggalkan tempat dalam radius tertentu</string>
+    <string name="builder_leaving_place_description">Atur lokasi, tempat memicu pengingat. Pengingat akan aktif saat Anda meninggalkan tempat dalam radius tertentu. Anda perlu berada di dalam radius setidaknya sekali sebelum kepergian Anda dapat terdeteksi</string>
     <string name="builder_sub_tasks">Sub tugas (Daftar Belanja)</string>
     <string name="builder_delay_date">Tanggal tunda</string>
     <string name="builder_delay_date_description">Atur tanggal mulai pelacakan lokasi</string>

@@ -777,7 +777,7 @@
     <string name="builder_arriving_destination">Ankomstplats</string>
     <string name="builder_arriving_destination_description">Ställ in platsen där påminnelsen ska utlösas. Vid ankomst till destinationen visas påminnelsen</string>
     <string name="builder_leaving_place">Avreseplats</string>
-    <string name="builder_leaving_place_description">Ställ in platsen där påminnelsen ska utlösas. Påminnelsen utlöses när du lämnar platsen inom en radie</string>
+    <string name="builder_leaving_place_description">Ställ in platsen där påminnelsen ska utlösas. Påminnelsen utlöses när du lämnar platsen inom en radie. Du måste ha varit inom radien minst en gång innan det går att upptäcka att du lämnar platsen</string>
     <string name="builder_sub_tasks">Delmoment (Inköpslista)</string>
     <string name="builder_delay_date">Fördröjningsdatum</string>
     <string name="builder_delay_date_description">Ställ in startdatum för platsspårning</string>

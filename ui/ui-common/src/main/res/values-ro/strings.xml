@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">Sosirea la destinație</string>
     <string name="builder_arriving_destination_description">Setează locația, unde să se declanșeze mementoul. La sosirea la destinație, mementoul va fi afișat</string>
     <string name="builder_leaving_place">Părăsirea locației</string>
-    <string name="builder_leaving_place_description">Setează locația, unde să se declanșeze mementoul. Mementoul se va declanșa când părăsești locul într-o rază</string>
+    <string name="builder_leaving_place_description">Setează locația, unde să se declanșeze mementoul. Mementoul se va declanșa când părăsești locul într-o rază. Trebuie să fi fost în raza respectivă cel puțin o dată înainte ca plecarea să poată fi detectată</string>
     <string name="builder_sub_tasks">Subsarcini (Lista de cumpărături)</string>
     <string name="builder_delay_date">Data de amânare</string>
     <string name="builder_delay_date_description">Setează data de începere a urmăririi locației</string>

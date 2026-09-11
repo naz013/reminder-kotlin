@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">गंतव्य पहुंचना</string>
     <string name="builder_arriving_destination_description">स्थान सेट करें, जहां रिमाइंडर ट्रिगर करना है। गंतव्य पर पहुंचने पर, रिमाइंडर दिखाया जाएगा</string>
     <string name="builder_leaving_place">स्थान छोड़ना</string>
-    <string name="builder_leaving_place_description">स्थान सेत करें, जहां रिमाइंडर ट्रिगर करना है। जब आप त्रिज्या के भीतर स्थान छोड़ेंगे तो रिमाइंडर ट्रिगर होगा</string>
+    <string name="builder_leaving_place_description">स्थान सेत करें, जहां रिमाइंडर ट्रिगर करना है। जब आप त्रिज्या के भीतर स्थान छोड़ेंगे तो रिमाइंडर ट्रिगर होगा। आपका जाना पहचानने के लिए ज़रूरी है कि आप कम से कम एक बार त्रिज्या के भीतर रहे हों</string>
     <string name="builder_sub_tasks">उप कार्य (शॉपिंग लिस्ट)</string>
     <string name="builder_delay_date">देरी की तारीख</string>
     <string name="builder_delay_date_description">स्थान ट्रैकिंग शुरू करने की तारीख सेट करें</string>

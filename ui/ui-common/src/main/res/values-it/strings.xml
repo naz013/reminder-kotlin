@@ -779,7 +779,7 @@
     <string name="builder_arriving_destination">Arrivo alla destinazione</string>
     <string name="builder_arriving_destination_description">Imposta la posizione, dove attivare il promemoria. All\'arrivo alla destinazione, il promemoria verrà mostrato</string>
     <string name="builder_leaving_place">Uscita dalla posizione</string>
-    <string name="builder_leaving_place_description">Imposta la posizione, dove attivare il promemoria. Il promemoria si attiverà quando lasci il luogo entro un raggio</string>
+    <string name="builder_leaving_place_description">Imposta la posizione, dove attivare il promemoria. Il promemoria si attiverà quando lasci il luogo entro un raggio. Devi essere stato all\'interno del raggio almeno una volta prima che l\'uscita possa essere rilevata</string>
     <string name="builder_sub_tasks">Sotto compiti (Lista della Spesa)</string>
     <string name="builder_delay_date">Data di ritardo</string>
     <string name="builder_delay_date_description">Imposta data di inizio del tracciamento della posizione</string>

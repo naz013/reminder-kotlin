@@ -10,7 +10,11 @@ object MapConfig {
 
   object Radius {
     const val MAX_METERS = 10000
-    const val MIN_METERS = 0
+
+    /** Below this, typical consumer GPS/network location accuracy (tens of meters, worse indoors)
+     * makes arrive/leave detection unreliable - a smaller radius than this effectively never
+     * fires, or fires unpredictably from GPS jitter alone. */
+    const val MIN_METERS = 50
     const val DEFAULT_METERS = 50
   }
 }

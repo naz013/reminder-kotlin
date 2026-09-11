@@ -91,6 +91,6 @@ val utilModule = module {
   factory { AppOnboardingPreferences(get()) as OnboardingPreferences }
 
   factory { (listener: LocationTracker.Listener) ->
-    LocationTracker(listener, get(), get(), get())
+    LocationTracker(listener, get(), get())
   }
 }
