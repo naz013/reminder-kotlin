@@ -28,6 +28,8 @@ user-messaging-platform = "4.0.0"
 
 androidx-wear-compose = "1.6.2"
 androidx-wear-compose-material3 = "1.5.0"
+androidx-wear-tiles = "1.6.0"
+androidx-wear-protolayout = "1.4.0"
 
 androidx-credentials = "1.6.0"
 google-id = "1.2.0"
@@ -208,6 +210,8 @@ user-messaging-platform = { group = "com.google.android.ump", name = "user-messa
 
 androidx-wear-compose-foundation = { group = "androidx.wear.compose", name = "compose-foundation", version.ref = "androidx-wear-compose" }
 androidx-wear-compose-material3 = { group = "androidx.wear.compose", name = "compose-material3", version.ref = "androidx-wear-compose-material3" }
+androidx-wear-tiles = { group = "androidx.wear.tiles", name = "tiles", version.ref = "androidx-wear-tiles" }
+androidx-wear-protolayout-material3 = { group = "androidx.wear.protolayout", name = "protolayout-material3", version.ref = "androidx-wear-protolayout" }
 
 androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "androidx-credentials" }
 androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "androidx-credentials" }

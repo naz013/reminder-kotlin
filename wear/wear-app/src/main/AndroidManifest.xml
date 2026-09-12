@@ -39,5 +39,15 @@
                     android:pathPrefix="/reminders" />
             </intent-filter>
         </service>
+
+        <service
+            android:name="com.github.naz013.wear.tile.NextReminderTileService"
+            android:exported="true"
+            android:label="@string/wear_app_name"
+            android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
+            <intent-filter>
+                <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
+            </intent-filter>
+        </service>
     </application>
 </manifest>
