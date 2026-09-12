@@ -24,7 +24,7 @@ dependencies {
   implementation(libs.play.services.wearable)
   implementation(libs.kotlinx.coroutines.play.services)
 
-  implementation(libs.androidx.wear.compose.material)
+  implementation(libs.androidx.wear.compose.material3)
   implementation(libs.androidx.wear.compose.foundation)
   implementation(libs.androidx.activity.compose)
   implementation(libs.androidx.core.ktx)

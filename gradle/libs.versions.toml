@@ -27,6 +27,7 @@ play-services-wearable = "20.0.1"
 user-messaging-platform = "4.0.0"
 
 androidx-wear-compose = "1.6.2"
+androidx-wear-compose-material3 = "1.5.0"
 
 androidx-credentials = "1.6.0"
 google-id = "1.2.0"
@@ -205,8 +206,8 @@ play-services-auth = { group = "com.google.android.gms", name = "play-services-a
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "play-services-wearable" }
 user-messaging-platform = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "user-messaging-platform" }
 
-androidx-wear-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "androidx-wear-compose" }
 androidx-wear-compose-foundation = { group = "androidx.wear.compose", name = "compose-foundation", version.ref = "androidx-wear-compose" }
+androidx-wear-compose-material3 = { group = "androidx.wear.compose", name = "compose-material3", version.ref = "androidx-wear-compose-material3" }
 
 androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "androidx-credentials" }
 androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "androidx-credentials" }
