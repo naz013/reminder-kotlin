@@ -20,6 +20,7 @@ interface ReminderPreferences {
   var defaultPriority: Int
   var moveCompleted: Boolean
   var isWearEnabled: Boolean
+  var isWearCompanionEnabled: Boolean
   var isSbIconEnabled: Boolean
   var isNotificationRepeatEnabled: Boolean
   var notificationRepeatTime: Int

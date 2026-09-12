@@ -78,6 +78,11 @@ class RemindersSettingsViewModel(
     refreshState()
   }
 
+  fun onWearCompanionToggle() {
+    reminderPreferences.isWearCompanionEnabled = !reminderPreferences.isWearCompanionEnabled
+    refreshState()
+  }
+
   fun onSnoozeClick() {
     showSeekDialog(
       kind = SeekDialogKind.SNOOZE,
@@ -382,6 +387,7 @@ class RemindersSettingsViewModel(
       priorityName = priorityOptions()[reminderPreferences.defaultPriority.coerceIn(0, 4)],
       isCompletedChecked = reminderPreferences.moveCompleted,
       isWearChecked = reminderPreferences.isWearEnabled,
+      isWearCompanionChecked = reminderPreferences.isWearCompanionEnabled,
       snoozeText = minutesText(reminderPreferences.snoozeTime),
       isRepeatChecked = isRepeatChecked,
       repeatIntervalText = minutesText(reminderPreferences.notificationRepeatTime),

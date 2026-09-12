@@ -1370,6 +1370,10 @@
     <string name="next_reminder">Следующее напоминание</string>
     <string name="widget_next_reminder_description">Быстрый просмотр следующего напоминания, подходящий по размеру для экрана блокировки</string>
     <string name="widget_next_reminder_empty_state">Нет предстоящих напоминаний</string>
+    <string name="wear_companion_app">Приложение-компаньон Wear OS</string>
+    <string name="sync_reminders_to_wear_companion">Синхронизировать предстоящие напоминания с часами</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Не синхронизировать напоминания с часами</string>
+    <string name="settings_search_keyword_wear_companion">смарт-часы, Wear OS, приложение-компаньон</string>
     <string name="critical_reminder">Критическое напоминание</string>
     <string name="critical_reminder_description">Повторяется, пока не будет отклонено, обходит режим «Не беспокоить» и включает экран. Для оповещений, которые нельзя пропустить.</string>
     <string name="critical">Критично</string>

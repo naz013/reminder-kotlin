@@ -135,6 +135,7 @@ fun RemindersCrossFeatureEntry(
         onPriorityClick = viewModel::onPriorityClick,
         onCompletedToggle = viewModel::onCompletedToggle,
         onWearToggle = viewModel::onWearToggle,
+        onWearCompanionToggle = viewModel::onWearCompanionToggle,
         onSnoozeClick = viewModel::onSnoozeClick,
         onRepeatToggle = viewModel::onRepeatToggle,
         onRepeatIntervalClick = viewModel::onRepeatIntervalClick,

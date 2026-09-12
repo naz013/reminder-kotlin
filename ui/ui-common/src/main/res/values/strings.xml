@@ -1387,6 +1387,10 @@
     <string name="next_reminder">Next reminder</string>
     <string name="widget_next_reminder_description">Glanceable next reminder, sized for the lock screen</string>
     <string name="widget_next_reminder_empty_state">No upcoming reminders</string>
+    <string name="wear_companion_app">Wear OS companion app</string>
+    <string name="sync_reminders_to_wear_companion">Sync upcoming reminders to your watch</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Don\'t sync reminders to your watch</string>
+    <string name="settings_search_keyword_wear_companion">smartwatch, wear os, companion app</string>
     <string name="critical_reminder">Critical reminder</string>
     <string name="critical_reminder_description">Repeats until dismissed, bypasses Do Not Disturb, and wakes the screen. For alerts you can\'t afford to miss.</string>
     <string name="critical">Critical</string>

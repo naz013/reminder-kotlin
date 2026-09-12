@@ -1369,6 +1369,10 @@
     <string name="next_reminder">Pengingat berikutnya</string>
     <string name="widget_next_reminder_description">Sekilas pengingat berikutnya, berukuran pas untuk layar kunci</string>
     <string name="widget_next_reminder_empty_state">Tidak ada pengingat mendatang</string>
+    <string name="wear_companion_app">Aplikasi pendamping Wear OS</string>
+    <string name="sync_reminders_to_wear_companion">Sinkronkan pengingat mendatang ke jam tangan Anda</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Jangan sinkronkan pengingat ke jam tangan Anda</string>
+    <string name="settings_search_keyword_wear_companion">smartwatch, wear os, aplikasi pendamping</string>
     <string name="critical_reminder">Pengingat kritis</string>
     <string name="critical_reminder_description">Berulang hingga ditutup, melewati mode Jangan Ganggu, dan membangunkan layar. Untuk peringatan yang tidak boleh Anda lewatkan.</string>
     <string name="critical">Kritis</string>

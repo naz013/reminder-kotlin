@@ -1371,6 +1371,10 @@
     <string name="next_reminder">Następne przypomnienie</string>
     <string name="widget_next_reminder_description">Szybki podgląd następnego przypomnienia, w rozmiarze dla ekranu blokady</string>
     <string name="widget_next_reminder_empty_state">Brak nadchodzących przypomnień</string>
+    <string name="wear_companion_app">Aplikacja towarzysząca Wear OS</string>
+    <string name="sync_reminders_to_wear_companion">Synchronizuj nadchodzące przypomnienia z zegarkiem</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Nie synchronizuj przypomnień z zegarkiem</string>
+    <string name="settings_search_keyword_wear_companion">smartwatch, Wear OS, aplikacja towarzysząca</string>
     <string name="critical_reminder">Krytyczne przypomnienie</string>
     <string name="critical_reminder_description">Powtarza się, dopóki nie zostanie odrzucone, omija tryb Nie przeszkadzać i wybudza ekran. Dla alertów, których nie możesz przegapić.</string>
     <string name="critical">Krytyczne</string>

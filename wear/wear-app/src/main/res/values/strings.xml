@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wear_app_name">Reminder</string>
+    <string name="wear_empty_state">No upcoming reminders</string>
+    <string name="wear_action_done">Done</string>
+    <string name="wear_action_snooze">Snooze</string>
+</resources>

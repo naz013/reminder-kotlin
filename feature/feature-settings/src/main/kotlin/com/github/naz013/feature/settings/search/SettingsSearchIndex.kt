@@ -234,6 +234,14 @@ internal object SettingsSearchIndex {
     )
     add(
       SettingsSearchEntry(
+        titleRes = R.string.wear_companion_app,
+        path = remindersPath,
+        keywordRes = listOf(R.string.settings_search_keyword_wear_companion),
+        highlightItemId = SettingsSearchItemKeys.REMINDERS_WEAR_COMPANION,
+      ),
+    )
+    add(
+      SettingsSearchEntry(
         titleRes = R.string.do_not_disturb,
         path = remindersPath,
         keywordRes = listOf(R.string.settings_search_keyword_quiet_hours),

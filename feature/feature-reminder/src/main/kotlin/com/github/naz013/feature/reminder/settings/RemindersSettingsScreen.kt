@@ -31,6 +31,7 @@ fun RemindersSettingsScreen(
   onPriorityClick: () -> Unit,
   onCompletedToggle: () -> Unit,
   onWearToggle: () -> Unit,
+  onWearCompanionToggle: () -> Unit,
   onSnoozeClick: () -> Unit,
   onRepeatToggle: () -> Unit,
   onRepeatIntervalClick: () -> Unit,
@@ -125,6 +126,16 @@ fun RemindersSettingsScreen(
       subtitleOff = stringResource(R.string.do_no_show_notifications_on_wear_devices),
       icon = AppIcons.Fluent.Watch,
       itemKey = SettingsSearchItemKeys.REMINDERS_WEAR,
+      dividerBottom = true,
+    )
+    SettingsSwitchItem(
+      title = stringResource(R.string.wear_companion_app),
+      checked = state.isWearCompanionChecked,
+      onCheckedChange = { onWearCompanionToggle() },
+      subtitleOn = stringResource(R.string.sync_reminders_to_wear_companion),
+      subtitleOff = stringResource(R.string.do_not_sync_reminders_to_wear_companion),
+      icon = AppIcons.Fluent.Watch,
+      itemKey = SettingsSearchItemKeys.REMINDERS_WEAR_COMPANION,
       dividerBottom = true,
     )
     SettingsItem(

@@ -94,6 +94,7 @@ class RemindersSettingsViewModelTest : BaseTest() {
 
     assertEquals(false, state.isCompletedChecked)
     assertEquals(false, state.isWearChecked)
+    assertEquals(false, state.isWearCompanionChecked)
     assertEquals(false, state.isRepeatChecked)
     assertEquals(false, state.isRepeatIntervalRowEnabled)
     assertEquals(true, state.isLedVisible)
@@ -189,6 +190,13 @@ class RemindersSettingsViewModelTest : BaseTest() {
     viewModel.onWearToggle()
 
     verify { reminderPreferences.isWearEnabled = true }
+  }
+
+  @Test
+  fun `onWearCompanionToggle flips the wear companion pref`() {
+    viewModel.onWearCompanionToggle()
+
+    verify { reminderPreferences.isWearCompanionEnabled = true }
   }
 
   @Test

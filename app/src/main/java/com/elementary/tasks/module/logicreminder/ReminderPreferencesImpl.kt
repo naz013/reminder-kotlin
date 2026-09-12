@@ -76,6 +76,10 @@ class ReminderPreferencesImpl(
     get() = prefs.isWearEnabled
     set(value) { prefs.isWearEnabled = value }
 
+  override var isWearCompanionEnabled: Boolean
+    get() = prefs.isWearCompanionEnabled
+    set(value) { prefs.isWearCompanionEnabled = value }
+
   override var isSbIconEnabled: Boolean
     get() = prefs.isSbIconEnabled
     set(value) { prefs.isSbIconEnabled = value }

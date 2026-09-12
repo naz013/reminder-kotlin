@@ -1367,6 +1367,10 @@
     <string name="next_reminder">Nächste Erinnerung</string>
     <string name="widget_next_reminder_description">Schnellansicht der nächsten Erinnerung, passend für den Sperrbildschirm</string>
     <string name="widget_next_reminder_empty_state">Keine anstehenden Erinnerungen</string>
+    <string name="wear_companion_app">Wear OS Companion-App</string>
+    <string name="sync_reminders_to_wear_companion">Anstehende Erinnerungen mit deiner Uhr synchronisieren</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Erinnerungen nicht mit deiner Uhr synchronisieren</string>
+    <string name="settings_search_keyword_wear_companion">Smartwatch, Wear OS, Companion-App</string>
     <string name="critical_reminder">Kritische Erinnerung</string>
     <string name="critical_reminder_description">Wiederholt sich, bis sie geschlossen wird, umgeht „Nicht stören“ und weckt den Bildschirm auf. Für Erinnerungen, die Sie nicht verpassen dürfen.</string>
     <string name="critical">Kritisch</string>

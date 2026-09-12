@@ -1372,6 +1372,10 @@
     <string name="next_reminder">下一个提醒</string>
     <string name="widget_next_reminder_description">一目了然查看下一个提醒，尺寸适合锁屏</string>
     <string name="widget_next_reminder_empty_state">没有即将到来的提醒</string>
+    <string name="wear_companion_app">Wear OS 伴侣应用</string>
+    <string name="sync_reminders_to_wear_companion">将即将到来的提醒同步到您的手表</string>
+    <string name="do_not_sync_reminders_to_wear_companion">不将提醒同步到您的手表</string>
+    <string name="settings_search_keyword_wear_companion">智能手表, wear os, 伴侣应用</string>
     <string name="critical_reminder">紧急提醒</string>
     <string name="critical_reminder_description">在被关闭之前会重复提醒，绕过勿扰模式并唤醒屏幕。适用于您不能错过的提醒。</string>
     <string name="critical">紧急</string>

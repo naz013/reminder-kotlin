@@ -1372,6 +1372,10 @@
     <string name="next_reminder">Следващо напомняне</string>
     <string name="widget_next_reminder_description">Бърз преглед на следващото напомняне, с размер за заключен екран</string>
     <string name="widget_next_reminder_empty_state">Няма предстоящи напомняния</string>
+    <string name="wear_companion_app">Придружаващо приложение за Wear OS</string>
+    <string name="sync_reminders_to_wear_companion">Синхронизиране на предстоящите напомняния с часовника</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Без синхронизиране на напомнянията с часовника</string>
+    <string name="settings_search_keyword_wear_companion">смарт часовник, wear os, придружаващо приложение</string>
     <string name="critical_reminder">Критично напомняне</string>
     <string name="critical_reminder_description">Повтаря се, докато не бъде отхвърлено, заобикаля режим \"Не безпокойте\" и събужда екрана. За известия, които не можете да пропуснете.</string>
     <string name="critical">Критично</string>
