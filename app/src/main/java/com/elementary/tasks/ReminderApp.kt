@@ -83,6 +83,8 @@ import com.github.naz013.ui.map.uiMapModule
 import com.github.naz013.ui.note.uiNoteModule
 import com.github.naz013.ui.reminder.uiReminderModule
 import com.github.naz013.ui.tag.uiTagModule
+import com.github.naz013.wearsync.WearReminderSyncCoordinator
+import com.github.naz013.wearsync.wearSyncModule
 import com.github.naz013.work.workModule
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import kotlinx.coroutines.CoroutineScope
@@ -206,7 +208,8 @@ class ReminderApp :
           uiReminderModule,
           logicNoteModule,
           logicDemoDataModule,
-          demoPhotoModule
+          demoPhotoModule,
+          wearSyncModule
         ),
       )
     }
@@ -244,6 +247,7 @@ class ReminderApp :
     get<InstallReferrerReader>().readOnce()
     get<RemotePrefs>().preLoad()
     CoroutineScope(get<DispatcherProvider>().io()).launch { get<LegalDocumentRepository>().refresh() }
+    get<WearReminderSyncCoordinator>().start()
 
     registerActivityLifecycleCallbacks(ActivityObserver(get(), get()))
   }

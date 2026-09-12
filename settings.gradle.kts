@@ -112,8 +112,13 @@ include(":extensions:appwidgets")
 include(":extensions:appwidgets-api")
 include(":extensions:appfunctions")
 include(":extensions:localbackup")
+include(":extensions:wearsync")
+include(":extensions:wearsync-api")
 
 // admin - debug/internal-only tooling, excluded from release builds
 include(":admin:cloudtestadmin")
 include(":admin:reviews")
 include(":admin:reviewsadmin")
+
+// wear - standalone Wear OS companion app, installed alongside :app on a paired watch
+include(":wear:wear-app")

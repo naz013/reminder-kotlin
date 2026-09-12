@@ -23,7 +23,10 @@ firebase-bom = "34.18.0"
 play-services-location = "21.4.0"
 play-services-maps = "20.0.0"
 play-services-auth = "22.0.0"
+play-services-wearable = "18.2.0"
 user-messaging-platform = "4.0.0"
+
+androidx-wear-compose = "1.4.1"
 
 androidx-credentials = "1.6.0"
 google-id = "1.2.0"
@@ -199,7 +202,11 @@ firebase-appcheck-playintegrity = { module = "com.google.firebase:firebase-appch
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "play-services-location" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "play-services-maps" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
+play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "play-services-wearable" }
 user-messaging-platform = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "user-messaging-platform" }
+
+androidx-wear-compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "androidx-wear-compose" }
+androidx-wear-compose-foundation = { group = "androidx.wear.compose", name = "compose-foundation", version.ref = "androidx-wear-compose" }
 
 androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "androidx-credentials" }
 androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "androidx-credentials" }
@@ -214,6 +221,7 @@ mlkit-genai-summarization = { group = "com.google.mlkit", name = "genai-summariz
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-guava = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines" }
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
