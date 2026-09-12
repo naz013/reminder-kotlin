@@ -1369,4 +1369,7 @@
     <string name="next_reminder">การแจ้งเตือนถัดไป</string>
     <string name="widget_next_reminder_description">ดูการแจ้งเตือนถัดไปแบบย่อ ขนาดพอดีกับหน้าจอล็อก</string>
     <string name="widget_next_reminder_empty_state">ไม่มีการแจ้งเตือนที่กำลังจะมาถึง</string>
+    <string name="critical_reminder">การแจ้งเตือนสำคัญ</string>
+    <string name="critical_reminder_description">ทำซ้ำจนกว่าจะปิด ข้ามโหมดห้ามรบกวน และปลุกหน้าจอ สำหรับการแจ้งเตือนที่คุณพลาดไม่ได้</string>
+    <string name="critical">สำคัญมาก</string>
 </resources>

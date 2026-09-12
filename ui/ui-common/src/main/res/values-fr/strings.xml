@@ -1371,4 +1371,7 @@
     <string name="next_reminder">Prochain rappel</string>
     <string name="widget_next_reminder_description">Aperçu rapide du prochain rappel, à la taille de l\'écran de verrouillage</string>
     <string name="widget_next_reminder_empty_state">Aucun rappel à venir</string>
+    <string name="critical_reminder">Rappel critique</string>
+    <string name="critical_reminder_description">Se répète jusqu\'à ce qu\'il soit ignoré, contourne le mode Ne pas déranger et réveille l\'écran. Pour les alertes que vous ne pouvez pas vous permettre de manquer.</string>
+    <string name="critical">Critique</string>
 </resources>

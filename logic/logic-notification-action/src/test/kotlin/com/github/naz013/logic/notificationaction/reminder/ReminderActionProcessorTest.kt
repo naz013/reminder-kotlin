@@ -274,4 +274,85 @@ class ReminderActionProcessorTest {
 
       coVerify(exactly = 1) { handler.handle(reminder) }
     }
+
+  @Test
+  fun `process forces the critical preset on a critical reminder from the very first fire`() =
+    runTest {
+      val criticalReminder = reminder.copy(isCritical = true)
+      coEvery { reminderV2Repository.getById("1") } returns criticalReminder
+      val settings = notificationSettings(priority = ReminderPriority.NORMAL, bypassDoNotDisturb = false)
+      coEvery { resolveReminderV2NotificationSettingsUseCase(criticalReminder) } returns settings
+      every { reminderPreferences.escalateAfterRepeats } returns 3
+
+      processor.process("1", repeatCount = 0)
+
+      coVerify(exactly = 1) {
+        alertHandlerFactory.create(
+          any(),
+          match {
+            it.bypassDoNotDisturb &&
+              it.wakeScreen &&
+              it.priority == ReminderPriority.HIGHEST &&
+              it.category == ReminderNotificationCategory.ALARM &&
+              it.repeatNotification
+          },
+        )
+      }
+    }
+
+  @Test
+  fun `process never suppresses a critical reminder for do not disturb`() =
+    runTest {
+      val criticalReminder = reminder.copy(isCritical = true)
+      coEvery { reminderV2Repository.getById("1") } returns criticalReminder
+      coEvery { resolveReminderV2NotificationSettingsUseCase(criticalReminder) } returns notificationSettings()
+
+      processor.process("1")
+
+      coVerify(exactly = 1) { handler.handle(criticalReminder) }
+      coVerify(exactly = 0) { doNotDisturbManager.applyDoNotDisturb(any(), any()) }
+    }
+
+  @Test
+  fun `process keeps repeating a critical reminder even when the resolved settings disable repeats`() =
+    runTest {
+      val criticalReminder = reminder.copy(isCritical = true)
+      coEvery { reminderV2Repository.getById("1") } returns criticalReminder
+      coEvery { resolveReminderV2NotificationSettingsUseCase(criticalReminder) } returns
+        notificationSettings(repeatNotification = false)
+      every { doNotDisturbManager.applyDoNotDisturb(any(), any()) } returns false
+
+      processor.process("1", repeatCount = 4)
+
+      coVerify(exactly = 1) { jobScheduler.scheduleReminderRepeat(criticalReminder, 5) }
+    }
+
+  @Test
+  fun `process keeps repeating a critical reminder past the global max repeat count`() =
+    runTest {
+      val criticalReminder = reminder.copy(isCritical = true)
+      coEvery { reminderV2Repository.getById("1") } returns criticalReminder
+      coEvery { resolveReminderV2NotificationSettingsUseCase(criticalReminder) } returns
+        notificationSettings(repeatNotification = true)
+      every { doNotDisturbManager.applyDoNotDisturb(any(), any()) } returns false
+      every { reminderPreferences.maxRepeatCount } returns 2
+
+      processor.process("1", repeatCount = 5)
+
+      coVerify(exactly = 1) { jobScheduler.scheduleReminderRepeat(criticalReminder, 6) }
+    }
+
+  @Test
+  fun `process stops repeating a critical reminder once its own minimum repeat count is reached`() =
+    runTest {
+      val criticalReminder = reminder.copy(isCritical = true)
+      coEvery { reminderV2Repository.getById("1") } returns criticalReminder
+      coEvery { resolveReminderV2NotificationSettingsUseCase(criticalReminder) } returns
+        notificationSettings(repeatNotification = true)
+      every { doNotDisturbManager.applyDoNotDisturb(any(), any()) } returns false
+
+      processor.process("1", repeatCount = 10)
+
+      coVerify(exactly = 0) { jobScheduler.scheduleReminderRepeat(any(), any()) }
+    }
 }

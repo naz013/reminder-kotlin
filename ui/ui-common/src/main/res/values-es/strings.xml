@@ -1371,4 +1371,7 @@
     <string name="next_reminder">Próximo recordatorio</string>
     <string name="widget_next_reminder_description">Vistazo rápido al próximo recordatorio, con el tamaño ideal para la pantalla de bloqueo</string>
     <string name="widget_next_reminder_empty_state">No hay recordatorios próximos</string>
+    <string name="critical_reminder">Recordatorio crítico</string>
+    <string name="critical_reminder_description">Se repite hasta que se descarta, omite el modo No molestar y activa la pantalla. Para alertas que no puedes permitirte perder.</string>
+    <string name="critical">Crítico</string>
 </resources>

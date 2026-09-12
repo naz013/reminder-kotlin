@@ -1371,4 +1371,7 @@
     <string name="next_reminder">Prossimo promemoria</string>
     <string name="widget_next_reminder_description">Colpo d\'occhio sul prossimo promemoria, dimensionato per la schermata di blocco</string>
     <string name="widget_next_reminder_empty_state">Nessun promemoria in arrivo</string>
+    <string name="critical_reminder">Promemoria critico</string>
+    <string name="critical_reminder_description">Si ripete finché non viene ignorato, ignora la modalità Non disturbare e riattiva lo schermo. Per gli avvisi che non puoi permetterti di perdere.</string>
+    <string name="critical">Critico</string>
 </resources>

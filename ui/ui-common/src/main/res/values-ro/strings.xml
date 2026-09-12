@@ -1371,4 +1371,7 @@
     <string name="next_reminder">Următoarea reamintire</string>
     <string name="widget_next_reminder_description">Prezentare rapidă a următoarei reamintiri, dimensionată pentru ecranul de blocare</string>
     <string name="widget_next_reminder_empty_state">Nu există reamintiri viitoare</string>
+    <string name="critical_reminder">Memento critic</string>
+    <string name="critical_reminder_description">Se repetă până este respins, ocolește modul Nu deranja și trezește ecranul. Pentru alerte pe care nu ți le poți permite să le ratezi.</string>
+    <string name="critical">Critic</string>
 </resources>

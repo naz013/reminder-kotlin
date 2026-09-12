@@ -1371,4 +1371,7 @@
     <string name="next_reminder">Další připomínka</string>
     <string name="widget_next_reminder_description">Přehled další připomínky ve velikosti pro zamykací obrazovku</string>
     <string name="widget_next_reminder_empty_state">Žádné nadcházející připomínky</string>
+    <string name="critical_reminder">Kritická připomínka</string>
+    <string name="critical_reminder_description">Opakuje se, dokud není zavřena, obchází režim Nerušit a probouzí obrazovku. Pro upozornění, která si nemůžete dovolit zmeškat.</string>
+    <string name="critical">Kritické</string>
 </resources>

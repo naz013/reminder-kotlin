@@ -1369,4 +1369,7 @@
     <string name="next_reminder">Lời nhắc tiếp theo</string>
     <string name="widget_next_reminder_description">Xem nhanh lời nhắc tiếp theo, vừa với màn hình khóa</string>
     <string name="widget_next_reminder_empty_state">Không có lời nhắc sắp tới</string>
+    <string name="critical_reminder">Nhắc nhở quan trọng</string>
+    <string name="critical_reminder_description">Lặp lại cho đến khi bị hủy, bỏ qua chế độ Không làm phiền và đánh thức màn hình. Dành cho các cảnh báo bạn không thể bỏ lỡ.</string>
+    <string name="critical">Quan trọng</string>
 </resources>

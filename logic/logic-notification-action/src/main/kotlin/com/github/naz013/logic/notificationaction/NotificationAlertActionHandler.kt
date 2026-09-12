@@ -3,6 +3,7 @@ package com.github.naz013.logic.notificationaction
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Intent
+import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
@@ -43,7 +44,7 @@ abstract class NotificationAlertActionHandler<T>(
     builder.priority = style.resolvePriority(defaultPriority(data))
     builder.setSmallIcon(style.resolveIcon(domainIcon(data)))
     builder.setContentIntent(contentPendingIntent(data))
-    style.decorate(builder, contextProvider)
+    style.decorate(builder, contextProvider, notificationCategory(data))
 
     if (useFullScreenIntent(data) &&
       NotificationManagerCompat.from(contextProvider.context).canUseFullScreenIntent()
@@ -115,6 +116,11 @@ abstract class NotificationAlertActionHandler<T>(
    *  granted the full-screen-intent permission. Defaults to false; override for domains whose
    *  resolved settings opt into it. */
   protected open fun useFullScreenIntent(data: T): Boolean = false
+
+  /** [NotificationCompat.CATEGORY_*] this notification is posted under. Defaults to
+   *  [NotificationCompat.CATEGORY_REMINDER]; override to reflect a domain's own resolved
+   *  category (e.g. [NotificationCompat.CATEGORY_ALARM] for an alarm-clock-style reminder). */
+  protected open fun notificationCategory(data: T): String? = NotificationCompat.CATEGORY_REMINDER
 
   protected abstract fun receiverClass(): Class<out BroadcastReceiver>
 

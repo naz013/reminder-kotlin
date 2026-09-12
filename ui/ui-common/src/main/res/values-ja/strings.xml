@@ -1371,4 +1371,7 @@
     <string name="next_reminder">次のリマインダー</string>
     <string name="widget_next_reminder_description">ロック画面向けサイズで次のリマインダーをひと目で確認</string>
     <string name="widget_next_reminder_empty_state">予定されているリマインダーはありません</string>
+    <string name="critical_reminder">重要なリマインダー</string>
+    <string name="critical_reminder_description">解除するまで繰り返され、おやすみモードを無視して画面をオンにします。見逃せない通知向けです。</string>
+    <string name="critical">重要</string>
 </resources>

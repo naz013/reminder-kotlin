@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.AgendaListItem
+import com.github.naz013.ui.common.compose.foundation.component.CriticalBadgeChip
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.icon.DrawableCatalog
 
@@ -31,6 +32,8 @@ fun ReminderAgendaRow(
     tertiaryText = item.tertiaryText?.text,
     tags = item.tags.map { it.text },
     statusChips = statusChips(item),
+    badge = if (item.state.isCritical) { { CriticalBadgeChip() } } else null,
+    badgeContentDescription = if (item.state.isCritical) stringResource(R.string.critical) else null,
     onClick = onClick,
     menuItems = if (onMenuAction != null) reminderMenuItems(item) else emptyList(),
     onMenuItemClick = { id -> onMenuAction?.invoke(AgendaMenuAction.entries[id]) },

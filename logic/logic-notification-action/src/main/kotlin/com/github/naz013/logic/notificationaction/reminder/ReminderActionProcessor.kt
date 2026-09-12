@@ -6,6 +6,7 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.NotificationSettings
+import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -79,6 +80,9 @@ class ReminderActionProcessor(
    * original fire). Once it reaches [ReminderPreferences.escalateAfterRepeats], delivery is
    * escalated - forced past Do Not Disturb, at max priority, waking the screen - since the whole
    * point of a repeat that's gone unacknowledged this many times is to stop being ignorable.
+   * [ReminderV2.isCritical] reminders skip that grace period entirely: every fire is escalated
+   * from the start, and they always repeat up to at least [CRITICAL_MIN_REPEAT_COUNT] times
+   * regardless of [ReminderPreferences.maxRepeatCount] or the resolved notification hierarchy.
    */
   fun process(
     id: String,
@@ -89,7 +93,12 @@ class ReminderActionProcessor(
       val reminder = reminderV2Repository.getById(id) ?: return@launch
       val resolved = resolveReminderV2NotificationSettingsUseCase(reminder)
       val isEscalated = repeatCount > 0 && repeatCount >= reminderPreferences.escalateAfterRepeats
-      val effective = if (isEscalated) escalate(resolved) else resolved
+      val effective =
+        when {
+          reminder.isCritical -> criticalize(resolved)
+          isEscalated -> escalate(resolved)
+          else -> resolved
+        }
       val priority = effective.priority.ordinal
       if (!effective.bypassDoNotDisturb && doNotDisturbManager.applyDoNotDisturb(priority)) {
         if (doNotDisturbPreferences.doNotDisturbAction == 0) {
@@ -118,7 +127,13 @@ class ReminderActionProcessor(
           }
         }
         reminderV2Repository.save(reminder.copy(lastShownAt = dateTimeManager.localToUtc(LocalDateTime.now())))
-        if (resolved.repeatNotification && repeatCount < reminderPreferences.maxRepeatCount) {
+        val maxRepeatCount =
+          if (reminder.isCritical) {
+            maxOf(reminderPreferences.maxRepeatCount, CRITICAL_MIN_REPEAT_COUNT)
+          } else {
+            reminderPreferences.maxRepeatCount
+          }
+        if (effective.repeatNotification && repeatCount < maxRepeatCount) {
           Logger.d(TAG, "Scheduling repeat #${repeatCount + 1} for reminder id=${reminder.uuId}")
           jobScheduler.scheduleReminderRepeat(reminder, repeatCount + 1)
         }
@@ -131,6 +146,18 @@ class ReminderActionProcessor(
       bypassDoNotDisturb = true,
       wakeScreen = true,
       priority = ReminderPriority.HIGHEST,
+    )
+
+  /** Forces the alarm-clock-style preset for [ReminderV2.isCritical] reminders, overriding
+   * whatever the Settings/Group/Reminder notification hierarchy resolved to - a critical
+   * reminder must not be silently defanged by an inherited override. */
+  private fun criticalize(settings: NotificationSettings): NotificationSettings =
+    settings.copy(
+      bypassDoNotDisturb = true,
+      wakeScreen = true,
+      priority = ReminderPriority.HIGHEST,
+      category = ReminderNotificationCategory.ALARM,
+      repeatNotification = true,
     )
 
   /** Mirrors [com.elementary.tasks.core.services.action.reminder.process.ReminderNotificationHandler]'s
@@ -164,5 +191,9 @@ class ReminderActionProcessor(
 
   companion object {
     private const val TAG = "ReminderActionProcessor"
+
+    /** Critical reminders always get at least this many re-alerts, even if the user has turned
+     * the global repeat cap down. */
+    private const val CRITICAL_MIN_REPEAT_COUNT = 10
   }
 }

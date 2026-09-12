@@ -1367,4 +1367,7 @@
     <string name="next_reminder">Nächste Erinnerung</string>
     <string name="widget_next_reminder_description">Schnellansicht der nächsten Erinnerung, passend für den Sperrbildschirm</string>
     <string name="widget_next_reminder_empty_state">Keine anstehenden Erinnerungen</string>
+    <string name="critical_reminder">Kritische Erinnerung</string>
+    <string name="critical_reminder_description">Wiederholt sich, bis sie geschlossen wird, umgeht „Nicht stören“ und weckt den Bildschirm auf. Für Erinnerungen, die Sie nicht verpassen dürfen.</string>
+    <string name="critical">Kritisch</string>
 </resources>

@@ -1370,4 +1370,7 @@
     <string name="next_reminder">Следующее напоминание</string>
     <string name="widget_next_reminder_description">Быстрый просмотр следующего напоминания, подходящий по размеру для экрана блокировки</string>
     <string name="widget_next_reminder_empty_state">Нет предстоящих напоминаний</string>
+    <string name="critical_reminder">Критическое напоминание</string>
+    <string name="critical_reminder_description">Повторяется, пока не будет отклонено, обходит режим «Не беспокоить» и включает экран. Для оповещений, которые нельзя пропустить.</string>
+    <string name="critical">Критично</string>
 </resources>

@@ -179,7 +179,7 @@ class JobScheduler(
     reminderV2: ReminderV2,
     repeatCount: Int,
   ): Boolean {
-    val minutes = prefs.notificationRepeatTime
+    val minutes = if (reminderV2.isCritical) CRITICAL_REPEAT_INTERVAL_MINUTES else prefs.notificationRepeatTime
     val millis = System.currentTimeMillis() + (minutes * INTERVAL_MINUTE)
     if (millis <= 0) {
       return false
@@ -393,5 +393,10 @@ class JobScheduler(
 
     private const val INTERVAL_MINUTE = 60 * 1000L
     private const val INTERVAL_HOUR = 60 * INTERVAL_MINUTE
+
+    /** Repeat cadence for [ReminderV2.isCritical] reminders - short and fixed, independent of
+     * [Prefs.notificationRepeatTime], since an alarm-clock-style repeat needs to stay frequent
+     * regardless of what the user set for ordinary reminder repeats. */
+    private const val CRITICAL_REPEAT_INTERVAL_MINUTES = 2
   }
 }
