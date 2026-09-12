@@ -1366,4 +1366,7 @@
     <string name="reminders_deleted_count">%1$d herinneringen verwijderd</string>
     <string name="cd_move_item_up">Omhoog verplaatsen</string>
     <string name="cd_move_item_down">Omlaag verplaatsen</string>
+    <string name="next_reminder">Volgende herinnering</string>
+    <string name="widget_next_reminder_description">Snel overzicht van de volgende herinnering, op maat voor het vergrendelscherm</string>
+    <string name="widget_next_reminder_empty_state">Geen aankomende herinneringen</string>
 </resources>

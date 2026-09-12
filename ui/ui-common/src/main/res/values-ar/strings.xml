@@ -1366,4 +1366,7 @@
     <string name="reminders_deleted_count">تم حذف %1$d تذكيرات</string>
     <string name="cd_move_item_up">نقل للأعلى</string>
     <string name="cd_move_item_down">نقل للأسفل</string>
+    <string name="next_reminder">التذكير التالي</string>
+    <string name="widget_next_reminder_description">تذكير سريع بالمهمة التالية، بحجم مناسب لشاشة القفل</string>
+    <string name="widget_next_reminder_empty_state">لا توجد تذكيرات قادمة</string>
 </resources>

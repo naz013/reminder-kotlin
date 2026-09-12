@@ -8,6 +8,7 @@ import com.github.naz013.appwidgets.calendar.CalendarGlanceAppWidgetReceiver
 import com.github.naz013.appwidgets.combinedbuttons.CombinedButtonsGlanceAppWidgetReceiver
 import com.github.naz013.appwidgets.events.EventsGlanceAppWidgetReceiver
 import com.github.naz013.appwidgets.googletasks.GoogleTasksGlanceAppWidgetReceiver
+import com.github.naz013.appwidgets.nextreminder.NextReminderGlanceAppWidgetReceiver
 import com.github.naz013.appwidgets.notes.NotesGlanceAppWidgetReceiver
 import com.github.naz013.appwidgets.singlenote.SingleNoteGlanceAppWidgetReceiver
 import com.github.naz013.common.system.Module
@@ -44,6 +45,10 @@ internal class AppWidgetPreviewUpdaterImpl(
 
   override suspend fun updateBirthdaysWidgetPreview() {
     updatePreview(BirthdaysGlanceAppWidgetReceiver::class, "Birthdays")
+  }
+
+  override suspend fun updateNextReminderWidgetPreview() {
+    updatePreview(NextReminderGlanceAppWidgetReceiver::class, "NextReminder")
   }
 
   private suspend fun updatePreview(

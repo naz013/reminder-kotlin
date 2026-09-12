@@ -73,7 +73,7 @@ Sync is handled by a dedicated `sync` module that negotiates differences between
 
 ### Widgets
 
-Home-screen widgets give at-a-glance access to upcoming reminders, notes, birthdays, and Google Tasks without opening the app. A Quick Settings tile ("Add reminder") offers the same one-tap reminder creation from the notification shade, reusing the existing app-shortcut deep link.
+Home-screen widgets give at-a-glance access to upcoming reminders, notes, birthdays, and Google Tasks without opening the app. A "Next Reminder" widget is sized and categorized (`keyguard`) for lock-screen placement (e.g. Samsung One UI's lock-screen widgets, Android 14+ Glanceable Hub on tablets) and doesn't require configuration to add. A Quick Settings tile ("Add reminder") offers the same one-tap reminder creation from the notification shade, reusing the existing app-shortcut deep link.
 
 ### Customisation & Settings
 

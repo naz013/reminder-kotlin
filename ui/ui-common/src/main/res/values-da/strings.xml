@@ -1366,4 +1366,7 @@
     <string name="reminders_deleted_count">%1$d påmindelser slettet</string>
     <string name="cd_move_item_up">Flyt op</string>
     <string name="cd_move_item_down">Flyt ned</string>
+    <string name="next_reminder">Næste påmindelse</string>
+    <string name="widget_next_reminder_description">Hurtigt overblik over næste påmindelse, tilpasset låseskærmen</string>
+    <string name="widget_next_reminder_empty_state">Ingen kommende påmindelser</string>
 </resources>

@@ -1369,4 +1369,7 @@
     <string name="reminders_deleted_count">%1$d hatırlatıcı silindi</string>
     <string name="cd_move_item_up">Yukarı taşı</string>
     <string name="cd_move_item_down">Aşağı taşı</string>
+    <string name="next_reminder">Sıradaki hatırlatıcı</string>
+    <string name="widget_next_reminder_description">Kilit ekranına uygun boyutta sıradaki hatırlatıcıya hızlı bakış</string>
+    <string name="widget_next_reminder_empty_state">Yaklaşan hatırlatıcı yok</string>
 </resources>

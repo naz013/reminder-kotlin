@@ -175,5 +175,29 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/tasks_widget_metadata" />
         </receiver>
+
+        <receiver
+            android:name=".nextreminder.NextReminderGlanceAppWidgetReceiver"
+            android:exported="true"
+            android:label="@string/next_reminder">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/next_reminder_widget_metadata" />
+        </receiver>
+
+        <activity
+            android:name="com.github.naz013.appwidgets.nextreminder.NextReminderWidgetConfigActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

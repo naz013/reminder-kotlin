@@ -22,7 +22,7 @@ import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 
 /**
  * Shared `Scaffold`/`TopAppBar` shell (back action + Save action) reused by every widget
- * configuration screen - the same shape repeated across all 7 widget types today.
+ * configuration screen - the same shape repeated across all widget types today.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

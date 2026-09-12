@@ -1366,4 +1366,7 @@
     <string name="reminders_deleted_count">Đã xóa %1$d lời nhắc</string>
     <string name="cd_move_item_up">Di chuyển lên</string>
     <string name="cd_move_item_down">Di chuyển xuống</string>
+    <string name="next_reminder">Lời nhắc tiếp theo</string>
+    <string name="widget_next_reminder_description">Xem nhanh lời nhắc tiếp theo, vừa với màn hình khóa</string>
+    <string name="widget_next_reminder_empty_state">Không có lời nhắc sắp tới</string>
 </resources>

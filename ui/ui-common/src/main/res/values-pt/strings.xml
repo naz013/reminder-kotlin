@@ -1368,4 +1368,7 @@
     <string name="reminders_deleted_count">%1$d lembretes excluídos</string>
     <string name="cd_move_item_up">Mover para cima</string>
     <string name="cd_move_item_down">Mover para baixo</string>
+    <string name="next_reminder">Próximo lembrete</string>
+    <string name="widget_next_reminder_description">Visão rápida do próximo lembrete, no tamanho ideal para a tela de bloqueio</string>
+    <string name="widget_next_reminder_empty_state">Nenhum lembrete próximo</string>
 </resources>

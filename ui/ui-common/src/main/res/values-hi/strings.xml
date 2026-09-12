@@ -1370,4 +1370,7 @@
     <string name="reminders_deleted_count">%1$d रिमाइंडर हटाए गए</string>
     <string name="cd_move_item_up">ऊपर ले जाएं</string>
     <string name="cd_move_item_down">नीचे ले जाएं</string>
+    <string name="next_reminder">अगला रिमाइंडर</string>
+    <string name="widget_next_reminder_description">अगले रिमाइंडर की झलक, लॉक स्क्रीन के लिए उपयुक्त आकार में</string>
+    <string name="widget_next_reminder_empty_state">कोई आगामी रिमाइंडर नहीं</string>
 </resources>

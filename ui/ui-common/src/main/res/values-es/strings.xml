@@ -1368,4 +1368,7 @@
     <string name="reminders_deleted_count">%1$d recordatorios eliminados</string>
     <string name="cd_move_item_up">Mover hacia arriba</string>
     <string name="cd_move_item_down">Mover hacia abajo</string>
+    <string name="next_reminder">Próximo recordatorio</string>
+    <string name="widget_next_reminder_description">Vistazo rápido al próximo recordatorio, con el tamaño ideal para la pantalla de bloqueo</string>
+    <string name="widget_next_reminder_empty_state">No hay recordatorios próximos</string>
 </resources>
