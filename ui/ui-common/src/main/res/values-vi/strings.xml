@@ -1369,4 +1369,8 @@
     <string name="next_reminder">Lời nhắc tiếp theo</string>
     <string name="widget_next_reminder_description">Xem nhanh lời nhắc tiếp theo, vừa với màn hình khóa</string>
     <string name="widget_next_reminder_empty_state">Không có lời nhắc sắp tới</string>
+    <string name="wear_companion_app">Ứng dụng đồng hành Wear OS</string>
+    <string name="sync_reminders_to_wear_companion">Đồng bộ các lời nhắc sắp tới với đồng hồ của bạn</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Không đồng bộ lời nhắc với đồng hồ của bạn</string>
+    <string name="settings_search_keyword_wear_companion">đồng hồ thông minh, wear os, ứng dụng đồng hành</string>
 </resources>

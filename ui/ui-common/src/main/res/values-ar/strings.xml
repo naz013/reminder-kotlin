@@ -1369,4 +1369,8 @@
     <string name="next_reminder">التذكير التالي</string>
     <string name="widget_next_reminder_description">تذكير سريع بالمهمة التالية، بحجم مناسب لشاشة القفل</string>
     <string name="widget_next_reminder_empty_state">لا توجد تذكيرات قادمة</string>
+    <string name="wear_companion_app">تطبيق Wear OS المرافق</string>
+    <string name="sync_reminders_to_wear_companion">مزامنة التذكيرات القادمة مع ساعتك</string>
+    <string name="do_not_sync_reminders_to_wear_companion">عدم مزامنة التذكيرات مع ساعتك</string>
+    <string name="settings_search_keyword_wear_companion">ساعة ذكية، وير أو إس، تطبيق مرافق</string>
 </resources>

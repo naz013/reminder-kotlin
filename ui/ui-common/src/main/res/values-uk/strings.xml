@@ -1372,4 +1372,8 @@
     <string name="next_reminder">Наступне нагадування</string>
     <string name="widget_next_reminder_description">Швидкий перегляд наступного нагадування, розмір для екрана блокування</string>
     <string name="widget_next_reminder_empty_state">Немає найближчих нагадувань</string>
+    <string name="wear_companion_app">Супутній додаток Wear OS</string>
+    <string name="sync_reminders_to_wear_companion">Синхронізувати майбутні нагадування з годинником</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Не синхронізувати нагадування з годинником</string>
+    <string name="settings_search_keyword_wear_companion">розумний годинник, wear os, супутній додаток</string>
 </resources>

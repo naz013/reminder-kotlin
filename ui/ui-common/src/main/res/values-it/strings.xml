@@ -1371,4 +1371,8 @@
     <string name="next_reminder">Prossimo promemoria</string>
     <string name="widget_next_reminder_description">Colpo d\'occhio sul prossimo promemoria, dimensionato per la schermata di blocco</string>
     <string name="widget_next_reminder_empty_state">Nessun promemoria in arrivo</string>
+    <string name="wear_companion_app">App companion Wear OS</string>
+    <string name="sync_reminders_to_wear_companion">Sincronizza i promemoria imminenti con il tuo orologio</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Non sincronizzare i promemoria con il tuo orologio</string>
+    <string name="settings_search_keyword_wear_companion">smartwatch, wear os, app companion</string>
 </resources>

@@ -1369,4 +1369,8 @@
     <string name="next_reminder">Volgende herinnering</string>
     <string name="widget_next_reminder_description">Snel overzicht van de volgende herinnering, op maat voor het vergrendelscherm</string>
     <string name="widget_next_reminder_empty_state">Geen aankomende herinneringen</string>
+    <string name="wear_companion_app">Wear OS-companionapp</string>
+    <string name="sync_reminders_to_wear_companion">Synchroniseer aankomende herinneringen met je horloge</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Herinneringen niet synchroniseren met je horloge</string>
+    <string name="settings_search_keyword_wear_companion">smartwatch, wear os, companionapp</string>
 </resources>

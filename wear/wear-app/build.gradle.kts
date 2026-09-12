@@ -6,14 +6,31 @@ plugins {
 
 extensions.configure<ApplicationExtension> {
   namespace = "com.github.naz013.wear"
+  flavorDimensions.add("level")
 
   defaultConfig {
-    applicationId = "com.cray.software.justreminder.wear"
     // Wear OS 3+ only - the standalone-app pairing model this companion relies on isn't
     // supported on the older embedded/classic Wear OS releases below API 30.
     minSdk = 30
     versionCode = 1
     versionName = "1.0.0"
+  }
+
+  // A Wear OS app is published under the *same* Play Console listing as its phone companion via
+  // Test and release > Advanced Settings > Form factors > Add Wear OS - which requires the two
+  // APKs to share an applicationId, per flavor. (The older approach of embedding a wear APK
+  // inside the phone APK via a `wearApp` Gradle dependency was removed in AGP 9.0 - Play no
+  // longer supports it - so matching applicationId here is the whole of what's left to wire up
+  // in code; the actual publishing link is a Play Console step, not a Gradle one.)
+  productFlavors {
+    create("free") {
+      dimension = "level"
+      applicationId = "com.cray.software.justreminder"
+    }
+    create("pro") {
+      dimension = "level"
+      applicationId = "com.cray.software.justreminderpro"
+    }
   }
 }
 

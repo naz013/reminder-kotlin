@@ -1369,4 +1369,8 @@
     <string name="next_reminder">Pengingat berikutnya</string>
     <string name="widget_next_reminder_description">Sekilas pengingat berikutnya, berukuran pas untuk layar kunci</string>
     <string name="widget_next_reminder_empty_state">Tidak ada pengingat mendatang</string>
+    <string name="wear_companion_app">Aplikasi pendamping Wear OS</string>
+    <string name="sync_reminders_to_wear_companion">Sinkronkan pengingat mendatang ke jam tangan Anda</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Jangan sinkronkan pengingat ke jam tangan Anda</string>
+    <string name="settings_search_keyword_wear_companion">smartwatch, wear os, aplikasi pendamping</string>
 </resources>

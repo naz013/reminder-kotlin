@@ -1371,4 +1371,8 @@
     <string name="next_reminder">Próximo recordatorio</string>
     <string name="widget_next_reminder_description">Vistazo rápido al próximo recordatorio, con el tamaño ideal para la pantalla de bloqueo</string>
     <string name="widget_next_reminder_empty_state">No hay recordatorios próximos</string>
+    <string name="wear_companion_app">Aplicación complementaria de Wear OS</string>
+    <string name="sync_reminders_to_wear_companion">Sincronizar los próximos recordatorios con tu reloj</string>
+    <string name="do_not_sync_reminders_to_wear_companion">No sincronizar los recordatorios con tu reloj</string>
+    <string name="settings_search_keyword_wear_companion">smartwatch, wear os, aplicación complementaria</string>
 </resources>

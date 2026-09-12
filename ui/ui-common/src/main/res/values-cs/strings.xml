@@ -1371,4 +1371,8 @@
     <string name="next_reminder">Další připomínka</string>
     <string name="widget_next_reminder_description">Přehled další připomínky ve velikosti pro zamykací obrazovku</string>
     <string name="widget_next_reminder_empty_state">Žádné nadcházející připomínky</string>
+    <string name="wear_companion_app">Doprovodná aplikace Wear OS</string>
+    <string name="sync_reminders_to_wear_companion">Synchronizovat nadcházející připomenutí s hodinkami</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Nesynchronizovat připomenutí s hodinkami</string>
+    <string name="settings_search_keyword_wear_companion">chytré hodinky, wear os, doprovodná aplikace</string>
 </resources>

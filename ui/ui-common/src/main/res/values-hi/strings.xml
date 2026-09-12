@@ -1373,4 +1373,8 @@
     <string name="next_reminder">अगला रिमाइंडर</string>
     <string name="widget_next_reminder_description">अगले रिमाइंडर की झलक, लॉक स्क्रीन के लिए उपयुक्त आकार में</string>
     <string name="widget_next_reminder_empty_state">कोई आगामी रिमाइंडर नहीं</string>
+    <string name="wear_companion_app">Wear OS साथी ऐप</string>
+    <string name="sync_reminders_to_wear_companion">आगामी रिमाइंडर अपनी घड़ी से सिंक करें</string>
+    <string name="do_not_sync_reminders_to_wear_companion">रिमाइंडर अपनी घड़ी से सिंक न करें</string>
+    <string name="settings_search_keyword_wear_companion">स्मार्टवॉच, वियर ओएस, साथी ऐप</string>
 </resources>

@@ -1371,4 +1371,8 @@
     <string name="next_reminder">Prochain rappel</string>
     <string name="widget_next_reminder_description">Aperçu rapide du prochain rappel, à la taille de l\'écran de verrouillage</string>
     <string name="widget_next_reminder_empty_state">Aucun rappel à venir</string>
+    <string name="wear_companion_app">Application compagnon Wear OS</string>
+    <string name="sync_reminders_to_wear_companion">Synchroniser les rappels à venir avec votre montre</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Ne pas synchroniser les rappels avec votre montre</string>
+    <string name="settings_search_keyword_wear_companion">montre connectée, wear os, application compagnon</string>
 </resources>

@@ -1369,4 +1369,8 @@
     <string name="next_reminder">Neste påminnelse</string>
     <string name="widget_next_reminder_description">Rask oversikt over neste påminnelse, tilpasset låseskjermen</string>
     <string name="widget_next_reminder_empty_state">Ingen kommende påminnelser</string>
+    <string name="wear_companion_app">Wear OS-følgeapp</string>
+    <string name="sync_reminders_to_wear_companion">Synkroniser kommende påminnelser til klokken din</string>
+    <string name="do_not_sync_reminders_to_wear_companion">Ikke synkroniser påminnelser til klokken din</string>
+    <string name="settings_search_keyword_wear_companion">smartklokke, wear os, følgeapp</string>
 </resources>
