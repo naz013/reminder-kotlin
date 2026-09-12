@@ -82,6 +82,7 @@ object SettingsSearchItemKeys {
   const val REMINDERS_VIBRATION_PATTERN = "reminders_vibration_pattern"
   const val REMINDERS_INSIGHTS = "reminders_insights"
   const val REMINDERS_PRIORITY = "reminders_priority"
+  const val REMINDERS_AGENDA_VIEW_MODE = "reminders_agenda_view_mode"
   const val REMINDERS_COMPLETED = "reminders_completed"
   const val REMINDERS_WEAR = "reminders_wear"
   const val REMINDERS_REPEAT_INTERVAL = "reminders_repeat_interval"

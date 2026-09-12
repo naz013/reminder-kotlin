@@ -37,4 +37,5 @@ interface ReminderPreferences {
   var defaultLockScreenVisibility: String
   var initPresets: Boolean
   var initDefaultPresets: Boolean
+  var agendaViewMode: AgendaViewMode
 }

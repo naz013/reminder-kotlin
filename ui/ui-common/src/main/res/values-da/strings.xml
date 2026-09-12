@@ -1372,4 +1372,11 @@
     <string name="critical_reminder">Kritisk påmindelse</string>
     <string name="critical_reminder_description">Gentages, indtil den afvises, omgår Forstyr ikke, og vækker skærmen. Til alarmer, du ikke har råd til at gå glip af.</string>
     <string name="critical">Kritisk</string>
+    <string name="agenda_matrix_view">Prioritetsmatrix</string>
+    <string name="agenda_list_view">Liste</string>
+    <string name="agenda_matrix_do_first">Gør først</string>
+    <string name="agenda_matrix_schedule">Planlæg</string>
+    <string name="agenda_matrix_delegate">Uddeleger</string>
+    <string name="agenda_matrix_someday">En dag</string>
+    <string name="agenda_default_view_title">Standardvisning for påmindelser</string>
 </resources>

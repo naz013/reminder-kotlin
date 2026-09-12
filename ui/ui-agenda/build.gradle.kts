@@ -11,6 +11,7 @@ dependencies {
   implementation(project(":core:logging-api"))
   implementation(project(":core:platform-common"))
   implementation(project(":core:date-calculations"))
+  implementation(project(":data:repository-api"))
   implementation(project(":ui:ui-common"))
   implementation(project(":ui:ui-reminder"))
   implementation(project(":ui:ui-birthday"))

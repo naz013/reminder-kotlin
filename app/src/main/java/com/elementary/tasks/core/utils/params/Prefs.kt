@@ -463,6 +463,10 @@ class Prefs(
     get() = getString(PrefsConstants.CALENDAR_VIEW_MODE, def = "")
     set(value) = putString(PrefsConstants.CALENDAR_VIEW_MODE, value)
 
+  var agendaViewMode: String
+    get() = getString(PrefsConstants.AGENDA_VIEW_MODE, def = "")
+    set(value) = putString(PrefsConstants.AGENDA_VIEW_MODE, value)
+
   var isBirthdayReminderEnabled: Boolean
     get() = getBoolean(PrefsConstants.BIRTHDAY_REMINDER, def = true)
     set(value) = putBoolean(PrefsConstants.BIRTHDAY_REMINDER, value)

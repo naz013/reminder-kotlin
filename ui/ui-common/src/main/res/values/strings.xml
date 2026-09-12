@@ -1390,4 +1390,11 @@
     <string name="critical_reminder">Critical reminder</string>
     <string name="critical_reminder_description">Repeats until dismissed, bypasses Do Not Disturb, and wakes the screen. For alerts you can\'t afford to miss.</string>
     <string name="critical">Critical</string>
+    <string name="agenda_matrix_view">Priority matrix</string>
+    <string name="agenda_list_view">List</string>
+    <string name="agenda_matrix_do_first">Do first</string>
+    <string name="agenda_matrix_schedule">Schedule</string>
+    <string name="agenda_matrix_delegate">Delegate</string>
+    <string name="agenda_matrix_someday">Someday</string>
+    <string name="agenda_default_view_title">Default reminder view</string>
 </resources>

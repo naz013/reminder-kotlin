@@ -1374,4 +1374,11 @@
     <string name="critical_reminder">Memento critic</string>
     <string name="critical_reminder_description">Se repetă până este respins, ocolește modul Nu deranja și trezește ecranul. Pentru alerte pe care nu ți le poți permite să le ratezi.</string>
     <string name="critical">Critic</string>
+    <string name="agenda_matrix_view">Matricea priorităților</string>
+    <string name="agenda_list_view">Listă</string>
+    <string name="agenda_matrix_do_first">De făcut primul</string>
+    <string name="agenda_matrix_schedule">Programează</string>
+    <string name="agenda_matrix_delegate">Deleagă</string>
+    <string name="agenda_matrix_someday">Cândva</string>
+    <string name="agenda_default_view_title">Vizualizare implicită a memento-urilor</string>
 </resources>

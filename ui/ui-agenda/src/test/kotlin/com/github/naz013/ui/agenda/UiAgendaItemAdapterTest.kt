@@ -13,11 +13,13 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.reminder.v2.LocationSettings
+import com.github.naz013.domain.reminder.v2.NotificationSettings
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.SyncMetadata
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.repository.ReminderSettingsRepository
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -33,6 +35,7 @@ class UiAgendaItemAdapterTest {
   private val uiBirthdayListAdapter = mockk<UiBirthdayListAdapter>()
   private val dateTimeManager = mockk<DateTimeManager>()
   private val textProvider = mockk<TextProvider>()
+  private val reminderSettingsRepository = mockk<ReminderSettingsRepository>()
 
   private lateinit var adapter: UiAgendaItemAdapter
 
@@ -51,8 +54,15 @@ class UiAgendaItemAdapterTest {
     every { textProvider.getText(R.string.location) } returns "Location"
     every { textProvider.getText(R.string.shopping_lists) } returns "Shopping lists"
     every { textProvider.getText(R.string.pinned) } returns "Pinned"
+    every { reminderSettingsRepository.getNotificationDefaults() } returns NotificationSettings()
 
-    adapter = UiAgendaItemAdapter(uiReminderListAdapter, uiBirthdayListAdapter, dateTimeManager, textProvider)
+    adapter = UiAgendaItemAdapter(
+      uiReminderListAdapter,
+      uiBirthdayListAdapter,
+      dateTimeManager,
+      textProvider,
+      reminderSettingsRepository,
+    )
   }
 
   private fun reminderV2(

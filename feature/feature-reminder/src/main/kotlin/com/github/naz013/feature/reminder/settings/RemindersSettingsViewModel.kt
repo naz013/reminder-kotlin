@@ -17,6 +17,7 @@ import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.domain.reminder.v2.LockScreenVisibility
 import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
+import com.github.naz013.logic.reminder.AgendaViewMode
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logic.workflow.WorkflowConfig
@@ -70,6 +71,15 @@ class RemindersSettingsViewModel(
 
   fun onCompletedToggle() {
     reminderPreferences.moveCompleted = !reminderPreferences.moveCompleted
+    refreshState()
+  }
+
+  fun onAgendaViewModeToggle() {
+    reminderPreferences.agendaViewMode = if (reminderPreferences.agendaViewMode == AgendaViewMode.MATRIX) {
+      AgendaViewMode.LIST
+    } else {
+      AgendaViewMode.MATRIX
+    }
     refreshState()
   }
 
@@ -380,6 +390,7 @@ class RemindersSettingsViewModel(
     val isPermanentNotificationChecked = reminderPreferences.isSbNotificationEnabled
     return RemindersSettingsState(
       priorityName = priorityOptions()[reminderPreferences.defaultPriority.coerceIn(0, 4)],
+      isMatrixViewDefaultChecked = reminderPreferences.agendaViewMode == AgendaViewMode.MATRIX,
       isCompletedChecked = reminderPreferences.moveCompleted,
       isWearChecked = reminderPreferences.isWearEnabled,
       snoozeText = minutesText(reminderPreferences.snoozeTime),

@@ -218,6 +218,13 @@ internal object SettingsSearchIndex {
     )
     add(
       SettingsSearchEntry(
+        titleRes = R.string.agenda_default_view_title,
+        path = remindersPath,
+        highlightItemId = SettingsSearchItemKeys.REMINDERS_AGENDA_VIEW_MODE,
+      ),
+    )
+    add(
+      SettingsSearchEntry(
         titleRes = R.string.completed_reminders,
         path = remindersPath,
         keywordRes = listOf(R.string.settings_search_keyword_archive_completed),

@@ -1374,4 +1374,11 @@
     <string name="critical_reminder">Rappel critique</string>
     <string name="critical_reminder_description">Se répète jusqu\'à ce qu\'il soit ignoré, contourne le mode Ne pas déranger et réveille l\'écran. Pour les alertes que vous ne pouvez pas vous permettre de manquer.</string>
     <string name="critical">Critique</string>
+    <string name="agenda_matrix_view">Matrice des priorités</string>
+    <string name="agenda_list_view">Liste</string>
+    <string name="agenda_matrix_do_first">À faire en premier</string>
+    <string name="agenda_matrix_schedule">Planifier</string>
+    <string name="agenda_matrix_delegate">Déléguer</string>
+    <string name="agenda_matrix_someday">Un jour</string>
+    <string name="agenda_default_view_title">Vue par défaut des rappels</string>
 </resources>

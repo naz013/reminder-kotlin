@@ -1372,4 +1372,11 @@
     <string name="critical_reminder">Kritieke herinnering</string>
     <string name="critical_reminder_description">Herhaalt totdat deze wordt gesloten, omzeilt Niet storen en wekt het scherm. Voor meldingen die u niet mag missen.</string>
     <string name="critical">Kritiek</string>
+    <string name="agenda_matrix_view">Prioriteitenmatrix</string>
+    <string name="agenda_list_view">Lijst</string>
+    <string name="agenda_matrix_do_first">Eerst doen</string>
+    <string name="agenda_matrix_schedule">Plannen</string>
+    <string name="agenda_matrix_delegate">Delegeren</string>
+    <string name="agenda_matrix_someday">Ooit</string>
+    <string name="agenda_default_view_title">Standaardweergave voor herinneringen</string>
 </resources>

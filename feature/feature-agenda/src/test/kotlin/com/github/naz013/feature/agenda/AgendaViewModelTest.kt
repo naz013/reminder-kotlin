@@ -23,6 +23,8 @@ import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.logic.reminder.AgendaViewMode
+import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.logic.reminder.smartlist.SmartListFilter
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.repository.BirthdayRepository
@@ -73,12 +75,14 @@ class AgendaViewModelTest : BaseTest() {
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>()
   private val birthdaySmartListPredicate = BirthdaySmartListPredicate(provideBirthdayDateCalculator())
   private val textProvider = mockk<TextProvider>(relaxed = true)
+  private val reminderPreferences = mockk<ReminderPreferences>(relaxed = true)
 
   private lateinit var viewModel: AgendaViewModel
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { reminderPreferences.agendaViewMode } returns AgendaViewMode.LIST
     coEvery { groupV2Repository.getAll() } returns emptyList()
     // AgendaViewModel's init{} eagerly runs the load pipeline once on construction, and
     // mockDispatcherProvider() uses Dispatchers.Unconfined, so that eager call executes
@@ -122,6 +126,7 @@ class AgendaViewModelTest : BaseTest() {
         togglePinnedReminderUseCase = togglePinnedReminderUseCase,
         deleteReminderUseCase = deleteReminderUseCase,
         deleteBirthdayUseCase = deleteBirthdayUseCase,
+        reminderPreferences = reminderPreferences,
       )
 
     // Construction above already triggered one eager load via init{}. Clear recorded
@@ -482,6 +487,7 @@ class AgendaViewModelTest : BaseTest() {
       togglePinnedReminderUseCase = togglePinnedReminderUseCase,
       deleteReminderUseCase = deleteReminderUseCase,
       deleteBirthdayUseCase = deleteBirthdayUseCase,
+      reminderPreferences = reminderPreferences,
     )
   }
 

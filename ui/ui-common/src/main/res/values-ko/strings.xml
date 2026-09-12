@@ -1374,4 +1374,11 @@
     <string name="critical_reminder">긴급 알림</string>
     <string name="critical_reminder_description">해제할 때까지 반복되며, 방해 금지 모드를 무시하고 화면을 켭니다. 놓쳐서는 안 되는 알림에 사용하세요.</string>
     <string name="critical">긴급</string>
+    <string name="agenda_matrix_view">우선순위 매트릭스</string>
+    <string name="agenda_list_view">목록</string>
+    <string name="agenda_matrix_do_first">먼저 하기</string>
+    <string name="agenda_matrix_schedule">일정 잡기</string>
+    <string name="agenda_matrix_delegate">위임</string>
+    <string name="agenda_matrix_someday">언젠가</string>
+    <string name="agenda_default_view_title">기본 알림 보기</string>
 </resources>

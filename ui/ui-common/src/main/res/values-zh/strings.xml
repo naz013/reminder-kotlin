@@ -1375,4 +1375,11 @@
     <string name="critical_reminder">紧急提醒</string>
     <string name="critical_reminder_description">在被关闭之前会重复提醒，绕过勿扰模式并唤醒屏幕。适用于您不能错过的提醒。</string>
     <string name="critical">紧急</string>
+    <string name="agenda_matrix_view">优先级矩阵</string>
+    <string name="agenda_list_view">列表</string>
+    <string name="agenda_matrix_do_first">优先处理</string>
+    <string name="agenda_matrix_schedule">安排日程</string>
+    <string name="agenda_matrix_delegate">委派</string>
+    <string name="agenda_matrix_someday">以后再说</string>
+    <string name="agenda_default_view_title">默认提醒视图</string>
 </resources>

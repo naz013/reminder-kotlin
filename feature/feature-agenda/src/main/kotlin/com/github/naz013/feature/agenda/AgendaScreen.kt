@@ -2,6 +2,7 @@ package com.github.naz013.feature.agenda
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +16,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -38,12 +42,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.logic.reminder.AgendaViewMode
 import com.github.naz013.logic.reminder.smartlist.SmartListFilter
 import com.github.naz013.ui.agenda.AgendaCategory
 import com.github.naz013.ui.agenda.AgendaMenuAction
@@ -91,6 +97,7 @@ internal fun AgendaScreen(
   onSelectionCancel: () -> Unit,
   onDeleteSelectedClick: () -> Unit,
   onArchiveSelectedClick: () -> Unit,
+  onViewModeToggle: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   val lazyListState = rememberLazyListState()
@@ -158,6 +165,8 @@ internal fun AgendaScreen(
               onTagsClick = onTagsClick,
               onFilterClick = { showFilterSheet = true },
               hasActiveFilters = hasActiveFilters,
+              viewMode = state.viewMode,
+              onViewModeToggle = onViewModeToggle,
             )
 
             if (state.hasAnyItems) {
@@ -203,17 +212,34 @@ internal fun AgendaScreen(
         }
 
         is ListState.Ready -> {
-          AgendaList(
-            items = listState.items,
-            lazyListState = lazyListState,
-            isSelectionMode = isSelectionMode,
-            onItemClick = onItemClick,
-            onItemLongClick = onItemLongClick,
-            onAgendaMenuAction = onAgendaMenuAction,
-            modifier = Modifier
-              .fillMaxSize()
-              .weight(1f),
-          )
+          when (state.viewMode) {
+            AgendaViewMode.LIST -> {
+              AgendaList(
+                items = listState.items,
+                lazyListState = lazyListState,
+                isSelectionMode = isSelectionMode,
+                onItemClick = onItemClick,
+                onItemLongClick = onItemLongClick,
+                onAgendaMenuAction = onAgendaMenuAction,
+                modifier = Modifier
+                  .fillMaxSize()
+                  .weight(1f),
+              )
+            }
+
+            AgendaViewMode.MATRIX -> {
+              AgendaMatrixView(
+                reminders = listState.items.filterIsInstance<UiAgendaReminder>(),
+                isSelectionMode = isSelectionMode,
+                onItemClick = onItemClick,
+                onItemLongClick = onItemLongClick,
+                onAgendaMenuAction = onAgendaMenuAction,
+                modifier = Modifier
+                  .fillMaxSize()
+                  .weight(1f),
+              )
+            }
+          }
         }
       }
     }
@@ -384,6 +410,95 @@ private fun AgendaList(
   }
 }
 
+/**
+ * Alternate, priority x urgency layout for the same filtered reminder set [AgendaList] renders -
+ * birthdays are excluded since they carry no priority concept to classify by. Cells are plain
+ * (non-lazy) columns inside one scrolling [LazyVerticalGrid] rather than each having its own
+ * nested scroll state, which keeps a quadrant with many reminders from fighting the grid for
+ * scroll gestures.
+ */
+@Composable
+private fun AgendaMatrixView(
+  reminders: List<UiAgendaReminder>,
+  isSelectionMode: Boolean,
+  onItemClick: (UiAgendaItem) -> Unit,
+  onItemLongClick: (String) -> Unit,
+  onAgendaMenuAction: (UiAgendaItem, AgendaMenuAction) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  val groups = remember(reminders) { classifyIntoQuadrants(reminders) }
+  if (groups.values.all { it.isEmpty() }) {
+    EmptyState(
+      icon = AppIcons.Fluent.CalendarAgenda,
+      message = stringResource(R.string.no_events),
+      modifier = modifier,
+    )
+    return
+  }
+  LazyVerticalGrid(
+    columns = GridCells.Fixed(2),
+    modifier = modifier,
+    contentPadding = PaddingValues(12.dp),
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+    verticalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    EisenhowerQuadrant.entries.forEach { quadrant ->
+      item(key = quadrant.name) {
+        MatrixQuadrantCell(
+          quadrant = quadrant,
+          items = groups[quadrant].orEmpty(),
+          isSelectionMode = isSelectionMode,
+          onItemClick = onItemClick,
+          onItemLongClick = onItemLongClick,
+          onAgendaMenuAction = onAgendaMenuAction,
+        )
+      }
+    }
+  }
+}
+
+@Composable
+private fun MatrixQuadrantCell(
+  quadrant: EisenhowerQuadrant,
+  items: List<UiAgendaReminder>,
+  isSelectionMode: Boolean,
+  onItemClick: (UiAgendaItem) -> Unit,
+  onItemLongClick: (String) -> Unit,
+  onAgendaMenuAction: (UiAgendaItem, AgendaMenuAction) -> Unit,
+) {
+  Column(
+    modifier = Modifier
+      .fillMaxWidth()
+      .clip(RoundedCornerShape(12.dp))
+      .background(MaterialTheme.colorScheme.surfaceContainerLow)
+      .padding(8.dp),
+    verticalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    Text(
+      text = "${stringResource(quadrant.titleRes())} (${items.size})",
+      style = MaterialTheme.typography.titleSmall,
+    )
+    items.forEach { item ->
+      ReminderAgendaRow(
+        item = item,
+        onClick = { onItemClick(item) },
+        onMenuAction = { action -> onAgendaMenuAction(item, action) },
+        onLongClick = { onItemLongClick(item.id) },
+        isSelectionMode = isSelectionMode,
+        onToggleSelected = { onItemClick(item) },
+      )
+    }
+  }
+}
+
+private fun EisenhowerQuadrant.titleRes(): Int =
+  when (this) {
+    EisenhowerQuadrant.DO_FIRST -> R.string.agenda_matrix_do_first
+    EisenhowerQuadrant.SCHEDULE -> R.string.agenda_matrix_schedule
+    EisenhowerQuadrant.DELEGATE -> R.string.agenda_matrix_delegate
+    EisenhowerQuadrant.SOMEDAY -> R.string.agenda_matrix_someday
+  }
+
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CategoryChipRow(
@@ -553,6 +668,8 @@ private fun AgendaTopBar(
   onTagsClick: () -> Unit,
   onFilterClick: () -> Unit,
   hasActiveFilters: Boolean,
+  viewMode: AgendaViewMode,
+  onViewModeToggle: () -> Unit,
 ) {
   TopAppBar(
     title = { Text(stringResource(R.string.agenda)) },
@@ -568,6 +685,15 @@ private fun AgendaTopBar(
         onAddReminderClick = onAddReminderClick,
         onAddTodoClick = onAddTodoClick,
         onAddBirthdayClick = onAddBirthdayClick,
+      )
+      MenuIconButton(
+        icon = if (viewMode == AgendaViewMode.LIST) AppIcons.Fluent.Grid else AppIcons.Fluent.List,
+        contentDescription = if (viewMode == AgendaViewMode.LIST) {
+          stringResource(R.string.agenda_matrix_view)
+        } else {
+          stringResource(R.string.agenda_list_view)
+        },
+        onClick = onViewModeToggle,
       )
       BadgedBox(
         badge = { if (hasActiveFilters) Badge() },
@@ -689,6 +815,7 @@ private fun AgendaScreenEmptyPreview() {
       onSelectionCancel = {},
       onDeleteSelectedClick = {},
       onArchiveSelectedClick = {},
+      onViewModeToggle = {},
     )
   }
 }

@@ -1370,4 +1370,11 @@
     <string name="critical_reminder">Kritische Erinnerung</string>
     <string name="critical_reminder_description">Wiederholt sich, bis sie geschlossen wird, umgeht „Nicht stören“ und weckt den Bildschirm auf. Für Erinnerungen, die Sie nicht verpassen dürfen.</string>
     <string name="critical">Kritisch</string>
+    <string name="agenda_matrix_view">Prioritätenmatrix</string>
+    <string name="agenda_list_view">Liste</string>
+    <string name="agenda_matrix_do_first">Zuerst erledigen</string>
+    <string name="agenda_matrix_schedule">Planen</string>
+    <string name="agenda_matrix_delegate">Delegieren</string>
+    <string name="agenda_matrix_someday">Irgendwann</string>
+    <string name="agenda_default_view_title">Standardansicht für Erinnerungen</string>
 </resources>
