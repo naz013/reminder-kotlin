@@ -1,6 +1,7 @@
 package com.elementary.tasks.module.logicreminder
 
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.logic.reminder.AgendaViewMode
 import com.github.naz013.logic.reminder.ReminderPreferences
 
 class ReminderPreferencesImpl(
@@ -147,4 +148,10 @@ class ReminderPreferencesImpl(
   override var initDefaultPresets: Boolean
     get() = prefs.initDefaultPresets
     set(value) { prefs.initDefaultPresets = value }
+
+  // Stored as the enum name (not ordinal) so reordering AgendaViewMode can't silently remap a
+  // saved preference; an unknown/empty stored value falls back to LIST.
+  override var agendaViewMode: AgendaViewMode
+    get() = runCatching { AgendaViewMode.valueOf(prefs.agendaViewMode) }.getOrDefault(AgendaViewMode.LIST)
+    set(value) { prefs.agendaViewMode = value.name }
 }

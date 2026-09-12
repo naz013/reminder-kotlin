@@ -1378,4 +1378,11 @@
     <string name="critical_reminder">Krytyczne przypomnienie</string>
     <string name="critical_reminder_description">Powtarza się, dopóki nie zostanie odrzucone, omija tryb Nie przeszkadzać i wybudza ekran. Dla alertów, których nie możesz przegapić.</string>
     <string name="critical">Krytyczne</string>
+    <string name="agenda_matrix_view">Macierz priorytetów</string>
+    <string name="agenda_list_view">Lista</string>
+    <string name="agenda_matrix_do_first">Zrób najpierw</string>
+    <string name="agenda_matrix_schedule">Zaplanuj</string>
+    <string name="agenda_matrix_delegate">Deleguj</string>
+    <string name="agenda_matrix_someday">Kiedyś</string>
+    <string name="agenda_default_view_title">Domyślny widok przypomnień</string>
 </resources>

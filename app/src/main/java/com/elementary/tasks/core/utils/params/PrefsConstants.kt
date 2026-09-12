@@ -138,6 +138,7 @@ object PrefsConstants {
   const val AI_DIGEST_HOUR = "ai_digest_hour"
 
   const val CALENDAR_VIEW_MODE = "calendar_view_mode"
+  const val AGENDA_VIEW_MODE = "agenda_view_mode"
 
   const val HEADER_NAVIGATION_ORDER = "header_navigation_order"
   const val DISABLED_HEADER_NAVIGATION_SECTIONS = "disabled_header_navigation_sections"

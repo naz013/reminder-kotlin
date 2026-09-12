@@ -19,6 +19,8 @@ import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.logic.reminder.AgendaViewMode
+import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
@@ -72,9 +74,10 @@ internal class AgendaViewModel(
   private val togglePinnedReminderUseCase: TogglePinnedReminderUseCase,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
+  private val reminderPreferences: ReminderPreferences,
 ) : ViewModel() {
 
-  private val _agendaScreenState = MutableStateFlow(AgendaScreenState())
+  private val _agendaScreenState = MutableStateFlow(AgendaScreenState(viewMode = reminderPreferences.agendaViewMode))
   private val _selectedItemId = MutableStateFlow<String?>(null)
   val agendaScreenState = combine(_agendaScreenState, _selectedItemId, AgendaScreenState::withSelectedItem)
     .stateInWhileSubscribed(AgendaScreenState())
@@ -273,6 +276,16 @@ internal class AgendaViewModel(
 
   fun onScrolledToToday() {
     hasScrolledToToday = true
+  }
+
+  fun onViewModeToggle() {
+    val newMode = if (_agendaScreenState.value.viewMode == AgendaViewMode.LIST) {
+      AgendaViewMode.MATRIX
+    } else {
+      AgendaViewMode.LIST
+    }
+    reminderPreferences.agendaViewMode = newMode
+    _agendaScreenState.update { it.copy(viewMode = newMode) }
   }
 
   fun onSelectedItemIdChanged(id: String?) {

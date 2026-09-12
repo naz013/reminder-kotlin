@@ -1376,4 +1376,11 @@
     <string name="critical_reminder">การแจ้งเตือนสำคัญ</string>
     <string name="critical_reminder_description">ทำซ้ำจนกว่าจะปิด ข้ามโหมดห้ามรบกวน และปลุกหน้าจอ สำหรับการแจ้งเตือนที่คุณพลาดไม่ได้</string>
     <string name="critical">สำคัญมาก</string>
+    <string name="agenda_matrix_view">เมทริกซ์ลำดับความสำคัญ</string>
+    <string name="agenda_list_view">รายการ</string>
+    <string name="agenda_matrix_do_first">ทำก่อน</string>
+    <string name="agenda_matrix_schedule">กำหนดการ</string>
+    <string name="agenda_matrix_delegate">มอบหมาย</string>
+    <string name="agenda_matrix_someday">สักวันหนึ่ง</string>
+    <string name="agenda_default_view_title">มุมมองการแจ้งเตือนเริ่มต้น</string>
 </resources>

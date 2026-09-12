@@ -2,6 +2,7 @@ package com.github.naz013.feature.agenda
 
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.logic.reminder.AgendaViewMode
 import com.github.naz013.logic.reminder.smartlist.SmartListFilter
 import com.github.naz013.ui.agenda.AgendaCategory
 import com.github.naz013.ui.agenda.UiAgendaBirthday
@@ -20,6 +21,7 @@ internal data class AgendaScreenState(
   val availableGroups: List<GroupV2> = emptyList(),
   val todayScrollTargetId: String? = null,
   val selectedCount: Int = 0,
+  val viewMode: AgendaViewMode = AgendaViewMode.LIST,
 )
 
 internal fun AgendaScreenState.withSelectedItem(selectedItemId: String?): AgendaScreenState {

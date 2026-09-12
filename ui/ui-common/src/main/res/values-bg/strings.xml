@@ -1379,4 +1379,11 @@
     <string name="critical_reminder">Критично напомняне</string>
     <string name="critical_reminder_description">Повтаря се, докато не бъде отхвърлено, заобикаля режим \"Не безпокойте\" и събужда екрана. За известия, които не можете да пропуснете.</string>
     <string name="critical">Критично</string>
+    <string name="agenda_matrix_view">Матрица на приоритетите</string>
+    <string name="agenda_list_view">Списък</string>
+    <string name="agenda_matrix_do_first">Направи първо</string>
+    <string name="agenda_matrix_schedule">Планирай</string>
+    <string name="agenda_matrix_delegate">Делегирай</string>
+    <string name="agenda_matrix_someday">Някой ден</string>
+    <string name="agenda_default_view_title">Изглед по подразбиране за напомняния</string>
 </resources>

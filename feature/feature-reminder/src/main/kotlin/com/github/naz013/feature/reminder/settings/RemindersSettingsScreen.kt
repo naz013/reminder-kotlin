@@ -29,6 +29,7 @@ fun RemindersSettingsScreen(
   onLocationClick: () -> Unit,
   onWorkflowRulesClick: () -> Unit,
   onPriorityClick: () -> Unit,
+  onAgendaViewModeToggle: () -> Unit,
   onCompletedToggle: () -> Unit,
   onWearToggle: () -> Unit,
   onWearCompanionToggle: () -> Unit,
@@ -104,6 +105,16 @@ fun RemindersSettingsScreen(
       itemKey = SettingsSearchItemKeys.REMINDERS_PRIORITY,
       dividerBottom = true,
       onClick = onPriorityClick,
+    )
+    SettingsSwitchItem(
+      title = stringResource(R.string.agenda_default_view_title),
+      checked = state.isMatrixViewDefaultChecked,
+      onCheckedChange = { onAgendaViewModeToggle() },
+      subtitleOn = stringResource(R.string.agenda_matrix_view),
+      subtitleOff = stringResource(R.string.agenda_list_view),
+      icon = AppIcons.Fluent.Grid,
+      itemKey = SettingsSearchItemKeys.REMINDERS_AGENDA_VIEW_MODE,
+      dividerBottom = true,
     )
     SettingsSwitchItem(
       title = stringResource(R.string.completed_reminders),
