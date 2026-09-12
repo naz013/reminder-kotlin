@@ -1368,4 +1368,7 @@
     <string name="reminders_deleted_count">%1$d mementouri șterse</string>
     <string name="cd_move_item_up">Mută în sus</string>
     <string name="cd_move_item_down">Mută în jos</string>
+    <string name="next_reminder">Următoarea reamintire</string>
+    <string name="widget_next_reminder_description">Prezentare rapidă a următoarei reamintiri, dimensionată pentru ecranul de blocare</string>
+    <string name="widget_next_reminder_empty_state">Nu există reamintiri viitoare</string>
 </resources>

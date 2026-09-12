@@ -19,6 +19,9 @@ import com.github.naz013.appwidgets.events.UiReminderWidgetListAdapter
 import com.github.naz013.appwidgets.googletasks.GoogleTasksAppWidgetViewModel
 import com.github.naz013.appwidgets.googletasks.GoogleTasksWidgetPrefsProvider
 import com.github.naz013.appwidgets.googletasks.TasksWidgetConfigViewModel
+import com.github.naz013.appwidgets.nextreminder.NextReminderAppWidgetViewModel
+import com.github.naz013.appwidgets.nextreminder.NextReminderWidgetConfigViewModel
+import com.github.naz013.appwidgets.nextreminder.NextReminderWidgetPrefsProvider
 import com.github.naz013.appwidgets.notes.NotesAppWidgetViewModel
 import com.github.naz013.appwidgets.notes.NotesWidgetConfigViewModel
 import com.github.naz013.appwidgets.notes.NotesWidgetPrefsProvider
@@ -111,5 +114,19 @@ val appWidgetsModule = module {
 
   viewModel { (widgetId: Int) ->
     EventsWidgetConfigViewModel(EventsWidgetPrefsProvider(get(), widgetId), get(), get(), get(), get())
+  }
+
+  viewModel { (widgetId: Int) ->
+    NextReminderWidgetConfigViewModel(
+      get(),
+      get(),
+      NextReminderWidgetPrefsProvider(get(), widgetId),
+      get(),
+      get()
+    )
+  }
+
+  factory { (prefs: NextReminderWidgetPrefsProvider) ->
+    NextReminderAppWidgetViewModel(prefs, get(), get())
   }
 }

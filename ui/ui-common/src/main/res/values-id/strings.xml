@@ -1366,4 +1366,7 @@
     <string name="reminders_deleted_count">%1$d pengingat dihapus</string>
     <string name="cd_move_item_up">Pindahkan ke atas</string>
     <string name="cd_move_item_down">Pindahkan ke bawah</string>
+    <string name="next_reminder">Pengingat berikutnya</string>
+    <string name="widget_next_reminder_description">Sekilas pengingat berikutnya, berukuran pas untuk layar kunci</string>
+    <string name="widget_next_reminder_empty_state">Tidak ada pengingat mendatang</string>
 </resources>

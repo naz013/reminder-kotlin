@@ -1368,4 +1368,7 @@
     <string name="reminders_deleted_count">%1$d rappels supprimés</string>
     <string name="cd_move_item_up">Déplacer vers le haut</string>
     <string name="cd_move_item_down">Déplacer vers le bas</string>
+    <string name="next_reminder">Prochain rappel</string>
+    <string name="widget_next_reminder_description">Aperçu rapide du prochain rappel, à la taille de l\'écran de verrouillage</string>
+    <string name="widget_next_reminder_empty_state">Aucun rappel à venir</string>
 </resources>

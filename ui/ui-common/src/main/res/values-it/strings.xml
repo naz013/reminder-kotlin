@@ -1368,4 +1368,7 @@
     <string name="reminders_deleted_count">%1$d promemoria eliminati</string>
     <string name="cd_move_item_up">Sposta su</string>
     <string name="cd_move_item_down">Sposta giù</string>
+    <string name="next_reminder">Prossimo promemoria</string>
+    <string name="widget_next_reminder_description">Colpo d\'occhio sul prossimo promemoria, dimensionato per la schermata di blocco</string>
+    <string name="widget_next_reminder_empty_state">Nessun promemoria in arrivo</string>
 </resources>

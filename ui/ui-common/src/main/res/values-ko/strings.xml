@@ -1368,4 +1368,7 @@
     <string name="reminders_deleted_count">리마인더 %1$d개가 삭제되었습니다</string>
     <string name="cd_move_item_up">위로 이동</string>
     <string name="cd_move_item_down">아래로 이동</string>
+    <string name="next_reminder">다음 알림</string>
+    <string name="widget_next_reminder_description">잠금 화면 크기에 맞춘 다음 알림 한눈에 보기</string>
+    <string name="widget_next_reminder_empty_state">예정된 알림이 없습니다</string>
 </resources>

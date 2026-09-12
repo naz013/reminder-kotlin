@@ -5,7 +5,7 @@
     android:minHeight="40dp"
     android:minWidth="250dp"
     android:description="@string/widget_notes_description"
-    android:previewImage="@drawable/widget_notes"
+    android:previewImage="@drawable/widget_notes_preview"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="1800000"
     android:targetCellHeight="3"

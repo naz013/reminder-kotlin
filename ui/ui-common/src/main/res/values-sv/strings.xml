@@ -1366,4 +1366,7 @@
     <string name="reminders_deleted_count">%1$d påminnelser raderade</string>
     <string name="cd_move_item_up">Flytta upp</string>
     <string name="cd_move_item_down">Flytta ner</string>
+    <string name="next_reminder">Nästa påminnelse</string>
+    <string name="widget_next_reminder_description">Snabb överblick över nästa påminnelse, anpassad för låsskärmen</string>
+    <string name="widget_next_reminder_empty_state">Inga kommande påminnelser</string>
 </resources>

@@ -1368,4 +1368,7 @@
     <string name="reminders_deleted_count">Smazáno připomenutí: %1$d</string>
     <string name="cd_move_item_up">Přesunout nahoru</string>
     <string name="cd_move_item_down">Přesunout dolů</string>
+    <string name="next_reminder">Další připomínka</string>
+    <string name="widget_next_reminder_description">Přehled další připomínky ve velikosti pro zamykací obrazovku</string>
+    <string name="widget_next_reminder_empty_state">Žádné nadcházející připomínky</string>
 </resources>

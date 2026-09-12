@@ -1366,4 +1366,7 @@
     <string name="reminders_deleted_count">ลบการแจ้งเตือนแล้ว %1$d รายการ</string>
     <string name="cd_move_item_up">เลื่อนขึ้น</string>
     <string name="cd_move_item_down">เลื่อนลง</string>
+    <string name="next_reminder">การแจ้งเตือนถัดไป</string>
+    <string name="widget_next_reminder_description">ดูการแจ้งเตือนถัดไปแบบย่อ ขนาดพอดีกับหน้าจอล็อก</string>
+    <string name="widget_next_reminder_empty_state">ไม่มีการแจ้งเตือนที่กำลังจะมาถึง</string>
 </resources>

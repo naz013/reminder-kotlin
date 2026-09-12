@@ -9,6 +9,7 @@ import com.github.naz013.appwidgets.calendar.CalendarGlanceAppWidget
 import com.github.naz013.appwidgets.combinedbuttons.CombinedButtonsGlanceAppWidget
 import com.github.naz013.appwidgets.events.EventsGlanceAppWidget
 import com.github.naz013.appwidgets.googletasks.GoogleTasksGlanceAppWidget
+import com.github.naz013.appwidgets.nextreminder.NextReminderGlanceAppWidget
 import com.github.naz013.appwidgets.notes.NotesGlanceAppWidget
 import com.github.naz013.appwidgets.singlenote.SingleNoteGlanceAppWidget
 import com.github.naz013.feature.common.coroutine.invokeSuspend
@@ -21,6 +22,7 @@ internal class AppWidgetUpdaterImpl(
 
   override fun updateAllWidgets() {
     invokeSuspend { updateEventsWidget() }
+    invokeSuspend { updateNextReminderWidget() }
     updateCalendarWidget()
     updateScheduleWidget()
     updateBirthdaysWidget()
@@ -29,6 +31,11 @@ internal class AppWidgetUpdaterImpl(
   override suspend fun updateEventsWidget(widgetId: Int) {
     updateGlanceWidget(EventsGlanceAppWidget(), widgetId)
     appWidgetPreviewUpdater.updateEventsWidgetPreview()
+  }
+
+  override suspend fun updateNextReminderWidget(widgetId: Int) {
+    updateGlanceWidget(NextReminderGlanceAppWidget(), widgetId)
+    appWidgetPreviewUpdater.updateNextReminderWidgetPreview()
   }
 
   override suspend fun updateCombinedButtonsWidget(widgetId: Int) {

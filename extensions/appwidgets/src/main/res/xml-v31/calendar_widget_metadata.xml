@@ -5,7 +5,7 @@
     android:initialLayout="@layout/glance_default_loading_layout"
     android:minWidth="276dp"
     android:minHeight="180dp"
-    android:previewImage="@drawable/widget_calendar"
+    android:previewImage="@drawable/widget_calendar_preview"
     android:resizeMode="horizontal|vertical"
     android:targetCellWidth="4"
     android:targetCellHeight="3"

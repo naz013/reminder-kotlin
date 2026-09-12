@@ -1368,4 +1368,7 @@
     <string name="reminders_deleted_count">Usunięto %1$d przypomnień</string>
     <string name="cd_move_item_up">Przesuń w górę</string>
     <string name="cd_move_item_down">Przesuń w dół</string>
+    <string name="next_reminder">Następne przypomnienie</string>
+    <string name="widget_next_reminder_description">Szybki podgląd następnego przypomnienia, w rozmiarze dla ekranu blokady</string>
+    <string name="widget_next_reminder_empty_state">Brak nadchodzących przypomnień</string>
 </resources>

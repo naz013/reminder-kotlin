@@ -1367,4 +1367,7 @@
     <string name="reminders_deleted_count">Удалено напоминаний: %1$d</string>
     <string name="cd_move_item_up">Переместить вверх</string>
     <string name="cd_move_item_down">Переместить вниз</string>
+    <string name="next_reminder">Следующее напоминание</string>
+    <string name="widget_next_reminder_description">Быстрый просмотр следующего напоминания, подходящий по размеру для экрана блокировки</string>
+    <string name="widget_next_reminder_empty_state">Нет предстоящих напоминаний</string>
 </resources>
