@@ -5,6 +5,7 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -53,15 +54,17 @@ fun ColorSlider(
   val currentOnColorSelected by rememberUpdatedState(onColorSelected)
   val currentSelectedIndex by rememberUpdatedState(selectedIndex)
   val gestureModifier = if (enabled && colors.isNotEmpty()) {
-    Modifier.pointerInput(colors.size) {
-      detectColorSliderDrag(
-        colorCount = colors.size,
-        hapticFeedbackEnabled = hapticFeedbackEnabled,
-        hapticFeedback = hapticFeedback,
-        selectedIndex = { currentSelectedIndex },
-        onColorSelected = currentOnColorSelected,
-      )
-    }
+    Modifier
+      .systemGestureExclusion()
+      .pointerInput(colors.size) {
+        detectColorSliderDrag(
+          colorCount = colors.size,
+          hapticFeedbackEnabled = hapticFeedbackEnabled,
+          hapticFeedback = hapticFeedback,
+          selectedIndex = { currentSelectedIndex },
+          onColorSelected = currentOnColorSelected,
+        )
+      }
   } else {
     Modifier
   }
