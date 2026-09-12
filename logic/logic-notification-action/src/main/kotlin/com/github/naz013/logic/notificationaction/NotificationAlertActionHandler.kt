@@ -120,7 +120,7 @@ abstract class NotificationAlertActionHandler<T>(
   /** [NotificationCompat.CATEGORY_*] this notification is posted under. Defaults to
    *  [NotificationCompat.CATEGORY_REMINDER]; override to reflect a domain's own resolved
    *  category (e.g. [NotificationCompat.CATEGORY_ALARM] for an alarm-clock-style reminder). */
-  protected open fun notificationCategory(data: T): Int = NotificationCompat.CATEGORY_REMINDER
+  protected open fun notificationCategory(data: T): String? = NotificationCompat.CATEGORY_REMINDER
 
   protected abstract fun receiverClass(): Class<out BroadcastReceiver>
 

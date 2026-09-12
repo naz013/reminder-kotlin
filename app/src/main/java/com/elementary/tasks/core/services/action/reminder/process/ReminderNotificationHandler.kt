@@ -53,7 +53,7 @@ class ReminderNotificationHandler(
 
   public override fun useFullScreenIntent(data: ReminderV2): Boolean = notificationSettings.wakeScreen
 
-  public override fun notificationCategory(data: ReminderV2): Int =
+  public override fun notificationCategory(data: ReminderV2): String? =
     when (notificationSettings.category) {
       ReminderNotificationCategory.ALARM -> NotificationCompat.CATEGORY_ALARM
       ReminderNotificationCategory.EVENT -> NotificationCompat.CATEGORY_EVENT
