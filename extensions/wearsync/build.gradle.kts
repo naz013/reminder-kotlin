@@ -14,6 +14,7 @@ dependencies {
   implementation(project(":data:repository-api"))
   implementation(project(":extensions:wearsync-api"))
   implementation(project(":logic:logic-notification-action"))
+  implementation(project(":logic:logic-reminder"))
 
   implementation(libs.play.services.wearable)
 

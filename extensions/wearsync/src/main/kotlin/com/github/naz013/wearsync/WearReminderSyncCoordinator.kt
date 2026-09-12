@@ -3,7 +3,7 @@ package com.github.naz013.wearsync
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
-import com.github.naz013.logic.notificationaction.WearPreferences
+import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.onEach
 class WearReminderSyncCoordinator(
   private val reminderV2Repository: ReminderV2Repository,
   private val wearSyncGateway: WearSyncGateway,
-  private val wearPreferences: WearPreferences,
+  private val reminderPreferences: ReminderPreferences,
   private val mapper: WearReminderSummaryMapper,
   private val dispatcherProvider: DispatcherProvider,
 ) {
@@ -31,7 +31,7 @@ class WearReminderSyncCoordinator(
     reminderV2Repository.observeByRemovedStatus(removed = false)
       .map { reminders -> reminders.filter { it.isActive }.toUpcomingSummaries() }
       .onEach { summaries ->
-        if (wearPreferences.isWearEnabled) {
+        if (reminderPreferences.isWearCompanionEnabled) {
           Logger.d(TAG, "Pushing ${summaries.size} reminders to Wear")
           wearSyncGateway.pushReminders(summaries)
         }

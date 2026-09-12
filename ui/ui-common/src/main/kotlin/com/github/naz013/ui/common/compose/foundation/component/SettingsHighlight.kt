@@ -84,6 +84,7 @@ object SettingsSearchItemKeys {
   const val REMINDERS_PRIORITY = "reminders_priority"
   const val REMINDERS_COMPLETED = "reminders_completed"
   const val REMINDERS_WEAR = "reminders_wear"
+  const val REMINDERS_WEAR_COMPANION = "reminders_wear_companion"
   const val REMINDERS_REPEAT_INTERVAL = "reminders_repeat_interval"
   const val REMINDERS_MAX_REPEAT_COUNT = "reminders_max_repeat_count"
   const val REMINDERS_ESCALATE = "reminders_escalate"

@@ -6,6 +6,7 @@ data class RemindersSettingsState(
   val priorityName: String = "",
   val isCompletedChecked: Boolean = false,
   val isWearChecked: Boolean = false,
+  val isWearCompanionChecked: Boolean = false,
   val snoozeText: String = "",
   val isRepeatChecked: Boolean = false,
   val repeatIntervalText: String = "",

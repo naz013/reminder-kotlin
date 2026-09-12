@@ -310,6 +310,10 @@ class Prefs(
     get() = getBoolean(PrefsConstants.WEAR_NOTIFICATION)
     set(value) = putBoolean(PrefsConstants.WEAR_NOTIFICATION, value)
 
+  var isWearCompanionEnabled: Boolean
+    get() = getBoolean(PrefsConstants.WEAR_COMPANION)
+    set(value) = putBoolean(PrefsConstants.WEAR_COMPANION, value)
+
   var isSbNotificationEnabled: Boolean
     get() = getBoolean(PrefsConstants.STATUS_BAR_NOTIFICATION)
     set(value) = putBoolean(PrefsConstants.STATUS_BAR_NOTIFICATION, value)

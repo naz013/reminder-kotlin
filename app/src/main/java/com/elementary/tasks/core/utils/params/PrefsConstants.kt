@@ -26,6 +26,7 @@ object PrefsConstants {
   const val NOTIFICATION_MAX_REPEAT_COUNT = "notification_max_repeat_count"
   const val NOTIFICATION_ESCALATE_AFTER_REPEATS = "notification_escalate_after_repeats"
   const val WEAR_NOTIFICATION = "wear_notification"
+  const val WEAR_COMPANION = "wear_companion_sync"
   const val WIDGET_BIRTHDAYS = "widget_birthdays"
   const val BIRTH_COLOR = "birth_color"
   const val TODAY_COLOR = "today_color"
