@@ -1374,4 +1374,5 @@
     <string name="widget_next_reminder_empty_state">没有即将到来的提醒</string>
     <string name="critical_reminder">紧急提醒</string>
     <string name="critical_reminder_description">在被关闭之前会重复提醒，绕过勿扰模式并唤醒屏幕。适用于您不能错过的提醒。</string>
+    <string name="critical">紧急</string>
 </resources>

@@ -1389,4 +1389,5 @@
     <string name="widget_next_reminder_empty_state">No upcoming reminders</string>
     <string name="critical_reminder">Critical reminder</string>
     <string name="critical_reminder_description">Repeats until dismissed, bypasses Do Not Disturb, and wakes the screen. For alerts you can\'t afford to miss.</string>
+    <string name="critical">Critical</string>
 </resources>

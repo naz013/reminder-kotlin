@@ -1373,4 +1373,5 @@
     <string name="widget_next_reminder_empty_state">예정된 알림이 없습니다</string>
     <string name="critical_reminder">긴급 알림</string>
     <string name="critical_reminder_description">해제할 때까지 반복되며, 방해 금지 모드를 무시하고 화면을 켭니다. 놓쳐서는 안 되는 알림에 사용하세요.</string>
+    <string name="critical">긴급</string>
 </resources>

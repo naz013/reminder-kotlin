@@ -1372,4 +1372,5 @@
     <string name="widget_next_reminder_empty_state">Нет предстоящих напоминаний</string>
     <string name="critical_reminder">Критическое напоминание</string>
     <string name="critical_reminder_description">Повторяется, пока не будет отклонено, обходит режим «Не беспокоить» и включает экран. Для оповещений, которые нельзя пропустить.</string>
+    <string name="critical">Критично</string>
 </resources>

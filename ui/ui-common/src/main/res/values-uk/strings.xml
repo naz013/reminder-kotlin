@@ -1374,4 +1374,5 @@
     <string name="widget_next_reminder_empty_state">Немає найближчих нагадувань</string>
     <string name="critical_reminder">Критичне нагадування</string>
     <string name="critical_reminder_description">Повторюється, доки не буде закрито, обходить режим «Не турбувати» і вмикає екран. Для сповіщень, які не можна пропустити.</string>
+    <string name="critical">Критично</string>
 </resources>

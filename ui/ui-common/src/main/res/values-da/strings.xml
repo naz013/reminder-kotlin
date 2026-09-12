@@ -1371,4 +1371,5 @@
     <string name="widget_next_reminder_empty_state">Ingen kommende påmindelser</string>
     <string name="critical_reminder">Kritisk påmindelse</string>
     <string name="critical_reminder_description">Gentages, indtil den afvises, omgår Forstyr ikke, og vækker skærmen. Til alarmer, du ikke har råd til at gå glip af.</string>
+    <string name="critical">Kritisk</string>
 </resources>

@@ -1371,4 +1371,5 @@
     <string name="widget_next_reminder_empty_state">لا توجد تذكيرات قادمة</string>
     <string name="critical_reminder">تذكير حرج</string>
     <string name="critical_reminder_description">يتكرر حتى يتم رفضه، ويتجاوز وضع عدم الإزعاج، ويشغّل الشاشة. للتنبيهات التي لا يمكنك تفويتها.</string>
+    <string name="critical">حرج</string>
 </resources>

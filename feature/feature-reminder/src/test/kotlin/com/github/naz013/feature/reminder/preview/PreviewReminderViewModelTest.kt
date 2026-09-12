@@ -135,6 +135,7 @@ class PreviewReminderViewModelTest : BaseTest() {
     isActive: Boolean = true,
     isPinned: Boolean = false,
     offlineOnly: Boolean = false,
+    isCritical: Boolean = false,
     action: ReminderAction = ReminderAction.None,
   ): ReminderV2 =
     ReminderV2(
@@ -146,6 +147,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       isRemoved = isRemoved,
       isPinned = isPinned,
       offlineOnly = offlineOnly,
+      isCritical = isCritical,
       action = action,
     )
 
@@ -380,6 +382,15 @@ class PreviewReminderViewModelTest : BaseTest() {
       val viewModel = createViewModel()
 
       assertTrue(viewModel.state.first().isOfflineOnly)
+    }
+
+  @Test
+  fun `state exposes isCritical from the reminder`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2(isCritical = true)
+      val viewModel = createViewModel()
+
+      assertTrue(viewModel.state.first().isCritical)
     }
 
   @Test

@@ -1374,4 +1374,5 @@
     <string name="widget_next_reminder_empty_state">Няма предстоящи напомняния</string>
     <string name="critical_reminder">Критично напомняне</string>
     <string name="critical_reminder_description">Повтаря се, докато не бъде отхвърлено, заобикаля режим \"Не безпокойте\" и събужда екрана. За известия, които не можете да пропуснете.</string>
+    <string name="critical">Критично</string>
 </resources>

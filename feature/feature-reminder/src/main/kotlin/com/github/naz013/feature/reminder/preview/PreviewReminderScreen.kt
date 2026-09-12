@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -59,6 +60,7 @@ import com.github.naz013.ui.common.compose.AppTheme
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
+import com.github.naz013.ui.common.compose.foundation.component.CriticalBadgeChip
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.navigation.detailScreenContentWidth
 import com.github.naz013.ui.common.icon.DrawableCatalog
@@ -343,8 +345,22 @@ private fun HeaderCard(
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
   ) {
     Column(modifier = Modifier.padding(16.dp)) {
-      if (state.summary.isNotEmpty()) {
-        Text(text = state.summary, style = MaterialTheme.typography.titleLarge)
+      if (state.summary.isNotEmpty() || state.isCritical) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          if (state.summary.isNotEmpty()) {
+            Text(
+              text = state.summary,
+              style = MaterialTheme.typography.titleLarge,
+              modifier = Modifier.weight(1f, fill = false),
+            )
+          }
+          if (state.isCritical) {
+            if (state.summary.isNotEmpty()) {
+              Spacer(modifier = Modifier.width(8.dp))
+            }
+            CriticalBadgeChip()
+          }
+        }
       }
       state.description?.takeIf { it.isNotEmpty() }?.let { text ->
         Text(

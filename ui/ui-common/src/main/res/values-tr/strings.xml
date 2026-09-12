@@ -1374,4 +1374,5 @@
     <string name="widget_next_reminder_empty_state">Yaklaşan hatırlatıcı yok</string>
     <string name="critical_reminder">Kritik hatırlatıcı</string>
     <string name="critical_reminder_description">Kapatılana kadar tekrarlanır, Rahatsız Etmeyin modunu atlar ve ekranı uyandırır. Kaçırmamanız gereken uyarılar için.</string>
+    <string name="critical">Kritik</string>
 </resources>

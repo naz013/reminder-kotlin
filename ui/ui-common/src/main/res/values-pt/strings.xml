@@ -1373,4 +1373,5 @@
     <string name="widget_next_reminder_empty_state">Nenhum lembrete próximo</string>
     <string name="critical_reminder">Lembrete crítico</string>
     <string name="critical_reminder_description">Repete até ser dispensado, ignora o modo Não perturbe e ativa a tela. Para alertas que você não pode perder.</string>
+    <string name="critical">Crítico</string>
 </resources>
