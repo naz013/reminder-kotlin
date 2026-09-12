@@ -1372,4 +1372,6 @@
     <string name="next_reminder">Наступне нагадування</string>
     <string name="widget_next_reminder_description">Швидкий перегляд наступного нагадування, розмір для екрана блокування</string>
     <string name="widget_next_reminder_empty_state">Немає найближчих нагадувань</string>
+    <string name="critical_reminder">Критичне нагадування</string>
+    <string name="critical_reminder_description">Повторюється, доки не буде закрито, обходить режим «Не турбувати» і вмикає екран. Для сповіщень, які не можна пропустити.</string>
 </resources>

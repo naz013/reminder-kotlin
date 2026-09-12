@@ -1369,4 +1369,6 @@
     <string name="next_reminder">Nästa påminnelse</string>
     <string name="widget_next_reminder_description">Snabb överblick över nästa påminnelse, anpassad för låsskärmen</string>
     <string name="widget_next_reminder_empty_state">Inga kommande påminnelser</string>
+    <string name="critical_reminder">Kritisk påminnelse</string>
+    <string name="critical_reminder_description">Upprepas tills den avfärdas, kringgår Stör ej och väcker skärmen. För varningar du inte har råd att missa.</string>
 </resources>

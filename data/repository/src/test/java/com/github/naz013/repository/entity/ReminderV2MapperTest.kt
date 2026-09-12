@@ -70,6 +70,23 @@ class ReminderV2MapperTest {
   }
 
   @Test
+  fun `toEntity then toDomain round trips a critical reminder`() {
+    val reminder = ReminderV2(
+      uuId = "id-critical",
+      summary = "Take medication",
+      recurrence = RecurrenceRule.Once,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 22, 9, 0)),
+      action = ReminderAction.None,
+      isCritical = true
+    )
+
+    val roundTripped = reminder.toEntity().toDomain()
+
+    assertEquals(reminder, roundTripped)
+    assertEquals(true, roundTripped.isCritical)
+  }
+
+  @Test
   fun `toEntity then toDomain round trips a monthly recurrence with a call action`() {
     val reminder = ReminderV2(
       uuId = "id-2",

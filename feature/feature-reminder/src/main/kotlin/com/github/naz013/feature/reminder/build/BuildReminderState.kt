@@ -17,6 +17,9 @@ internal data class BuildReminderState(
    * the flag can't be turned on for an already-persisted reminder. */
   val canSetOfflineOnly: Boolean = false,
   val offlineOnlyChecked: Boolean = false,
+  /** Opt-in alarm-clock-style escalation: repeats, bypasses Do Not Disturb, wakes the screen.
+   * See [com.github.naz013.domain.reminder.v2.ReminderV2.isCritical]. */
+  val isCriticalChecked: Boolean = false,
   val editingItem: Pair<Int, BuilderItem<*>>? = null,
   val isFromFile: Boolean = false,
   val hasSameInDb: Boolean = false,

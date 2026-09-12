@@ -86,6 +86,7 @@ import com.github.naz013.repository.migrations.MIGRATION_37_38
 import com.github.naz013.repository.migrations.MIGRATION_38_39
 import com.github.naz013.repository.migrations.MIGRATION_39_40
 import com.github.naz013.repository.migrations.MIGRATION_3_4
+import com.github.naz013.repository.migrations.MIGRATION_40_41
 import com.github.naz013.repository.migrations.MIGRATION_4_5
 import com.github.naz013.repository.migrations.MIGRATION_5_6
 import com.github.naz013.repository.migrations.MIGRATION_6_7
@@ -121,7 +122,7 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     RoutineExecutionEntity::class,
     GoogleCalendarEventEntity::class
   ],
-  version = 40,
+  version = 41,
   exportSchema = false
 )
 @Suppress("TooManyFunctions") // one DAO accessor per entity - inherent to this class, not a smell
@@ -199,7 +200,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_36_37,
             MIGRATION_37_38,
             MIGRATION_38_39,
-            MIGRATION_39_40
+            MIGRATION_39_40,
+            MIGRATION_40_41
           )
           .allowMainThreadQueries()
           .build()

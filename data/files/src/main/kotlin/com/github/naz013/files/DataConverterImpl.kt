@@ -459,7 +459,8 @@ private fun ReminderV2Json.toDomain(): ReminderV2 = ReminderV2(
   isPinned = isPinned,
   eventCount = eventCount,
   sync = SyncMetadata(version = version),
-  offlineOnly = offlineOnly
+  offlineOnly = offlineOnly,
+  isCritical = isCritical
 )
 
 private fun NotificationSettingsOverrideJson.toDomain(): NotificationSettingsOverride =
@@ -685,7 +686,8 @@ private fun ReminderV2.toJson(): ReminderV2Json {
     isPinned = isPinned,
     eventCount = eventCount,
     version = sync.version,
-    offlineOnly = offlineOnly
+    offlineOnly = offlineOnly,
+    isCritical = isCritical
   )
 }
 

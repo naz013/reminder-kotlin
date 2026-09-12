@@ -2,6 +2,7 @@ package com.elementary.tasks.core.services.action.reminder.process
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
+import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.elementary.tasks.core.services.ReminderActionReceiver
 import com.elementary.tasks.core.services.action.reminder.ReminderDataProvider
@@ -10,6 +11,7 @@ import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.domain.reminder.v2.NotificationSettings
+import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logic.notificationaction.NotificationAction
 import com.github.naz013.logic.notificationaction.NotificationAlertActionHandler
@@ -50,6 +52,14 @@ class ReminderNotificationHandler(
   public override fun isOngoing(data: ReminderV2): Boolean = !reminderPreferences.isDefaultSwipeToDismissEnabled
 
   public override fun useFullScreenIntent(data: ReminderV2): Boolean = notificationSettings.wakeScreen
+
+  public override fun notificationCategory(data: ReminderV2): Int =
+    when (notificationSettings.category) {
+      ReminderNotificationCategory.ALARM -> NotificationCompat.CATEGORY_ALARM
+      ReminderNotificationCategory.EVENT -> NotificationCompat.CATEGORY_EVENT
+      ReminderNotificationCategory.CALL -> NotificationCompat.CATEGORY_CALL
+      ReminderNotificationCategory.DEFAULT -> NotificationCompat.CATEGORY_REMINDER
+    }
 
   override fun extraActions(data: ReminderV2): List<NotificationAction> =
     if (data.places.isEmpty()) {
