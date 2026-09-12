@@ -23,10 +23,10 @@ firebase-bom = "34.18.0"
 play-services-location = "21.4.0"
 play-services-maps = "20.0.0"
 play-services-auth = "22.0.0"
-play-services-wearable = "18.2.0"
+play-services-wearable = "20.0.1"
 user-messaging-platform = "4.0.0"
 
-androidx-wear-compose = "1.4.1"
+androidx-wear-compose = "1.6.2"
 
 androidx-credentials = "1.6.0"
 google-id = "1.2.0"
