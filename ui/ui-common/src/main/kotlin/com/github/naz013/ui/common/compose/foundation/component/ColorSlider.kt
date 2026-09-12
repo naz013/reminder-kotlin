@@ -20,6 +20,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.systemGestureExclusion
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
@@ -53,15 +54,17 @@ fun ColorSlider(
   val currentOnColorSelected by rememberUpdatedState(onColorSelected)
   val currentSelectedIndex by rememberUpdatedState(selectedIndex)
   val gestureModifier = if (enabled && colors.isNotEmpty()) {
-    Modifier.pointerInput(colors.size) {
-      detectColorSliderDrag(
-        colorCount = colors.size,
-        hapticFeedbackEnabled = hapticFeedbackEnabled,
-        hapticFeedback = hapticFeedback,
-        selectedIndex = { currentSelectedIndex },
-        onColorSelected = currentOnColorSelected,
-      )
-    }
+    Modifier
+      .systemGestureExclusion()
+      .pointerInput(colors.size) {
+        detectColorSliderDrag(
+          colorCount = colors.size,
+          hapticFeedbackEnabled = hapticFeedbackEnabled,
+          hapticFeedback = hapticFeedback,
+          selectedIndex = { currentSelectedIndex },
+          onColorSelected = currentOnColorSelected,
+        )
+      }
   } else {
     Modifier
   }
