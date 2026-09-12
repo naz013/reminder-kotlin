@@ -1375,4 +1375,7 @@
     <string name="sync_reminders_to_wear_companion">Sincronizar lembretes futuros com o relógio</string>
     <string name="do_not_sync_reminders_to_wear_companion">Não sincronizar lembretes com o relógio</string>
     <string name="settings_search_keyword_wear_companion">smartwatch, Wear OS, aplicativo complementar</string>
+    <string name="critical_reminder">Lembrete crítico</string>
+    <string name="critical_reminder_description">Repete até ser dispensado, ignora o modo Não perturbe e ativa a tela. Para alertas que você não pode perder.</string>
+    <string name="critical">Crítico</string>
 </resources>

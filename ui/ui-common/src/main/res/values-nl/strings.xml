@@ -1373,4 +1373,7 @@
     <string name="sync_reminders_to_wear_companion">Synchroniseer aankomende herinneringen met je horloge</string>
     <string name="do_not_sync_reminders_to_wear_companion">Herinneringen niet synchroniseren met je horloge</string>
     <string name="settings_search_keyword_wear_companion">smartwatch, wear os, companionapp</string>
+    <string name="critical_reminder">Kritieke herinnering</string>
+    <string name="critical_reminder_description">Herhaalt totdat deze wordt gesloten, omzeilt Niet storen en wekt het scherm. Voor meldingen die u niet mag missen.</string>
+    <string name="critical">Kritiek</string>
 </resources>

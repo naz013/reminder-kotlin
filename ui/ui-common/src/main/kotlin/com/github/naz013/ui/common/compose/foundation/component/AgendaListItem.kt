@@ -44,9 +44,10 @@ private const val TERTIARY_TEXT_MAX_LINES = 2
 
 /**
  * Reusable card scaffold shared by the home agenda, groups, and reminder-archive rows: an optional
- * non-clickable status-chip row (e.g. "Enabled") above the title, title/date/tertiary text stack,
- * an optional non-clickable tag-chip row (repeat/remaining/group labels) below, an optional
- * leading slot, and a "more" menu in the top-right.
+ * non-clickable status-chip row (e.g. "Enabled") above the title - with an optional caller-supplied
+ * [badge] composable (e.g. a critical-reminder indicator) rendered alongside it - title/date/
+ * tertiary text stack, an optional non-clickable tag-chip row (repeat/remaining/group labels)
+ * below, an optional leading slot, and a "more" menu in the top-right.
  */
 @OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -60,6 +61,8 @@ fun AgendaListItem(
   onMenuItemClick: (Int) -> Unit,
   modifier: Modifier = Modifier,
   statusChips: List<String> = emptyList(),
+  badge: (@Composable () -> Unit)? = null,
+  badgeContentDescription: String? = null,
   leading: (@Composable () -> Unit)? = null,
   isHighlighted: Boolean = false,
   isOverdue: Boolean = false,
@@ -95,15 +98,23 @@ fun AgendaListItem(
       // Text children into the Card's merged node (verified on-device), so the combined
       // description is built explicitly instead. "More options"/selection stay outside this
       // Column, so they remain independently reachable TalkBack stops exactly as before.
-      val accessibleDescription = (statusChips + mainText + listOfNotNull(secondaryText, tertiaryText) + tags)
-        .joinToString(separator = ". ")
+      val accessibleDescription =
+        (listOfNotNull(badgeContentDescription) + statusChips + mainText + listOfNotNull(secondaryText, tertiaryText) + tags)
+          .joinToString(separator = ". ")
       Column(
         modifier = Modifier
           .weight(1f)
           .clearAndSetSemantics { contentDescription = accessibleDescription },
       ) {
-        if (statusChips.isNotEmpty()) {
-          AgendaChipRow(chips = statusChips, modifier = Modifier.padding(bottom = 4.dp))
+        if (badge != null || statusChips.isNotEmpty()) {
+          FlowRow(
+            modifier = Modifier.padding(bottom = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+          ) {
+            badge?.invoke()
+            statusChips.forEach { chip -> AgendaChip(text = chip) }
+          }
         }
         Text(
           text = mainText,
@@ -224,6 +235,24 @@ private fun AgendaListItemPreview_Overdue() {
       menuItems = emptyList(),
       onMenuItemClick = {},
       isOverdue = true,
+    )
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AgendaListItemPreview_Critical() {
+  AppTheme {
+    AgendaListItem(
+      mainText = "Take medication",
+      secondaryText = "Today, 09:00",
+      tertiaryText = null,
+      tags = listOf("Repeats"),
+      statusChips = listOf("Enabled"),
+      badge = { CriticalBadgeChip() },
+      onClick = {},
+      menuItems = emptyList(),
+      onMenuItemClick = {},
     )
   }
 }

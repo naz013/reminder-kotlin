@@ -19,6 +19,7 @@ interface NotificationStyle {
   fun decorate(
     builder: NotificationCompat.Builder,
     contextProvider: ContextProvider,
+    category: String?,
   )
 }
 
@@ -32,9 +33,10 @@ object LoudNotificationStyle : NotificationStyle {
   override fun decorate(
     builder: NotificationCompat.Builder,
     contextProvider: ContextProvider,
+    category: String?,
   ) {
     builder.color = ThemeProvider.getPrimaryColor(contextProvider.themedContext)
-    builder.setCategory(NotificationCompat.CATEGORY_REMINDER)
+    builder.setCategory(category)
   }
 }
 
@@ -48,6 +50,7 @@ object SilentNotificationStyle : NotificationStyle {
   override fun decorate(
     builder: NotificationCompat.Builder,
     contextProvider: ContextProvider,
+    category: String?,
   ) {
     // Silent notifications get no extra branding.
   }

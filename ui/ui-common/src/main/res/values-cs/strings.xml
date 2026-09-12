@@ -1375,4 +1375,7 @@
     <string name="sync_reminders_to_wear_companion">Synchronizovat nadcházející připomenutí s hodinkami</string>
     <string name="do_not_sync_reminders_to_wear_companion">Nesynchronizovat připomenutí s hodinkami</string>
     <string name="settings_search_keyword_wear_companion">chytré hodinky, wear os, doprovodná aplikace</string>
+    <string name="critical_reminder">Kritická připomínka</string>
+    <string name="critical_reminder_description">Opakuje se, dokud není zavřena, obchází režim Nerušit a probouzí obrazovku. Pro upozornění, která si nemůžete dovolit zmeškat.</string>
+    <string name="critical">Kritické</string>
 </resources>

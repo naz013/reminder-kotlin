@@ -405,6 +405,7 @@ internal class PreviewReminderViewModel(
             canCopy = canCopyV2(reminder.recurrence),
             canDelete = reminder.isRemoved,
             isPinned = reminder.isPinned,
+            isCritical = reminder.isCritical,
             showSyncToCloud = reminder.offlineOnly &&
               (googleDriveAuthManager.isAuthorized() || dropboxAuthManager.isAuthorized()),
             isOfflineOnly = reminder.offlineOnly,

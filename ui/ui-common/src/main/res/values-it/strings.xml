@@ -1375,4 +1375,7 @@
     <string name="sync_reminders_to_wear_companion">Sincronizza i promemoria imminenti con il tuo orologio</string>
     <string name="do_not_sync_reminders_to_wear_companion">Non sincronizzare i promemoria con il tuo orologio</string>
     <string name="settings_search_keyword_wear_companion">smartwatch, wear os, app companion</string>
+    <string name="critical_reminder">Promemoria critico</string>
+    <string name="critical_reminder_description">Si ripete finché non viene ignorato, ignora la modalità Non disturbare e riattiva lo schermo. Per gli avvisi che non puoi permetterti di perdere.</string>
+    <string name="critical">Critico</string>
 </resources>

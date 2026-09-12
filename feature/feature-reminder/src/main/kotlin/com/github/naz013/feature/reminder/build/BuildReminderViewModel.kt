@@ -288,6 +288,10 @@ internal class BuildReminderViewModel(
     _state.update { it.copy(offlineOnlyChecked = checked) }
   }
 
+  fun onCriticalChange(checked: Boolean) {
+    _state.update { it.copy(isCriticalChecked = checked) }
+  }
+
   /** Re-checks cloud login state on every ON_RESUME (see [BuildReminderNavGraph]) - this
    *  Composable entry isn't necessarily recreated after a trip to the Cloud Services screen (e.g.
    *  reached via Settings without popping this entry off the backstack), so [isCloudLoggedIn],
@@ -349,12 +353,13 @@ internal class BuildReminderViewModel(
               buildResult.reminderV2
             }
           // offlineOnly can only be set while creating a reminder for the first time - never on edit.
-          val finalV2 =
+          val withOfflineOnly =
             if (originalV2 == null && _state.value.offlineOnlyChecked) {
               withNewId.copy(offlineOnly = true)
             } else {
               withNewId
             }
+          val finalV2 = withOfflineOnly.copy(isCritical = _state.value.isCriticalChecked)
 
           isSaving = true
           val reviewDialogShown = saveAndStartReminder(finalV2, isEdit = isEdited)
@@ -590,7 +595,14 @@ internal class BuildReminderViewModel(
     if (navKey.isEditingExtend) {
       isEdited = true
       originalV2 = seed
-      _state.update { it.copy(canRemove = true, isRemoved = seed.isRemoved, canSetOfflineOnly = false) }
+      _state.update {
+        it.copy(
+          canRemove = true,
+          isRemoved = seed.isRemoved,
+          canSetOfflineOnly = false,
+          isCriticalChecked = seed.isCritical,
+        )
+      }
       pauseReminder(seed)
     }
     val builderItems = reminderToBiDecomposer(seed)
@@ -778,6 +790,7 @@ internal class BuildReminderViewModel(
         isRemoved = reminderV2.isRemoved,
         isLoadingForEdit = false,
         canSetOfflineOnly = false,
+        isCriticalChecked = reminderV2.isCritical,
       )
     }
 

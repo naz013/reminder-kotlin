@@ -1375,4 +1375,7 @@
     <string name="sync_reminders_to_wear_companion">Sincronizează memento-urile viitoare cu ceasul tău</string>
     <string name="do_not_sync_reminders_to_wear_companion">Nu sincroniza memento-urile cu ceasul tău</string>
     <string name="settings_search_keyword_wear_companion">smartwatch, Wear OS, aplicație companion</string>
+    <string name="critical_reminder">Memento critic</string>
+    <string name="critical_reminder_description">Se repetă până este respins, ocolește modul Nu deranja și trezește ecranul. Pentru alerte pe care nu ți le poți permite să le ratezi.</string>
+    <string name="critical">Critic</string>
 </resources>

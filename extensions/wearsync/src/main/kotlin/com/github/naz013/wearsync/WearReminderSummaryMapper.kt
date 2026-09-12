@@ -4,7 +4,7 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.google.android.gms.wearable.DataMap
 
-internal class WearReminderSummaryMapper(
+class WearReminderSummaryMapper(
   private val dateTimeManager: DateTimeManager
 ) {
 

@@ -1375,4 +1375,7 @@
     <string name="sync_reminders_to_wear_companion">Synchroniser les rappels à venir avec votre montre</string>
     <string name="do_not_sync_reminders_to_wear_companion">Ne pas synchroniser les rappels avec votre montre</string>
     <string name="settings_search_keyword_wear_companion">montre connectée, wear os, application compagnon</string>
+    <string name="critical_reminder">Rappel critique</string>
+    <string name="critical_reminder_description">Se répète jusqu\'à ce qu\'il soit ignoré, contourne le mode Ne pas déranger et réveille l\'écran. Pour les alertes que vous ne pouvez pas vous permettre de manquer.</string>
+    <string name="critical">Critique</string>
 </resources>

@@ -1374,4 +1374,7 @@
     <string name="sync_reminders_to_wear_companion">Синхронизировать предстоящие напоминания с часами</string>
     <string name="do_not_sync_reminders_to_wear_companion">Не синхронизировать напоминания с часами</string>
     <string name="settings_search_keyword_wear_companion">смарт-часы, Wear OS, приложение-компаньон</string>
+    <string name="critical_reminder">Критическое напоминание</string>
+    <string name="critical_reminder_description">Повторяется, пока не будет отклонено, обходит режим «Не беспокоить» и включает экран. Для оповещений, которые нельзя пропустить.</string>
+    <string name="critical">Критично</string>
 </resources>

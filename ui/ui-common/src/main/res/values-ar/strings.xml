@@ -1373,4 +1373,7 @@
     <string name="sync_reminders_to_wear_companion">مزامنة التذكيرات القادمة مع ساعتك</string>
     <string name="do_not_sync_reminders_to_wear_companion">عدم مزامنة التذكيرات مع ساعتك</string>
     <string name="settings_search_keyword_wear_companion">ساعة ذكية، وير أو إس، تطبيق مرافق</string>
+    <string name="critical_reminder">تذكير حرج</string>
+    <string name="critical_reminder_description">يتكرر حتى يتم رفضه، ويتجاوز وضع عدم الإزعاج، ويشغّل الشاشة. للتنبيهات التي لا يمكنك تفويتها.</string>
+    <string name="critical">حرج</string>
 </resources>

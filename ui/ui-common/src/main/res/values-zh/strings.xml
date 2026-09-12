@@ -1376,4 +1376,7 @@
     <string name="sync_reminders_to_wear_companion">将即将到来的提醒同步到您的手表</string>
     <string name="do_not_sync_reminders_to_wear_companion">不将提醒同步到您的手表</string>
     <string name="settings_search_keyword_wear_companion">智能手表, wear os, 伴侣应用</string>
+    <string name="critical_reminder">紧急提醒</string>
+    <string name="critical_reminder_description">在被关闭之前会重复提醒，绕过勿扰模式并唤醒屏幕。适用于您不能错过的提醒。</string>
+    <string name="critical">紧急</string>
 </resources>

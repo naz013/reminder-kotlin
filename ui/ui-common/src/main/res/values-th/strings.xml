@@ -1373,4 +1373,7 @@
     <string name="sync_reminders_to_wear_companion">ซิงค์การแจ้งเตือนที่กำลังจะมาถึงไปยังนาฬิกาของคุณ</string>
     <string name="do_not_sync_reminders_to_wear_companion">ไม่ซิงค์การแจ้งเตือนไปยังนาฬิกาของคุณ</string>
     <string name="settings_search_keyword_wear_companion">สมาร์ทวอทช์, Wear OS, แอปคู่หู</string>
+    <string name="critical_reminder">การแจ้งเตือนสำคัญ</string>
+    <string name="critical_reminder_description">ทำซ้ำจนกว่าจะปิด ข้ามโหมดห้ามรบกวน และปลุกหน้าจอ สำหรับการแจ้งเตือนที่คุณพลาดไม่ได้</string>
+    <string name="critical">สำคัญมาก</string>
 </resources>

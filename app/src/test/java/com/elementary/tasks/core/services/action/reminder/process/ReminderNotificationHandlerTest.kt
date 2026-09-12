@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.services.action.reminder.process
 
+import androidx.core.app.NotificationCompat
 import com.elementary.tasks.BaseTest
 import com.elementary.tasks.core.services.action.reminder.ReminderDataProvider
 import com.github.naz013.common.ContextProvider
@@ -39,13 +40,14 @@ class ReminderNotificationHandlerTest : BaseTest() {
     priority: ReminderPriority = ReminderPriority.HIGH,
     color: Int = 5,
     wakeScreen: Boolean = false,
+    category: ReminderNotificationCategory = ReminderNotificationCategory.DEFAULT,
   ) = NotificationSettings(
     vibrate = vibrate,
     vibrationPattern = vibrationPattern,
     priority = priority,
     color = color,
     wakeScreen = wakeScreen,
-    category = ReminderNotificationCategory.DEFAULT,
+    category = category,
     lockScreenVisibility = LockScreenVisibility.PRIVATE,
   )
 
@@ -113,5 +115,25 @@ class ReminderNotificationHandlerTest : BaseTest() {
   fun `useFullScreenIntent reads the resolved wakeScreen setting`() {
     assertEquals(true, handler(settings(wakeScreen = true)).useFullScreenIntent(reminder))
     assertEquals(false, handler(settings(wakeScreen = false)).useFullScreenIntent(reminder))
+  }
+
+  @Test
+  fun `notificationCategory maps the resolved category to the matching Android category`() {
+    assertEquals(
+      NotificationCompat.CATEGORY_ALARM,
+      handler(settings(category = ReminderNotificationCategory.ALARM)).notificationCategory(reminder),
+    )
+    assertEquals(
+      NotificationCompat.CATEGORY_EVENT,
+      handler(settings(category = ReminderNotificationCategory.EVENT)).notificationCategory(reminder),
+    )
+    assertEquals(
+      NotificationCompat.CATEGORY_CALL,
+      handler(settings(category = ReminderNotificationCategory.CALL)).notificationCategory(reminder),
+    )
+    assertEquals(
+      NotificationCompat.CATEGORY_REMINDER,
+      handler(settings(category = ReminderNotificationCategory.DEFAULT)).notificationCategory(reminder),
+    )
   }
 }

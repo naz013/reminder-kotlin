@@ -1376,4 +1376,7 @@
     <string name="sync_reminders_to_wear_companion">Синхронизиране на предстоящите напомняния с часовника</string>
     <string name="do_not_sync_reminders_to_wear_companion">Без синхронизиране на напомнянията с часовника</string>
     <string name="settings_search_keyword_wear_companion">смарт часовник, wear os, придружаващо приложение</string>
+    <string name="critical_reminder">Критично напомняне</string>
+    <string name="critical_reminder_description">Повтаря се, докато не бъде отхвърлено, заобикаля режим \"Не безпокойте\" и събужда екрана. За известия, които не можете да пропуснете.</string>
+    <string name="critical">Критично</string>
 </resources>

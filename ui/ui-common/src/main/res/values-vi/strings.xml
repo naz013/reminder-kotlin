@@ -1373,4 +1373,7 @@
     <string name="sync_reminders_to_wear_companion">Đồng bộ các lời nhắc sắp tới với đồng hồ của bạn</string>
     <string name="do_not_sync_reminders_to_wear_companion">Không đồng bộ lời nhắc với đồng hồ của bạn</string>
     <string name="settings_search_keyword_wear_companion">đồng hồ thông minh, wear os, ứng dụng đồng hành</string>
+    <string name="critical_reminder">Nhắc nhở quan trọng</string>
+    <string name="critical_reminder_description">Lặp lại cho đến khi bị hủy, bỏ qua chế độ Không làm phiền và đánh thức màn hình. Dành cho các cảnh báo bạn không thể bỏ lỡ.</string>
+    <string name="critical">Quan trọng</string>
 </resources>

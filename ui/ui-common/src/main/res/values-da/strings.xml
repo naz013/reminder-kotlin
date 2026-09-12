@@ -1373,4 +1373,7 @@
     <string name="sync_reminders_to_wear_companion">Synkroniser kommende påmindelser til dit ur</string>
     <string name="do_not_sync_reminders_to_wear_companion">Synkroniser ikke påmindelser til dit ur</string>
     <string name="settings_search_keyword_wear_companion">smartwatch, wear os, companion-app</string>
+    <string name="critical_reminder">Kritisk påmindelse</string>
+    <string name="critical_reminder_description">Gentages, indtil den afvises, omgår Forstyr ikke, og vækker skærmen. Til alarmer, du ikke har råd til at gå glip af.</string>
+    <string name="critical">Kritisk</string>
 </resources>

@@ -77,7 +77,9 @@ internal data class ReminderV2Entity(
   val version: Long = 0L,
   val syncState: String,
 
-  val offlineOnly: Boolean = false
+  val offlineOnly: Boolean = false,
+
+  val isCritical: Boolean = false
 )
 
 data class ReminderScheduleColumns(

@@ -1375,4 +1375,7 @@
     <string name="sync_reminders_to_wear_companion">今後のリマインダーを時計に同期</string>
     <string name="do_not_sync_reminders_to_wear_companion">リマインダーを時計に同期しない</string>
     <string name="settings_search_keyword_wear_companion">スマートウォッチ, ウェアOS, コンパニオンアプリ</string>
+    <string name="critical_reminder">重要なリマインダー</string>
+    <string name="critical_reminder_description">解除するまで繰り返され、おやすみモードを無視して画面をオンにします。見逃せない通知向けです。</string>
+    <string name="critical">重要</string>
 </resources>

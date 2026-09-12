@@ -55,6 +55,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.github.naz013.feature.reminder.build.logic.builderstate.ReminderPrediction
 import com.github.naz013.feature.reminder.build.quickstart.QuickStartOption
+import com.github.naz013.feature.reminder.compose.CriticalRow
 import com.github.naz013.feature.reminder.compose.OfflineOnlyRow
 import com.github.naz013.feature.reminder.note.UiNoteList
 import com.github.naz013.ui.common.R
@@ -99,6 +100,7 @@ internal fun BuildReminderScreen(
   presetName: String,
   canSetOfflineOnly: Boolean,
   offlineOnlyChecked: Boolean,
+  isCriticalChecked: Boolean,
   quickStartOptions: List<QuickStartOption>,
   allTags: List<TagChipState>,
   selectedTagIds: Set<String>,
@@ -110,6 +112,7 @@ internal fun BuildReminderScreen(
   onSaveAsPresetChange: (Boolean) -> Unit,
   onPresetNameChange: (String) -> Unit,
   onOfflineOnlyChange: (Boolean) -> Unit,
+  onCriticalChange: (Boolean) -> Unit,
   onItemClick: (Int, BuilderItem<*>) -> Unit,
   onItemRemove: (Int, BuilderItem<*>) -> Unit,
   onAddClick: () -> Unit,
@@ -255,6 +258,13 @@ internal fun BuildReminderScreen(
               onCheckedChange = onOfflineOnlyChange,
             )
           }
+        }
+
+        item(key = "critical") {
+          CriticalRow(
+            checked = isCriticalChecked,
+            onCheckedChange = onCriticalChange,
+          )
         }
       }
     }
@@ -566,6 +576,7 @@ private fun PreviewBuildReminderScreenEmpty() {
       presetName = "",
       canSetOfflineOnly = false,
       offlineOnlyChecked = false,
+      isCriticalChecked = false,
       quickStartOptions = QuickStartOption.entries,
       allTags = emptyList(),
       selectedTagIds = emptySet(),
@@ -577,6 +588,7 @@ private fun PreviewBuildReminderScreenEmpty() {
       onSaveAsPresetChange = {},
       onPresetNameChange = {},
       onOfflineOnlyChange = {},
+      onCriticalChange = {},
       onItemClick = { _, _ -> },
       onItemRemove = { _, _ -> },
       onAddClick = {},

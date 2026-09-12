@@ -36,7 +36,11 @@ data class ReminderV2(
   val sync: SyncMetadata = SyncMetadata(),
   /** True only if set at creation time (BuildReminder/TodoEdit) - excludes this reminder from
    * cloud sync and Local Backup until the user explicitly opts back in via "Sync to cloud". */
-  val offlineOnly: Boolean = false
+  val offlineOnly: Boolean = false,
+  /** Opt-in alarm-clock-style escalation: forces max-priority, DND-bypassing, screen-waking
+   * delivery on an immediate, short-interval repeat cadence, regardless of the resolved
+   * notification hierarchy or global repeat settings. See [ReminderActionProcessor]. */
+  val isCritical: Boolean = false
 ) {
 
   fun isLimited(): Boolean = recurrence.repeatLimitOrDefault() > 0

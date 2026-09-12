@@ -1371,4 +1371,7 @@
     <string name="sync_reminders_to_wear_companion">Anstehende Erinnerungen mit deiner Uhr synchronisieren</string>
     <string name="do_not_sync_reminders_to_wear_companion">Erinnerungen nicht mit deiner Uhr synchronisieren</string>
     <string name="settings_search_keyword_wear_companion">Smartwatch, Wear OS, Companion-App</string>
+    <string name="critical_reminder">Kritische Erinnerung</string>
+    <string name="critical_reminder_description">Wiederholt sich, bis sie geschlossen wird, umgeht „Nicht stören“ und weckt den Bildschirm auf. Für Erinnerungen, die Sie nicht verpassen dürfen.</string>
+    <string name="critical">Kritisch</string>
 </resources>
