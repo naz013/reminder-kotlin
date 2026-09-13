@@ -59,6 +59,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
         HeaderNavigationSection.GROUPS,
         HeaderNavigationSection.TAG,
         HeaderNavigationSection.ROUTINES,
+        HeaderNavigationSection.POMODORO,
       ),
       state.configurableItems.map { it.section },
     )
@@ -78,6 +79,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
         HeaderNavigationSection.GOOGLE_TASKS,
         HeaderNavigationSection.GROUPS,
         HeaderNavigationSection.TAG,
+        HeaderNavigationSection.POMODORO,
       ),
       state.configurableItems.map { it.section },
     )
@@ -99,6 +101,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
         HeaderNavigationSection.TAG,
         HeaderNavigationSection.ROUTINES,
         HeaderNavigationSection.WORKFLOW,
+        HeaderNavigationSection.POMODORO,
       ),
       state.configurableItems.map { it.section },
     )
@@ -125,7 +128,8 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
 
   @Test
   fun `onReorder moves an item and persists the new order`() {
-    // Notes, Birthdays, Google Tasks, Groups, Tag, Routines -> move Routines (index 5) to the front
+    // Notes, Birthdays, Google Tasks, Groups, Tag, Routines, Pomodoro -> move Routines (index 5)
+    // to the front
     viewModel.onReorder(fromIndex = 5, toIndex = 0)
 
     assertEquals(
@@ -136,6 +140,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
         HeaderNavigationSection.GOOGLE_TASKS,
         HeaderNavigationSection.GROUPS,
         HeaderNavigationSection.TAG,
+        HeaderNavigationSection.POMODORO,
       ),
       viewModel.state.value.configurableItems.map { it.section },
     )
@@ -149,6 +154,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
         HeaderNavigationSection.GOOGLE_TASKS,
         HeaderNavigationSection.GROUPS,
         HeaderNavigationSection.TAG,
+        HeaderNavigationSection.POMODORO,
         HeaderNavigationSection.WORKFLOW,
       ),
       order,
