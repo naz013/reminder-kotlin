@@ -166,9 +166,7 @@ fun ChronologicalHomeScreen(
             EmptyState(
               icon = AppIcons.Fluent.CalendarAgenda,
               message = stringResource(R.string.no_events),
-              modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp),
+              modifier = Modifier.fillParentMaxSize(),
             )
           }
         }

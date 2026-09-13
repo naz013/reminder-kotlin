@@ -101,14 +101,14 @@ internal class TagsViewModel(
   }
 
   fun deleteSelectedTags(ids: Set<String>) {
+    // Clear selection before the deletes run: the reactive list-refresh coroutine can
+    // synchronously empty listState, and updateSelection is a no-op once listState is no
+    // longer Ready - clearing first avoids a stuck selectedCount.
+    onSelectionCancel()
     viewModelScope.launch(dispatcherProvider.io()) {
       ids.forEach { id ->
         tagAssignmentRepository.detachAllForTag(id)
         tagRepository.delete(id)
-      }
-
-      withContext(dispatcherProvider.main()) {
-        onSelectionCancel()
       }
     }
   }
