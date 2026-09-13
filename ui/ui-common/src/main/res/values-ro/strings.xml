@@ -1401,4 +1401,9 @@
     <string name="pomodoro_focused_minutes_total">Total concentrare: %1$d min</string>
     <string name="pro_focus_timer">- Cronometru de concentrare Pomodoro</string>
     <string name="channel_for_focus_timer_notifications">Afișează cronometrul de concentrare Pomodoro activ</string>
+    <string name="about_description">Un manager de sarcini complet care păstrează organizate memento-urile, notițele, zilele de naștere și sarcinile Google, cu backup automat în cloud.</string>
+    <string name="about_version_info">Versiunea %1$s (build %2$d)</string>
+    <string name="about_legal_section">Informații legale și licențe</string>
+    <string name="about_credits_section">Mulțumiri</string>
+    <string name="about_copyright">© %1$d %2$s. Toate drepturile rezervate.</string>
 </resources>

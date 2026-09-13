@@ -6,7 +6,6 @@ import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
-import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
@@ -32,7 +31,6 @@ import org.junit.Before
 import org.junit.Test
 
 class OtherSettingsViewModelTest : BaseTest() {
-  private val packageManagerWrapper = mockk<PackageManagerWrapper>()
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val contextProvider = mockk<ContextProvider>()
@@ -53,7 +51,6 @@ class OtherSettingsViewModelTest : BaseTest() {
     every { systemInfo.is16 } returns true
     every { systemInfo.currentPackageName } returns "com.cray.software.justreminder"
     every { featureFlags.isEnabled(any()) } returns false
-    every { packageManagerWrapper.getVersionName() } returns "1.0.0"
     // All permissions granted by default, so the missing-permissions list starts empty.
     every { Permissions.checkPermission(any(), any<String>()) } returns true
     every { digestCapabilityChecker.isDeviceCapableCached() } returns false
@@ -61,7 +58,6 @@ class OtherSettingsViewModelTest : BaseTest() {
 
     viewModel =
       OtherSettingsViewModel(
-        packageManagerWrapper = packageManagerWrapper,
         textProvider = textProvider,
         analyticsEventSender = analyticsEventSender,
         contextProvider = contextProvider,
@@ -287,28 +283,5 @@ class OtherSettingsViewModelTest : BaseTest() {
 
       val event = viewModel.event.value?.peekContent()
       assertTrue(event is OtherSettingsViewModel.ViewModelEvent.ShowPermissionDialog)
-    }
-
-  @Test
-  fun `onAboutClick builds the about dialog from package info`() =
-    runTest {
-      every { packageManagerWrapper.getVersionName() } returns "1.2.3"
-      every { textProvider.getStringArray(any()) } returns arrayOf("Alice", "Bob")
-
-      viewModel.onAboutClick()
-
-      val dialog = viewModel.state.first().aboutDialog
-      assertEquals("1.2.3", dialog?.version)
-      assertEquals("Alice\nBob", dialog?.translators)
-    }
-
-  @Test
-  fun `onAboutDialogDismiss clears the about dialog`() =
-    runTest {
-      viewModel.onAboutClick()
-
-      viewModel.onAboutDialogDismiss()
-
-      assertEquals(null, viewModel.state.first().aboutDialog)
     }
 }

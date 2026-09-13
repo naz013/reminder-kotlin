@@ -1399,4 +1399,9 @@
     <string name="pomodoro_focused_minutes_total">Totalt fokuserat: %1$d min</string>
     <string name="pro_focus_timer">- Pomodoro-fokustimer</string>
     <string name="channel_for_focus_timer_notifications">Visar den pågående Pomodoro-fokustimern</string>
+    <string name="about_description">En omfattande uppgiftshanterare som håller påminnelser, anteckningar, födelsedagar och Google-uppgifter organiserade, med automatisk molnsäkerhetskopiering.</string>
+    <string name="about_version_info">Version %1$s (bygge %2$d)</string>
+    <string name="about_legal_section">Juridik och licenser</string>
+    <string name="about_credits_section">Tack till</string>
+    <string name="about_copyright">© %1$d %2$s. Alla rättigheter förbehållna.</string>
 </resources>

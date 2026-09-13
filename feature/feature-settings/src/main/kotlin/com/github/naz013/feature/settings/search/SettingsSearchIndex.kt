@@ -595,6 +595,12 @@ internal object SettingsSearchIndex {
         isProOnly = true,
       ),
     )
+    add(
+      SettingsSearchEntry(
+        titleRes = R.string.about,
+        path = listOf(OtherNavKey.Other, OtherNavKey.About),
+      ),
+    )
 
     // Pro version
     add(SettingsSearchEntry(titleRes = R.string.pro_version, path = listOf(SettingsNavKey.ProVersion)))

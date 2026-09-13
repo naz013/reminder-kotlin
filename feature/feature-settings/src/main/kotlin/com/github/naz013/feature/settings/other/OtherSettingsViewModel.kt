@@ -11,7 +11,6 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.ContextProvider
-import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
@@ -32,7 +31,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class OtherSettingsViewModel(
-  private val packageManagerWrapper: PackageManagerWrapper,
   private val textProvider: TextProvider,
   private val analyticsEventSender: AnalyticsEventSender,
   private val contextProvider: ContextProvider,
@@ -102,29 +100,6 @@ internal class OtherSettingsViewModel(
     }
     Logger.i(TAG, "Will show permission dialog")
     event.emit(ViewModelEvent.ShowPermissionDialog(_state.value.permissionItems))
-  }
-
-  fun onAboutClick() {
-    val appName =
-      if (buildInfo.isPro) {
-        textProvider.getString(R.string.app_name_pro)
-      } else {
-        textProvider.getString(R.string.app_name)
-      }
-    _state.update {
-      it.copy(
-        aboutDialog =
-          AboutDialogState(
-            appName = appName.uppercase(),
-            version = packageManagerWrapper.getVersionName(),
-            translators = textProvider.getStringArray(R.array.app_translators).joinToString("\n"),
-          ),
-      )
-    }
-  }
-
-  fun onAboutDialogDismiss() {
-    _state.update { it.copy(aboutDialog = null) }
   }
 
   private fun loadState() {

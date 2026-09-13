@@ -1401,4 +1401,9 @@
     <string name="pomodoro_focused_minutes_total">Enfoque total: %1$d min</string>
     <string name="pro_focus_timer">- Temporizador de enfoque Pomodoro</string>
     <string name="channel_for_focus_timer_notifications">Muestra el temporizador de enfoque Pomodoro en curso</string>
+    <string name="about_description">Un completo gestor de tareas que mantiene organizados los recordatorios, notas, cumpleaños y tareas de Google, con copia de seguridad automática en la nube.</string>
+    <string name="about_version_info">Versión %1$s (compilación %2$d)</string>
+    <string name="about_legal_section">Legal y licencias</string>
+    <string name="about_credits_section">Créditos</string>
+    <string name="about_copyright">© %1$d %2$s. Todos los derechos reservados.</string>
 </resources>

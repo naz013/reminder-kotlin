@@ -1402,4 +1402,9 @@
     <string name="pomodoro_focused_minutes_total">Общо фокус: %1$d мин</string>
     <string name="pro_focus_timer">- Таймер за фокус Pomodoro</string>
     <string name="channel_for_focus_timer_notifications">Показва работещия таймер за фокус Pomodoro</string>
+    <string name="about_description">Изчерпателен мениджър на задачи, който поддържа организирани напомняния, бележки, рождени дни и Google Задачи, с автоматично архивиране в облака.</string>
+    <string name="about_version_info">Версия %1$s (компилация %2$d)</string>
+    <string name="about_legal_section">Правна информация и лицензи</string>
+    <string name="about_credits_section">Благодарности</string>
+    <string name="about_copyright">© %1$d %2$s. Всички права запазени.</string>
 </resources>

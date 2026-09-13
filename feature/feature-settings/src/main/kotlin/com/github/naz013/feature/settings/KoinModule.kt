@@ -25,6 +25,7 @@ import com.github.naz013.feature.settings.location.MapStyleViewModel
 import com.github.naz013.feature.settings.other.OtherSettingsViewModel
 import com.github.naz013.feature.settings.other.PrivacyPolicyViewModel
 import com.github.naz013.feature.settings.other.TermsViewModel
+import com.github.naz013.feature.settings.other.about.AboutViewModel
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewViewModel
 import com.github.naz013.feature.settings.proversion.ProVersionViewModel
 import com.github.naz013.feature.settings.security.AddPinViewModel
@@ -48,6 +49,7 @@ val featureSettingsModule = module {
   viewModelOf(::PrivacyPolicyViewModel)
   viewModelOf(::TermsViewModel)
   viewModelOf(::WhatsNewViewModel)
+  viewModelOf(::AboutViewModel)
   viewModelOf(::SecuritySettingsViewModel)
   viewModelOf(::AddPinViewModel)
   viewModelOf(::ChangePinViewModel)

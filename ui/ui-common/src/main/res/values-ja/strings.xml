@@ -1401,4 +1401,9 @@
     <string name="pomodoro_focused_minutes_total">合計集中時間: %1$d分</string>
     <string name="pro_focus_timer">- ポモドーロ・フォーカスタイマー</string>
     <string name="channel_for_focus_timer_notifications">実行中のポモドーロ・フォーカスタイマーを表示します</string>
+    <string name="about_description">リマインダー、メモ、誕生日、Google タスクを整理し、クラウドに自動バックアップする総合タスク管理アプリです。</string>
+    <string name="about_version_info">バージョン %1$s (ビルド %2$d)</string>
+    <string name="about_legal_section">法的情報とライセンス</string>
+    <string name="about_credits_section">クレジット</string>
+    <string name="about_copyright">© %1$d %2$s. All rights reserved.</string>
 </resources>

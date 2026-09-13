@@ -1399,4 +1399,9 @@
     <string name="pomodoro_focused_minutes_total">โฟกัสรวม %1$d นาที</string>
     <string name="pro_focus_timer">- ตัวจับเวลาโฟกัสแบบโพโมโดโร</string>
     <string name="channel_for_focus_timer_notifications">แสดงตัวจับเวลาโฟกัสแบบโพโมโดโรที่กำลังทำงาน</string>
+    <string name="about_description">ตัวจัดการงานที่ครอบคลุมซึ่งช่วยจัดระเบียบการแจ้งเตือน บันทึกย่อ วันเกิด และ Google Tasks พร้อมสำรองข้อมูลขึ้นคลาวด์โดยอัตโนมัติ</string>
+    <string name="about_version_info">เวอร์ชัน %1$s (บิลด์ %2$d)</string>
+    <string name="about_legal_section">กฎหมายและใบอนุญาต</string>
+    <string name="about_credits_section">เครดิต</string>
+    <string name="about_copyright">© %1$d %2$s สงวนลิขสิทธิ์</string>
 </resources>

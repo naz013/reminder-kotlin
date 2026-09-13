@@ -192,6 +192,7 @@ enum class Screen(val value: String) {
   GROUPS("groups_list"),
   TROUBLESHOOTING("troubleshooting"),
   WHATS_NEW("whats_new"),
+  ABOUT("about"),
 
   SETTINGS("settings"),
   GENERAL_SETTINGS("general_settings"),

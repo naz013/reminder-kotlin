@@ -1403,4 +1403,9 @@
     <string name="pomodoro_focused_minutes_total">कुल फ़ोकस: %1$d मिनट</string>
     <string name="pro_focus_timer">- पोमोडोरो फ़ोकस टाइमर</string>
     <string name="channel_for_focus_timer_notifications">चल रहे पोमोडोरो फ़ोकस टाइमर को दिखाता है</string>
+    <string name="about_description">एक व्यापक टास्क मैनेजर जो रिमाइंडर, नोट्स, जन्मदिन और Google कार्यों को व्यवस्थित रखता है, स्वचालित क्लाउड बैकअप के साथ।</string>
+    <string name="about_version_info">संस्करण %1$s (बिल्ड %2$d)</string>
+    <string name="about_legal_section">कानूनी जानकारी और लाइसेंस</string>
+    <string name="about_credits_section">श्रेय</string>
+    <string name="about_copyright">© %1$d %2$s. सर्वाधिकार सुरक्षित।</string>
 </resources>

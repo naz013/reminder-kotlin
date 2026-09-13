@@ -23,5 +23,8 @@ sealed interface OtherNavKey : NavKey {
   data object WhatsNew : OtherNavKey
 
   @Serializable
+  data object About : OtherNavKey
+
+  @Serializable
   data object GeminiFunctions : OtherNavKey
 }
