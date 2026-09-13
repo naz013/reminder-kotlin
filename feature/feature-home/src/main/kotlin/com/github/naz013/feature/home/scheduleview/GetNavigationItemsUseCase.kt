@@ -12,6 +12,7 @@ import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.PomodoroSessionRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagRepository
@@ -36,6 +37,7 @@ class GetNavigationItemsUseCase(
   private val workflowRuleRepository: WorkflowRuleRepository,
   private val routineRepository: RoutineRepository,
   private val tagRepository: TagRepository,
+  private val pomodoroSessionRepository: PomodoroSessionRepository,
   private val dateTimeManager: DateTimeManager,
   private val routineConfig: RoutineConfig,
   private val workflowConfig: WorkflowConfig,
@@ -77,6 +79,7 @@ class GetNavigationItemsUseCase(
     HeaderNavigationSection.TAG -> getTagItem(scope = scope)
     HeaderNavigationSection.ROUTINES -> getRoutineItem(scope = scope)
     HeaderNavigationSection.WORKFLOW -> getWorkflowItem(scope = scope)
+    HeaderNavigationSection.POMODORO -> getPomodoroItem(scope = scope)
   }
 
   private suspend fun getCalendarItem(scope: CoroutineScope): HeaderNavigationItem {
@@ -149,6 +152,21 @@ class GetNavigationItemsUseCase(
           color = sectionColor(AppColorIndex.INDIGO),
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenWorkflowGallery,
           subtitle = "${workflowRuleRepository.getEnabled().size}",
+        )
+      }.await()
+
+  private suspend fun getPomodoroItem(scope: CoroutineScope): HeaderNavigationItem =
+    scope
+      .async(dispatcherProvider.io()) {
+        val today = LocalDate.now()
+        val completedToday = pomodoroSessionRepository.getByDateRange(today, today)
+          .count { it.wasCompleted }
+        HeaderNavigationItem(
+          titleRes = R.string.pomodoro_focus_timer,
+          iconRes = DrawableCatalog.Fluent.ClockAlarm,
+          color = sectionColor(AppColorIndex.RED),
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenPomodoro,
+          subtitle = "$completedToday",
         )
       }.await()
 

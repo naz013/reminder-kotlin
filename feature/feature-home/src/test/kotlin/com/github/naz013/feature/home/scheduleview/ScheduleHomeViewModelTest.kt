@@ -13,6 +13,7 @@ import com.github.naz013.feature.home.ListState
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.LegalDocumentType
 import io.mockk.coEvery
@@ -40,6 +41,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
   private val whatsNewManager = mockk<WhatsNewManager>(relaxed = true)
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val legalDocumentRepository = mockk<LegalDocumentRepository>(relaxed = true)
+  private val buildInfo = mockk<BuildInfo>(relaxed = true)
 
   private lateinit var viewModel: ScheduleHomeViewModel
 
@@ -72,6 +74,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
         whatsNewManager = whatsNewManager,
         analyticsEventSender = analyticsEventSender,
         legalDocumentRepository = legalDocumentRepository,
+        buildInfo = buildInfo,
       )
   }
 

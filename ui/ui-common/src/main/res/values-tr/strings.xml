@@ -1386,4 +1386,20 @@
     <string name="agenda_matrix_delegate">Devret</string>
     <string name="agenda_matrix_someday">Bir gün</string>
     <string name="agenda_default_view_title">Varsayılan hatırlatıcı görünümü</string>
+    <string name="pomodoro_focus_timer">Odak zamanlayıcısı</string>
+    <string name="pomodoro_ready">Hazır</string>
+    <string name="pomodoro_work">Odak</string>
+    <string name="pomodoro_break">Mola</string>
+    <string name="pomodoro_long_break">Uzun mola</string>
+    <string name="pomodoro_start">Başlat</string>
+    <string name="pomodoro_pause">Duraklat</string>
+    <string name="pomodoro_resume">Devam et</string>
+    <string name="pomodoro_stop">Durdur</string>
+    <string name="pomodoro_skip_break">Molaya geç</string>
+    <string name="pomodoro_link_reminder">Bir hatırlatıcıyla ilişkilendir</string>
+    <string name="pomodoro_sessions_today">Bugün %1$d odak oturumu tamamlandı</string>
+    <string name="pomodoro_start_focus_session">Odak oturumu başlat</string>
+    <string name="pomodoro_focused_minutes_total">Toplam odaklanma: %1$d dk</string>
+    <string name="pro_focus_timer">- Pomodoro odak zamanlayıcısı</string>
+    <string name="channel_for_focus_timer_notifications">Çalışan Pomodoro odak zamanlayıcısını gösterir</string>
 </resources>

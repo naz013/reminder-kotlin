@@ -1385,4 +1385,20 @@
     <string name="agenda_matrix_delegate">Deleagă</string>
     <string name="agenda_matrix_someday">Cândva</string>
     <string name="agenda_default_view_title">Vizualizare implicită a memento-urilor</string>
+    <string name="pomodoro_focus_timer">Cronometru de concentrare</string>
+    <string name="pomodoro_ready">Gata</string>
+    <string name="pomodoro_work">Concentrare</string>
+    <string name="pomodoro_break">Pauză</string>
+    <string name="pomodoro_long_break">Pauză lungă</string>
+    <string name="pomodoro_start">Start</string>
+    <string name="pomodoro_pause">Pauzează</string>
+    <string name="pomodoro_resume">Reia</string>
+    <string name="pomodoro_stop">Oprește</string>
+    <string name="pomodoro_skip_break">Treci la pauză</string>
+    <string name="pomodoro_link_reminder">Asociază cu un memento</string>
+    <string name="pomodoro_sessions_today">%1$d sesiuni de concentrare finalizate azi</string>
+    <string name="pomodoro_start_focus_session">Începe sesiunea de concentrare</string>
+    <string name="pomodoro_focused_minutes_total">Total concentrare: %1$d min</string>
+    <string name="pro_focus_timer">- Cronometru de concentrare Pomodoro</string>
+    <string name="channel_for_focus_timer_notifications">Afișează cronometrul de concentrare Pomodoro activ</string>
 </resources>

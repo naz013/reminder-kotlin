@@ -1383,4 +1383,20 @@
     <string name="agenda_matrix_delegate">Delegasikan</string>
     <string name="agenda_matrix_someday">Suatu saat</string>
     <string name="agenda_default_view_title">Tampilan default pengingat</string>
+    <string name="pomodoro_focus_timer">Timer fokus</string>
+    <string name="pomodoro_ready">Siap</string>
+    <string name="pomodoro_work">Fokus</string>
+    <string name="pomodoro_break">Istirahat</string>
+    <string name="pomodoro_long_break">Istirahat panjang</string>
+    <string name="pomodoro_start">Mulai</string>
+    <string name="pomodoro_pause">Jeda</string>
+    <string name="pomodoro_resume">Lanjutkan</string>
+    <string name="pomodoro_stop">Berhenti</string>
+    <string name="pomodoro_skip_break">Lewati ke istirahat</string>
+    <string name="pomodoro_link_reminder">Tautkan ke pengingat</string>
+    <string name="pomodoro_sessions_today">%1$d sesi fokus selesai hari ini</string>
+    <string name="pomodoro_start_focus_session">Mulai sesi fokus</string>
+    <string name="pomodoro_focused_minutes_total">Total fokus: %1$d menit</string>
+    <string name="pro_focus_timer">- Timer fokus Pomodoro</string>
+    <string name="channel_for_focus_timer_notifications">Menampilkan timer fokus Pomodoro yang sedang berjalan</string>
 </resources>

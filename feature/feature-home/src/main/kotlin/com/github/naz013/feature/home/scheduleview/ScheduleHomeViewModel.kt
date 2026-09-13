@@ -13,9 +13,12 @@ import com.github.naz013.feature.home.HomeScreenState
 import com.github.naz013.feature.home.ListState
 import com.github.naz013.feature.home.withSelectedEvent
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -48,6 +51,7 @@ class ScheduleHomeViewModel(
   private val whatsNewManager: WhatsNewManager,
   private val analyticsEventSender: AnalyticsEventSender,
   private val legalDocumentRepository: LegalDocumentRepository,
+  private val buildInfo: BuildInfo,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(HomeScreenState())
@@ -177,7 +181,12 @@ class ScheduleHomeViewModel(
 
   fun onHeaderNavigationItemClicked(item: HeaderNavigationItem) {
     Logger.i(TAG, "On header navigation item clicked: ${item.navigationEvent}")
-    event.emit(item.navigationEvent)
+    if (item.navigationEvent == ViewModelEvent.OpenPomodoro && !buildInfo.isPro) {
+      analyticsEventSender.send(FeatureGateTappedEvent(Feature.POMODORO))
+      event.emit(ViewModelEvent.OpenProVersion)
+    } else {
+      event.emit(item.navigationEvent)
+    }
   }
 
   fun onHeaderNavigationItemLongClicked() {
@@ -278,6 +287,10 @@ class ScheduleHomeViewModel(
     data object OpenRoutines : ViewModelEvent
 
     data object OpenWorkflowGallery : ViewModelEvent
+
+    data object OpenPomodoro : ViewModelEvent
+
+    data object OpenProVersion : ViewModelEvent
 
     data object OpenPrivacy : ViewModelEvent
 

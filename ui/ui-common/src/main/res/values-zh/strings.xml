@@ -1386,4 +1386,20 @@
     <string name="agenda_matrix_delegate">委派</string>
     <string name="agenda_matrix_someday">以后再说</string>
     <string name="agenda_default_view_title">默认提醒视图</string>
+    <string name="pomodoro_focus_timer">专注计时器</string>
+    <string name="pomodoro_ready">准备就绪</string>
+    <string name="pomodoro_work">专注</string>
+    <string name="pomodoro_break">休息</string>
+    <string name="pomodoro_long_break">长休息</string>
+    <string name="pomodoro_start">开始</string>
+    <string name="pomodoro_pause">暂停</string>
+    <string name="pomodoro_resume">继续</string>
+    <string name="pomodoro_stop">停止</string>
+    <string name="pomodoro_skip_break">跳到休息</string>
+    <string name="pomodoro_link_reminder">关联提醒事项</string>
+    <string name="pomodoro_sessions_today">今天已完成 %1$d 个专注时段</string>
+    <string name="pomodoro_start_focus_session">开始专注时段</string>
+    <string name="pomodoro_focused_minutes_total">累计专注 %1$d 分钟</string>
+    <string name="pro_focus_timer">- 番茄专注计时器</string>
+    <string name="channel_for_focus_timer_notifications">显示正在运行的番茄专注计时器</string>
 </resources>

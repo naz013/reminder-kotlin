@@ -142,4 +142,10 @@ object PrefsConstants {
 
   const val HEADER_NAVIGATION_ORDER = "header_navigation_order"
   const val DISABLED_HEADER_NAVIGATION_SECTIONS = "disabled_header_navigation_sections"
+
+  const val POMODORO_WORK_DURATION_MINUTES = "pomodoro_work_duration_minutes"
+  const val POMODORO_BREAK_DURATION_MINUTES = "pomodoro_break_duration_minutes"
+  const val POMODORO_LONG_BREAK_DURATION_MINUTES = "pomodoro_long_break_duration_minutes"
+  const val POMODORO_SESSIONS_UNTIL_LONG_BREAK = "pomodoro_sessions_until_long_break"
+  const val POMODORO_AUTO_START_NEXT = "pomodoro_auto_start_next"
 }

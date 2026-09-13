@@ -1387,4 +1387,20 @@
     <string name="agenda_matrix_delegate">सौंपें</string>
     <string name="agenda_matrix_someday">किसी दिन</string>
     <string name="agenda_default_view_title">डिफ़ॉल्ट रिमाइंडर दृश्य</string>
+    <string name="pomodoro_focus_timer">फ़ोकस टाइमर</string>
+    <string name="pomodoro_ready">तैयार</string>
+    <string name="pomodoro_work">फ़ोकस</string>
+    <string name="pomodoro_break">ब्रेक</string>
+    <string name="pomodoro_long_break">लंबा ब्रेक</string>
+    <string name="pomodoro_start">शुरू करें</string>
+    <string name="pomodoro_pause">रोकें</string>
+    <string name="pomodoro_resume">फिर से शुरू करें</string>
+    <string name="pomodoro_stop">बंद करें</string>
+    <string name="pomodoro_skip_break">ब्रेक पर जाएं</string>
+    <string name="pomodoro_link_reminder">रिमाइंडर से लिंक करें</string>
+    <string name="pomodoro_sessions_today">आज %1$d फ़ोकस सत्र पूरे हुए</string>
+    <string name="pomodoro_start_focus_session">फ़ोकस सत्र शुरू करें</string>
+    <string name="pomodoro_focused_minutes_total">कुल फ़ोकस: %1$d मिनट</string>
+    <string name="pro_focus_timer">- पोमोडोरो फ़ोकस टाइमर</string>
+    <string name="channel_for_focus_timer_notifications">चल रहे पोमोडोरो फ़ोकस टाइमर को दिखाता है</string>
 </resources>

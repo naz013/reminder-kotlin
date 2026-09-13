@@ -621,4 +621,24 @@ class Prefs(
   var googleCalendarScanFallbackScheduled: Boolean
     get() = getBoolean(PrefsConstants.GOOGLE_CALENDAR_SCAN_FALLBACK_SCHEDULED, false)
     set(value) = putBoolean(PrefsConstants.GOOGLE_CALENDAR_SCAN_FALLBACK_SCHEDULED, value)
+
+  var pomodoroWorkDurationMinutes: Int
+    get() = getInt(PrefsConstants.POMODORO_WORK_DURATION_MINUTES, 25)
+    set(value) = putInt(PrefsConstants.POMODORO_WORK_DURATION_MINUTES, value)
+
+  var pomodoroBreakDurationMinutes: Int
+    get() = getInt(PrefsConstants.POMODORO_BREAK_DURATION_MINUTES, 5)
+    set(value) = putInt(PrefsConstants.POMODORO_BREAK_DURATION_MINUTES, value)
+
+  var pomodoroLongBreakDurationMinutes: Int
+    get() = getInt(PrefsConstants.POMODORO_LONG_BREAK_DURATION_MINUTES, 15)
+    set(value) = putInt(PrefsConstants.POMODORO_LONG_BREAK_DURATION_MINUTES, value)
+
+  var pomodoroSessionsUntilLongBreak: Int
+    get() = getInt(PrefsConstants.POMODORO_SESSIONS_UNTIL_LONG_BREAK, 4)
+    set(value) = putInt(PrefsConstants.POMODORO_SESSIONS_UNTIL_LONG_BREAK, value)
+
+  var pomodoroAutoStartNext: Boolean
+    get() = getBoolean(PrefsConstants.POMODORO_AUTO_START_NEXT, false)
+    set(value) = putBoolean(PrefsConstants.POMODORO_AUTO_START_NEXT, value)
 }

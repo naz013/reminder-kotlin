@@ -44,6 +44,7 @@ import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.PomodoroSessionRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
@@ -90,6 +91,7 @@ internal class PreviewReminderViewModel(
   private val googleDriveAuthManager: GoogleDriveAuthManager,
   private val dropboxAuthManager: DropboxAuthManager,
   private val workflowConfig: WorkflowConfig,
+  private val pomodoroSessionRepository: PomodoroSessionRepository,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewReminderState())
@@ -433,6 +435,15 @@ internal class PreviewReminderViewModel(
         }
       }
 
+      val focusedSeconds = withContext(dispatcherProvider.io()) {
+        pomodoroSessionRepository.getTotalFocusSecondsByReminderId(reminder.uuId)
+      }
+      withContext(dispatcherProvider.main()) {
+        _state.update {
+          it.copy(focusedMinutesTotal = (focusedSeconds / SECONDS_PER_MINUTE).takeIf { minutes -> minutes > 0 })
+        }
+      }
+
       val events = withContext(dispatcherProvider.io()) {
         googleCalendarApi.loadEvents(reminder.uuId)
       }
@@ -535,5 +546,6 @@ internal class PreviewReminderViewModel(
 
   companion object {
     private const val TAG = "PreviewReminderViewModel"
+    private const val SECONDS_PER_MINUTE = 60
   }
 }

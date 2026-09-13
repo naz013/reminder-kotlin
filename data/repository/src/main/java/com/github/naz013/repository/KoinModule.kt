@@ -11,6 +11,7 @@ import com.github.naz013.repository.impl.GroupV2RepositoryImpl
 import com.github.naz013.repository.impl.HolidayRepositoryImpl
 import com.github.naz013.repository.impl.NoteRepositoryImpl
 import com.github.naz013.repository.impl.PlaceRepositoryImpl
+import com.github.naz013.repository.impl.PomodoroSessionRepositoryImpl
 import com.github.naz013.repository.impl.RecentQueryRepositoryImpl
 import com.github.naz013.repository.impl.RecurPresetRepositoryImpl
 import com.github.naz013.repository.impl.ReminderGroupRepositoryImpl
@@ -96,5 +97,11 @@ val repositoryModule = module {
       get<AppDb>().googleCalendarEventDao(),
       get()
     ) as GoogleCalendarEventRepository
+  }
+  factory {
+    PomodoroSessionRepositoryImpl(
+      get<AppDb>().pomodoroSessionDao(),
+      get()
+    ) as PomodoroSessionRepository
   }
 }

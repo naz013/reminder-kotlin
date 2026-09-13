@@ -1383,4 +1383,20 @@
     <string name="agenda_matrix_delegate">تفويض</string>
     <string name="agenda_matrix_someday">يومًا ما</string>
     <string name="agenda_default_view_title">طريقة العرض الافتراضية للتذكيرات</string>
+    <string name="pomodoro_focus_timer">مؤقت التركيز</string>
+    <string name="pomodoro_ready">جاهز</string>
+    <string name="pomodoro_work">تركيز</string>
+    <string name="pomodoro_break">استراحة</string>
+    <string name="pomodoro_long_break">استراحة طويلة</string>
+    <string name="pomodoro_start">ابدأ</string>
+    <string name="pomodoro_pause">إيقاف مؤقت</string>
+    <string name="pomodoro_resume">استئناف</string>
+    <string name="pomodoro_stop">إيقاف</string>
+    <string name="pomodoro_skip_break">الانتقال إلى الاستراحة</string>
+    <string name="pomodoro_link_reminder">ربط بتذكير</string>
+    <string name="pomodoro_sessions_today">تم إكمال %1$d جلسات تركيز اليوم</string>
+    <string name="pomodoro_start_focus_session">بدء جلسة تركيز</string>
+    <string name="pomodoro_focused_minutes_total">إجمالي التركيز %1$d دقيقة</string>
+    <string name="pro_focus_timer">- مؤقت بومودورو للتركيز</string>
+    <string name="channel_for_focus_timer_notifications">يعرض مؤقت بومودورو الجاري للتركيز</string>
 </resources>

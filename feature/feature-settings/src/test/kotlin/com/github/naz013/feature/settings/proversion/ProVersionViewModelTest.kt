@@ -19,6 +19,7 @@ class ProVersionViewModelTest : BaseTest() {
   @Test
   fun `builds the advantages list from text provider in declared order`() {
     every { textProvider.getString(R.string.pro_streaks_and_insights) } returns "Streaks & Insights"
+    every { textProvider.getString(R.string.pro_focus_timer) } returns "Pomodoro focus timer"
     every { textProvider.getString(R.string.pro_local_encrypted_backup) } returns "Local encrypted backup"
     every { textProvider.getString(R.string.pro_gemini_app_functions) } returns "Gemini AppFunctions"
     every { textProvider.getString(R.string.pro_public_holidays) } returns "Public holidays"
@@ -35,6 +36,7 @@ class ProVersionViewModelTest : BaseTest() {
     assertEquals(
       listOf(
         "Streaks & Insights",
+        "Pomodoro focus timer",
         "Local encrypted backup",
         "Gemini AppFunctions",
         "Public holidays",

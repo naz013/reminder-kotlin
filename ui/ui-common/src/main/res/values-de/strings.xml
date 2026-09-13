@@ -1381,4 +1381,20 @@
     <string name="agenda_matrix_delegate">Delegieren</string>
     <string name="agenda_matrix_someday">Irgendwann</string>
     <string name="agenda_default_view_title">Standardansicht für Erinnerungen</string>
+    <string name="pomodoro_focus_timer">Fokus-Timer</string>
+    <string name="pomodoro_ready">Bereit</string>
+    <string name="pomodoro_work">Fokus</string>
+    <string name="pomodoro_break">Pause</string>
+    <string name="pomodoro_long_break">Lange Pause</string>
+    <string name="pomodoro_start">Start</string>
+    <string name="pomodoro_pause">Pausieren</string>
+    <string name="pomodoro_resume">Fortsetzen</string>
+    <string name="pomodoro_stop">Stopp</string>
+    <string name="pomodoro_skip_break">Zur Pause wechseln</string>
+    <string name="pomodoro_link_reminder">Mit Erinnerung verknüpfen</string>
+    <string name="pomodoro_sessions_today">Heute %1$d Fokusphasen abgeschlossen</string>
+    <string name="pomodoro_start_focus_session">Fokusphase starten</string>
+    <string name="pomodoro_focused_minutes_total">Insgesamt %1$d Min. fokussiert</string>
+    <string name="pro_focus_timer">- Pomodoro-Fokus-Timer</string>
+    <string name="channel_for_focus_timer_notifications">Zeigt den laufenden Pomodoro-Fokus-Timer an</string>
 </resources>

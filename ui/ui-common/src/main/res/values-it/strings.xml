@@ -1385,4 +1385,20 @@
     <string name="agenda_matrix_delegate">Delega</string>
     <string name="agenda_matrix_someday">Un giorno</string>
     <string name="agenda_default_view_title">Vista predefinita dei promemoria</string>
+    <string name="pomodoro_focus_timer">Timer di concentrazione</string>
+    <string name="pomodoro_ready">Pronto</string>
+    <string name="pomodoro_work">Concentrazione</string>
+    <string name="pomodoro_break">Pausa</string>
+    <string name="pomodoro_long_break">Pausa lunga</string>
+    <string name="pomodoro_start">Avvia</string>
+    <string name="pomodoro_pause">Metti in pausa</string>
+    <string name="pomodoro_resume">Riprendi</string>
+    <string name="pomodoro_stop">Interrompi</string>
+    <string name="pomodoro_skip_break">Passa alla pausa</string>
+    <string name="pomodoro_link_reminder">Collega a un promemoria</string>
+    <string name="pomodoro_sessions_today">%1$d sessioni di concentrazione completate oggi</string>
+    <string name="pomodoro_start_focus_session">Avvia sessione di concentrazione</string>
+    <string name="pomodoro_focused_minutes_total">Concentrazione totale: %1$d min</string>
+    <string name="pro_focus_timer">- Timer di concentrazione Pomodoro</string>
+    <string name="channel_for_focus_timer_notifications">Mostra il timer di concentrazione Pomodoro in corso</string>
 </resources>

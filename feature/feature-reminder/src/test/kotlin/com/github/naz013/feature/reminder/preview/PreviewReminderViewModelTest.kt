@@ -37,6 +37,7 @@ import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.PomodoroSessionRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
@@ -90,6 +91,7 @@ class PreviewReminderViewModelTest : BaseTest() {
   private val googleDriveAuthManager = mockk<GoogleDriveAuthManager>()
   private val dropboxAuthManager = mockk<DropboxAuthManager>()
   private val workflowConfig = mockk<WorkflowConfig>(relaxed = true)
+  private val pomodoroSessionRepository = mockk<PomodoroSessionRepository>(relaxed = true)
 
   @Before
   override fun setUp() {
@@ -183,6 +185,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       googleDriveAuthManager = googleDriveAuthManager,
       dropboxAuthManager = dropboxAuthManager,
       workflowConfig = workflowConfig,
+      pomodoroSessionRepository = pomodoroSessionRepository,
     )
 
   @Test
