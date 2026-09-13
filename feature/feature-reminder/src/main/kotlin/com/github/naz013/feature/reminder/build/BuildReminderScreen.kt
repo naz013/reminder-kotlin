@@ -240,15 +240,11 @@ internal fun BuildReminderScreen(
           item(key = "forecast") { ForecastRow(prediction) }
         }
 
-        if (canSaveAsPreset) {
-          item(key = "save_as_preset") {
-            SaveAsPresetRow(
-              checked = saveAsPresetChecked,
-              onCheckedChange = onSaveAsPresetChange,
-              presetName = presetName,
-              onPresetNameChange = onPresetNameChange,
-            )
-          }
+        item(key = "critical") {
+          CriticalRow(
+            checked = isCriticalChecked,
+            onCheckedChange = onCriticalChange,
+          )
         }
 
         if (canSetOfflineOnly) {
@@ -260,11 +256,15 @@ internal fun BuildReminderScreen(
           }
         }
 
-        item(key = "critical") {
-          CriticalRow(
-            checked = isCriticalChecked,
-            onCheckedChange = onCriticalChange,
-          )
+        if (canSaveAsPreset) {
+          item(key = "save_as_preset") {
+            SaveAsPresetRow(
+              checked = saveAsPresetChecked,
+              onCheckedChange = onSaveAsPresetChange,
+              presetName = presetName,
+              onPresetNameChange = onPresetNameChange,
+            )
+          }
         }
       }
     }
