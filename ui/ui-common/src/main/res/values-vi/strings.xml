@@ -1399,4 +1399,9 @@
     <string name="pomodoro_focused_minutes_total">Tổng thời gian tập trung: %1$d phút</string>
     <string name="pro_focus_timer">- Bộ đếm giờ tập trung Pomodoro</string>
     <string name="channel_for_focus_timer_notifications">Hiển thị bộ đếm giờ tập trung Pomodoro đang chạy</string>
+    <string name="about_description">Trình quản lý tác vụ toàn diện giúp sắp xếp lời nhắc, ghi chú, sinh nhật và Google Tasks, với tính năng sao lưu đám mây tự động.</string>
+    <string name="about_version_info">Phiên bản %1$s (bản dựng %2$d)</string>
+    <string name="about_legal_section">Pháp lý &amp; giấy phép</string>
+    <string name="about_credits_section">Ghi công</string>
+    <string name="about_copyright">© %1$d %2$s. Đã đăng ký bản quyền.</string>
 </resources>

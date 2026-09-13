@@ -1402,4 +1402,9 @@
     <string name="pomodoro_focused_minutes_total">累计专注 %1$d 分钟</string>
     <string name="pro_focus_timer">- 番茄专注计时器</string>
     <string name="channel_for_focus_timer_notifications">显示正在运行的番茄专注计时器</string>
+    <string name="about_description">一款全面的任务管理器，可整理提醒事项、笔记、生日和 Google 任务，并自动备份到云端。</string>
+    <string name="about_version_info">版本 %1$s（构建 %2$d）</string>
+    <string name="about_legal_section">法律信息与许可</string>
+    <string name="about_credits_section">鸣谢</string>
+    <string name="about_copyright">© %1$d %2$s。保留所有权利。</string>
 </resources>

@@ -1399,4 +1399,9 @@
     <string name="pomodoro_focused_minutes_total">Total fokus: %1$d menit</string>
     <string name="pro_focus_timer">- Timer fokus Pomodoro</string>
     <string name="channel_for_focus_timer_notifications">Menampilkan timer fokus Pomodoro yang sedang berjalan</string>
+    <string name="about_description">Pengelola tugas lengkap yang menjaga pengingat, catatan, ulang tahun, dan Google Tugas tetap teratur, dengan pencadangan otomatis ke cloud.</string>
+    <string name="about_version_info">Versi %1$s (build %2$d)</string>
+    <string name="about_legal_section">Legal &amp; lisensi</string>
+    <string name="about_credits_section">Kredit</string>
+    <string name="about_copyright">© %1$d %2$s. Semua hak dilindungi.</string>
 </resources>

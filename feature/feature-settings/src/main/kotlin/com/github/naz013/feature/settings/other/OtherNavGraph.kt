@@ -18,6 +18,9 @@ import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.feature.settings.SettingsDetailPane
 import com.github.naz013.feature.settings.SettingsScaffold
+import com.github.naz013.feature.settings.other.about.AboutScreen
+import com.github.naz013.feature.settings.other.about.AboutState
+import com.github.naz013.feature.settings.other.about.AboutViewModel
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewScreen
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewState
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewViewModel
@@ -51,6 +54,7 @@ fun EntryProviderScope<NavKey>.otherEntries(
   entry<OtherNavKey.PrivacyPolicy>(metadata = SettingsDetailPane) { PrivacyPolicyEntry(backStack) }
   entry<OtherNavKey.Terms>(metadata = SettingsDetailPane) { TermsEntry(backStack) }
   entry<OtherNavKey.WhatsNew>(metadata = SettingsDetailPane) { WhatsNewEntry(backStack) }
+  entry<OtherNavKey.About>(metadata = SettingsDetailPane) { AboutEntry(backStack) }
   entry<OtherNavKey.GeminiFunctions>(metadata = SettingsDetailPane) { GeminiFunctionsEntry(backStack) }
 }
 
@@ -147,8 +151,7 @@ private fun OtherEntry(
       onPermissionsClick = { backStack.add(OtherNavKey.Permissions) },
       onAllowPermissionClick = { viewModel.onShowPermissionDialogClicked() },
       onOssClick = { backStack.add(OtherNavKey.Oss) },
-      onAboutClick = viewModel::onAboutClick,
-      onAboutDialogDismiss = viewModel::onAboutDialogDismiss,
+      onAboutClick = { backStack.add(OtherNavKey.About) },
       modifier = Modifier.padding(padding),
     )
   }
@@ -223,6 +226,19 @@ private fun WhatsNewEntry(backStack: MutableList<NavKey>) {
     versionAndDate = state.versionName + "\n" + state.lastUpdated,
     whatsNewText = state.whatsNewText,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+  )
+}
+
+@Composable
+private fun AboutEntry(backStack: MutableList<NavKey>) {
+  val viewModel = koinViewModel<AboutViewModel>()
+  val state by viewModel.state.collectAsState(AboutState())
+  AboutScreen(
+    state = state,
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    onPrivacyPolicyClick = { backStack.add(OtherNavKey.PrivacyPolicy) },
+    onTermsClick = { backStack.add(OtherNavKey.Terms) },
+    onOssClick = { backStack.add(OtherNavKey.Oss) },
   )
 }
 

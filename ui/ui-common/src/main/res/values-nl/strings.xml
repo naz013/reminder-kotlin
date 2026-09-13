@@ -1399,4 +1399,9 @@
     <string name="pomodoro_focused_minutes_total">Totaal gefocust: %1$d min</string>
     <string name="pro_focus_timer">- Pomodoro-focustimer</string>
     <string name="channel_for_focus_timer_notifications">Toont de actieve Pomodoro-focustimer</string>
+    <string name="about_description">Een uitgebreide taakbeheerder die herinneringen, notities, verjaardagen en Google Taken georganiseerd houdt, met automatische cloudback-up.</string>
+    <string name="about_version_info">Versie %1$s (build %2$d)</string>
+    <string name="about_legal_section">Juridisch &amp; licenties</string>
+    <string name="about_credits_section">Met dank aan</string>
+    <string name="about_copyright">© %1$d %2$s. Alle rechten voorbehouden.</string>
 </resources>

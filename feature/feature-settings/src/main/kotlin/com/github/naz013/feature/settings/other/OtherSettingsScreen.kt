@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -31,7 +28,6 @@ internal fun OtherSettingsScreen(
   onAllowPermissionClick: () -> Unit,
   onOssClick: () -> Unit,
   onAboutClick: () -> Unit,
-  onAboutDialogDismiss: () -> Unit,
   onGeminiFunctionsClick: () -> Unit,
   onDigestClick: () -> Unit,
   onBuyMeACoffeeClick: () -> Unit,
@@ -134,21 +130,6 @@ internal fun OtherSettingsScreen(
       icon = AppIcons.Fluent.Info,
       dividerBottom = true,
       onClick = onAboutClick,
-    )
-  }
-
-  val aboutDialog = state.aboutDialog
-  if (aboutDialog != null) {
-    AlertDialog(
-      onDismissRequest = onAboutDialogDismiss,
-      title = { Text(aboutDialog.appName) },
-      text = {
-        Column {
-          Text(text = aboutDialog.version, style = MaterialTheme.typography.bodyLarge)
-          Text(text = aboutDialog.translators, style = MaterialTheme.typography.bodyMedium)
-        }
-      },
-      confirmButton = { TextButton(onClick = onAboutDialogDismiss) { Text(stringResource(R.string.ok)) } },
     )
   }
 }

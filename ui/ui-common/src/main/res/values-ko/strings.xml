@@ -1401,4 +1401,9 @@
     <string name="pomodoro_focused_minutes_total">총 집중 시간 %1$d분</string>
     <string name="pro_focus_timer">- 포모도로 포커스 타이머</string>
     <string name="channel_for_focus_timer_notifications">실행 중인 포모도로 포커스 타이머를 표시합니다</string>
+    <string name="about_description">리마인더, 메모, 생일, Google 작업을 정리하고 클라우드에 자동으로 백업하는 종합 작업 관리 앱입니다.</string>
+    <string name="about_version_info">버전 %1$s (빌드 %2$d)</string>
+    <string name="about_legal_section">법적 정보 및 라이선스</string>
+    <string name="about_credits_section">크레딧</string>
+    <string name="about_copyright">© %1$d %2$s. All rights reserved.</string>
 </resources>

@@ -1401,4 +1401,9 @@
     <string name="pomodoro_focused_minutes_total">Celkem soustředění: %1$d min</string>
     <string name="pro_focus_timer">- Časovač soustředění Pomodoro</string>
     <string name="channel_for_focus_timer_notifications">Zobrazuje běžící časovač soustředění Pomodoro</string>
+    <string name="about_description">Komplexní správce úkolů, který udržuje přehledné připomínky, poznámky, narozeniny a úkoly Google, s automatickou zálohou do cloudu.</string>
+    <string name="about_version_info">Verze %1$s (sestavení %2$d)</string>
+    <string name="about_legal_section">Právní informace a licence</string>
+    <string name="about_credits_section">Poděkování</string>
+    <string name="about_copyright">© %1$d %2$s. Všechna práva vyhrazena.</string>
 </resources>

@@ -1402,4 +1402,9 @@
     <string name="pomodoro_focused_minutes_total">Toplam odaklanma: %1$d dk</string>
     <string name="pro_focus_timer">- Pomodoro odak zamanlayıcısı</string>
     <string name="channel_for_focus_timer_notifications">Çalışan Pomodoro odak zamanlayıcısını gösterir</string>
+    <string name="about_description">Hatırlatıcıları, notları, doğum günlerini ve Google Görevlerini düzenli tutan, otomatik bulut yedeklemeli kapsamlı bir görev yöneticisi.</string>
+    <string name="about_version_info">Sürüm %1$s (yapı %2$d)</string>
+    <string name="about_legal_section">Yasal bilgiler ve lisanslar</string>
+    <string name="about_credits_section">Emeği geçenler</string>
+    <string name="about_copyright">© %1$d %2$s. Tüm hakları saklıdır.</string>
 </resources>

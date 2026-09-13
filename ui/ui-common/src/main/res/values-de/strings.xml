@@ -1397,4 +1397,9 @@
     <string name="pomodoro_focused_minutes_total">Insgesamt %1$d Min. fokussiert</string>
     <string name="pro_focus_timer">- Pomodoro-Fokus-Timer</string>
     <string name="channel_for_focus_timer_notifications">Zeigt den laufenden Pomodoro-Fokus-Timer an</string>
+    <string name="about_description">Ein umfassender Aufgabenmanager, der Erinnerungen, Notizen, Geburtstage und Google-Aufgaben organisiert – mit automatischer Cloud-Sicherung.</string>
+    <string name="about_version_info">Version %1$s (Build %2$d)</string>
+    <string name="about_legal_section">Rechtliches &amp; Lizenzen</string>
+    <string name="about_credits_section">Danksagungen</string>
+    <string name="about_copyright">© %1$d %2$s. Alle Rechte vorbehalten.</string>
 </resources>
