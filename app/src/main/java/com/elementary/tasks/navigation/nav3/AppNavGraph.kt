@@ -62,6 +62,8 @@ import com.github.naz013.feature.note.NotesNavKey
 import com.github.naz013.feature.note.notesEntries
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
 import com.github.naz013.feature.reminder.build.buildReminderEntries
+import com.github.naz013.feature.reminder.quickadd.QuickAddNavKey
+import com.github.naz013.feature.reminder.quickadd.quickAddEntries
 import com.github.naz013.feature.reminder.lists.removed.RemindersArchiveNavKey
 import com.github.naz013.feature.reminder.lists.removed.remindersArchiveEntries
 import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
@@ -231,6 +233,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
   // captured isMediumOrWiderWidth lambda always reads the current recomposition's value rather than
   // freezing to whatever it was on first composition.
   val sidePanelSceneStrategy = SidePanelSceneStrategy(isMediumOrWiderWidth = { isMediumOrWiderWidth })
+  val quickAddSceneStrategy = QuickAddSceneStrategy()
 
   DisposableEffect(backStack) {
     appNavBridge.attachOuterBackStack(backStack)
@@ -249,7 +252,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
     // from Calendar, which was never tagged listPane() - see SidePanelSceneStrategy.kt's doc.
     // sidePanelSceneStrategy only ever claims a scene when its own host+panel tags both match, so
     // trying it first doesn't affect any of listDetailSceneStrategy's own (unrelated) pairings.
-    sceneStrategies = listOf(sidePanelSceneStrategy, listDetailSceneStrategy),
+    sceneStrategies = listOf(quickAddSceneStrategy, sidePanelSceneStrategy, listDetailSceneStrategy),
     sceneDecoratorStrategies = listOf(persistentNavRailStrategy),
     entryDecorators =
       listOf(
@@ -308,6 +311,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
           onOpenRoutines = { backStack.add(RoutineNavKey.List) },
           onOpenWorkflowGallery = { backStack.add(WorkflowNavKey.Gallery) },
           onOpenPomodoro = { backStack.add(PomodoroNavKey.Timer()) },
+          onOpenQuickAdd = { backStack.add(QuickAddNavKey.Sheet) },
           onOpenProVersion = { backStack.add(SettingsNavKey.ProVersion) },
           onOpenPrivacyPolicy = { backStack.add(OtherNavKey.PrivacyPolicy) },
           onOpenCloudDrives = { backStack.add(ExportNavKey.CloudServices) },
@@ -365,6 +369,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
           isRenderedAsSidePanel = isRenderedAsSidePanel,
           rememberContactPhonePicker = { rememberContactPhonePicker() },
         )
+        quickAddEntries(backStack)
         todoEditEntries(
           backStack = backStack,
           navigateBeyondBackStack = { key -> appNavBridge.navigate(key) },

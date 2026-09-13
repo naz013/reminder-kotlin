@@ -55,3 +55,17 @@ fun isSidePanelHost(metadata: Map<String, Any>): Boolean = metadata[SIDE_PANEL_H
 
 /** Whether [metadata] (a Nav3 `NavEntry.metadata`) carries the [sidePanelSupporting] tag. */
 fun isSidePanelSupporting(metadata: Map<String, Any>): Boolean = metadata[SIDE_PANEL_SUPPORTING_KEY] == true
+
+private const val QUICK_ADD_OVERLAY_KEY = "com.github.naz013.ui.common.compose.foundation.navigation.QuickAddOverlay"
+
+/**
+ * Marks a Nav3 entry (quick-add's sheet - see `QuickAddNavGraph.kt`) as one that should float over
+ * whatever entry is already on the backstack rather than replacing it, the way [sidePanelSupporting]
+ * marks a side-sheet entry - paired with `QuickAddSceneStrategy` (`app` module). `NavEntry.key`
+ * itself isn't public, so a scene strategy can't just check the entry's key type directly; metadata
+ * is the supported way to tag an entry for a strategy to recognize.
+ */
+fun quickAddOverlay(): Map<String, Any> = mapOf(QUICK_ADD_OVERLAY_KEY to true)
+
+/** Whether [metadata] (a Nav3 `NavEntry.metadata`) carries the [quickAddOverlay] tag. */
+fun isQuickAddOverlay(metadata: Map<String, Any>): Boolean = metadata[QUICK_ADD_OVERLAY_KEY] == true

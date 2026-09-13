@@ -44,6 +44,7 @@ import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset
+import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.featureflags.FeatureFlags
@@ -65,6 +66,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -165,6 +167,7 @@ class BuildReminderViewModelTest : BaseTest() {
     deepLinkText: String? = null,
     seedFromTodoEdit: Boolean = false,
     isEditingExtend: Boolean = false,
+    deepLinkQuickAdd: BuildReminderNavKey.Main.QuickAddDeepLink? = null,
   ): BuildReminderViewModel =
     BuildReminderViewModel(
       navKey = BuildReminderNavKey.Main(
@@ -176,6 +179,7 @@ class BuildReminderViewModelTest : BaseTest() {
         deepLinkText = deepLinkText,
         seedFromTodoEdit = seedFromTodoEdit,
         isEditingExtend = isEditingExtend,
+        deepLinkQuickAdd = deepLinkQuickAdd,
       ),
       dispatcherProvider = mockDispatcherProvider(),
       placeRepository = placeRepository,
@@ -351,6 +355,41 @@ class BuildReminderViewModelTest : BaseTest() {
 
     assertEquals(false, viewModel.state.value.canRemove)
     coVerify(exactly = 0) { pauseReminderUseCase(any()) }
+  }
+
+  @Test
+  fun `init with a quick-add deep link decomposes the recognized schedule into builder items`() {
+    val quickAdd =
+      BuildReminderNavKey.Main.QuickAddDeepLink(
+        startDateTimeMillis = 1000L,
+        recurrenceType = BuildReminderNavKey.Main.QuickAddDeepLink.RecurrenceType.MONTHLY,
+        interval = 1,
+        dayOfMonth = 1,
+      )
+    val localDateTime = LocalDateTime.of(2025, 1, 1, 9, 0)
+    every { dateTimeManager.fromMillis(1000L) } returns localDateTime
+    every { dateTimeManager.localToUtc(localDateTime) } returns localDateTime
+    val seedReminder = slot<ReminderV2>()
+    coEvery { reminderToBiDecomposer(capture(seedReminder)) } returns listOf(summaryItem())
+
+    createViewModel(deepLinkQuickAdd = quickAdd)
+
+    assertEquals(RecurrenceRule.Monthly(dayOfMonth = 1, repeatInterval = 1), seedReminder.captured.recurrence)
+    assertEquals(localDateTime, seedReminder.captured.schedule.startDateTime)
+    verify { builderItemsLogic.setAll(listOf(summaryItem())) }
+  }
+
+  @Test
+  fun `init with a quick-add deep link and accompanying text also seeds the title`() {
+    val quickAdd = BuildReminderNavKey.Main.QuickAddDeepLink(startDateTimeMillis = 1000L)
+    val localDateTime = LocalDateTime.of(2025, 1, 7, 9, 0)
+    every { dateTimeManager.fromMillis(1000L) } returns localDateTime
+    every { dateTimeManager.localToUtc(localDateTime) } returns localDateTime
+    coEvery { reminderToBiDecomposer(any()) } returns emptyList()
+
+    createViewModel(deepLinkQuickAdd = quickAdd, deepLinkText = "pay rent")
+
+    verify { builderItemsLogic.addNew(match { it is SummaryBuilderItem }) }
   }
 
   @Test

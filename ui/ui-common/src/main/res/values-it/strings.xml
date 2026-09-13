@@ -1406,4 +1406,8 @@
     <string name="about_legal_section">Note legali e licenze</string>
     <string name="about_credits_section">Riconoscimenti</string>
     <string name="about_copyright">© %1$d %2$s. Tutti i diritti riservati.</string>
+    <string name="quick_add">Aggiunta rapida</string>
+    <string name="quick_add_hint">Prova \"pagare l\'affitto ogni 1 alle 9\"</string>
+    <string name="quick_add_continue_in_editor">Continua nell\'editor completo</string>
+    <string name="quick_add_does_not_repeat">Non si ripete</string>
 </resources>

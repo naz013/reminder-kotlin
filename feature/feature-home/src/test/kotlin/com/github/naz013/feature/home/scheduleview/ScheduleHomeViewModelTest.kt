@@ -12,6 +12,8 @@ import com.github.naz013.feature.home.HomeScreenState
 import com.github.naz013.feature.home.ListState
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.legal.LegalDocumentRepository
@@ -53,6 +55,9 @@ class ScheduleHomeViewModelTest : BaseTest() {
     // instant, which won't match the real call's (different) instant. Use any() instead.
     every { getGreetingTextUseCase(any()) } returns "Good morning"
     every { googleTasksAuthManager.isAuthorized() } returns true
+    // Pro by default so existing menu/gating expectations don't all need to opt in; tests that
+    // care about the free-user experience override this locally.
+    every { buildInfo.isPro } returns true
     every { getActiveEventsForTheDayUseCase(any()) } returns flowOf(emptyList())
     every { getTimeSectionsUseCase(any()) } returns emptyList()
     coEvery { getNavigationItemsUseCase(any(), any()) } returns emptyList()
@@ -100,8 +105,28 @@ class ScheduleHomeViewModelTest : BaseTest() {
 
       assertEquals(
         listOf(
+          ScheduleHomeViewModel.EventType.QuickAdd,
           ScheduleHomeViewModel.EventType.Reminder,
           ScheduleHomeViewModel.EventType.Birthday,
+          ScheduleHomeViewModel.EventType.Note,
+          ScheduleHomeViewModel.EventType.Todo,
+        ),
+        state.addMenuItems,
+      )
+    }
+
+  @Test
+  fun `loadData hides quick add from the menu for free users`() =
+    runTest {
+      every { buildInfo.isPro } returns false
+
+      val state = viewModel.state.first()
+
+      assertEquals(
+        listOf(
+          ScheduleHomeViewModel.EventType.Reminder,
+          ScheduleHomeViewModel.EventType.Birthday,
+          ScheduleHomeViewModel.EventType.GoogleTask,
           ScheduleHomeViewModel.EventType.Note,
           ScheduleHomeViewModel.EventType.Todo,
         ),
@@ -221,6 +246,31 @@ class ScheduleHomeViewModelTest : BaseTest() {
       ScheduleHomeViewModel.ViewModelEvent.OpenCreateNote,
       viewModel.event.value?.peekContent(),
     )
+  }
+
+  @Test
+  fun `onEventTypeSelected QuickAdd posts OpenQuickAdd for pro users`() {
+    every { buildInfo.isPro } returns true
+
+    viewModel.onEventTypeSelected(ScheduleHomeViewModel.EventType.QuickAdd)
+
+    assertEquals(
+      ScheduleHomeViewModel.ViewModelEvent.OpenQuickAdd,
+      viewModel.event.value?.peekContent(),
+    )
+  }
+
+  @Test
+  fun `onEventTypeSelected QuickAdd posts OpenProVersion and sends a gate event for free users`() {
+    every { buildInfo.isPro } returns false
+
+    viewModel.onEventTypeSelected(ScheduleHomeViewModel.EventType.QuickAdd)
+
+    assertEquals(
+      ScheduleHomeViewModel.ViewModelEvent.OpenProVersion,
+      viewModel.event.value?.peekContent(),
+    )
+    verify { analyticsEventSender.send(FeatureGateTappedEvent(Feature.QUICK_ADD)) }
   }
 
   @Test

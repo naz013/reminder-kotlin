@@ -42,6 +42,7 @@ fun EntryProviderScope<NavKey>.homeEntries(
   onOpenRoutines: () -> Unit,
   onOpenWorkflowGallery: () -> Unit,
   onOpenPomodoro: () -> Unit,
+  onOpenQuickAdd: () -> Unit,
   onOpenProVersion: () -> Unit,
   onOpenPrivacyPolicy: () -> Unit,
   onOpenCloudDrives: () -> Unit,
@@ -79,6 +80,7 @@ fun EntryProviderScope<NavKey>.homeEntries(
       onOpenRoutines = onOpenRoutines,
       onOpenWorkflowGallery = onOpenWorkflowGallery,
       onOpenPomodoro = onOpenPomodoro,
+      onOpenQuickAdd = onOpenQuickAdd,
       onOpenProVersion = onOpenProVersion,
       onOpenPrivacyPolicy = onOpenPrivacyPolicy,
       onOpenCloudDrives = onOpenCloudDrives,
@@ -110,6 +112,7 @@ private fun HomeEntry(
   onOpenRoutines: () -> Unit,
   onOpenWorkflowGallery: () -> Unit,
   onOpenPomodoro: () -> Unit,
+  onOpenQuickAdd: () -> Unit,
   onOpenProVersion: () -> Unit,
   onOpenPrivacyPolicy: () -> Unit,
   onOpenCloudDrives: () -> Unit,
@@ -192,6 +195,10 @@ private fun HomeEntry(
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenPomodoro -> {
         onOpenPomodoro()
+      }
+
+      is ScheduleHomeViewModel.ViewModelEvent.OpenQuickAdd -> {
+        onOpenQuickAdd()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenProVersion -> {
