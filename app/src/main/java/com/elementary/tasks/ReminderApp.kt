@@ -46,6 +46,7 @@ import com.github.naz013.files.fileModule
 import com.github.naz013.group.groupModule
 import com.github.naz013.holidays.holidaysModule
 import com.github.naz013.icalendar.iCalendarModule
+import com.github.naz013.feature.pomodoro.featurePomodoroModule
 import com.github.naz013.insights.insightsModule
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.legalModule
@@ -192,6 +193,7 @@ class ReminderApp :
           fileModule,
           tagsModule,
           insightsModule,
+          featurePomodoroModule,
           localBackupModule,
           onboardingModule,
           uiGoogleTaskModule,

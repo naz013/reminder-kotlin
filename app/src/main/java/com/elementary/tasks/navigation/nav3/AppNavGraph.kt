@@ -84,6 +84,10 @@ import com.github.naz013.feature.workflow.WorkflowNavKey
 import com.github.naz013.feature.workflow.workflowEntries
 import com.github.naz013.group.GroupsNavKey
 import com.github.naz013.group.groupsEntries
+import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.Feature
+import com.github.naz013.analytics.FeatureGateTappedEvent
+import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.insights.insightsEntries
 import com.github.naz013.localbackup.LocalBackupNavKey
 import com.github.naz013.localbackup.localBackupEntries
@@ -91,6 +95,8 @@ import com.github.naz013.localbackup.transfer.TransferNavKey
 import com.github.naz013.localbackup.transfer.transferEntries
 import com.github.naz013.onboarding.OnboardingNavKey
 import com.github.naz013.onboarding.onboardingEntries
+import com.github.naz013.feature.pomodoro.PomodoroNavKey
+import com.github.naz013.feature.pomodoro.pomodoroEntries
 import com.github.naz013.feature.routine.RoutineNavKey
 import com.github.naz013.feature.routine.routineEntries
 import com.github.naz013.tags.TagsNavKey
@@ -157,6 +163,8 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
   val homePreferences = koinInject<HomePreferences>()
   val routineConfig = koinInject<RoutineConfig>()
   val workflowConfig = koinInject<WorkflowConfig>()
+  val buildInfo = koinInject<BuildInfo>()
+  val analyticsEventSender = koinInject<AnalyticsEventSender>()
   val visibleHeaderSections =
     HeaderNavigationSection.pinned +
       homePreferences.headerNavigationOrder.filter { section ->
@@ -299,6 +307,8 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
           onOpenTags = { backStack.add(TagsNavKey.Manage) },
           onOpenRoutines = { backStack.add(RoutineNavKey.List) },
           onOpenWorkflowGallery = { backStack.add(WorkflowNavKey.Gallery) },
+          onOpenPomodoro = { backStack.add(PomodoroNavKey.Timer()) },
+          onOpenProVersion = { backStack.add(SettingsNavKey.ProVersion) },
           onOpenPrivacyPolicy = { backStack.add(OtherNavKey.PrivacyPolicy) },
           onOpenCloudDrives = { backStack.add(ExportNavKey.CloudServices) },
           onOpenWhatsNew = { backStack.add(OtherNavKey.WhatsNew) },
@@ -406,6 +416,14 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
             appNavBridge.navigate(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit(id = taskId))
           },
           onOpenWorkflowRules = { reminderId -> backStack.add(WorkflowNavKey.RulesForReminder(reminderId)) },
+          onStartFocusSession = { reminderId ->
+            if (buildInfo.isPro) {
+              backStack.add(PomodoroNavKey.Timer(linkedReminderId = reminderId))
+            } else {
+              analyticsEventSender.send(FeatureGateTappedEvent(Feature.POMODORO))
+              backStack.add(SettingsNavKey.ProVersion)
+            }
+          },
           onCallClick = { number -> phoneCaller.call(number) },
           onSmsClick = { target, message -> smsSender.send(target, message) },
           onAppClick = { target -> applicationLauncher.launch(target) },
@@ -472,6 +490,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
           onGoogleTaskPreviewClick = { id -> backStack.add(GoogleTasksNavKey.TaskPreview(id)) },
         )
         insightsEntries(backStack)
+        pomodoroEntries(backStack)
         localBackupEntries(backStack)
         transferEntries(backStack)
         onboardingEntries(
@@ -577,6 +596,14 @@ private fun headerSectionRailDestination(section: HeaderNavigationSection): AppD
         icon = AppIcons.Fluent.ArrowRepeatAll,
         labelRes = R.string.workflow_automations,
       )
+    HeaderNavigationSection.POMODORO -> {
+      val buildInfo = koinInject<BuildInfo>()
+      AppDestination(
+        key = if (buildInfo.isPro) PomodoroNavKey.Timer() else SettingsNavKey.ProVersion,
+        icon = AppIcons.Fluent.ClockAlarm,
+        labelRes = R.string.pomodoro_focus_timer,
+      )
+    }
   }
 
 /**

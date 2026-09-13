@@ -1386,4 +1386,20 @@
     <string name="agenda_matrix_delegate">Делегирай</string>
     <string name="agenda_matrix_someday">Някой ден</string>
     <string name="agenda_default_view_title">Изглед по подразбиране за напомняния</string>
+    <string name="pomodoro_focus_timer">Таймер за фокус</string>
+    <string name="pomodoro_ready">Готово</string>
+    <string name="pomodoro_work">Фокус</string>
+    <string name="pomodoro_break">Почивка</string>
+    <string name="pomodoro_long_break">Дълга почивка</string>
+    <string name="pomodoro_start">Старт</string>
+    <string name="pomodoro_pause">Пауза</string>
+    <string name="pomodoro_resume">Възобнови</string>
+    <string name="pomodoro_stop">Стоп</string>
+    <string name="pomodoro_skip_break">Премини към почивка</string>
+    <string name="pomodoro_link_reminder">Свързване с напомняне</string>
+    <string name="pomodoro_sessions_today">%1$d сесии за фокус, завършени днес</string>
+    <string name="pomodoro_start_focus_session">Стартиране на сесия за фокус</string>
+    <string name="pomodoro_focused_minutes_total">Общо фокус: %1$d мин</string>
+    <string name="pro_focus_timer">- Таймер за фокус Pomodoro</string>
+    <string name="channel_for_focus_timer_notifications">Показва работещия таймер за фокус Pomodoro</string>
 </resources>

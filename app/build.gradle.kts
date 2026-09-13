@@ -247,6 +247,7 @@ dependencies {
   implementation(project(":feature:feature-settings"))
   implementation(project(":feature:feature-places"))
   implementation(project(":feature:feature-routine"))
+  implementation(project(":feature:feature-pomodoro"))
   implementation(project(":extensions:localbackup"))
 
   implementation(project(":core:platform-common"))
@@ -308,6 +309,7 @@ dependencies {
   implementation(libs.androidx.lifecycle.viewmodel.ktx)
   implementation(libs.androidx.lifecycle.common.java8)
   implementation(libs.androidx.lifecycle.livedata.ktx)
+  implementation(libs.androidx.lifecycle.service)
 
   implementation(platform(libs.firebase.bom))
   implementation(libs.firebase.crashlytics)

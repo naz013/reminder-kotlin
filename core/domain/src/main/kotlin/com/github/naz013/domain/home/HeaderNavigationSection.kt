@@ -13,6 +13,7 @@ enum class HeaderNavigationSection(
   TAG(isDisabledByDefault = true),
   ROUTINES,
   WORKFLOW,
+  POMODORO,
   ;
 
   companion object {

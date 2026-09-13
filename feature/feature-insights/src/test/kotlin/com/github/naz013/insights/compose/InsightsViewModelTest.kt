@@ -11,6 +11,7 @@ import com.github.naz013.domain.routine.RoutineStep
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logic.routine.RoutineDurationCalculator
 import com.github.naz013.repository.EventHistoryRepository
+import com.github.naz013.repository.PomodoroSessionRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RoutineExecutionRepository
 import com.github.naz013.repository.RoutineRepository
@@ -34,6 +35,7 @@ class InsightsViewModelTest {
   private val routineRepository = mockk<RoutineRepository>()
   private val routineExecutionRepository = mockk<RoutineExecutionRepository>()
   private val routineDurationCalculator = RoutineDurationCalculator()
+  private val pomodoroSessionRepository = mockk<PomodoroSessionRepository>(relaxed = true)
   private val today = LocalDate.of(2026, 8, 2)
 
   private fun dispatcherProvider(): DispatcherProvider {
@@ -90,6 +92,7 @@ class InsightsViewModelTest {
       routineRepository,
       routineExecutionRepository,
       routineDurationCalculator,
+      pomodoroSessionRepository,
     )
   }
 

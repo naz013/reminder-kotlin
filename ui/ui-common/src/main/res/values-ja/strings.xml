@@ -1385,4 +1385,20 @@
     <string name="agenda_matrix_delegate">委任する</string>
     <string name="agenda_matrix_someday">いつか</string>
     <string name="agenda_default_view_title">デフォルトのリマインダー表示</string>
+    <string name="pomodoro_focus_timer">フォーカスタイマー</string>
+    <string name="pomodoro_ready">準備完了</string>
+    <string name="pomodoro_work">集中</string>
+    <string name="pomodoro_break">休憩</string>
+    <string name="pomodoro_long_break">長い休憩</string>
+    <string name="pomodoro_start">開始</string>
+    <string name="pomodoro_pause">一時停止</string>
+    <string name="pomodoro_resume">再開</string>
+    <string name="pomodoro_stop">停止</string>
+    <string name="pomodoro_skip_break">休憩へスキップ</string>
+    <string name="pomodoro_link_reminder">リマインダーにリンク</string>
+    <string name="pomodoro_sessions_today">本日完了した集中セッション: %1$d回</string>
+    <string name="pomodoro_start_focus_session">集中セッションを開始</string>
+    <string name="pomodoro_focused_minutes_total">合計集中時間: %1$d分</string>
+    <string name="pro_focus_timer">- ポモドーロ・フォーカスタイマー</string>
+    <string name="channel_for_focus_timer_notifications">実行中のポモドーロ・フォーカスタイマーを表示します</string>
 </resources>

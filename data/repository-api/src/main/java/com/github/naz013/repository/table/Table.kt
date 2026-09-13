@@ -26,4 +26,5 @@ enum class Table(val tableName: String) {
   Holiday("Holiday"),
   Routine("Routine"),
   RoutineExecution("RoutineExecution"),
+  PomodoroSession("PomodoroSession"),
 }

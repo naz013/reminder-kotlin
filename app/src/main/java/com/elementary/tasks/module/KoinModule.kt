@@ -28,6 +28,8 @@ import com.elementary.tasks.module.logicnotificationaction.WearPreferencesImpl
 import com.elementary.tasks.module.logicreminder.AppReminderNotifier
 import com.elementary.tasks.module.logicreminder.ReminderPreferencesImpl
 import com.elementary.tasks.module.logicschedule.SchedulePreferencesImpl
+import com.elementary.tasks.pomodoro.PomodoroForegroundNotifierImpl
+import com.elementary.tasks.pomodoro.PomodoroPreferencesImpl
 import com.elementary.tasks.module.platform.BuildInfoImpl
 import com.elementary.tasks.module.platform.DateTimePreferencesImpl
 import com.elementary.tasks.module.platform.InstallReferrerReader
@@ -66,6 +68,8 @@ import com.github.naz013.logic.notificationaction.WearPreferences
 import com.github.naz013.logic.notificationaction.birthday.BirthdayAlertHandlerFactory
 import com.github.naz013.logic.notificationaction.calendarevent.GoogleCalendarEventAlertHandlerFactory
 import com.github.naz013.logic.notificationaction.reminder.ReminderAlertHandlerFactory
+import com.github.naz013.feature.pomodoro.PomodoroForegroundNotifier
+import com.github.naz013.feature.pomodoro.PomodoroPreferences
 import com.github.naz013.logic.reminder.ReminderNotifier
 import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.logic.schedule.SchedulePreferences
@@ -126,6 +130,10 @@ val libModule = module {
   // logic reminder
   factory { ReminderPreferencesImpl(get()) as ReminderPreferences }
   factory { AppReminderNotifier(get(), get(), get(), get(), get()) as ReminderNotifier }
+
+  // pomodoro
+  factory { PomodoroPreferencesImpl(get()) as PomodoroPreferences }
+  factory { PomodoroForegroundNotifierImpl(get()) as PomodoroForegroundNotifier }
 
   // logic notification action
   factory { NotificationGatewayImpl(get()) as NotificationGateway }

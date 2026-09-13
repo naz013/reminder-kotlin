@@ -16,6 +16,7 @@ internal class ProVersionViewModel(
       advantages =
         listOf(
           R.string.pro_streaks_and_insights,
+          R.string.pro_focus_timer,
           R.string.pro_local_encrypted_backup,
           R.string.pro_gemini_app_functions,
           R.string.pro_public_holidays,

@@ -1385,4 +1385,20 @@
     <string name="agenda_matrix_delegate">Delegovat</string>
     <string name="agenda_matrix_someday">Někdy</string>
     <string name="agenda_default_view_title">Výchozí zobrazení připomenutí</string>
+    <string name="pomodoro_focus_timer">Časovač soustředění</string>
+    <string name="pomodoro_ready">Připraveno</string>
+    <string name="pomodoro_work">Soustředění</string>
+    <string name="pomodoro_break">Přestávka</string>
+    <string name="pomodoro_long_break">Dlouhá přestávka</string>
+    <string name="pomodoro_start">Start</string>
+    <string name="pomodoro_pause">Pozastavit</string>
+    <string name="pomodoro_resume">Pokračovat</string>
+    <string name="pomodoro_stop">Zastavit</string>
+    <string name="pomodoro_skip_break">Přeskočit na přestávku</string>
+    <string name="pomodoro_link_reminder">Propojit s připomenutím</string>
+    <string name="pomodoro_sessions_today">Dnes dokončeno soustředěných sezení: %1$d</string>
+    <string name="pomodoro_start_focus_session">Zahájit soustředěné sezení</string>
+    <string name="pomodoro_focused_minutes_total">Celkem soustředění: %1$d min</string>
+    <string name="pro_focus_timer">- Časovač soustředění Pomodoro</string>
+    <string name="channel_for_focus_timer_notifications">Zobrazuje běžící časovač soustředění Pomodoro</string>
 </resources>

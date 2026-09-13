@@ -7,7 +7,8 @@ internal data class InsightsScreenState(
   val listState: InsightsListState = InsightsListState.Loading,
   val weeklyTrend: List<WeeklyTrendUi> = emptyList(),
   val busiestDay: DayOfWeek? = null,
-  val routineInsights: List<UiRoutineInsight> = emptyList()
+  val routineInsights: List<UiRoutineInsight> = emptyList(),
+  val pomodoroInsight: UiPomodoroInsight? = null
 )
 
 internal sealed interface InsightsListState {
@@ -42,4 +43,10 @@ internal data class UiRoutineInsight(
   val totalFocusTimeLabel: String,
   val mostSkippedStepTitle: String?,
   val mostSkippedCompletionPercent: Int?
+)
+
+internal data class UiPomodoroInsight(
+  val totalFocusTimeLabel: String,
+  val currentStreakDays: Int,
+  val longestStreakDays: Int,
 )

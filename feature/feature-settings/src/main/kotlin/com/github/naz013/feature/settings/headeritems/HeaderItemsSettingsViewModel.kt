@@ -81,5 +81,7 @@ internal class HeaderItemsSettingsViewModel(
       HeaderItemRow(section, R.string.routines, DrawableCatalog.Builder.Timer, isEnabled)
     HeaderNavigationSection.WORKFLOW ->
       HeaderItemRow(section, R.string.workflow_automations, DrawableCatalog.Fluent.Branch, isEnabled)
+    HeaderNavigationSection.POMODORO ->
+      HeaderItemRow(section, R.string.pomodoro_focus_timer, DrawableCatalog.Fluent.ClockAlarm, isEnabled)
   }
 }

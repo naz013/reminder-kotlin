@@ -1383,4 +1383,20 @@
     <string name="agenda_matrix_delegate">Ủy quyền</string>
     <string name="agenda_matrix_someday">Một ngày nào đó</string>
     <string name="agenda_default_view_title">Chế độ xem nhắc nhở mặc định</string>
+    <string name="pomodoro_focus_timer">Bộ đếm giờ tập trung</string>
+    <string name="pomodoro_ready">Sẵn sàng</string>
+    <string name="pomodoro_work">Tập trung</string>
+    <string name="pomodoro_break">Nghỉ</string>
+    <string name="pomodoro_long_break">Nghỉ dài</string>
+    <string name="pomodoro_start">Bắt đầu</string>
+    <string name="pomodoro_pause">Tạm dừng</string>
+    <string name="pomodoro_resume">Tiếp tục</string>
+    <string name="pomodoro_stop">Dừng</string>
+    <string name="pomodoro_skip_break">Chuyển sang nghỉ</string>
+    <string name="pomodoro_link_reminder">Liên kết với lời nhắc</string>
+    <string name="pomodoro_sessions_today">Đã hoàn thành %1$d phiên tập trung hôm nay</string>
+    <string name="pomodoro_start_focus_session">Bắt đầu phiên tập trung</string>
+    <string name="pomodoro_focused_minutes_total">Tổng thời gian tập trung: %1$d phút</string>
+    <string name="pro_focus_timer">- Bộ đếm giờ tập trung Pomodoro</string>
+    <string name="channel_for_focus_timer_notifications">Hiển thị bộ đếm giờ tập trung Pomodoro đang chạy</string>
 </resources>

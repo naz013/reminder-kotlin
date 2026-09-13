@@ -1383,4 +1383,20 @@
     <string name="agenda_matrix_delegate">Deleger</string>
     <string name="agenda_matrix_someday">En dag</string>
     <string name="agenda_default_view_title">Standardvisning for påminnelser</string>
+    <string name="pomodoro_focus_timer">Fokustimer</string>
+    <string name="pomodoro_ready">Klar</string>
+    <string name="pomodoro_work">Fokus</string>
+    <string name="pomodoro_break">Pause</string>
+    <string name="pomodoro_long_break">Lang pause</string>
+    <string name="pomodoro_start">Start</string>
+    <string name="pomodoro_pause">Sett på pause</string>
+    <string name="pomodoro_resume">Gjenoppta</string>
+    <string name="pomodoro_stop">Stopp</string>
+    <string name="pomodoro_skip_break">Hopp til pause</string>
+    <string name="pomodoro_link_reminder">Koble til en påminnelse</string>
+    <string name="pomodoro_sessions_today">%1$d fokusøkter fullført i dag</string>
+    <string name="pomodoro_start_focus_session">Start fokusøkt</string>
+    <string name="pomodoro_focused_minutes_total">Totalt fokusert: %1$d min</string>
+    <string name="pro_focus_timer">- Pomodoro-fokustimer</string>
+    <string name="channel_for_focus_timer_notifications">Viser den aktive Pomodoro-fokustimeren</string>
 </resources>

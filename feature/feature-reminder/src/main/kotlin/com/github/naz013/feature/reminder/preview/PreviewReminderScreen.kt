@@ -90,6 +90,7 @@ internal fun PreviewReminderScreen(
   onPinClick: () -> Unit,
   onSyncToCloudClick: () -> Unit,
   onWorkflowRulesClick: () -> Unit,
+  onStartFocusSessionClick: () -> Unit,
   onDeleteClick: () -> Unit,
   onDeleteConfirmed: () -> Unit,
   onDeleteDismiss: () -> Unit,
@@ -135,6 +136,7 @@ internal fun PreviewReminderScreen(
             onPinClick = onPinClick,
             onSyncToCloudClick = onSyncToCloudClick,
             onWorkflowRulesClick = onWorkflowRulesClick,
+            onStartFocusSessionClick = onStartFocusSessionClick,
             onDeleteClick = onDeleteClick,
           )
         },
@@ -197,6 +199,7 @@ internal fun PreviewReminderScreen(
 
         state.note?.let { note -> item { NoteRow(note = note, onClick = onNoteClick) } }
         state.googleTask?.let { task -> item { GoogleTaskRow(task = task, onClick = onGoogleTaskClick) } }
+        state.focusedMinutesTotal?.let { minutes -> item { FocusedTimeRow(minutes = minutes) } }
 
         if (state.calendarEvents.isNotEmpty()) {
           item { SectionHeader(text = stringResource(R.string.events)) }
@@ -236,6 +239,7 @@ private fun OverflowMenu(
   onPinClick: () -> Unit,
   onSyncToCloudClick: () -> Unit,
   onWorkflowRulesClick: () -> Unit,
+  onStartFocusSessionClick: () -> Unit,
   onDeleteClick: () -> Unit,
 ) {
   var expanded by remember { mutableStateOf(false) }
@@ -292,6 +296,13 @@ private fun OverflowMenu(
     }
     add(
       PopupMenuItem(
+        id = OverflowAction.START_FOCUS_SESSION.ordinal,
+        title = stringResource(R.string.pomodoro_start_focus_session),
+        iconRes = DrawableCatalog.Fluent.ClockAlarm,
+      ),
+    )
+    add(
+      PopupMenuItem(
         id = OverflowAction.DELETE.ordinal,
         title = stringResource(if (canDelete) R.string.delete else R.string.move_to_the_archive),
         iconRes = if (canDelete) R.drawable.ic_fluent_delete else R.drawable.ic_fluent_archive
@@ -316,6 +327,7 @@ private fun OverflowMenu(
           OverflowAction.PIN -> onPinClick()
           OverflowAction.SYNC_TO_CLOUD -> onSyncToCloudClick()
           OverflowAction.WORKFLOW_RULES -> onWorkflowRulesClick()
+          OverflowAction.START_FOCUS_SESSION -> onStartFocusSessionClick()
           OverflowAction.DELETE -> onDeleteClick()
         }
       },
@@ -330,6 +342,7 @@ private enum class OverflowAction {
   PIN,
   SYNC_TO_CLOUD,
   WORKFLOW_RULES,
+  START_FOCUS_SESSION,
   DELETE,
 }
 
@@ -748,6 +761,24 @@ private fun MapSection(
 }
 
 @Composable
+private fun FocusedTimeRow(minutes: Int) {
+  SectionHeader(text = stringResource(R.string.pomodoro_focus_timer))
+  Row(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp, vertical = 8.dp),
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    Icon(painter = AppIcons.Fluent.ClockAlarm, contentDescription = null)
+    Text(
+      text = stringResource(R.string.pomodoro_focused_minutes_total, minutes),
+      style = MaterialTheme.typography.bodyMedium,
+      modifier = Modifier.padding(start = 8.dp),
+    )
+  }
+}
+
+@Composable
 private fun NoteRow(
   note: UiNoteList,
   onClick: () -> Unit,
@@ -887,6 +918,7 @@ private fun PreviewReminderScreenPreview() {
       onPinClick = {},
       onSyncToCloudClick = {},
       onWorkflowRulesClick = {},
+      onStartFocusSessionClick = {},
       onDeleteClick = {},
       onDeleteConfirmed = {},
       onDeleteDismiss = {},

@@ -7,11 +7,13 @@ import com.github.naz013.domain.routine.RoutineExecutionRecord
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.insights.aggregator.CompletionStatsCalculator
+import com.github.naz013.insights.aggregator.PomodoroFocusCalculator
 import com.github.naz013.insights.aggregator.ReminderStreakCalculator
 import com.github.naz013.insights.aggregator.RoutineStepDropoffCalculator
 import com.github.naz013.insights.aggregator.RoutineStreakCalculator
 import com.github.naz013.logic.routine.RoutineDurationCalculator
 import com.github.naz013.repository.EventHistoryRepository
+import com.github.naz013.repository.PomodoroSessionRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RoutineExecutionRepository
 import com.github.naz013.repository.RoutineRepository
@@ -28,7 +30,8 @@ internal class InsightsViewModel(
   private val dateTimeManager: DateTimeManager,
   private val routineRepository: RoutineRepository,
   private val routineExecutionRepository: RoutineExecutionRepository,
-  private val routineDurationCalculator: RoutineDurationCalculator
+  private val routineDurationCalculator: RoutineDurationCalculator,
+  private val pomodoroSessionRepository: PomodoroSessionRepository,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(InsightsScreenState())
@@ -67,6 +70,7 @@ internal class InsightsViewModel(
       }
 
     val routineInsights = buildRoutineInsights(today)
+    val pomodoroInsight = buildPomodoroInsight(today)
 
     return InsightsScreenState(
       listState = if (uiStreaks.isEmpty() && routineInsights.isEmpty()) {
@@ -77,6 +81,18 @@ internal class InsightsViewModel(
       weeklyTrend = weeklyTrend.map { point -> WeeklyTrendUi(point.weekStart, point.count) },
       busiestDay = busiestDay,
       routineInsights = routineInsights,
+      pomodoroInsight = pomodoroInsight,
+    )
+  }
+
+  private suspend fun buildPomodoroInsight(today: LocalDate): UiPomodoroInsight? {
+    val records = pomodoroSessionRepository.getByDateRange(today.minusDays(LOOKBACK_DAYS), today)
+    if (records.isEmpty()) return null
+    val summary = PomodoroFocusCalculator.calculate(records, today)
+    return UiPomodoroInsight(
+      totalFocusTimeLabel = routineDurationCalculator.formatDuration(summary.totalFocusSeconds),
+      currentStreakDays = summary.currentStreakDays,
+      longestStreakDays = summary.longestStreakDays,
     )
   }
 

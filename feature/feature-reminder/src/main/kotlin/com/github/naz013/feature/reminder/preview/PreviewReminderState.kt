@@ -46,6 +46,7 @@ internal data class PreviewReminderState(
   val tags: List<TagChipState> = emptyList(),
   val isOfflineOnly: Boolean = false,
   val workflowRulesVisible: Boolean = false,
+  val focusedMinutesTotal: Int? = null,
 )
 
 internal data class UiPreviewSubTask(

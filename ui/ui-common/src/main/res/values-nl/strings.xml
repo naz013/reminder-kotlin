@@ -1383,4 +1383,20 @@
     <string name="agenda_matrix_delegate">Delegeren</string>
     <string name="agenda_matrix_someday">Ooit</string>
     <string name="agenda_default_view_title">Standaardweergave voor herinneringen</string>
+    <string name="pomodoro_focus_timer">Focustimer</string>
+    <string name="pomodoro_ready">Klaar</string>
+    <string name="pomodoro_work">Focus</string>
+    <string name="pomodoro_break">Pauze</string>
+    <string name="pomodoro_long_break">Lange pauze</string>
+    <string name="pomodoro_start">Start</string>
+    <string name="pomodoro_pause">Pauzeren</string>
+    <string name="pomodoro_resume">Hervatten</string>
+    <string name="pomodoro_stop">Stoppen</string>
+    <string name="pomodoro_skip_break">Naar pauze</string>
+    <string name="pomodoro_link_reminder">Koppelen aan een herinnering</string>
+    <string name="pomodoro_sessions_today">%1$d focussessies vandaag voltooid</string>
+    <string name="pomodoro_start_focus_session">Focussessie starten</string>
+    <string name="pomodoro_focused_minutes_total">Totaal gefocust: %1$d min</string>
+    <string name="pro_focus_timer">- Pomodoro-focustimer</string>
+    <string name="channel_for_focus_timer_notifications">Toont de actieve Pomodoro-focustimer</string>
 </resources>

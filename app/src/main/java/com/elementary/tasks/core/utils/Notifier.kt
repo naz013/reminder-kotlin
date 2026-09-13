@@ -65,6 +65,7 @@ class Notifier(
       createNotificationChannel(createSilentChannel())
       createNotificationChannel(createNoteChannel())
       createNotificationChannel(createCalendarEventChannel())
+      createNotificationChannel(createFocusTimerChannel())
     }
   }
 
@@ -198,6 +199,19 @@ class Notifier(
     channel.enableVibration(false)
     channel.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
     channel.setAllowBubbles(false)
+    return channel
+  }
+
+  private fun createFocusTimerChannel(): NotificationChannel {
+    val name = context.getString(R.string.pomodoro_focus_timer)
+    val description = context.getString(R.string.channel_for_focus_timer_notifications)
+    val importance = NotificationManager.IMPORTANCE_LOW
+    val channel = NotificationChannel(CHANNEL_FOCUS_TIMER, name, importance)
+    channel.description = description
+    channel.enableVibration(false)
+    channel.setSound(null, null)
+    channel.setShowBadge(false)
+    channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
     return channel
   }
 
@@ -438,5 +452,6 @@ class Notifier(
     const val CHANNEL_SILENT = "reminder.channel.silent"
     const val CHANNEL_SYSTEM = "reminder.channel.system"
     const val CHANNEL_CALENDAR_EVENT = "reminder.channel.calendar_event"
+    const val CHANNEL_FOCUS_TIMER = "reminder.channel.focus_timer"
   }
 }

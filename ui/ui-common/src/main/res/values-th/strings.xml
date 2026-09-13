@@ -1383,4 +1383,20 @@
     <string name="agenda_matrix_delegate">มอบหมาย</string>
     <string name="agenda_matrix_someday">สักวันหนึ่ง</string>
     <string name="agenda_default_view_title">มุมมองการแจ้งเตือนเริ่มต้น</string>
+    <string name="pomodoro_focus_timer">ตัวจับเวลาโฟกัส</string>
+    <string name="pomodoro_ready">พร้อม</string>
+    <string name="pomodoro_work">โฟกัส</string>
+    <string name="pomodoro_break">พัก</string>
+    <string name="pomodoro_long_break">พักยาว</string>
+    <string name="pomodoro_start">เริ่ม</string>
+    <string name="pomodoro_pause">หยุดชั่วคราว</string>
+    <string name="pomodoro_resume">ดำเนินการต่อ</string>
+    <string name="pomodoro_stop">หยุด</string>
+    <string name="pomodoro_skip_break">ข้ามไปพัก</string>
+    <string name="pomodoro_link_reminder">เชื่อมโยงกับการแจ้งเตือน</string>
+    <string name="pomodoro_sessions_today">ทำเซสชันโฟกัสสำเร็จวันนี้ %1$d ครั้ง</string>
+    <string name="pomodoro_start_focus_session">เริ่มเซสชันโฟกัส</string>
+    <string name="pomodoro_focused_minutes_total">โฟกัสรวม %1$d นาที</string>
+    <string name="pro_focus_timer">- ตัวจับเวลาโฟกัสแบบโพโมโดโร</string>
+    <string name="channel_for_focus_timer_notifications">แสดงตัวจับเวลาโฟกัสแบบโพโมโดโรที่กำลังทำงาน</string>
 </resources>

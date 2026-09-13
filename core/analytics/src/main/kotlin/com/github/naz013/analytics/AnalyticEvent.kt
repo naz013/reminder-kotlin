@@ -176,7 +176,8 @@ enum class Feature(val value: String) {
   GEMINI_FUNCTIONS("gemini_functions"),
   PUBLIC_HOLIDAYS("public_holidays"),
   BUY_ME_A_COFFEE("buy_me_a_coffee"),
-  AI_DIGEST("ai_digest")
+  AI_DIGEST("ai_digest"),
+  POMODORO("pomodoro")
 }
 
 enum class Screen(val value: String) {

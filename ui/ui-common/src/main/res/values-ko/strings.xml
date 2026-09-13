@@ -1385,4 +1385,20 @@
     <string name="agenda_matrix_delegate">위임</string>
     <string name="agenda_matrix_someday">언젠가</string>
     <string name="agenda_default_view_title">기본 알림 보기</string>
+    <string name="pomodoro_focus_timer">포커스 타이머</string>
+    <string name="pomodoro_ready">준비됨</string>
+    <string name="pomodoro_work">집중</string>
+    <string name="pomodoro_break">휴식</string>
+    <string name="pomodoro_long_break">긴 휴식</string>
+    <string name="pomodoro_start">시작</string>
+    <string name="pomodoro_pause">일시정지</string>
+    <string name="pomodoro_resume">재개</string>
+    <string name="pomodoro_stop">중지</string>
+    <string name="pomodoro_skip_break">휴식으로 건너뛰기</string>
+    <string name="pomodoro_link_reminder">리마인더에 연결</string>
+    <string name="pomodoro_sessions_today">오늘 완료한 집중 세션 %1$d회</string>
+    <string name="pomodoro_start_focus_session">집중 세션 시작</string>
+    <string name="pomodoro_focused_minutes_total">총 집중 시간 %1$d분</string>
+    <string name="pro_focus_timer">- 포모도로 포커스 타이머</string>
+    <string name="channel_for_focus_timer_notifications">실행 중인 포모도로 포커스 타이머를 표시합니다</string>
 </resources>

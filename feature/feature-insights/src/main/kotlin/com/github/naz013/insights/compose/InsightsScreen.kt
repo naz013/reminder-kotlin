@@ -107,6 +107,16 @@ internal fun InsightsScreen(
               RoutineInsightCard(insight = insight)
             }
           }
+          state.pomodoroInsight?.let { insight ->
+            item {
+              Text(
+                text = stringResource(R.string.pomodoro_focus_timer),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(top = 8.dp),
+              )
+            }
+            item { PomodoroInsightCard(insight = insight) }
+          }
         }
       }
     }
@@ -224,6 +234,35 @@ private fun RoutineInsightCard(
           color = MaterialTheme.colorScheme.onSurfaceVariant
         )
       }
+    }
+  }
+}
+
+@Composable
+private fun PomodoroInsightCard(
+  modifier: Modifier = Modifier,
+  insight: UiPomodoroInsight,
+) {
+  Card(
+    modifier = modifier.fillMaxWidth(),
+    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
+  ) {
+    Column(modifier = Modifier.padding(16.dp)) {
+      Text(
+        text = stringResource(R.string.routine_focus_time_total, insight.totalFocusTimeLabel),
+        style = MaterialTheme.typography.bodyMedium,
+      )
+      Text(
+        text = stringResource(R.string.streak_current, insight.currentStreakDays),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        modifier = Modifier.padding(top = 4.dp),
+      )
+      Text(
+        text = stringResource(R.string.streak_longest, insight.longestStreakDays),
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+      )
     }
   }
 }
