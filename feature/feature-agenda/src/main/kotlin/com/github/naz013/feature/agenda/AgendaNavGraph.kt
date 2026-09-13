@@ -204,5 +204,6 @@ private fun AgendaEntry(
     onSelectionCancel = viewModel::onSelectionCancel,
     onDeleteSelectedClick = viewModel::onDeleteSelectedClick,
     onArchiveSelectedClick = viewModel::onArchiveSelectedClick,
+    onViewModeToggle = viewModel::onViewModeToggle,
   )
 }

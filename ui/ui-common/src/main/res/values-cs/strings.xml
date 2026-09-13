@@ -1378,4 +1378,11 @@
     <string name="critical_reminder">Kritická připomínka</string>
     <string name="critical_reminder_description">Opakuje se, dokud není zavřena, obchází režim Nerušit a probouzí obrazovku. Pro upozornění, která si nemůžete dovolit zmeškat.</string>
     <string name="critical">Kritické</string>
+    <string name="agenda_matrix_view">Matice priorit</string>
+    <string name="agenda_list_view">Seznam</string>
+    <string name="agenda_matrix_do_first">Udělat nejdřív</string>
+    <string name="agenda_matrix_schedule">Naplánovat</string>
+    <string name="agenda_matrix_delegate">Delegovat</string>
+    <string name="agenda_matrix_someday">Někdy</string>
+    <string name="agenda_default_view_title">Výchozí zobrazení připomenutí</string>
 </resources>

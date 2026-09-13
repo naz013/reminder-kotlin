@@ -1376,4 +1376,11 @@
     <string name="critical_reminder">Nhắc nhở quan trọng</string>
     <string name="critical_reminder_description">Lặp lại cho đến khi bị hủy, bỏ qua chế độ Không làm phiền và đánh thức màn hình. Dành cho các cảnh báo bạn không thể bỏ lỡ.</string>
     <string name="critical">Quan trọng</string>
+    <string name="agenda_matrix_view">Ma trận ưu tiên</string>
+    <string name="agenda_list_view">Danh sách</string>
+    <string name="agenda_matrix_do_first">Làm trước</string>
+    <string name="agenda_matrix_schedule">Lên lịch</string>
+    <string name="agenda_matrix_delegate">Ủy quyền</string>
+    <string name="agenda_matrix_someday">Một ngày nào đó</string>
+    <string name="agenda_default_view_title">Chế độ xem nhắc nhở mặc định</string>
 </resources>

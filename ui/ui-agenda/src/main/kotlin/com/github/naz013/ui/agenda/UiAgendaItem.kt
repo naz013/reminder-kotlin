@@ -1,5 +1,6 @@
 package com.github.naz013.ui.agenda
 
+import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.ui.reminder.UiReminderListActions
 import com.github.naz013.ui.reminder.UiReminderListState
 import com.github.naz013.ui.common.selection.Selectable
@@ -49,6 +50,9 @@ data class UiAgendaReminder(
   /** Whether this row is currently open in the two-pane layout's detail pane. */
   val isHighlighted: Boolean = false,
   val isOverdue: Boolean = false,
+  /** Fully resolved (Reminder -> Group -> Settings) notification priority, reused as the
+   * importance axis for the Agenda Matrix view - see `classifyIntoQuadrants` in feature-agenda. */
+  val priority: ReminderPriority = ReminderPriority.NORMAL,
   override val isSelected: Boolean = false,
 ) : UiAgendaItem, Selectable<UiAgendaReminder> {
   override fun withSelected(selected: Boolean) = copy(isSelected = selected)

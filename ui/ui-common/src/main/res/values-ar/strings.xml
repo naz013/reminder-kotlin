@@ -1376,4 +1376,11 @@
     <string name="critical_reminder">تذكير حرج</string>
     <string name="critical_reminder_description">يتكرر حتى يتم رفضه، ويتجاوز وضع عدم الإزعاج، ويشغّل الشاشة. للتنبيهات التي لا يمكنك تفويتها.</string>
     <string name="critical">حرج</string>
+    <string name="agenda_matrix_view">مصفوفة الأولويات</string>
+    <string name="agenda_list_view">قائمة</string>
+    <string name="agenda_matrix_do_first">افعل أولاً</string>
+    <string name="agenda_matrix_schedule">جدولة</string>
+    <string name="agenda_matrix_delegate">تفويض</string>
+    <string name="agenda_matrix_someday">يومًا ما</string>
+    <string name="agenda_default_view_title">طريقة العرض الافتراضية للتذكيرات</string>
 </resources>

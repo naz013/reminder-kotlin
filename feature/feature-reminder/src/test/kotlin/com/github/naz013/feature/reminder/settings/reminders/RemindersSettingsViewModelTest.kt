@@ -2,6 +2,7 @@ package com.github.naz013.feature.reminder.settings.reminders
 
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.ui.notification.settings.VibrationPlayer
+import com.github.naz013.logic.reminder.AgendaViewMode
 import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
@@ -44,6 +45,7 @@ class RemindersSettingsViewModelTest : BaseTest() {
   override fun setUp() {
     super.setUp()
     every { reminderPreferences.defaultPriority } returns 2
+    every { reminderPreferences.agendaViewMode } returns AgendaViewMode.LIST
     every { reminderPreferences.moveCompleted } returns false
     every { reminderPreferences.isWearEnabled } returns false
     every { reminderPreferences.snoozeTime } returns 10

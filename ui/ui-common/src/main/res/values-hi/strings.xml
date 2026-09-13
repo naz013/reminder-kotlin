@@ -1380,4 +1380,11 @@
     <string name="critical_reminder">महत्वपूर्ण रिमाइंडर</string>
     <string name="critical_reminder_description">जब तक खारिज न किया जाए तब तक दोहराता है, परेशान न करें मोड को दरकिनार करता है, और स्क्रीन को जगाता है। उन अलर्ट के लिए जिन्हें आप चूक नहीं सकते।</string>
     <string name="critical">महत्वपूर्ण</string>
+    <string name="agenda_matrix_view">प्राथमिकता मैट्रिक्स</string>
+    <string name="agenda_list_view">सूची</string>
+    <string name="agenda_matrix_do_first">पहले करें</string>
+    <string name="agenda_matrix_schedule">शेड्यूल करें</string>
+    <string name="agenda_matrix_delegate">सौंपें</string>
+    <string name="agenda_matrix_someday">किसी दिन</string>
+    <string name="agenda_default_view_title">डिफ़ॉल्ट रिमाइंडर दृश्य</string>
 </resources>

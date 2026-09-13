@@ -1378,4 +1378,11 @@
     <string name="critical_reminder">Recordatorio crítico</string>
     <string name="critical_reminder_description">Se repite hasta que se descarta, omite el modo No molestar y activa la pantalla. Para alertas que no puedes permitirte perder.</string>
     <string name="critical">Crítico</string>
+    <string name="agenda_matrix_view">Matriz de prioridades</string>
+    <string name="agenda_list_view">Lista</string>
+    <string name="agenda_matrix_do_first">Hacer primero</string>
+    <string name="agenda_matrix_schedule">Programar</string>
+    <string name="agenda_matrix_delegate">Delegar</string>
+    <string name="agenda_matrix_someday">Algún día</string>
+    <string name="agenda_default_view_title">Vista predeterminada de recordatorios</string>
 </resources>

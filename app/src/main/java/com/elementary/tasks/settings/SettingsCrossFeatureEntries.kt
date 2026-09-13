@@ -133,6 +133,7 @@ fun RemindersCrossFeatureEntry(
         onLocationClick = viewModel::onLocationClick,
         onWorkflowRulesClick = viewModel::onWorkflowRulesClick,
         onPriorityClick = viewModel::onPriorityClick,
+        onAgendaViewModeToggle = viewModel::onAgendaViewModeToggle,
         onCompletedToggle = viewModel::onCompletedToggle,
         onWearToggle = viewModel::onWearToggle,
         onWearCompanionToggle = viewModel::onWearCompanionToggle,

@@ -1377,4 +1377,11 @@
     <string name="critical_reminder">Критическое напоминание</string>
     <string name="critical_reminder_description">Повторяется, пока не будет отклонено, обходит режим «Не беспокоить» и включает экран. Для оповещений, которые нельзя пропустить.</string>
     <string name="critical">Критично</string>
+    <string name="agenda_matrix_view">Матрица приоритетов</string>
+    <string name="agenda_list_view">Список</string>
+    <string name="agenda_matrix_do_first">Сделать в первую очередь</string>
+    <string name="agenda_matrix_schedule">Запланировать</string>
+    <string name="agenda_matrix_delegate">Делегировать</string>
+    <string name="agenda_matrix_someday">Когда-нибудь</string>
+    <string name="agenda_default_view_title">Вид напоминаний по умолчанию</string>
 </resources>

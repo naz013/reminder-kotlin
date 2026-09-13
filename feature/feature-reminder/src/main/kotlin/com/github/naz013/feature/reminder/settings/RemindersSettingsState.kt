@@ -4,6 +4,7 @@ import org.threeten.bp.LocalTime
 
 data class RemindersSettingsState(
   val priorityName: String = "",
+  val isMatrixViewDefaultChecked: Boolean = false,
   val isCompletedChecked: Boolean = false,
   val isWearChecked: Boolean = false,
   val isWearCompanionChecked: Boolean = false,

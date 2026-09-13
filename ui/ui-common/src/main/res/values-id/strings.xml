@@ -1376,4 +1376,11 @@
     <string name="critical_reminder">Pengingat kritis</string>
     <string name="critical_reminder_description">Berulang hingga ditutup, melewati mode Jangan Ganggu, dan membangunkan layar. Untuk peringatan yang tidak boleh Anda lewatkan.</string>
     <string name="critical">Kritis</string>
+    <string name="agenda_matrix_view">Matriks prioritas</string>
+    <string name="agenda_list_view">Daftar</string>
+    <string name="agenda_matrix_do_first">Lakukan dulu</string>
+    <string name="agenda_matrix_schedule">Jadwalkan</string>
+    <string name="agenda_matrix_delegate">Delegasikan</string>
+    <string name="agenda_matrix_someday">Suatu saat</string>
+    <string name="agenda_default_view_title">Tampilan default pengingat</string>
 </resources>

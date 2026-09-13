@@ -1379,4 +1379,11 @@
     <string name="critical_reminder">Критичне нагадування</string>
     <string name="critical_reminder_description">Повторюється, доки не буде закрито, обходить режим «Не турбувати» і вмикає екран. Для сповіщень, які не можна пропустити.</string>
     <string name="critical">Критично</string>
+    <string name="agenda_matrix_view">Матриця пріоритетів</string>
+    <string name="agenda_list_view">Список</string>
+    <string name="agenda_matrix_do_first">Зробити першим</string>
+    <string name="agenda_matrix_schedule">Запланувати</string>
+    <string name="agenda_matrix_delegate">Делегувати</string>
+    <string name="agenda_matrix_someday">Колись</string>
+    <string name="agenda_default_view_title">Вигляд нагадувань за замовчуванням</string>
 </resources>

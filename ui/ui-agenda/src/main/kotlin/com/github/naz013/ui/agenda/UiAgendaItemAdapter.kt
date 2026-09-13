@@ -7,8 +7,11 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.reminder.v2.GroupV2
+import com.github.naz013.domain.reminder.v2.NotificationSettings
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.reminder.v2.resolve
+import com.github.naz013.repository.ReminderSettingsRepository
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 
@@ -23,6 +26,7 @@ class UiAgendaItemAdapter(
   private val uiBirthdayListAdapter: UiBirthdayListAdapter,
   private val dateTimeManager: DateTimeManager,
   private val textProvider: TextProvider,
+  private val reminderSettingsRepository: ReminderSettingsRepository,
 ) {
   fun convertV2(
     reminders: List<ReminderV2>,
@@ -30,8 +34,13 @@ class UiAgendaItemAdapter(
     birthdays: List<Birthday>,
   ): List<UiAgendaItem> {
     val (pinnedReminders, unpinnedReminders) = reminders.partition { it.isPinned }
+    // Read once per conversion rather than per reminder - a cheap SharedPreferences-backed getter,
+    // but there's no reason to re-read it for every row in the list.
+    val notificationDefaults = reminderSettingsRepository.getNotificationDefaults()
 
-    val reminderItems = unpinnedReminders.map { toUiAgendaReminderV2(it, it.groupId?.let { id -> groupsById[id] }) }
+    val reminderItems = unpinnedReminders.map {
+      toUiAgendaReminderV2(it, it.groupId?.let { id -> groupsById[id] }, notificationDefaults)
+    }
     val birthdayItems = birthdays.map { convertBirthday(it) }
     val merged = (reminderItems + birthdayItems).sortedBy { it.dateTime }
     val body = insertHeaders(merged)
@@ -40,7 +49,7 @@ class UiAgendaItemAdapter(
 
     val pinnedItems =
       pinnedReminders
-        .map { toUiAgendaReminderV2(it, it.groupId?.let { id -> groupsById[id] }) }
+        .map { toUiAgendaReminderV2(it, it.groupId?.let { id -> groupsById[id] }, notificationDefaults) }
         .sortedBy { it.dateTime }
     val pinnedHeader =
       UiAgendaHeader(
@@ -78,6 +87,7 @@ class UiAgendaItemAdapter(
   private fun toUiAgendaReminderV2(
     reminder: ReminderV2,
     group: GroupV2?,
+    notificationDefaults: NotificationSettings,
   ): UiAgendaReminder {
     val uiReminderList = uiReminderListAdapter.createV2(reminder, group)
     return UiAgendaReminder(
@@ -97,6 +107,7 @@ class UiAgendaItemAdapter(
       state = uiReminderList.state,
       isOverdue = uiReminderList.state.isActive &&
         uiReminderList.dueDateTime?.isAfter(dateTimeManager.getCurrentDateTime()) == false,
+      priority = reminder.notification.resolve(group = group?.notification, defaults = notificationDefaults).priority,
     )
   }
 
