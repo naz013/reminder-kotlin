@@ -347,13 +347,13 @@ internal class AgendaViewModel(
     reminderIds: Set<String>,
     birthdayIds: Set<String>,
   ) {
+    // Clear selection before the deletes run: the reactive list-refresh coroutine can
+    // synchronously empty listState, and updateSelection is a no-op once listState is no
+    // longer Ready - clearing first avoids a stuck selectedCount.
+    onSelectionCancel()
     viewModelScope.launch(dispatcherProvider.io()) {
       reminderIds.forEach { id -> reminderV2Repository.getById(id)?.let { deleteReminderUseCase(it) } }
       birthdayIds.forEach { deleteBirthdayUseCase(it) }
-
-      withContext(dispatcherProvider.main()) {
-        onSelectionCancel()
-      }
     }
   }
 
