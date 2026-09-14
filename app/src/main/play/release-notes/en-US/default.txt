@@ -1,2 +1,8 @@
-- Added an easy way to transfer data between Free and Pro
+- Added option to set reminder as critical
+- Added Next reminder home screen widget
+- Added Wear OS support
+- Added priority view to Agenda screen
+- Added Focus timer (PRO only)
+- Added Quick add reminder (PRO only)
+- Update workflows (PRO only)
 - Bug fixes and improvements

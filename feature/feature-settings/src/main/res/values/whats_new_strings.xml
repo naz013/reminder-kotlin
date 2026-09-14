@@ -2,7 +2,13 @@
 <resources>
     <string name="whats_new_version_and_date" translatable="false">%s\n%s</string>
     <string name="whats_new_text" translatable="false">
-        ✅ Added an easy way to transfer data between Free and Pro;\n
+        ✅ Added option to set reminder as critical;\n
+        ✅ Added Next reminder home screen widget;\n
+        ✅ Added Wear OS support;\n
+        ✅ Added priority view to Agenda screen;\n
+        ✅ Added Focus timer (PRO only);\n
+        ✅ Added Quick add reminder (PRO only);\n
+        ⭐ Update workflows (PRO only);\n
         🐞 Bug fixes and improvements.
     </string>
     <string name="whats_new_emoji_set" translatable="false">
