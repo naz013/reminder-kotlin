@@ -1407,4 +1407,8 @@
     <string name="about_legal_section">Yasal bilgiler ve lisanslar</string>
     <string name="about_credits_section">Emeği geçenler</string>
     <string name="about_copyright">© %1$d %2$s. Tüm hakları saklıdır.</string>
+    <string name="quick_add">Hızlı ekle</string>
+    <string name="quick_add_hint">Dene: \"kira öde her 1 saat 9\"</string>
+    <string name="quick_add_continue_in_editor">Tam düzenleyicide devam et</string>
+    <string name="quick_add_does_not_repeat">Tekrarlanmıyor</string>
 </resources>

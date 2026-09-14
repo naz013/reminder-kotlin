@@ -1407,4 +1407,8 @@
     <string name="about_legal_section">Правна информация и лицензи</string>
     <string name="about_credits_section">Благодарности</string>
     <string name="about_copyright">© %1$d %2$s. Всички права запазени.</string>
+    <string name="quick_add">Бързо добавяне</string>
+    <string name="quick_add_hint">Опитайте \"плати наем всеки 1 в 9\"</string>
+    <string name="quick_add_continue_in_editor">Продължи в пълния редактор</string>
+    <string name="quick_add_does_not_repeat">Не се повтаря</string>
 </resources>

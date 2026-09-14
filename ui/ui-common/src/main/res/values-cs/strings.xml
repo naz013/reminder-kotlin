@@ -1406,4 +1406,8 @@
     <string name="about_legal_section">Právní informace a licence</string>
     <string name="about_credits_section">Poděkování</string>
     <string name="about_copyright">© %1$d %2$s. Všechna práva vyhrazena.</string>
+    <string name="quick_add">Rychlé přidání</string>
+    <string name="quick_add_hint">Zkuste \"zaplatit nájem každého 1. v 9\"</string>
+    <string name="quick_add_continue_in_editor">Pokračovat v úplném editoru</string>
+    <string name="quick_add_does_not_repeat">Neopakuje se</string>
 </resources>

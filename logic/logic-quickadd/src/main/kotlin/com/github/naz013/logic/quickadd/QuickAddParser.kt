@@ -9,7 +9,7 @@ import org.threeten.bp.LocalTime
  * ready-to-save reminder, using whichever [QuickAddGrammar] matches the caller's language.
  * Stateless and side-effect free - safe to keep a single shared instance. */
 class QuickAddParser(
-  grammars: List<QuickAddGrammar> = QuickAddGrammars.tier1(),
+  grammars: List<QuickAddGrammar> = QuickAddGrammars.supported(),
 ) {
   private val grammarsByLanguage = grammars.associateBy { it.languageTag }
 

@@ -1405,4 +1405,8 @@
     <string name="about_legal_section">Правовая информация и лицензии</string>
     <string name="about_credits_section">Благодарности</string>
     <string name="about_copyright">© %1$d %2$s. Все права защищены.</string>
+    <string name="quick_add">Быстрое добавление</string>
+    <string name="quick_add_hint">Попробуйте \"заплатить аренду каждого 1 в 9\"</string>
+    <string name="quick_add_continue_in_editor">Продолжить в полном редакторе</string>
+    <string name="quick_add_does_not_repeat">Не повторяется</string>
 </resources>

@@ -1407,4 +1407,8 @@
     <string name="about_legal_section">Правова інформація та ліцензії</string>
     <string name="about_credits_section">Подяки</string>
     <string name="about_copyright">© %1$d %2$s. Усі права захищено.</string>
+    <string name="quick_add">Швидке додавання</string>
+    <string name="quick_add_hint">Спробуйте \"заплатити оренду кожного 1 о 9\"</string>
+    <string name="quick_add_continue_in_editor">Продовжити в повному редакторі</string>
+    <string name="quick_add_does_not_repeat">Не повторюється</string>
 </resources>
