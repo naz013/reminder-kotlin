@@ -113,6 +113,46 @@ class WorkflowTriggerRunnerTest {
   }
 
   @Test
+  fun `onBluetoothConnected dispatches every pending action for that device`() = runTest {
+    val pending = PendingWorkflowAction(WorkflowAction.ArchiveReminder, "reminder-1")
+    coEvery { workflowEngine.runBluetoothConnectedRules("AA:BB:CC:DD:EE:FF") } returns listOf(pending)
+
+    runner.onBluetoothConnected("AA:BB:CC:DD:EE:FF")
+
+    coVerify(exactly = 1) { workflowActionDispatcher.dispatch(pending) }
+  }
+
+  @Test
+  fun `onBluetoothDisconnected dispatches every pending action for that device`() = runTest {
+    val pending = PendingWorkflowAction(WorkflowAction.ArchiveReminder, "reminder-1")
+    coEvery { workflowEngine.runBluetoothDisconnectedRules("AA:BB:CC:DD:EE:FF") } returns listOf(pending)
+
+    runner.onBluetoothDisconnected("AA:BB:CC:DD:EE:FF")
+
+    coVerify(exactly = 1) { workflowActionDispatcher.dispatch(pending) }
+  }
+
+  @Test
+  fun `onWifiConnected dispatches every pending action for that network`() = runTest {
+    val pending = PendingWorkflowAction(WorkflowAction.ArchiveReminder, "reminder-1")
+    coEvery { workflowEngine.runWifiConnectedRules("Home WiFi") } returns listOf(pending)
+
+    runner.onWifiConnected("Home WiFi")
+
+    coVerify(exactly = 1) { workflowActionDispatcher.dispatch(pending) }
+  }
+
+  @Test
+  fun `onWifiDisconnected dispatches every pending action for that network`() = runTest {
+    val pending = PendingWorkflowAction(WorkflowAction.ArchiveReminder, "reminder-1")
+    coEvery { workflowEngine.runWifiDisconnectedRules("Home WiFi") } returns listOf(pending)
+
+    runner.onWifiDisconnected("Home WiFi")
+
+    coVerify(exactly = 1) { workflowActionDispatcher.dispatch(pending) }
+  }
+
+  @Test
   fun `every method no-ops without touching the engine when the workflow feature flag is disabled`() = runTest {
     every { workflowConfig.isEnabled } returns false
 
@@ -123,6 +163,10 @@ class WorkflowTriggerRunnerTest {
     runner.onReminderCreated("reminder-1")
     runner.onLocationEntered("reminder-1")
     runner.onLocationExited("reminder-1")
+    runner.onBluetoothConnected("AA:BB:CC:DD:EE:FF")
+    runner.onBluetoothDisconnected("AA:BB:CC:DD:EE:FF")
+    runner.onWifiConnected("Home WiFi")
+    runner.onWifiDisconnected("Home WiFi")
 
     coVerify(exactly = 0) { workflowEngine.runAgeBasedRules(any()) }
     coVerify(exactly = 0) { workflowEngine.runGroupCompletionRules(any()) }
@@ -133,6 +177,10 @@ class WorkflowTriggerRunnerTest {
     coVerify(exactly = 0) { workflowEngine.runReminderCreatedRules(any(), any()) }
     coVerify(exactly = 0) { workflowEngine.runLocationEnteredRules(any(), any()) }
     coVerify(exactly = 0) { workflowEngine.runLocationExitedRules(any(), any()) }
+    coVerify(exactly = 0) { workflowEngine.runBluetoothConnectedRules(any()) }
+    coVerify(exactly = 0) { workflowEngine.runBluetoothDisconnectedRules(any()) }
+    coVerify(exactly = 0) { workflowEngine.runWifiConnectedRules(any()) }
+    coVerify(exactly = 0) { workflowEngine.runWifiDisconnectedRules(any()) }
     coVerify(exactly = 0) { workflowActionDispatcher.dispatch(any()) }
   }
 

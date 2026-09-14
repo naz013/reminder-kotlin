@@ -9,6 +9,7 @@ import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.workflow.PairedBluetoothDevicesProvider
 import com.github.naz013.logic.workflow.CreateWorkflowRuleUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleUseCase
 import com.github.naz013.repository.GroupV2Repository
@@ -39,6 +40,7 @@ internal class WorkflowRuleBuilderViewModel(
   private val reminderV2Repository: ReminderV2Repository,
   private val groupV2Repository: GroupV2Repository,
   private val tagRepository: TagRepository,
+  private val pairedBluetoothDevicesProvider: PairedBluetoothDevicesProvider,
 ) : ViewModel() {
 
   val state: StateFlow<WorkflowRuleBuilderState> field =
@@ -53,6 +55,7 @@ internal class WorkflowRuleBuilderViewModel(
     val reminders = reminderV2Repository.getAll(active = true, removed = false)
       .map { UiWorkflowReminderOption(id = it.uuId, title = it.summary) }
     val tags = tagRepository.getAll().map { UiWorkflowTagOption(id = it.id, title = it.name) }
+    val bluetoothDevices = pairedBluetoothDevicesProvider.get()
     val existingRule = editingRuleId?.let { workflowRuleRepository.getById(it) }
     withContext(dispatcherProvider.main()) {
       state.update {
@@ -61,10 +64,23 @@ internal class WorkflowRuleBuilderViewModel(
           availableGroups = groups,
           availableReminders = reminders,
           availableTags = tags,
+          availableBluetoothDevices = bluetoothDevices,
           trigger = existingRule?.trigger,
           conditions = existingRule?.conditions ?: emptyList(),
           action = existingRule?.action,
         )
+      }
+    }
+  }
+
+  /** Re-reads paired devices after the user grants `BLUETOOTH_CONNECT` from the trigger picker's
+   * empty state (see `WorkflowRuleBuilderPickers.TriggerParamForm`) - [loadData] only runs once,
+   * at screen entry, so a permission granted afterwards wouldn't otherwise be reflected. */
+  fun onBluetoothPermissionGranted() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val bluetoothDevices = pairedBluetoothDevicesProvider.get()
+      withContext(dispatcherProvider.main()) {
+        state.update { it.copy(availableBluetoothDevices = bluetoothDevices) }
       }
     }
   }
@@ -216,6 +232,11 @@ internal class WorkflowRuleBuilderViewModel(
     is WorkflowTrigger.ReminderAgeExceeded -> "completed for ${trigger.days} days"
     is WorkflowTrigger.ReminderUnacknowledgedFor -> "unacknowledged for ${trigger.minutes} minutes"
     is WorkflowTrigger.ScheduleReached -> "a scheduled time is reached"
+    is WorkflowTrigger.BluetoothConnected -> "connected to ${trigger.deviceName.ifBlank { trigger.deviceAddress }}"
+    is WorkflowTrigger.BluetoothDisconnected ->
+      "disconnected from ${trigger.deviceName.ifBlank { trigger.deviceAddress }}"
+    is WorkflowTrigger.WifiConnected -> "connected to WiFi ${trigger.ssid}"
+    is WorkflowTrigger.WifiDisconnected -> "disconnected from WiFi ${trigger.ssid}"
   }
 
   private fun autoTitleActionText(action: WorkflowAction): String = when (action) {

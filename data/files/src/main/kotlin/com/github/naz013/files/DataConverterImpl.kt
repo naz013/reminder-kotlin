@@ -328,6 +328,10 @@ private fun WorkflowTrigger.toColumns(): Pair<String, String> = when (this) {
   is WorkflowTrigger.ScheduleReached -> "SCHEDULE_REACHED" to workflowGson.toJson(
     ScheduleReachedColumns(atDateTime.format(jsonDateTimeFormatter), recurrence.name)
   )
+  is WorkflowTrigger.BluetoothConnected -> "BLUETOOTH_CONNECTED" to workflowGson.toJson(this)
+  is WorkflowTrigger.BluetoothDisconnected -> "BLUETOOTH_DISCONNECTED" to workflowGson.toJson(this)
+  is WorkflowTrigger.WifiConnected -> "WIFI_CONNECTED" to workflowGson.toJson(this)
+  is WorkflowTrigger.WifiDisconnected -> "WIFI_DISCONNECTED" to workflowGson.toJson(this)
 }
 
 /** Falls back to [WorkflowTrigger.ReminderCompleted] (and logs) instead of throwing on a payload
@@ -351,6 +355,10 @@ private fun toWorkflowTrigger(type: String, payload: String): WorkflowTrigger = 
         recurrence = runCatching { ScheduleRecurrence.valueOf(it.recurrence) }.getOrDefault(ScheduleRecurrence.ONCE)
       )
     }
+    "BLUETOOTH_CONNECTED" -> workflowGson.fromJson(payload, WorkflowTrigger.BluetoothConnected::class.java)
+    "BLUETOOTH_DISCONNECTED" -> workflowGson.fromJson(payload, WorkflowTrigger.BluetoothDisconnected::class.java)
+    "WIFI_CONNECTED" -> workflowGson.fromJson(payload, WorkflowTrigger.WifiConnected::class.java)
+    "WIFI_DISCONNECTED" -> workflowGson.fromJson(payload, WorkflowTrigger.WifiDisconnected::class.java)
     else -> WorkflowTrigger.ReminderCompleted
   }
 }.getOrElse { e ->

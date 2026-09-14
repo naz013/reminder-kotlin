@@ -107,6 +107,7 @@ class PermissionRequester internal constructor(
     when (permission) {
       Permissions.FOREGROUND_SERVICE_LOCATION -> !Module.is15
       Permissions.POST_NOTIFICATION -> !Module.is13
+      Permissions.BLUETOOTH_CONNECT -> !Module.is12
       else -> false
     }
 
@@ -127,6 +128,7 @@ class PermissionRequester internal constructor(
       Permissions.FOREGROUND_SERVICE -> UiPermissionDialogData.FOREGROUND_SERVICE
       Permissions.FOREGROUND_SERVICE_LOCATION -> UiPermissionDialogData.FOREGROUND_SERVICE_LOCATION
       Permissions.POST_NOTIFICATION -> UiPermissionDialogData.POST_NOTIFICATION
+      Permissions.BLUETOOTH_CONNECT -> UiPermissionDialogData.BLUETOOTH_CONNECT
       else -> null
     }
 }

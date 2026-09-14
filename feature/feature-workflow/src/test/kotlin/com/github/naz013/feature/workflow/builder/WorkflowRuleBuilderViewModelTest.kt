@@ -12,6 +12,7 @@ import com.github.naz013.domain.workflow.WorkflowRule
 import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTrigger
+import com.github.naz013.feature.workflow.PairedBluetoothDevicesProvider
 import com.github.naz013.logic.workflow.CreateWorkflowRuleUseCase
 import com.github.naz013.logic.workflow.SaveWorkflowRuleUseCase
 import com.github.naz013.repository.GroupV2Repository
@@ -22,6 +23,7 @@ import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.test.runTest
@@ -40,6 +42,7 @@ class WorkflowRuleBuilderViewModelTest : BaseTest() {
   private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val groupV2Repository = mockk<GroupV2Repository>()
   private val tagRepository = mockk<TagRepository>()
+  private val pairedBluetoothDevicesProvider = mockk<PairedBluetoothDevicesProvider>()
 
   @Before
   override fun setUp() {
@@ -47,6 +50,7 @@ class WorkflowRuleBuilderViewModelTest : BaseTest() {
     coEvery { reminderV2Repository.getAll(active = true, removed = false) } returns emptyList()
     coEvery { groupV2Repository.getAll() } returns emptyList()
     coEvery { tagRepository.getAll() } returns emptyList()
+    every { pairedBluetoothDevicesProvider.get() } returns emptyList()
   }
 
   private fun createViewModel(
@@ -65,6 +69,7 @@ class WorkflowRuleBuilderViewModelTest : BaseTest() {
       reminderV2Repository,
       groupV2Repository,
       tagRepository,
+      pairedBluetoothDevicesProvider,
     )
 
   @Test
@@ -335,5 +340,32 @@ class WorkflowRuleBuilderViewModelTest : BaseTest() {
     assertEquals(listOf(UiWorkflowGroupOption("group-1", "Work")), state.availableGroups)
     assertEquals(listOf(UiWorkflowReminderOption("reminder-1", "Buy milk")), state.availableReminders)
     assertEquals(listOf(UiWorkflowTagOption("tag-1", "Urgent")), state.availableTags)
+  }
+
+  @Test
+  fun `loads paired Bluetooth devices for the trigger picker`() = runTest {
+    every { pairedBluetoothDevicesProvider.get() } returns listOf(
+      UiWorkflowBluetoothDeviceOption("AA:BB:CC:DD:EE:FF", "Car")
+    )
+
+    val state = createViewModel().state.value
+
+    assertEquals(listOf(UiWorkflowBluetoothDeviceOption("AA:BB:CC:DD:EE:FF", "Car")), state.availableBluetoothDevices)
+  }
+
+  @Test
+  fun `onBluetoothPermissionGranted refreshes the paired Bluetooth device list`() = runTest {
+    val viewModel = createViewModel()
+    assertTrue(viewModel.state.value.availableBluetoothDevices.isEmpty())
+    every { pairedBluetoothDevicesProvider.get() } returns listOf(
+      UiWorkflowBluetoothDeviceOption("AA:BB:CC:DD:EE:FF", "Car")
+    )
+
+    viewModel.onBluetoothPermissionGranted()
+
+    assertEquals(
+      listOf(UiWorkflowBluetoothDeviceOption("AA:BB:CC:DD:EE:FF", "Car")),
+      viewModel.state.value.availableBluetoothDevices,
+    )
   }
 }

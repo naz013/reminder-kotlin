@@ -1410,4 +1410,13 @@
     <string name="quick_add_hint">Zkuste \"zaplatit nájem každého 1. v 9\"</string>
     <string name="quick_add_continue_in_editor">Pokračovat v úplném editoru</string>
     <string name="quick_add_does_not_repeat">Neopakuje se</string>
+    <string name="workflow_trigger_bluetooth_connected">Připojeno k zařízení Bluetooth</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Odpojeno od zařízení Bluetooth</string>
+    <string name="workflow_trigger_wifi_connected">Připojeno k síti WiFi</string>
+    <string name="workflow_trigger_wifi_disconnected">Odpojeno od sítě WiFi</string>
+    <string name="workflow_builder_select_bluetooth_device">Vyberte spárované zařízení</string>
+    <string name="workflow_builder_no_paired_devices">Žádná spárovaná zařízení Bluetooth</string>
+    <string name="workflow_builder_wifi_ssid_hint">Název sítě (SSID)</string>
+    <string name="bluetooth_connect">Přístup k Bluetooth</string>
+    <string name="bluetooth_connect_explanation">Potřebné ke čtení názvů vašich spárovaných zařízení Bluetooth, abyste mohli jedno vybrat pro pravidlo pracovního postupu</string>
 </resources>

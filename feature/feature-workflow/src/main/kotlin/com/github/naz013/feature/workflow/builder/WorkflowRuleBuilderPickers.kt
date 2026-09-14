@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.github.naz013.common.Permissions
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.workflow.WorkflowAction
@@ -39,6 +40,7 @@ import com.github.naz013.ui.common.compose.foundation.component.SettingsCheckbox
 import com.github.naz013.ui.common.compose.foundation.component.SettingsItem
 import com.github.naz013.ui.common.compose.foundation.dialog.SingleChoiceDialog
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -58,22 +60,35 @@ private val TRIGGER_OPTIONS = listOf(
     WorkflowScopeType.entries
   ),
   TriggerOption(9, WorkflowTrigger.ReminderCreated, WorkflowScopeType.entries),
+  TriggerOption(10, WorkflowTrigger.BluetoothConnected(deviceAddress = "", deviceName = ""), WorkflowScopeType.entries),
+  TriggerOption(11, WorkflowTrigger.BluetoothDisconnected(deviceAddress = "", deviceName = ""), WorkflowScopeType.entries),
+  TriggerOption(12, WorkflowTrigger.WifiConnected(ssid = ""), WorkflowScopeType.entries),
+  TriggerOption(13, WorkflowTrigger.WifiDisconnected(ssid = ""), WorkflowScopeType.entries),
 )
 
 private fun needsParams(trigger: WorkflowTrigger): Boolean = when (trigger) {
   is WorkflowTrigger.ReminderSnoozedNTimes,
   is WorkflowTrigger.ReminderAgeExceeded,
   is WorkflowTrigger.ReminderUnacknowledgedFor,
-  is WorkflowTrigger.ScheduleReached -> true
+  is WorkflowTrigger.ScheduleReached,
+  is WorkflowTrigger.BluetoothConnected,
+  is WorkflowTrigger.BluetoothDisconnected,
+  is WorkflowTrigger.WifiConnected,
+  is WorkflowTrigger.WifiDisconnected -> true
   else -> false
 }
 
 /** Type picker + inline param sub-form for the "When" slot, filtered to the types that support
- * [scopeType] (e.g. group-completion only offered for a group-scoped rule). */
+ * [scopeType] (e.g. group-completion only offered for a group-scoped rule). [bluetoothDevices] is
+ * the current paired-device list for the [WorkflowTrigger.BluetoothConnected]/
+ * [WorkflowTrigger.BluetoothDisconnected] param form - [onBluetoothPermissionGranted] refreshes it
+ * after the user grants `BLUETOOTH_CONNECT` from that form's empty state. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun WorkflowTriggerPickerSheet(
   scopeType: WorkflowScopeType,
+  bluetoothDevices: List<UiWorkflowBluetoothDeviceOption>,
+  onBluetoothPermissionGranted: () -> Unit,
   onDismiss: () -> Unit,
   onConfirm: (WorkflowTrigger) -> Unit,
 ) {
@@ -96,13 +111,23 @@ internal fun WorkflowTriggerPickerSheet(
         modifier = Modifier.padding(bottom = 16.dp),
       )
     } else {
-      TriggerParamForm(trigger = current, onSave = onConfirm)
+      TriggerParamForm(
+        trigger = current,
+        bluetoothDevices = bluetoothDevices,
+        onBluetoothPermissionGranted = onBluetoothPermissionGranted,
+        onSave = onConfirm,
+      )
     }
   }
 }
 
 @Composable
-private fun TriggerParamForm(trigger: WorkflowTrigger, onSave: (WorkflowTrigger) -> Unit) {
+private fun TriggerParamForm(
+  trigger: WorkflowTrigger,
+  bluetoothDevices: List<UiWorkflowBluetoothDeviceOption>,
+  onBluetoothPermissionGranted: () -> Unit,
+  onSave: (WorkflowTrigger) -> Unit,
+) {
   when (trigger) {
     is WorkflowTrigger.ReminderSnoozedNTimes -> {
       var count by remember { mutableStateOf(trigger.count.toLong()) }
@@ -161,7 +186,81 @@ private fun TriggerParamForm(trigger: WorkflowTrigger, onSave: (WorkflowTrigger)
       }
     }
 
+    is WorkflowTrigger.BluetoothConnected ->
+      BluetoothDeviceForm(bluetoothDevices, onBluetoothPermissionGranted) { address, name ->
+        onSave(WorkflowTrigger.BluetoothConnected(address, name))
+      }
+
+    is WorkflowTrigger.BluetoothDisconnected ->
+      BluetoothDeviceForm(bluetoothDevices, onBluetoothPermissionGranted) { address, name ->
+        onSave(WorkflowTrigger.BluetoothDisconnected(address, name))
+      }
+
+    is WorkflowTrigger.WifiConnected -> WifiSsidForm(trigger.ssid) { onSave(WorkflowTrigger.WifiConnected(it)) }
+
+    is WorkflowTrigger.WifiDisconnected -> WifiSsidForm(trigger.ssid) { onSave(WorkflowTrigger.WifiDisconnected(it)) }
+
     else -> Unit
+  }
+}
+
+/** Paired-device picker for [WorkflowTrigger.BluetoothConnected]/[WorkflowTrigger.BluetoothDisconnected].
+ * [bluetoothDevices] comes back empty both when `BLUETOOTH_CONNECT` isn't granted yet and when it
+ * is but there simply are no paired devices - either way the same empty state (message + a "grant
+ * access" button, harmless to tap again once already granted) is shown, since there's nothing else
+ * actionable to offer for the latter case. */
+@Composable
+private fun BluetoothDeviceForm(
+  bluetoothDevices: List<UiWorkflowBluetoothDeviceOption>,
+  onPermissionGranted: () -> Unit,
+  onSelect: (address: String, name: String) -> Unit,
+) {
+  val permissionRequester = rememberPermissionRequesterRationale()
+  if (bluetoothDevices.isEmpty()) {
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp)) {
+      Text(
+        text = stringResource(R.string.workflow_builder_no_paired_devices),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+      )
+      Button(
+        onClick = { permissionRequester.request(Permissions.BLUETOOTH_CONNECT, onGranted = onPermissionGranted) },
+        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+      ) {
+        Text(stringResource(R.string.bluetooth_connect))
+      }
+    }
+  } else {
+    Text(
+      text = stringResource(R.string.workflow_builder_select_bluetooth_device),
+      style = MaterialTheme.typography.titleSmall,
+      modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+    )
+    SelectableTextList(
+      items = bluetoothDevices.map { it.address to it.name },
+      onSelect = { address -> onSelect(address, bluetoothDevices.first { it.address == address }.name) },
+    )
+  }
+}
+
+@Composable
+private fun WifiSsidForm(initialSsid: String, onSave: (String) -> Unit) {
+  var ssid by remember { mutableStateOf(initialSsid) }
+  Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+    OutlinedTextField(
+      value = ssid,
+      onValueChange = { ssid = it },
+      label = { Text(stringResource(R.string.workflow_builder_wifi_ssid_hint)) },
+      singleLine = true,
+      modifier = Modifier.fillMaxWidth(),
+    )
+    Button(
+      onClick = { onSave(ssid) },
+      enabled = ssid.isNotBlank(),
+      modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+    ) {
+      Text(stringResource(R.string.save))
+    }
   }
 }
 

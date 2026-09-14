@@ -128,6 +128,7 @@ object PrefsConstants {
   const val HAS_SEEN_ONBOARDING = "has_seen_onboarding"
   const val WORKFLOW_RULES_SCHEDULED = "workflow_rules_scheduled"
   const val WORKFLOW_UNACKNOWLEDGED_RULES_SCHEDULED = "workflow_unacknowledged_rules_scheduled"
+  const val WORKFLOW_WIFI_POLL_SCHEDULED = "workflow_wifi_poll_scheduled"
   const val ROUTINE_RECURRENCE_RESET_SCHEDULED = "routine_recurrence_reset_scheduled"
   const val GOOGLE_CALENDAR_SCAN_FALLBACK_SCHEDULED = "google_calendar_scan_fallback_scheduled"
 

@@ -1411,4 +1411,13 @@
     <string name="quick_add_hint">Dene: \"kira öde her 1 saat 9\"</string>
     <string name="quick_add_continue_in_editor">Tam düzenleyicide devam et</string>
     <string name="quick_add_does_not_repeat">Tekrarlanmıyor</string>
+    <string name="workflow_trigger_bluetooth_connected">Bluetooth cihazına bağlanıldı</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Bluetooth cihaz bağlantısı kesildi</string>
+    <string name="workflow_trigger_wifi_connected">WiFi ağına bağlanıldı</string>
+    <string name="workflow_trigger_wifi_disconnected">WiFi ağ bağlantısı kesildi</string>
+    <string name="workflow_builder_select_bluetooth_device">Eşleştirilmiş bir cihaz seçin</string>
+    <string name="workflow_builder_no_paired_devices">Eşleştirilmiş Bluetooth cihazı yok</string>
+    <string name="workflow_builder_wifi_ssid_hint">Ağ adı (SSID)</string>
+    <string name="bluetooth_connect">Bluetooth erişimi</string>
+    <string name="bluetooth_connect_explanation">Bir iş akışı kuralı için seçebilmeniz amacıyla eşleştirilmiş Bluetooth cihazlarınızın adlarını okumak için gereklidir</string>
 </resources>

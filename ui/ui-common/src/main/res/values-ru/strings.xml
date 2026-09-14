@@ -1409,4 +1409,13 @@
     <string name="quick_add_hint">Попробуйте \"заплатить аренду каждого 1 в 9\"</string>
     <string name="quick_add_continue_in_editor">Продолжить в полном редакторе</string>
     <string name="quick_add_does_not_repeat">Не повторяется</string>
+    <string name="workflow_trigger_bluetooth_connected">Подключено к устройству Bluetooth</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Отключено от устройства Bluetooth</string>
+    <string name="workflow_trigger_wifi_connected">Подключено к сети WiFi</string>
+    <string name="workflow_trigger_wifi_disconnected">Отключено от сети WiFi</string>
+    <string name="workflow_builder_select_bluetooth_device">Выберите сопряжённое устройство</string>
+    <string name="workflow_builder_no_paired_devices">Нет сопряжённых устройств Bluetooth</string>
+    <string name="workflow_builder_wifi_ssid_hint">Имя сети (SSID)</string>
+    <string name="bluetooth_connect">Доступ к Bluetooth</string>
+    <string name="bluetooth_connect_explanation">Требуется для чтения имён ваших сопряжённых устройств Bluetooth, чтобы вы могли выбрать одно для правила автоматизации</string>
 </resources>

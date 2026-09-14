@@ -1408,4 +1408,13 @@
     <string name="quick_add_hint">Prøv \"betale husleje hver 1. klokken 9\"</string>
     <string name="quick_add_continue_in_editor">Fortsæt i den fulde editor</string>
     <string name="quick_add_does_not_repeat">Gentages ikke</string>
+    <string name="workflow_trigger_bluetooth_connected">Forbundet til Bluetooth-enhed</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Afbrudt fra Bluetooth-enhed</string>
+    <string name="workflow_trigger_wifi_connected">Forbundet til WiFi-netværk</string>
+    <string name="workflow_trigger_wifi_disconnected">Afbrudt fra WiFi-netværk</string>
+    <string name="workflow_builder_select_bluetooth_device">Vælg en parret enhed</string>
+    <string name="workflow_builder_no_paired_devices">Ingen parrede Bluetooth-enheder</string>
+    <string name="workflow_builder_wifi_ssid_hint">Netværksnavn (SSID)</string>
+    <string name="bluetooth_connect">Bluetooth-adgang</string>
+    <string name="bluetooth_connect_explanation">Nødvendig for at læse navnene på dine parrede Bluetooth-enheder, så du kan vælge en til en workflow-regel</string>
 </resources>

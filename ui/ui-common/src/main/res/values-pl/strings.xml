@@ -1410,4 +1410,13 @@
     <string name="quick_add_hint">Spróbuj \"zapłacić czynsz każdego 1 o 9\"</string>
     <string name="quick_add_continue_in_editor">Kontynuuj w pełnym edytorze</string>
     <string name="quick_add_does_not_repeat">Nie powtarza się</string>
+    <string name="workflow_trigger_bluetooth_connected">Połączono z urządzeniem Bluetooth</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Rozłączono z urządzeniem Bluetooth</string>
+    <string name="workflow_trigger_wifi_connected">Połączono z siecią WiFi</string>
+    <string name="workflow_trigger_wifi_disconnected">Rozłączono z siecią WiFi</string>
+    <string name="workflow_builder_select_bluetooth_device">Wybierz sparowane urządzenie</string>
+    <string name="workflow_builder_no_paired_devices">Brak sparowanych urządzeń Bluetooth</string>
+    <string name="workflow_builder_wifi_ssid_hint">Nazwa sieci (SSID)</string>
+    <string name="bluetooth_connect">Dostęp do Bluetooth</string>
+    <string name="bluetooth_connect_explanation">Potrzebne do odczytania nazw sparowanych urządzeń Bluetooth, abyś mógł wybrać jedno dla reguły przepływu pracy</string>
 </resources>

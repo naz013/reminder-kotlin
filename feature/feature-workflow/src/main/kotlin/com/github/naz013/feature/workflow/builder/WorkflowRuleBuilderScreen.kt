@@ -59,6 +59,7 @@ internal fun WorkflowRuleBuilderScreen(
   onConditionSelected: (WorkflowCondition) -> Unit,
   onActionPickerDismiss: () -> Unit,
   onActionSelected: (WorkflowAction) -> Unit,
+  onBluetoothPermissionGranted: () -> Unit,
 ) {
   Scaffold(
     modifier = modifier,
@@ -197,6 +198,8 @@ internal fun WorkflowRuleBuilderScreen(
   if (state.isTriggerPickerVisible) {
     WorkflowTriggerPickerSheet(
       scopeType = state.scopeType,
+      bluetoothDevices = state.availableBluetoothDevices,
+      onBluetoothPermissionGranted = onBluetoothPermissionGranted,
       onDismiss = onTriggerPickerDismiss,
       onConfirm = onTriggerSelected,
     )
@@ -246,6 +249,7 @@ private fun WorkflowRuleBuilderScreenPreview() {
       onConditionSelected = {},
       onActionPickerDismiss = {},
       onActionSelected = {},
+      onBluetoothPermissionGranted = {},
     )
   }
 }

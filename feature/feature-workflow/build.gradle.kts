@@ -21,6 +21,7 @@ dependencies {
   implementation(project(":data:work-api"))
 
   implementation(project(":core:feature-common"))
+  implementation(project(":core:platform-common"))
   implementation(project(":ui:ui-common"))
   implementation(project(":logic:logic-reminder"))
   implementation(project(":logic:logic-workflow"))

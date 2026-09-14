@@ -69,6 +69,7 @@ class BottomNavInitViewModelTest : BaseTest() {
     every { featureFlags.isEnabled(FeatureFlag.WORKFLOW_ENABLED) } returns false
     every { prefs.workflowRulesScheduled } returns false
     every { prefs.workflowUnacknowledgedRulesScheduled } returns false
+    every { prefs.workflowWifiPollScheduled } returns false
     every { prefs.googleCalendarScanFallbackScheduled } returns true
     every { googleTasksAuthManager.isAuthorized() } returns true
     every { packageManagerWrapper.getVersionName() } returns "1.0.0"
@@ -210,8 +211,20 @@ class BottomNavInitViewModelTest : BaseTest() {
     coVerify(exactly = 1) { workflowRulesUtil.initDefaultIfEmpty() }
     verify(exactly = 1) { jobScheduler.scheduleWorkflowRulesCheck() }
     verify(exactly = 1) { jobScheduler.scheduleWorkflowUnacknowledgedCheck() }
+    verify(exactly = 1) { jobScheduler.scheduleWorkflowWifiPollCheck() }
     verify(exactly = 1) { prefs.workflowRulesScheduled = true }
     verify(exactly = 1) { prefs.workflowUnacknowledgedRulesScheduled = true }
+    verify(exactly = 1) { prefs.workflowWifiPollScheduled = true }
+  }
+
+  @Test
+  fun `does not reschedule the workflow WiFi poll check once already scheduled`() {
+    every { featureFlags.isEnabled(FeatureFlag.WORKFLOW_ENABLED) } returns true
+    every { prefs.workflowWifiPollScheduled } returns true
+
+    createViewModel()
+
+    verify(exactly = 0) { jobScheduler.scheduleWorkflowWifiPollCheck() }
   }
 
   @Test
@@ -219,6 +232,7 @@ class BottomNavInitViewModelTest : BaseTest() {
     coVerify(exactly = 0) { workflowRulesUtil.initDefaultIfEmpty() }
     verify(exactly = 0) { jobScheduler.scheduleWorkflowRulesCheck() }
     verify(exactly = 0) { jobScheduler.scheduleWorkflowUnacknowledgedCheck() }
+    verify(exactly = 0) { jobScheduler.scheduleWorkflowWifiPollCheck() }
   }
 
   @Test

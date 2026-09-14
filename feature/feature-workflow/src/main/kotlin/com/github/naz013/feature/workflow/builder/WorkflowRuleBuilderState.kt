@@ -21,6 +21,13 @@ internal data class UiWorkflowTagOption(
   val title: String
 )
 
+/** A paired Bluetooth device offered when configuring a [WorkflowTrigger.BluetoothConnected]/
+ * [WorkflowTrigger.BluetoothDisconnected] trigger - see `PairedBluetoothDevicesProvider`. */
+internal data class UiWorkflowBluetoothDeviceOption(
+  val address: String,
+  val name: String
+)
+
 /** Builder state for a single rule: exactly one trigger slot, zero-or-more condition slots, and
  * exactly one action slot - not the reminder builder's open bag of 0-or-more-of-many-types. */
 internal data class WorkflowRuleBuilderState(
@@ -37,6 +44,7 @@ internal data class WorkflowRuleBuilderState(
   val availableGroups: List<UiWorkflowGroupOption> = emptyList(),
   val availableReminders: List<UiWorkflowReminderOption> = emptyList(),
   val availableTags: List<UiWorkflowTagOption> = emptyList(),
+  val availableBluetoothDevices: List<UiWorkflowBluetoothDeviceOption> = emptyList(),
   val revertOnEndDate: Boolean = false,
   val endDateTime: LocalDateTime? = null,
   val didSave: Boolean = false

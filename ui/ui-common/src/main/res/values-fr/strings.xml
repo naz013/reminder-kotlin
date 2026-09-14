@@ -1410,4 +1410,13 @@
     <string name="quick_add_hint">Essayez \"loyer chaque mois à 9 heures\"</string>
     <string name="quick_add_continue_in_editor">Continuer dans l\'éditeur complet</string>
     <string name="quick_add_does_not_repeat">Ne se répète pas</string>
+    <string name="workflow_trigger_bluetooth_connected">Connecté à un appareil Bluetooth</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Déconnecté d\'un appareil Bluetooth</string>
+    <string name="workflow_trigger_wifi_connected">Connecté à un réseau WiFi</string>
+    <string name="workflow_trigger_wifi_disconnected">Déconnecté d\'un réseau WiFi</string>
+    <string name="workflow_builder_select_bluetooth_device">Sélectionner un appareil appairé</string>
+    <string name="workflow_builder_no_paired_devices">Aucun appareil Bluetooth appairé</string>
+    <string name="workflow_builder_wifi_ssid_hint">Nom du réseau (SSID)</string>
+    <string name="bluetooth_connect">Accès Bluetooth</string>
+    <string name="bluetooth_connect_explanation">Nécessaire pour lire les noms de vos appareils Bluetooth appairés afin d\'en choisir un pour une règle de workflow</string>
 </resources>

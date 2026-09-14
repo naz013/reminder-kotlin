@@ -1407,4 +1407,13 @@
     <string name="about_legal_section">法律信息与许可</string>
     <string name="about_credits_section">鸣谢</string>
     <string name="about_copyright">© %1$d %2$s。保留所有权利。</string>
+    <string name="workflow_trigger_bluetooth_connected">已连接到蓝牙设备</string>
+    <string name="workflow_trigger_bluetooth_disconnected">已断开蓝牙设备连接</string>
+    <string name="workflow_trigger_wifi_connected">已连接到WiFi网络</string>
+    <string name="workflow_trigger_wifi_disconnected">已断开WiFi网络连接</string>
+    <string name="workflow_builder_select_bluetooth_device">选择一个已配对的设备</string>
+    <string name="workflow_builder_no_paired_devices">没有已配对的蓝牙设备</string>
+    <string name="workflow_builder_wifi_ssid_hint">网络名称（SSID）</string>
+    <string name="bluetooth_connect">蓝牙访问权限</string>
+    <string name="bluetooth_connect_explanation">需要读取已配对蓝牙设备的名称，以便您为工作流规则选择一个设备</string>
 </resources>

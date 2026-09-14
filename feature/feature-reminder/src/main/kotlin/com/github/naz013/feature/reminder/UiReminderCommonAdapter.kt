@@ -83,12 +83,11 @@ internal class UiReminderCommonAdapter(
 
   fun getDueV2(reminder: ReminderV2): UiReminderDueData {
     val remindBefore = reminder.notification.remindBefore
-    val before =
-      if (remindBefore == null || remindBefore == 0L) {
-        null
-      } else {
-        IntervalUtil.getBeforeTime(remindBefore) { getBeforePattern(it) }
-      }
+    val before = if (remindBefore == null || remindBefore == 0L) {
+      null
+    } else {
+      IntervalUtil.getBeforeTime(remindBefore) { getBeforePattern(it) }
+    }
     val dateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }
     val dueMillis = dateTime?.let { dateTimeManager.toMillis(it) } ?: 0L
     val due = dateTime?.let { dateTimeManager.getFullDateTime(it) }
@@ -107,15 +106,27 @@ internal class UiReminderCommonAdapter(
 
   private fun getRepeatValueV2(recurrence: RecurrenceRule): String =
     when (recurrence) {
-      is RecurrenceRule.Monthly ->
+      is RecurrenceRule.Monthly -> {
         String.format(textProvider.getText(R.string.xM), recurrence.repeatInterval.toString())
+      }
 
-      is RecurrenceRule.RelativeMonthly ->
+      is RecurrenceRule.RelativeMonthly -> {
         String.format(textProvider.getText(R.string.xM), recurrence.repeatInterval.toString())
+      }
 
-      is RecurrenceRule.Weekly -> getRepeatString(recurrence.weekdays)
-      is RecurrenceRule.Yearly -> textProvider.getText(R.string.yearly)
-      is RecurrenceRule.ICalendar -> textProvider.getText(R.string.recur_custom)
+      is RecurrenceRule.Weekly -> {
+        runCatching { getRepeatString(recurrence.weekdays) }
+          .getOrDefault(textProvider.getText(R.string.repeat_once))
+      }
+
+      is RecurrenceRule.Yearly -> {
+        textProvider.getText(R.string.yearly)
+      }
+
+      is RecurrenceRule.ICalendar -> {
+        textProvider.getText(R.string.recur_custom)
+      }
+
       is RecurrenceRule.Daily -> {
         IntervalUtil.getInterval(recurrence.repeatInterval) { getIntervalPattern(it) }
           ?: textProvider.getText(R.string.repeat_once)
@@ -128,8 +139,9 @@ internal class UiReminderCommonAdapter(
 
       RecurrenceRule.Once,
       RecurrenceRule.LocationEnter,
-      RecurrenceRule.LocationExit,
-      -> textProvider.getText(R.string.repeat_once)
+      RecurrenceRule.LocationExit -> {
+        textProvider.getText(R.string.repeat_once)
+      }
     }
 
   private fun getRecurRulesV2(recurrence: RecurrenceRule): String? =

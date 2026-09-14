@@ -1410,4 +1410,13 @@
     <string name="quick_add_hint">Încearcă \"plătește chiria în fiecare 1 la 9\"</string>
     <string name="quick_add_continue_in_editor">Continuă în editorul complet</string>
     <string name="quick_add_does_not_repeat">Nu se repetă</string>
+    <string name="workflow_trigger_bluetooth_connected">Conectat la un dispozitiv Bluetooth</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Deconectat de la un dispozitiv Bluetooth</string>
+    <string name="workflow_trigger_wifi_connected">Conectat la o rețea WiFi</string>
+    <string name="workflow_trigger_wifi_disconnected">Deconectat de la o rețea WiFi</string>
+    <string name="workflow_builder_select_bluetooth_device">Selectează un dispozitiv asociat</string>
+    <string name="workflow_builder_no_paired_devices">Niciun dispozitiv Bluetooth asociat</string>
+    <string name="workflow_builder_wifi_ssid_hint">Numele rețelei (SSID)</string>
+    <string name="bluetooth_connect">Acces Bluetooth</string>
+    <string name="bluetooth_connect_explanation">Necesar pentru a citi numele dispozitivelor Bluetooth asociate, ca să poți alege unul pentru o regulă de flux de lucru</string>
 </resources>

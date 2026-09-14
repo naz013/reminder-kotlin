@@ -1408,4 +1408,13 @@
     <string name="quick_add_hint">Prova \"betala hyra varje 1:a klockan 9\"</string>
     <string name="quick_add_continue_in_editor">Fortsätt i den fullständiga redigeraren</string>
     <string name="quick_add_does_not_repeat">Upprepas inte</string>
+    <string name="workflow_trigger_bluetooth_connected">Ansluten till Bluetooth-enhet</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Frånkopplad från Bluetooth-enhet</string>
+    <string name="workflow_trigger_wifi_connected">Ansluten till WiFi-nätverk</string>
+    <string name="workflow_trigger_wifi_disconnected">Frånkopplad från WiFi-nätverk</string>
+    <string name="workflow_builder_select_bluetooth_device">Välj en ihopparad enhet</string>
+    <string name="workflow_builder_no_paired_devices">Inga ihopparade Bluetooth-enheter</string>
+    <string name="workflow_builder_wifi_ssid_hint">Nätverksnamn (SSID)</string>
+    <string name="bluetooth_connect">Bluetooth-åtkomst</string>
+    <string name="bluetooth_connect_explanation">Behövs för att läsa namnen på dina ihopparade Bluetooth-enheter så att du kan välja en för en arbetsflödesregel</string>
 </resources>

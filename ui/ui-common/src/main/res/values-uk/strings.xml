@@ -1411,4 +1411,13 @@
     <string name="quick_add_hint">Спробуйте \"заплатити оренду кожного 1 о 9\"</string>
     <string name="quick_add_continue_in_editor">Продовжити в повному редакторі</string>
     <string name="quick_add_does_not_repeat">Не повторюється</string>
+    <string name="workflow_trigger_bluetooth_connected">Підключено до пристрою Bluetooth</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Відключено від пристрою Bluetooth</string>
+    <string name="workflow_trigger_wifi_connected">Підключено до мережі WiFi</string>
+    <string name="workflow_trigger_wifi_disconnected">Відключено від мережі WiFi</string>
+    <string name="workflow_builder_select_bluetooth_device">Виберіть спряжений пристрій</string>
+    <string name="workflow_builder_no_paired_devices">Немає спряжених пристроїв Bluetooth</string>
+    <string name="workflow_builder_wifi_ssid_hint">Назва мережі (SSID)</string>
+    <string name="bluetooth_connect">Доступ до Bluetooth</string>
+    <string name="bluetooth_connect_explanation">Потрібно для читання назв ваших спряжених пристроїв Bluetooth, щоб ви могли вибрати один для правила робочого процесу</string>
 </resources>

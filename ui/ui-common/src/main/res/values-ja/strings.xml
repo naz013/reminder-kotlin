@@ -1406,4 +1406,13 @@
     <string name="about_legal_section">法的情報とライセンス</string>
     <string name="about_credits_section">クレジット</string>
     <string name="about_copyright">© %1$d %2$s. All rights reserved.</string>
+    <string name="workflow_trigger_bluetooth_connected">Bluetoothデバイスに接続しました</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Bluetoothデバイスから切断しました</string>
+    <string name="workflow_trigger_wifi_connected">WiFiネットワークに接続しました</string>
+    <string name="workflow_trigger_wifi_disconnected">WiFiネットワークから切断しました</string>
+    <string name="workflow_builder_select_bluetooth_device">ペアリング済みデバイスを選択</string>
+    <string name="workflow_builder_no_paired_devices">ペアリング済みのBluetoothデバイスがありません</string>
+    <string name="workflow_builder_wifi_ssid_hint">ネットワーク名（SSID）</string>
+    <string name="bluetooth_connect">Bluetoothへのアクセス</string>
+    <string name="bluetooth_connect_explanation">ワークフロールールで選択できるように、ペアリング済みのBluetoothデバイスの名前を読み取るために必要です</string>
 </resources>

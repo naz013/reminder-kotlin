@@ -1411,4 +1411,13 @@
     <string name="quick_add_hint">Опитайте \"плати наем всеки 1 в 9\"</string>
     <string name="quick_add_continue_in_editor">Продължи в пълния редактор</string>
     <string name="quick_add_does_not_repeat">Не се повтаря</string>
+    <string name="workflow_trigger_bluetooth_connected">Свързан с Bluetooth устройство</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Разкачен от Bluetooth устройство</string>
+    <string name="workflow_trigger_wifi_connected">Свързан с WiFi мрежа</string>
+    <string name="workflow_trigger_wifi_disconnected">Разкачен от WiFi мрежа</string>
+    <string name="workflow_builder_select_bluetooth_device">Изберете сдвоено устройство</string>
+    <string name="workflow_builder_no_paired_devices">Няма сдвоени Bluetooth устройства</string>
+    <string name="workflow_builder_wifi_ssid_hint">Име на мрежата (SSID)</string>
+    <string name="bluetooth_connect">Достъп до Bluetooth</string>
+    <string name="bluetooth_connect_explanation">Необходим за четене на имената на вашите сдвоени Bluetooth устройства, за да изберете едно за правило на работния процес</string>
 </resources>
