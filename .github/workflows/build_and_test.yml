@@ -196,8 +196,11 @@ jobs:
         script: |
           adb shell pm grant com.cray.software.justreminderpro android.permission.POST_NOTIFICATIONS || true
           ./gradlew connectedProDebugAndroidTest --continue
+          adb logcat -d > "$GITHUB_WORKSPACE/logcat-connected-tests.txt" || true
+          adb logcat -c || true
           adb install -r app/build/outputs/apk/pro/debug/app-pro-debug.apk
           maestro test --include-tags notifications .maestro/
+          adb logcat -d > "$GITHUB_WORKSPACE/logcat-maestro.txt" || true
 
     - name: Publish Compose UI Test Report
       uses: mikepenz/action-junit-report@v6
@@ -216,6 +219,19 @@ jobs:
         name: maestro-failure-34
         path: ~/.maestro/tests/
         retention-days: 14
+
+    # Split into two dumps (see the script above) so a crash during the Compose instrumented
+    # tests isn't buried under the separately-run Maestro flows' own logcat volume, or vice versa.
+    - name: Upload emulator logcat (on failure)
+      uses: actions/upload-artifact@v7
+      if: failure()
+      with:
+        name: logcat-e2e-34
+        path: |
+          logcat-connected-tests.txt
+          logcat-maestro.txt
+        retention-days: 14
+        if-no-files-found: warn
 
     # The two steps below keep a single persistent issue (labeled e2e-nightly-failure) as the
     # nightly e2e status: opened/reopened with a new comment each time this job fails, closed with
