@@ -77,6 +77,15 @@ class ScheduleHomeViewModel(
         event.emit(ViewModelEvent.OpenCreateReminder)
       }
 
+      EventType.QuickAdd -> {
+        if (buildInfo.isPro) {
+          event.emit(ViewModelEvent.OpenQuickAdd)
+        } else {
+          analyticsEventSender.send(FeatureGateTappedEvent(Feature.QUICK_ADD))
+          event.emit(ViewModelEvent.OpenProVersion)
+        }
+      }
+
       EventType.Birthday -> {
         event.emit(ViewModelEvent.OpenCreateBirthday)
       }
@@ -199,11 +208,7 @@ class ScheduleHomeViewModel(
       it.copy(
         greeting = getGreetingTextUseCase(),
         headerNavigationItems = emptyList(),
-        addMenuItems = if (googleTasksAuthManager.isAuthorized()) {
-          EventType.entries
-        } else {
-          listOf(EventType.Reminder, EventType.Birthday, EventType.Note, EventType.Todo)
-        },
+        addMenuItems = EventType.entries.filter { isAddMenuItemAvailable(it) },
         bannerState = getBannerState(),
       )
     }
@@ -228,6 +233,15 @@ class ScheduleHomeViewModel(
         }
     }
   }
+
+  /** Quick add is PRO-only and hidden from the menu entirely for free users - unlike Pomodoro's
+   * "always show, gate on tap" pattern, elsewhere in this same class - rather than shown-but-locked. */
+  private fun isAddMenuItemAvailable(eventType: EventType): Boolean =
+    when (eventType) {
+      EventType.QuickAdd -> buildInfo.isPro
+      EventType.GoogleTask -> googleTasksAuthManager.isAuthorized()
+      else -> true
+    }
 
   private fun getBannerState(): BannerState? {
     if (legalDocumentRepository.hasUpdate(LegalDocumentType.PRIVACY_POLICY)) {
@@ -290,6 +304,8 @@ class ScheduleHomeViewModel(
 
     data object OpenPomodoro : ViewModelEvent
 
+    data object OpenQuickAdd : ViewModelEvent
+
     data object OpenProVersion : ViewModelEvent
 
     data object OpenPrivacy : ViewModelEvent
@@ -308,6 +324,7 @@ class ScheduleHomeViewModel(
   enum class EventType(
     @param:StringRes val title: Int,
   ) {
+    QuickAdd(R.string.quick_add),
     Reminder(R.string.reminder),
     Birthday(R.string.birthday),
     GoogleTask(R.string.google_task),

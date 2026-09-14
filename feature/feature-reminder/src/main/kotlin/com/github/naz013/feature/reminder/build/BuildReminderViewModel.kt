@@ -403,6 +403,8 @@ internal class BuildReminderViewModel(
 
         navKey.seedFromTodoEdit -> readTodoEditSeed()
 
+        navKey.deepLinkQuickAdd != null -> readQuickAddDeepLink(navKey.deepLinkQuickAdd)
+
         navKey.deepLinkText != null -> readTextDeepLink(navKey.deepLinkText)
 
         navKey.groupUuId != null -> readGroupDeepLink(navKey.groupUuId)
@@ -620,6 +622,51 @@ internal class BuildReminderViewModel(
     addSummaryItemToBuilder(text)
     updateSelector()
   }
+
+  /** Seeds the date/time/recurrence [quickAdd] recognized (REM-1221) by round-tripping a throwaway
+   * [ReminderV2] through the same [reminderToBiDecomposer] pipeline [editReminder] uses - that
+   * pipeline already knows how to turn any [RecurrenceRule] variant into the right builder items,
+   * so there's no need to duplicate that per-recurrence-type logic here. [navKey.deepLinkText],
+   * when also present, seeds the title exactly like [readTextDeepLink] does - the two arrive
+   * together whenever quick-add fully understood a phrase but the user chose "continue in full
+   * editor" instead of saving it directly. */
+  private suspend fun readQuickAddDeepLink(quickAdd: BuildReminderNavKey.Main.QuickAddDeepLink) {
+    while (builderItemsLogic.getAvailable().isEmpty()) {
+      delay(50.milliseconds)
+    }
+    Logger.i(TAG, "Handle reminder quick-add Deep Link")
+    val localDateTime = dateTimeManager.fromMillis(quickAdd.startDateTimeMillis)
+    val utcDateTime = dateTimeManager.localToUtc(localDateTime)
+    val seedReminder =
+      ReminderV2(
+        recurrence = quickAdd.toRecurrenceRule(),
+        schedule = ReminderSchedule(startDateTime = utcDateTime, eventDateTime = utcDateTime),
+      )
+    val builderItems = reminderToBiDecomposer(seedReminder)
+    if (builderItems.isNotEmpty()) {
+      builderItemsLogic.setAll(builderItems)
+    }
+    val text = navKey.deepLinkText
+    if (text != null) {
+      addSummaryItemToBuilder(text)
+    } else {
+      addEmptySummaryItemToBuilderIfNeeded()
+    }
+    updateSelector()
+  }
+
+  private fun BuildReminderNavKey.Main.QuickAddDeepLink.toRecurrenceRule(): RecurrenceRule =
+    when (recurrenceType) {
+      BuildReminderNavKey.Main.QuickAddDeepLink.RecurrenceType.ONCE -> RecurrenceRule.Once
+      BuildReminderNavKey.Main.QuickAddDeepLink.RecurrenceType.DAILY ->
+        RecurrenceRule.Daily(repeatInterval = interval)
+      BuildReminderNavKey.Main.QuickAddDeepLink.RecurrenceType.WEEKLY ->
+        RecurrenceRule.Weekly(weekdays = weekdays, repeatInterval = interval)
+      BuildReminderNavKey.Main.QuickAddDeepLink.RecurrenceType.MONTHLY ->
+        RecurrenceRule.Monthly(dayOfMonth = dayOfMonth, repeatInterval = interval)
+      BuildReminderNavKey.Main.QuickAddDeepLink.RecurrenceType.YEARLY ->
+        RecurrenceRule.Yearly(dayOfMonth = dayOfMonth, monthOfYear = monthOfYear, repeatInterval = interval)
+    }
 
   private suspend fun readGroupDeepLink(groupUuId: String) {
     while (builderItemsLogic.getAvailable().isEmpty()) {

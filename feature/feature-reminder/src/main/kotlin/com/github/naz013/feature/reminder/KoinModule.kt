@@ -75,6 +75,8 @@ import com.github.naz013.feature.reminder.note.UiNoteListAdapter
 import com.github.naz013.feature.reminder.preset.UiPresetListAdapter
 import com.github.naz013.feature.reminder.preview.FullScreenMapViewModel
 import com.github.naz013.feature.reminder.preview.PreviewReminderViewModel
+import com.github.naz013.feature.reminder.quickadd.QuickAddViewModel
+import com.github.naz013.logic.quickadd.QuickAddParser
 import com.github.naz013.feature.reminder.todo.TodoEditNavKey
 import com.github.naz013.feature.reminder.todo.TodoEditViewModel
 import com.github.naz013.feature.reminder.todo.TodoSeedHolder
@@ -92,6 +94,9 @@ val featureReminderModule = module {
 
   viewModelOf(::RemindersArchiveViewModel)
   viewModelOf(::RemindersSettingsViewModel)
+
+  single { QuickAddParser() }
+  viewModelOf(::QuickAddViewModel)
 
   viewModel { (id: String) ->
     PreviewReminderViewModel(

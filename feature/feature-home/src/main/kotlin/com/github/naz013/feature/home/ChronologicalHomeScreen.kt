@@ -227,6 +227,7 @@ private fun AddButton(
       id = index,
       title = stringResource(eventType.title),
       iconRes = when (eventType) {
+        ScheduleHomeViewModel.EventType.QuickAdd -> DrawableCatalog.Fluent.Lightbulb
         ScheduleHomeViewModel.EventType.Reminder -> DrawableCatalog.Fluent.Alert
         ScheduleHomeViewModel.EventType.Birthday -> DrawableCatalog.Fluent.FoodCake
         ScheduleHomeViewModel.EventType.GoogleTask -> DrawableCatalog.Builder.GoogleTaskList

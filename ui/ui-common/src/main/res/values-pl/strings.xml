@@ -1406,4 +1406,8 @@
     <string name="about_legal_section">Informacje prawne i licencje</string>
     <string name="about_credits_section">Podziękowania</string>
     <string name="about_copyright">© %1$d %2$s. Wszelkie prawa zastrzeżone.</string>
+    <string name="quick_add">Szybkie dodawanie</string>
+    <string name="quick_add_hint">Spróbuj \"zapłacić czynsz każdego 1 o 9\"</string>
+    <string name="quick_add_continue_in_editor">Kontynuuj w pełnym edytorze</string>
+    <string name="quick_add_does_not_repeat">Nie powtarza się</string>
 </resources>

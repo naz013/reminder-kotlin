@@ -1404,4 +1404,8 @@
     <string name="about_legal_section">Juridisch &amp; licenties</string>
     <string name="about_credits_section">Met dank aan</string>
     <string name="about_copyright">© %1$d %2$s. Alle rechten voorbehouden.</string>
+    <string name="quick_add">Snel toevoegen</string>
+    <string name="quick_add_hint">Probeer \"huur betalen elke 1e om 9 uur\"</string>
+    <string name="quick_add_continue_in_editor">Doorgaan in volledige editor</string>
+    <string name="quick_add_does_not_repeat">Wordt niet herhaald</string>
 </resources>

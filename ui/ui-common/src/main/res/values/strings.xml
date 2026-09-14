@@ -1422,4 +1422,8 @@
     <string name="about_legal_section">Legal &amp; licenses</string>
     <string name="about_credits_section">Credits</string>
     <string name="about_copyright">© %1$d %2$s. All rights reserved.</string>
+    <string name="quick_add">Quick add</string>
+    <string name="quick_add_hint">Try \"pay rent every 1st at 9am\"</string>
+    <string name="quick_add_continue_in_editor">Continue in full editor</string>
+    <string name="quick_add_does_not_repeat">Does not repeat</string>
 </resources>

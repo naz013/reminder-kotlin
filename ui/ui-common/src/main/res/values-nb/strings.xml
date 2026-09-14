@@ -1404,4 +1404,8 @@
     <string name="about_legal_section">Juridisk og lisenser</string>
     <string name="about_credits_section">Bidragsytere</string>
     <string name="about_copyright">© %1$d %2$s. Alle rettigheter forbeholdt.</string>
+    <string name="quick_add">Hurtig tillegg</string>
+    <string name="quick_add_hint">Prøv \"betale husleie hver 1. klokken 9\"</string>
+    <string name="quick_add_continue_in_editor">Fortsett i den fullstendige editoren</string>
+    <string name="quick_add_does_not_repeat">Gjentas ikke</string>
 </resources>

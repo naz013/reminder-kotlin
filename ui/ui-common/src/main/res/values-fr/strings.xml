@@ -1406,4 +1406,8 @@
     <string name="about_legal_section">Mentions légales et licences</string>
     <string name="about_credits_section">Remerciements</string>
     <string name="about_copyright">© %1$d %2$s. Tous droits réservés.</string>
+    <string name="quick_add">Ajout rapide</string>
+    <string name="quick_add_hint">Essayez \"loyer chaque mois à 9 heures\"</string>
+    <string name="quick_add_continue_in_editor">Continuer dans l\'éditeur complet</string>
+    <string name="quick_add_does_not_repeat">Ne se répète pas</string>
 </resources>

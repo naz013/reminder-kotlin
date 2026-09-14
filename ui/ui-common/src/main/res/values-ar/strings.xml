@@ -1404,4 +1404,8 @@
     <string name="about_legal_section">الشروط القانونية والتراخيص</string>
     <string name="about_credits_section">شكر وتقدير</string>
     <string name="about_copyright">© %1$d %2$s. جميع الحقوق محفوظة.</string>
+    <string name="quick_add">إضافة سريعة</string>
+    <string name="quick_add_hint">جرّب \"دفع الإيجار كل 1 الساعة 9\"</string>
+    <string name="quick_add_continue_in_editor">المتابعة في المحرر الكامل</string>
+    <string name="quick_add_does_not_repeat">لا يتكرر</string>
 </resources>

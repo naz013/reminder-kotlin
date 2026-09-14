@@ -1402,4 +1402,8 @@
     <string name="about_legal_section">Rechtliches &amp; Lizenzen</string>
     <string name="about_credits_section">Danksagungen</string>
     <string name="about_copyright">© %1$d %2$s. Alle Rechte vorbehalten.</string>
+    <string name="quick_add">Schnell hinzufügen</string>
+    <string name="quick_add_hint">Versuche \"Miete bezahlen jeden 1. um 9 Uhr\"</string>
+    <string name="quick_add_continue_in_editor">Im vollständigen Editor fortfahren</string>
+    <string name="quick_add_does_not_repeat">Wiederholt sich nicht</string>
 </resources>

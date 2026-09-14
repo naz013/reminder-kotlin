@@ -1404,4 +1404,8 @@
     <string name="about_legal_section">Legal &amp; lisensi</string>
     <string name="about_credits_section">Kredit</string>
     <string name="about_copyright">© %1$d %2$s. Semua hak dilindungi.</string>
+    <string name="quick_add">Tambah cepat</string>
+    <string name="quick_add_hint">Coba \"bayar sewa setiap 1 jam 9 pagi\"</string>
+    <string name="quick_add_continue_in_editor">Lanjutkan di editor lengkap</string>
+    <string name="quick_add_does_not_repeat">Tidak berulang</string>
 </resources>

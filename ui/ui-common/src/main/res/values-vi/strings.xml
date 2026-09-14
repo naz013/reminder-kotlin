@@ -1404,4 +1404,8 @@
     <string name="about_legal_section">Pháp lý &amp; giấy phép</string>
     <string name="about_credits_section">Ghi công</string>
     <string name="about_copyright">© %1$d %2$s. Đã đăng ký bản quyền.</string>
+    <string name="quick_add">Thêm nhanh</string>
+    <string name="quick_add_hint">Hãy thử \"trả tiền thuê nhà mỗi 1 lúc 9 sáng\"</string>
+    <string name="quick_add_continue_in_editor">Tiếp tục trong trình chỉnh sửa đầy đủ</string>
+    <string name="quick_add_does_not_repeat">Không lặp lại</string>
 </resources>

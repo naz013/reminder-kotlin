@@ -1406,4 +1406,8 @@
     <string name="about_legal_section">Informații legale și licențe</string>
     <string name="about_credits_section">Mulțumiri</string>
     <string name="about_copyright">© %1$d %2$s. Toate drepturile rezervate.</string>
+    <string name="quick_add">Adăugare rapidă</string>
+    <string name="quick_add_hint">Încearcă \"plătește chiria în fiecare 1 la 9\"</string>
+    <string name="quick_add_continue_in_editor">Continuă în editorul complet</string>
+    <string name="quick_add_does_not_repeat">Nu se repetă</string>
 </resources>

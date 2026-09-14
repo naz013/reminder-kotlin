@@ -1404,4 +1404,8 @@
     <string name="about_legal_section">Juridik och licenser</string>
     <string name="about_credits_section">Tack till</string>
     <string name="about_copyright">© %1$d %2$s. Alla rättigheter förbehållna.</string>
+    <string name="quick_add">Snabbtillägg</string>
+    <string name="quick_add_hint">Prova \"betala hyra varje 1:a klockan 9\"</string>
+    <string name="quick_add_continue_in_editor">Fortsätt i den fullständiga redigeraren</string>
+    <string name="quick_add_does_not_repeat">Upprepas inte</string>
 </resources>
