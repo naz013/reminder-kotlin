@@ -1406,4 +1406,13 @@
     <string name="quick_add_hint">Versuche \"Miete bezahlen jeden 1. um 9 Uhr\"</string>
     <string name="quick_add_continue_in_editor">Im vollständigen Editor fortfahren</string>
     <string name="quick_add_does_not_repeat">Wiederholt sich nicht</string>
+    <string name="workflow_trigger_bluetooth_connected">Mit Bluetooth-Gerät verbunden</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Bluetooth-Gerät getrennt</string>
+    <string name="workflow_trigger_wifi_connected">Mit WLAN-Netzwerk verbunden</string>
+    <string name="workflow_trigger_wifi_disconnected">WLAN-Verbindung getrennt</string>
+    <string name="workflow_builder_select_bluetooth_device">Gekoppeltes Gerät auswählen</string>
+    <string name="workflow_builder_no_paired_devices">Keine gekoppelten Bluetooth-Geräte</string>
+    <string name="workflow_builder_wifi_ssid_hint">Netzwerkname (SSID)</string>
+    <string name="bluetooth_connect">Bluetooth-Zugriff</string>
+    <string name="bluetooth_connect_explanation">Wird benötigt, um die Namen deiner gekoppelten Bluetooth-Geräte zu lesen, damit du eines für eine Workflow-Regel auswählen kannst</string>
 </resources>

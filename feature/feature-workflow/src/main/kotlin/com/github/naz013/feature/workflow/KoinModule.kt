@@ -13,6 +13,7 @@ import org.koin.dsl.module
 val workflowModule = module {
   factoryOf(::WorkflowRulesUtil)
   factory<BroadcastIntentSender> { BroadcastIntentSenderImpl(get()) }
+  factoryOf(::PairedBluetoothDevicesProvider)
   factory<BackgroundTask>(named(RunWorkflowRulesTask.TASK_KEY)) { RunWorkflowRulesTask(get()) }
   factory<BackgroundTask>(named(RunWorkflowUnacknowledgedRulesTask.TASK_KEY)) {
     RunWorkflowUnacknowledgedRulesTask(get())
@@ -27,6 +28,8 @@ val workflowModule = module {
     WorkflowRulesForReminderViewModel(reminderId, get(), get(), get(), get(), get(), get(), get())
   }
   viewModel { (scopeType: WorkflowScopeType, scopeId: String?, editingRuleId: String?) ->
-    WorkflowRuleBuilderViewModel(scopeType, scopeId, editingRuleId, get(), get(), get(), get(), get(), get(), get())
+    WorkflowRuleBuilderViewModel(
+      scopeType, scopeId, editingRuleId, get(), get(), get(), get(), get(), get(), get(), get()
+    )
   }
 }

@@ -1404,4 +1404,13 @@
     <string name="about_legal_section">กฎหมายและใบอนุญาต</string>
     <string name="about_credits_section">เครดิต</string>
     <string name="about_copyright">© %1$d %2$s สงวนลิขสิทธิ์</string>
+    <string name="workflow_trigger_bluetooth_connected">เชื่อมต่อกับอุปกรณ์บลูทูธแล้ว</string>
+    <string name="workflow_trigger_bluetooth_disconnected">ตัดการเชื่อมต่อจากอุปกรณ์บลูทูธแล้ว</string>
+    <string name="workflow_trigger_wifi_connected">เชื่อมต่อกับเครือข่าย WiFi แล้ว</string>
+    <string name="workflow_trigger_wifi_disconnected">ตัดการเชื่อมต่อจากเครือข่าย WiFi แล้ว</string>
+    <string name="workflow_builder_select_bluetooth_device">เลือกอุปกรณ์ที่จับคู่ไว้</string>
+    <string name="workflow_builder_no_paired_devices">ไม่มีอุปกรณ์บลูทูธที่จับคู่ไว้</string>
+    <string name="workflow_builder_wifi_ssid_hint">ชื่อเครือข่าย (SSID)</string>
+    <string name="bluetooth_connect">การเข้าถึงบลูทูธ</string>
+    <string name="bluetooth_connect_explanation">จำเป็นสำหรับอ่านชื่ออุปกรณ์บลูทูธที่จับคู่ไว้ เพื่อให้คุณสามารถเลือกอุปกรณ์สำหรับกฎเวิร์กโฟลว์ได้</string>
 </resources>

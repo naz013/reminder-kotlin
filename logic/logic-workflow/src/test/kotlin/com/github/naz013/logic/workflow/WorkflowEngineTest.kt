@@ -1070,6 +1070,136 @@ class WorkflowEngineTest {
 
     assertEquals(0, reminderRepository.saved.size)
   }
+
+  @Test
+  fun `applies a notification override to every active reminder when a matching Bluetooth device connects`() = runTest {
+    val override = NotificationSettingsOverride(bypassDoNotDisturb = true)
+    val reminder = activeReminder("r1")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-bt-connect",
+      trigger = WorkflowTrigger.BluetoothConnected(deviceAddress = "AA:BB:CC:DD:EE:FF", deviceName = "Car"),
+      action = WorkflowAction.ApplyNotificationOverride(override),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runBluetoothConnectedRules("aa:bb:cc:dd:ee:ff")
+
+    assertEquals(override, reminderRepository.saved.getValue("r1").notification)
+  }
+
+  @Test
+  fun `does not fire a Bluetooth-connected rule for a different device address`() = runTest {
+    val reminder = activeReminder("r1")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-bt-connect",
+      trigger = WorkflowTrigger.BluetoothConnected(deviceAddress = "AA:BB:CC:DD:EE:FF", deviceName = "Car"),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runBluetoothConnectedRules("11:22:33:44:55:66")
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `clears the notification override when a matching Bluetooth device disconnects`() = runTest {
+    val reminder = activeReminder("r1").copy(notification = NotificationSettingsOverride(bypassDoNotDisturb = true))
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-bt-disconnect",
+      trigger = WorkflowTrigger.BluetoothDisconnected(deviceAddress = "AA:BB:CC:DD:EE:FF", deviceName = "Car"),
+      action = WorkflowAction.ClearNotificationOverride,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runBluetoothDisconnectedRules("AA:BB:CC:DD:EE:FF")
+
+    assertEquals(NotificationSettingsOverride(), reminderRepository.saved.getValue("r1").notification)
+  }
+
+  @Test
+  fun `applies a notification override to every active reminder when a matching WiFi network connects`() = runTest {
+    val override = NotificationSettingsOverride(bypassDoNotDisturb = true)
+    val reminder = activeReminder("r1")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-wifi-connect",
+      trigger = WorkflowTrigger.WifiConnected(ssid = "Home WiFi"),
+      action = WorkflowAction.ApplyNotificationOverride(override),
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runWifiConnectedRules("Home WiFi")
+
+    assertEquals(override, reminderRepository.saved.getValue("r1").notification)
+  }
+
+  @Test
+  fun `does not fire a WiFi-connected rule for a different SSID`() = runTest {
+    val reminder = activeReminder("r1")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-wifi-connect",
+      trigger = WorkflowTrigger.WifiConnected(ssid = "Home WiFi"),
+      action = WorkflowAction.ArchiveReminder,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runWifiConnectedRules("Office WiFi")
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
+
+  @Test
+  fun `clears the notification override when a matching WiFi network disconnects`() = runTest {
+    val reminder = activeReminder("r1").copy(notification = NotificationSettingsOverride(bypassDoNotDisturb = true))
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRule(
+      uuId = "rule-wifi-disconnect",
+      trigger = WorkflowTrigger.WifiDisconnected(ssid = "Home WiFi"),
+      action = WorkflowAction.ClearNotificationOverride,
+      scope = WorkflowScope.Global,
+      createdAt = now
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runWifiDisconnectedRules("Home WiFi")
+
+    assertEquals(NotificationSettingsOverride(), reminderRepository.saved.getValue("r1").notification)
+  }
+
+  @Test
+  fun `ignores a disabled Bluetooth-connected rule`() = runTest {
+    val reminder = activeReminder("r1")
+    val reminderRepository = FakeReminderV2Repository(mutableMapOf(reminder.uuId to reminder))
+    val rule = WorkflowRuleFixture.disabled(
+      WorkflowRule(
+        uuId = "rule-bt-connect",
+        trigger = WorkflowTrigger.BluetoothConnected(deviceAddress = "AA:BB:CC:DD:EE:FF", deviceName = "Car"),
+        action = WorkflowAction.ArchiveReminder,
+        scope = WorkflowScope.Global,
+        createdAt = now
+      )
+    )
+    val ruleRepository = FakeWorkflowRuleRepository(listOf(rule))
+
+    engine(ruleRepository, reminderRepository).runBluetoothConnectedRules("AA:BB:CC:DD:EE:FF")
+
+    assertEquals(0, reminderRepository.saved.size)
+  }
 }
 
 private object WorkflowRuleFixture {
@@ -1167,6 +1297,10 @@ private class FakeWorkflowRuleRepository(
         "REMINDER_AGE_EXCEEDED" -> it.trigger is WorkflowTrigger.ReminderAgeExceeded
         "REMINDER_UNACKNOWLEDGED_FOR" -> it.trigger is WorkflowTrigger.ReminderUnacknowledgedFor
         "SCHEDULE_REACHED" -> it.trigger is WorkflowTrigger.ScheduleReached
+        "BLUETOOTH_CONNECTED" -> it.trigger is WorkflowTrigger.BluetoothConnected
+        "BLUETOOTH_DISCONNECTED" -> it.trigger is WorkflowTrigger.BluetoothDisconnected
+        "WIFI_CONNECTED" -> it.trigger is WorkflowTrigger.WifiConnected
+        "WIFI_DISCONNECTED" -> it.trigger is WorkflowTrigger.WifiDisconnected
         else -> false
       }
     }

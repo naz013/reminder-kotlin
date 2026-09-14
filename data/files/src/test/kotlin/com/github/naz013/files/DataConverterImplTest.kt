@@ -199,6 +199,36 @@ class DataConverterImplTest {
   }
 
   @Test
+  fun `round trips a Bluetooth-connected workflow rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-13",
+      title = "Activate errands when connected to the car",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.BluetoothConnected(deviceAddress = "AA:BB:CC:DD:EE:FF", deviceName = "Car"),
+      action = WorkflowAction.ApplyNotificationOverride(NotificationSettingsOverride(bypassDoNotDisturb = true))
+    )
+
+    val result = rule.toJson().toDomain()
+
+    assertEquals(rule.copy(syncState = SyncState.Synced), result)
+  }
+
+  @Test
+  fun `round trips a WiFi-disconnected workflow rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-14",
+      title = "Re-apply quiet hours when leaving home WiFi",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.WifiDisconnected(ssid = "Home WiFi"),
+      action = WorkflowAction.ApplyNotificationOverride(NotificationSettingsOverride(bypassDoNotDisturb = true))
+    )
+
+    val result = rule.toJson().toDomain()
+
+    assertEquals(rule.copy(syncState = SyncState.Synced), result)
+  }
+
+  @Test
   fun `falls back to a safe default when the trigger payload is unparseable`() {
     val rule = WorkflowRule(
       uuId = "rule-4",

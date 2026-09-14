@@ -23,6 +23,7 @@ object Permissions {
   const val CALL_PHONE = Manifest.permission.CALL_PHONE
   const val RECORD_AUDIO = Manifest.permission.RECORD_AUDIO
   const val BLUETOOTH = Manifest.permission.BLUETOOTH
+  const val BLUETOOTH_CONNECT = Manifest.permission.BLUETOOTH_CONNECT
   const val CAMERA = Manifest.permission.CAMERA
 
   const val FOREGROUND_SERVICE = Manifest.permission.FOREGROUND_SERVICE

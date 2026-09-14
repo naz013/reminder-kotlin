@@ -25,7 +25,11 @@ private fun isTriggerImplemented(trigger: WorkflowTrigger): Boolean = when (trig
   is WorkflowTrigger.LocationExited,
   is WorkflowTrigger.ReminderAgeExceeded,
   is WorkflowTrigger.ReminderUnacknowledgedFor,
-  is WorkflowTrigger.ScheduleReached -> true
+  is WorkflowTrigger.ScheduleReached,
+  is WorkflowTrigger.BluetoothConnected,
+  is WorkflowTrigger.BluetoothDisconnected,
+  is WorkflowTrigger.WifiConnected,
+  is WorkflowTrigger.WifiDisconnected -> true
 }
 
 private fun isActionImplemented(action: WorkflowAction): Boolean = when (action) {

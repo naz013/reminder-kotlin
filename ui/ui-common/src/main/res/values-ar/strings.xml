@@ -1408,4 +1408,13 @@
     <string name="quick_add_hint">جرّب \"دفع الإيجار كل 1 الساعة 9\"</string>
     <string name="quick_add_continue_in_editor">المتابعة في المحرر الكامل</string>
     <string name="quick_add_does_not_repeat">لا يتكرر</string>
+    <string name="workflow_trigger_bluetooth_connected">متصل بجهاز بلوتوث</string>
+    <string name="workflow_trigger_bluetooth_disconnected">انقطع الاتصال بجهاز بلوتوث</string>
+    <string name="workflow_trigger_wifi_connected">متصل بشبكة WiFi</string>
+    <string name="workflow_trigger_wifi_disconnected">انقطع الاتصال بشبكة WiFi</string>
+    <string name="workflow_builder_select_bluetooth_device">اختر جهازًا مقترنًا</string>
+    <string name="workflow_builder_no_paired_devices">لا توجد أجهزة بلوتوث مقترنة</string>
+    <string name="workflow_builder_wifi_ssid_hint">اسم الشبكة (SSID)</string>
+    <string name="bluetooth_connect">الوصول إلى البلوتوث</string>
+    <string name="bluetooth_connect_explanation">مطلوب لقراءة أسماء أجهزة البلوتوث المقترنة لديك حتى تتمكن من اختيار واحد لقاعدة سير العمل</string>
 </resources>

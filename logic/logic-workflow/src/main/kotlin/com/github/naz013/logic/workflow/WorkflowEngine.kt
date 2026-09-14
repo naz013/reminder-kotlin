@@ -221,6 +221,56 @@ class WorkflowEngine(
     return emptyList()
   }
 
+  /** Fires every enabled [WorkflowTrigger.BluetoothConnected] rule whose paired device matches
+   * [deviceAddress] (case-insensitive MAC comparison) - not reminder-scoped, so (like
+   * [runScheduleRules]) [WorkflowRule.conditions] aren't evaluated and the action bulk-applies to
+   * every reminder in [WorkflowRule.scope] via [applyScheduledAction]. Always returns an empty
+   * list - kept as `List<PendingWorkflowAction>` only so [WorkflowTriggerRunner] can combine it
+   * uniformly with the other `run*Rules` results. */
+  suspend fun runBluetoothConnectedRules(deviceAddress: String): List<PendingWorkflowAction> {
+    workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_BLUETOOTH_CONNECTED)
+      .filter { it.isEnabled && matchesBluetoothAddress(it.trigger, deviceAddress) }
+      .forEach { applyScheduledAction(it) }
+    return emptyList()
+  }
+
+  /** Symmetric counterpart to [runBluetoothConnectedRules] for [WorkflowTrigger.BluetoothDisconnected]. */
+  suspend fun runBluetoothDisconnectedRules(deviceAddress: String): List<PendingWorkflowAction> {
+    workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_BLUETOOTH_DISCONNECTED)
+      .filter { it.isEnabled && matchesBluetoothAddress(it.trigger, deviceAddress) }
+      .forEach { applyScheduledAction(it) }
+    return emptyList()
+  }
+
+  private fun matchesBluetoothAddress(trigger: WorkflowTrigger, deviceAddress: String): Boolean = when (trigger) {
+    is WorkflowTrigger.BluetoothConnected -> trigger.deviceAddress.equals(deviceAddress, ignoreCase = true)
+    is WorkflowTrigger.BluetoothDisconnected -> trigger.deviceAddress.equals(deviceAddress, ignoreCase = true)
+    else -> false
+  }
+
+  /** Fires every enabled [WorkflowTrigger.WifiConnected] rule whose network matches [ssid] - same
+   * not-reminder-scoped shape as [runBluetoothConnectedRules]. */
+  suspend fun runWifiConnectedRules(ssid: String): List<PendingWorkflowAction> {
+    workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_WIFI_CONNECTED)
+      .filter { it.isEnabled && matchesWifiSsid(it.trigger, ssid) }
+      .forEach { applyScheduledAction(it) }
+    return emptyList()
+  }
+
+  /** Symmetric counterpart to [runWifiConnectedRules] for [WorkflowTrigger.WifiDisconnected]. */
+  suspend fun runWifiDisconnectedRules(ssid: String): List<PendingWorkflowAction> {
+    workflowRuleRepository.getByTriggerType(TRIGGER_TYPE_WIFI_DISCONNECTED)
+      .filter { it.isEnabled && matchesWifiSsid(it.trigger, ssid) }
+      .forEach { applyScheduledAction(it) }
+    return emptyList()
+  }
+
+  private fun matchesWifiSsid(trigger: WorkflowTrigger, ssid: String): Boolean = when (trigger) {
+    is WorkflowTrigger.WifiConnected -> trigger.ssid == ssid
+    is WorkflowTrigger.WifiDisconnected -> trigger.ssid == ssid
+    else -> false
+  }
+
   private suspend fun fireScheduleRuleIfDue(rule: WorkflowRule, now: LocalDateTime) {
     val trigger = rule.trigger as? WorkflowTrigger.ScheduleReached ?: return
     if (!isScheduleDue(trigger, rule.lastRunAt, now)) return
@@ -382,6 +432,10 @@ class WorkflowEngine(
     private const val TRIGGER_TYPE_REMINDER_AGE_EXCEEDED = "REMINDER_AGE_EXCEEDED"
     private const val TRIGGER_TYPE_REMINDER_UNACKNOWLEDGED_FOR = "REMINDER_UNACKNOWLEDGED_FOR"
     private const val TRIGGER_TYPE_SCHEDULE_REACHED = "SCHEDULE_REACHED"
+    private const val TRIGGER_TYPE_BLUETOOTH_CONNECTED = "BLUETOOTH_CONNECTED"
+    private const val TRIGGER_TYPE_BLUETOOTH_DISCONNECTED = "BLUETOOTH_DISCONNECTED"
+    private const val TRIGGER_TYPE_WIFI_CONNECTED = "WIFI_CONNECTED"
+    private const val TRIGGER_TYPE_WIFI_DISCONNECTED = "WIFI_DISCONNECTED"
     private const val DAYS_PER_WEEK = 7L
   }
 }

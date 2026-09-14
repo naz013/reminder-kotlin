@@ -1408,4 +1408,13 @@
     <string name="quick_add_hint">Hãy thử \"trả tiền thuê nhà mỗi 1 lúc 9 sáng\"</string>
     <string name="quick_add_continue_in_editor">Tiếp tục trong trình chỉnh sửa đầy đủ</string>
     <string name="quick_add_does_not_repeat">Không lặp lại</string>
+    <string name="workflow_trigger_bluetooth_connected">Đã kết nối với thiết bị Bluetooth</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Đã ngắt kết nối khỏi thiết bị Bluetooth</string>
+    <string name="workflow_trigger_wifi_connected">Đã kết nối với mạng WiFi</string>
+    <string name="workflow_trigger_wifi_disconnected">Đã ngắt kết nối khỏi mạng WiFi</string>
+    <string name="workflow_builder_select_bluetooth_device">Chọn một thiết bị đã ghép nối</string>
+    <string name="workflow_builder_no_paired_devices">Không có thiết bị Bluetooth đã ghép nối</string>
+    <string name="workflow_builder_wifi_ssid_hint">Tên mạng (SSID)</string>
+    <string name="bluetooth_connect">Quyền truy cập Bluetooth</string>
+    <string name="bluetooth_connect_explanation">Cần thiết để đọc tên các thiết bị Bluetooth đã ghép nối của bạn để bạn có thể chọn một thiết bị cho quy tắc quy trình làm việc</string>
 </resources>

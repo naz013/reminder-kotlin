@@ -22,6 +22,10 @@ internal fun workflowTriggerLabel(trigger: WorkflowTrigger): String = when (trig
   is WorkflowTrigger.ReminderAgeExceeded -> stringResource(R.string.workflow_trigger_reminder_age_exceeded)
   is WorkflowTrigger.ReminderUnacknowledgedFor -> stringResource(R.string.workflow_trigger_reminder_unacknowledged_for)
   is WorkflowTrigger.ScheduleReached -> stringResource(R.string.workflow_trigger_schedule_reached)
+  is WorkflowTrigger.BluetoothConnected -> stringResource(R.string.workflow_trigger_bluetooth_connected)
+  is WorkflowTrigger.BluetoothDisconnected -> stringResource(R.string.workflow_trigger_bluetooth_disconnected)
+  is WorkflowTrigger.WifiConnected -> stringResource(R.string.workflow_trigger_wifi_connected)
+  is WorkflowTrigger.WifiDisconnected -> stringResource(R.string.workflow_trigger_wifi_disconnected)
 }
 
 /** The configured value line for a trigger, or null for parameterless ones. */
@@ -33,6 +37,10 @@ internal fun workflowTriggerValue(trigger: WorkflowTrigger): String? = when (tri
     R.string.workflow_builder_minutes_unit
   )}"
   is WorkflowTrigger.ScheduleReached -> trigger.atDateTime.format(scheduleTriggerValueFormatter)
+  is WorkflowTrigger.BluetoothConnected -> trigger.deviceName.ifBlank { trigger.deviceAddress }
+  is WorkflowTrigger.BluetoothDisconnected -> trigger.deviceName.ifBlank { trigger.deviceAddress }
+  is WorkflowTrigger.WifiConnected -> trigger.ssid
+  is WorkflowTrigger.WifiDisconnected -> trigger.ssid
   else -> null
 }
 

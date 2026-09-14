@@ -229,6 +229,38 @@ class WorkflowRuleMapperTest {
   }
 
   @Test
+  fun `toEntity then toDomain round trips a Bluetooth-connected rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-13",
+      title = "Activate errands when connected to the car",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.BluetoothConnected(deviceAddress = "AA:BB:CC:DD:EE:FF", deviceName = "Car"),
+      action = WorkflowAction.ApplyNotificationOverride(NotificationSettingsOverride(bypassDoNotDisturb = true)),
+      createdAt = LocalDateTime.of(2026, 9, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips a WiFi-disconnected rule`() {
+    val rule = WorkflowRule(
+      uuId = "rule-14",
+      title = "Re-apply quiet hours when leaving home WiFi",
+      scope = WorkflowScope.Global,
+      trigger = WorkflowTrigger.WifiDisconnected(ssid = "Home WiFi"),
+      action = WorkflowAction.ApplyNotificationOverride(NotificationSettingsOverride(bypassDoNotDisturb = true)),
+      createdAt = LocalDateTime.of(2026, 9, 1, 0, 0)
+    )
+
+    val roundTripped = rule.toEntity().toDomain()
+
+    assertEquals(rule, roundTripped)
+  }
+
+  @Test
   fun `toDomain falls back to ReminderCompleted when the trigger payload is malformed`() {
     val entity = legacyEntity(triggerType = "REMINDER_AGE_EXCEEDED", triggerPayload = "not-json")
 

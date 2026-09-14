@@ -8,6 +8,7 @@ import com.elementary.tasks.appfunctions.AppFunctionsInitializer
 import com.elementary.tasks.core.cloud.cloudModule
 import com.elementary.tasks.core.os.osModule
 import com.elementary.tasks.core.services.action.actionModule
+import com.elementary.tasks.core.services.WifiConnectionMonitor
 import com.elementary.tasks.core.services.servicesModule
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.newUtilsModule
@@ -250,6 +251,7 @@ class ReminderApp :
     get<RemotePrefs>().preLoad()
     CoroutineScope(get<DispatcherProvider>().io()).launch { get<LegalDocumentRepository>().refresh() }
     get<WearReminderSyncCoordinator>().start()
+    get<WifiConnectionMonitor>().start()
 
     registerActivityLifecycleCallbacks(ActivityObserver(get(), get()))
   }

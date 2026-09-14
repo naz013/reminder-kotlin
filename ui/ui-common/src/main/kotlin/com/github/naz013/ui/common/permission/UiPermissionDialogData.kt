@@ -83,5 +83,11 @@ data class UiPermissionDialogData(
         R.string.foreground_service_location,
         R.string.foreground_service_location_explanation,
       )
+    val BLUETOOTH_CONNECT =
+      UiPermissionDialogData(
+        Permissions.BLUETOOTH_CONNECT,
+        R.string.bluetooth_connect,
+        R.string.bluetooth_connect_explanation,
+      )
   }
 }

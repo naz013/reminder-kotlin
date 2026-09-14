@@ -56,4 +56,24 @@ class WorkflowTriggerRunner(
     if (!workflowConfig.isEnabled) return
     workflowEngine.runLocationExitedRules(reminderId).forEach { workflowActionDispatcher.dispatch(it) }
   }
+
+  suspend fun onBluetoothConnected(deviceAddress: String) {
+    if (!workflowConfig.isEnabled) return
+    workflowEngine.runBluetoothConnectedRules(deviceAddress).forEach { workflowActionDispatcher.dispatch(it) }
+  }
+
+  suspend fun onBluetoothDisconnected(deviceAddress: String) {
+    if (!workflowConfig.isEnabled) return
+    workflowEngine.runBluetoothDisconnectedRules(deviceAddress).forEach { workflowActionDispatcher.dispatch(it) }
+  }
+
+  suspend fun onWifiConnected(ssid: String) {
+    if (!workflowConfig.isEnabled) return
+    workflowEngine.runWifiConnectedRules(ssid).forEach { workflowActionDispatcher.dispatch(it) }
+  }
+
+  suspend fun onWifiDisconnected(ssid: String) {
+    if (!workflowConfig.isEnabled) return
+    workflowEngine.runWifiDisconnectedRules(ssid).forEach { workflowActionDispatcher.dispatch(it) }
+  }
 }

@@ -1408,4 +1408,13 @@
     <string name="quick_add_hint">Coba \"bayar sewa setiap 1 jam 9 pagi\"</string>
     <string name="quick_add_continue_in_editor">Lanjutkan di editor lengkap</string>
     <string name="quick_add_does_not_repeat">Tidak berulang</string>
+    <string name="workflow_trigger_bluetooth_connected">Terhubung ke perangkat Bluetooth</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Terputus dari perangkat Bluetooth</string>
+    <string name="workflow_trigger_wifi_connected">Terhubung ke jaringan WiFi</string>
+    <string name="workflow_trigger_wifi_disconnected">Terputus dari jaringan WiFi</string>
+    <string name="workflow_builder_select_bluetooth_device">Pilih perangkat yang dipasangkan</string>
+    <string name="workflow_builder_no_paired_devices">Tidak ada perangkat Bluetooth yang dipasangkan</string>
+    <string name="workflow_builder_wifi_ssid_hint">Nama jaringan (SSID)</string>
+    <string name="bluetooth_connect">Akses Bluetooth</string>
+    <string name="bluetooth_connect_explanation">Diperlukan untuk membaca nama perangkat Bluetooth yang dipasangkan agar Anda dapat memilih salah satu untuk aturan alur kerja</string>
 </resources>

@@ -1426,4 +1426,13 @@
     <string name="quick_add_hint">Try \"pay rent every 1st at 9am\"</string>
     <string name="quick_add_continue_in_editor">Continue in full editor</string>
     <string name="quick_add_does_not_repeat">Does not repeat</string>
+    <string name="workflow_trigger_bluetooth_connected">Connected to Bluetooth device</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Disconnected from Bluetooth device</string>
+    <string name="workflow_trigger_wifi_connected">Connected to WiFi network</string>
+    <string name="workflow_trigger_wifi_disconnected">Disconnected from WiFi network</string>
+    <string name="workflow_builder_select_bluetooth_device">Select a paired device</string>
+    <string name="workflow_builder_no_paired_devices">No paired Bluetooth devices</string>
+    <string name="workflow_builder_wifi_ssid_hint">Network name (SSID)</string>
+    <string name="bluetooth_connect">Bluetooth access</string>
+    <string name="bluetooth_connect_explanation">Needed to read the names of your paired Bluetooth devices so you can pick one for a workflow rule</string>
 </resources>

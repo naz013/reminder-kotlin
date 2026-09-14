@@ -1408,4 +1408,13 @@
     <string name="about_legal_section">कानूनी जानकारी और लाइसेंस</string>
     <string name="about_credits_section">श्रेय</string>
     <string name="about_copyright">© %1$d %2$s. सर्वाधिकार सुरक्षित।</string>
+    <string name="workflow_trigger_bluetooth_connected">ब्लूटूथ डिवाइस से कनेक्ट हुआ</string>
+    <string name="workflow_trigger_bluetooth_disconnected">ब्लूटूथ डिवाइस से डिस्कनेक्ट हुआ</string>
+    <string name="workflow_trigger_wifi_connected">वाईफाई नेटवर्क से कनेक्ट हुआ</string>
+    <string name="workflow_trigger_wifi_disconnected">वाईफाई नेटवर्क से डिस्कनेक्ट हुआ</string>
+    <string name="workflow_builder_select_bluetooth_device">एक पेयर किया गया डिवाइस चुनें</string>
+    <string name="workflow_builder_no_paired_devices">कोई पेयर किया गया ब्लूटूथ डिवाइस नहीं</string>
+    <string name="workflow_builder_wifi_ssid_hint">नेटवर्क का नाम (SSID)</string>
+    <string name="bluetooth_connect">ब्लूटूथ एक्सेस</string>
+    <string name="bluetooth_connect_explanation">वर्कफ़्लो नियम के लिए एक डिवाइस चुनने हेतु आपके पेयर किए गए ब्लूटूथ डिवाइस के नाम पढ़ने के लिए आवश्यक</string>
 </resources>

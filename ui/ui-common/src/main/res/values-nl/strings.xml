@@ -1408,4 +1408,13 @@
     <string name="quick_add_hint">Probeer \"huur betalen elke 1e om 9 uur\"</string>
     <string name="quick_add_continue_in_editor">Doorgaan in volledige editor</string>
     <string name="quick_add_does_not_repeat">Wordt niet herhaald</string>
+    <string name="workflow_trigger_bluetooth_connected">Verbonden met Bluetooth-apparaat</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Verbinding met Bluetooth-apparaat verbroken</string>
+    <string name="workflow_trigger_wifi_connected">Verbonden met wifi-netwerk</string>
+    <string name="workflow_trigger_wifi_disconnected">Verbinding met wifi-netwerk verbroken</string>
+    <string name="workflow_builder_select_bluetooth_device">Selecteer een gekoppeld apparaat</string>
+    <string name="workflow_builder_no_paired_devices">Geen gekoppelde Bluetooth-apparaten</string>
+    <string name="workflow_builder_wifi_ssid_hint">Netwerknaam (SSID)</string>
+    <string name="bluetooth_connect">Bluetooth-toegang</string>
+    <string name="bluetooth_connect_explanation">Nodig om de namen van je gekoppelde Bluetooth-apparaten te lezen, zodat je er een kunt kiezen voor een workflowregel</string>
 </resources>

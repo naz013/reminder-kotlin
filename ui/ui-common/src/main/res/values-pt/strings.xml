@@ -1410,4 +1410,13 @@
     <string name="quick_add_hint">Experimente \"pagar o aluguel cada 1 às 9\"</string>
     <string name="quick_add_continue_in_editor">Continuar no editor completo</string>
     <string name="quick_add_does_not_repeat">Não se repete</string>
+    <string name="workflow_trigger_bluetooth_connected">Conectado a um dispositivo Bluetooth</string>
+    <string name="workflow_trigger_bluetooth_disconnected">Desconectado de um dispositivo Bluetooth</string>
+    <string name="workflow_trigger_wifi_connected">Conectado a uma rede WiFi</string>
+    <string name="workflow_trigger_wifi_disconnected">Desconectado de uma rede WiFi</string>
+    <string name="workflow_builder_select_bluetooth_device">Selecionar um dispositivo emparelhado</string>
+    <string name="workflow_builder_no_paired_devices">Nenhum dispositivo Bluetooth emparelhado</string>
+    <string name="workflow_builder_wifi_ssid_hint">Nome da rede (SSID)</string>
+    <string name="bluetooth_connect">Acesso ao Bluetooth</string>
+    <string name="bluetooth_connect_explanation">Necessário para ler os nomes dos seus dispositivos Bluetooth emparelhados para você escolher um para uma regra de fluxo de trabalho</string>
 </resources>

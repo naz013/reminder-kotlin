@@ -172,6 +172,7 @@ private fun WorkflowBuilderEntry(
     onConditionSelected = viewModel::onConditionSelected,
     onActionPickerDismiss = viewModel::onActionPickerDismiss,
     onActionSelected = viewModel::onActionSelected,
+    onBluetoothPermissionGranted = viewModel::onBluetoothPermissionGranted,
   )
 }
 
