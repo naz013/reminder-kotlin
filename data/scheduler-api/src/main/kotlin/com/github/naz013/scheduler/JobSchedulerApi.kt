@@ -14,6 +14,8 @@ interface JobSchedulerApi {
 
   fun scheduleWorkflowUnacknowledgedCheck()
 
+  fun scheduleWorkflowWifiPollCheck()
+
   fun scheduleRoutineRecurrenceResetCheck()
 
   fun scheduleGoogleCalendarScanFallbackCheck()

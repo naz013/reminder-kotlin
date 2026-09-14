@@ -127,6 +127,10 @@ class BottomNavInitViewModel(
           jobScheduler.scheduleWorkflowUnacknowledgedCheck()
           prefs.workflowUnacknowledgedRulesScheduled = true
         }
+        if (!prefs.workflowWifiPollScheduled) {
+          jobScheduler.scheduleWorkflowWifiPollCheck()
+          prefs.workflowWifiPollScheduled = true
+        }
       }
       if (!prefs.routineRecurrenceResetScheduled && featureFlags.isEnabled(FeatureFlag.ROUTINE_ENABLED)) {
         jobScheduler.scheduleRoutineRecurrenceResetCheck()

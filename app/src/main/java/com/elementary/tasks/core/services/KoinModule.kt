@@ -8,5 +8,5 @@ val servicesModule =
   module {
     factory { PlaceDistanceCalculator() }
     factory { CheckLocationReminderUseCase(get(), get(), get(), get(), get(), get(), get()) }
-    single { WifiConnectionMonitor(get(), get(), get(), get()) }
+    single { WifiConnectionMonitor(get(), get(), get(), get(), get(), get()) }
   }

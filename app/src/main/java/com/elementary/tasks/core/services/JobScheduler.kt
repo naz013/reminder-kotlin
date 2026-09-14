@@ -15,6 +15,7 @@ import com.github.naz013.logic.reminder.scheduling.EventDateTimeCalculatorV2
 import com.github.naz013.feature.birthday.settings.work.CheckBirthdaysTask
 import com.github.naz013.feature.workflow.RunWorkflowRulesTask
 import com.github.naz013.feature.workflow.RunWorkflowUnacknowledgedRulesTask
+import com.github.naz013.feature.workflow.RunWorkflowWifiPollTask
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.common.intent.PendingIntentWrapper
 import com.github.naz013.datecalc.DateTimeManager
@@ -84,6 +85,18 @@ class JobScheduler(
       ),
     )
     Logger.i(TAG, "Scheduled workflow unacknowledged-reminder rules check.")
+  }
+
+  override fun scheduleWorkflowWifiPollCheck() {
+    workScheduler.enqueuePeriodic(
+      PeriodicWorkRequest(
+        taskKey = RunWorkflowWifiPollTask.TASK_KEY,
+        tag = EVENT_WORKFLOW_WIFI_POLL_CHECK,
+        repeatIntervalMillis = TimeUnit.MINUTES.toMillis(30),
+        flexIntervalMillis = TimeUnit.MINUTES.toMillis(5),
+      ),
+    )
+    Logger.i(TAG, "Scheduled workflow WiFi connectivity poll check.")
   }
 
   override fun scheduleRoutineRecurrenceResetCheck() {
@@ -387,6 +400,7 @@ class JobScheduler(
     private const val EVENT_CHECK_BIRTHDAYS = "event_check_birthday"
     private const val EVENT_WORKFLOW_RULES_CHECK = "event_workflow_rules_check"
     private const val EVENT_WORKFLOW_UNACKNOWLEDGED_RULES_CHECK = "event_workflow_unacknowledged_rules_check"
+    private const val EVENT_WORKFLOW_WIFI_POLL_CHECK = "event_workflow_wifi_poll_check"
     private const val EVENT_ROUTINE_RECURRENCE_RESET_CHECK = "event_routine_recurrence_reset_check"
     private const val EVENT_GOOGLE_CALENDAR_SCAN_FALLBACK = "event_google_calendar_scan_fallback"
     private const val TAG = "JobScheduler"

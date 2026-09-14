@@ -5,9 +5,9 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import android.net.wifi.WifiInfo
-import android.net.wifi.WifiManager
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.workflow.CurrentWifiSsidReader
+import com.github.naz013.feature.workflow.WorkflowWifiPollState
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.logic.workflow.WorkflowTriggerRunner
@@ -20,16 +20,24 @@ import kotlinx.coroutines.launch
  * `CONNECTIVITY_ACTION`/`NETWORK_STATE_CHANGED_ACTION` starting API 24, so a callback registered
  * once at process start (see [start], called from `ReminderApp.onCreate`) is the closest
  * equivalent to "always listening" available on modern Android. Unlike
- * [BluetoothConnectionReceiver]'s manifest registration, this doesn't survive process death -
- * WiFi triggers are best-effort while the app process is alive, a known v1 limitation (same class
- * of caveat as `TableChangeNotifier`'s `LocalBroadcastManager` use - see
- * docs/workflow-engine-research.md).
+ * [BluetoothConnectionReceiver]'s manifest registration, this doesn't survive process death, so
+ * `RunWorkflowWifiPollTask` runs periodically as a fallback to catch transitions missed while the
+ * app process was dead - see that class's doc for the full picture.
+ *
+ * [WorkflowWifiPollState.lastKnownSsid] is this monitor's own memory of "what SSID is currently
+ * connected", kept up to date here on every fired transition - not just bookkeeping for the poll
+ * task's benefit: `onLost`'s [Network] argument is already torn down by the time the callback
+ * fires, so [CurrentWifiSsidReader] can't re-read its SSID at that point either. Tracking the
+ * last-connected SSID ourselves (rather than trying to read it from the lost network) is what
+ * makes the disconnected trigger fire at all.
  */
 class WifiConnectionMonitor(
   private val context: Context,
   private val workflowConfig: WorkflowConfig,
   private val workflowTriggerRunner: WorkflowTriggerRunner,
   private val dispatcherProvider: DispatcherProvider,
+  private val currentWifiSsidReader: CurrentWifiSsidReader,
+  private val workflowWifiPollState: WorkflowWifiPollState,
 ) {
   private val connectivityManager: ConnectivityManager? =
     context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
@@ -37,9 +45,15 @@ class WifiConnectionMonitor(
 
   private val callback =
     object : ConnectivityManager.NetworkCallback() {
-      override fun onAvailable(network: Network) = onWifiChanged(network, connected = true)
+      override fun onAvailable(network: Network) {
+        val ssid = currentWifiSsidReader.read(network) ?: return
+        fire(connected = true, ssid = ssid)
+      }
 
-      override fun onLost(network: Network) = onWifiChanged(network, connected = false)
+      override fun onLost(network: Network) {
+        val ssid = workflowWifiPollState.lastKnownSsid ?: return
+        fire(connected = false, ssid = ssid)
+      }
     }
 
   /** No-op if [WorkflowConfig.isEnabled] is off or the callback is already registered - safe to
@@ -55,8 +69,8 @@ class WifiConnectionMonitor(
       .onFailure { Logger.e(TAG, "Failed to register WiFi network callback", it) }
   }
 
-  private fun onWifiChanged(network: Network, connected: Boolean) {
-    val ssid = currentSsid(network) ?: return
+  private fun fire(connected: Boolean, ssid: String) {
+    workflowWifiPollState.lastKnownSsid = if (connected) ssid else null
     CoroutineScope(dispatcherProvider.io()).launch {
       if (connected) {
         workflowTriggerRunner.onWifiConnected(ssid)
@@ -64,17 +78,6 @@ class WifiConnectionMonitor(
         workflowTriggerRunner.onWifiDisconnected(ssid)
       }
     }
-  }
-
-  /** Null when the SSID can't be read - e.g. `ACCESS_FINE_LOCATION` isn't granted, in which case
-   * [WifiInfo.getSSID] returns [WifiManager.UNKNOWN_SSID] rather than throwing. Strips the
-   * surrounding quotes [WifiInfo.getSSID] wraps non-hex SSIDs in, matching how
-   * `WorkflowTrigger.WifiConnected.ssid` is stored/compared. */
-  private fun currentSsid(network: Network): String? {
-    val wifiInfo = connectivityManager?.getNetworkCapabilities(network)?.transportInfo as? WifiInfo ?: return null
-    val ssid = wifiInfo.ssid
-    if (ssid.isNullOrEmpty() || ssid == WifiManager.UNKNOWN_SSID) return null
-    return ssid.removeSurrounding("\"")
   }
 
   companion object {
