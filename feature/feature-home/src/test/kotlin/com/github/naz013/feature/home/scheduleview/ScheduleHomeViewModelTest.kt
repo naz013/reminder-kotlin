@@ -6,6 +6,7 @@ import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.feature.home.ResolvedEventAction
 import com.github.naz013.feature.home.BannerState
+import com.github.naz013.feature.home.EmptyKind
 import com.github.naz013.feature.home.HeaderNavigationItem
 import com.github.naz013.feature.home.HomeEvent
 import com.github.naz013.feature.home.HomeScreenState
@@ -169,7 +170,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
     runTest {
       val state = viewModel.state.first()
 
-      assertEquals(ListState.Empty(isFirstRun = false), state.listState)
+      assertEquals(ListState.Empty(EmptyKind.NothingPlanned), state.listState)
     }
 
   @Test
@@ -179,7 +180,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
 
       val state = viewModel.state.first()
 
-      assertEquals(ListState.Empty(isFirstRun = true), state.listState)
+      assertEquals(ListState.Empty(EmptyKind.FirstRun), state.listState)
       assertEquals("", state.daySummary)
     }
 
@@ -190,7 +191,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
 
       val state = viewModel.state.first()
 
-      assertEquals(ListState.Empty(isFirstRun = false), state.listState)
+      assertEquals(ListState.Empty(EmptyKind.NothingPlanned), state.listState)
     }
 
   @Test

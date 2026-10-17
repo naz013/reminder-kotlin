@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
@@ -162,10 +163,8 @@ fun ChronologicalHomeScreen(
           item {
             HomeEmptyState(
               modifier = Modifier.fillParentMaxSize(),
-              title = stringResource(
-                if (state.listState.isFirstRun) R.string.home_first_run_title else R.string.home_empty_today_title,
-              ),
-              message = if (state.listState.isFirstRun) stringResource(R.string.home_first_run_message) else null,
+              title = stringResource(state.listState.kind.titleRes),
+              message = state.listState.kind.messageRes?.let { stringResource(it) },
               addMenuItems = state.addMenuItems,
               onAddMenuItemClick = onAddMenuItemClick,
             )
@@ -361,7 +360,11 @@ private fun CollapsibleHeader(
     modifier = modifier
       .fillMaxWidth()
       .clip(AppShapes.tile)
-      .clickable(role = Role.Button, onClick = onClick)
+      .toggleable(
+        value = isExpanded,
+        role = Role.Button,
+        onValueChange = { onClick() },
+      )
       .padding(vertical = 8.dp),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.SpaceBetween,

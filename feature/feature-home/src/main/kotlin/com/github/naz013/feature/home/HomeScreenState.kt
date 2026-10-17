@@ -1,6 +1,8 @@
 package com.github.naz013.feature.home
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
+import com.github.naz013.ui.common.R
 import com.github.naz013.feature.home.scheduleview.ScheduleHomeViewModel
 import com.github.naz013.ui.common.icon.DrawableCatalog
 import org.threeten.bp.LocalDate
@@ -48,10 +50,18 @@ sealed interface ListState {
     val schedule: TodaySchedule = TodaySchedule(),
   ) : ListState
 
-  /** [isFirstRun] distinguishes a brand new user (no content anywhere) from a clear day. */
   data class Empty(
-    val isFirstRun: Boolean = false,
+    val kind: EmptyKind = EmptyKind.NothingPlanned,
   ) : ListState
+}
+
+/** FirstRun is a brand new user with no content anywhere; NothingPlanned is a clear day. */
+enum class EmptyKind(
+  @param:StringRes val titleRes: Int,
+  @param:StringRes val messageRes: Int?,
+) {
+  NothingPlanned(R.string.home_empty_today_title, null),
+  FirstRun(R.string.home_first_run_title, R.string.home_first_run_message),
 }
 
 data class TodaySchedule(

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.feature.home.ResolvedEventAction
 import com.github.naz013.feature.home.BannerState
+import com.github.naz013.feature.home.EmptyKind
 import com.github.naz013.feature.home.HeaderNavigationItem
 import com.github.naz013.feature.home.HomeEvent
 import com.github.naz013.feature.home.HomeScreenState
@@ -305,7 +306,9 @@ class ScheduleHomeViewModel internal constructor(
     isEarlierExpanded: Boolean,
     isOverdueExpanded: Boolean,
   ): RenderedToday {
-    if (loaded.isEmpty) return RenderedToday(ListState.Empty(loaded.isFirstRun), "")
+    if (loaded.isEmpty) return RenderedToday(ListState.Empty(
+      if (loaded.isFirstRun) EmptyKind.FirstRun else EmptyKind.NothingPlanned,
+    ), "")
     val schedule = TodaySchedule(
       earlierTimed = loaded.earlierTimed,
       upcomingTimed = loaded.upcomingTimed,
