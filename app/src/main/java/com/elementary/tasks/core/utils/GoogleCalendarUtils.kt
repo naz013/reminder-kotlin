@@ -170,18 +170,17 @@ class GoogleCalendarUtils(
           // sortOrder =
           "dtstart ASC",
         )
-      if (c != null && c.moveToFirst()) {
-        val title = c.readString(CalendarContract.Events.TITLE, "")
-        val description = c.readString(CalendarContract.Events.DESCRIPTION, "")
-        val rrule = c.readString(CalendarContract.Events.RRULE) ?: ""
-        val rDate = c.readString(CalendarContract.Events.RDATE) ?: ""
-        val calendarId = c.readLong(CalendarContract.Events.CALENDAR_ID, 0L)
-        val allDay = c.readInt(CalendarContract.Events.ALL_DAY, 0)
-        val dtStart = c.readLong(CalendarContract.Events.DTSTART, 0L)
-        val dtEnd = c.readLong(CalendarContract.Events.DTEND, 0L)
-        val eventID = c.readLong(CalendarContract.Events._ID, 0L)
-
-        c.close()
+      c?.use {
+        if (!it.moveToFirst()) return@use
+        val title = it.readString(CalendarContract.Events.TITLE, "")
+        val description = it.readString(CalendarContract.Events.DESCRIPTION, "")
+        val rrule = it.readString(CalendarContract.Events.RRULE) ?: ""
+        val rDate = it.readString(CalendarContract.Events.RDATE) ?: ""
+        val calendarId = it.readLong(CalendarContract.Events.CALENDAR_ID, 0L)
+        val allDay = it.readInt(CalendarContract.Events.ALL_DAY, 0)
+        val dtStart = it.readLong(CalendarContract.Events.DTSTART, 0L)
+        val dtEnd = it.readLong(CalendarContract.Events.DTEND, 0L)
+        val eventID = it.readLong(CalendarContract.Events._ID, 0L)
 
         return EventItem(
           title = title,
@@ -309,17 +308,18 @@ class GoogleCalendarUtils(
             // sortOrder =
             "dtstart ASC",
           )
-        if (c != null && c.moveToFirst()) {
+        c?.use {
+          if (!it.moveToFirst()) return@use
           do {
-            val title = c.readString(CalendarContract.Events.TITLE) ?: ""
-            val description = c.readString(CalendarContract.Events.DESCRIPTION) ?: ""
-            val rrule = c.readString(CalendarContract.Events.RRULE) ?: ""
-            val rDate = c.readString(CalendarContract.Events.RDATE) ?: ""
-            val calendarId = c.readLong(CalendarContract.Events.CALENDAR_ID, 0L)
-            val allDay = c.readInt(CalendarContract.Events.ALL_DAY) ?: 0
-            val dtStart = c.readLong(CalendarContract.Events.DTSTART, 0L)
-            val dtEnd = c.readLong(CalendarContract.Events.DTEND, 0L)
-            val eventID = c.readLong(CalendarContract.Events._ID, 0L)
+            val title = it.readString(CalendarContract.Events.TITLE) ?: ""
+            val description = it.readString(CalendarContract.Events.DESCRIPTION) ?: ""
+            val rrule = it.readString(CalendarContract.Events.RRULE) ?: ""
+            val rDate = it.readString(CalendarContract.Events.RDATE) ?: ""
+            val calendarId = it.readLong(CalendarContract.Events.CALENDAR_ID, 0L)
+            val allDay = it.readInt(CalendarContract.Events.ALL_DAY) ?: 0
+            val dtStart = it.readLong(CalendarContract.Events.DTSTART, 0L)
+            val dtEnd = it.readLong(CalendarContract.Events.DTEND, 0L)
+            val eventID = it.readLong(CalendarContract.Events._ID, 0L)
             list.add(
               EventItem(
                 title = title,
@@ -334,8 +334,7 @@ class GoogleCalendarUtils(
                 localId = "",
               ),
             )
-          } while (c.moveToNext())
-          c.close()
+          } while (it.moveToNext())
         }
       }
     } catch (e: Exception) {
