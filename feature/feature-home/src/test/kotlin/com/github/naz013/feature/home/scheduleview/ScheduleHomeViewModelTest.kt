@@ -26,14 +26,26 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.logic.reminder.today.TodayBucket
+import com.github.naz013.logic.reminder.today.TodayItem
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import org.threeten.bp.LocalDateTime
 import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 
 class ScheduleHomeViewModelTest : BaseTest() {
-  private val getActiveEventsForTheDayUseCase = mockk<GetActiveEventsForTheDayUseCase>()
+  private val observeTodayScheduleUseCase = mockk<ObserveTodayScheduleUseCase>()
+  private val todayItemHomeEventMapper = mockk<TodayItemHomeEventMapper>()
+  private val dateTimeManager = mockk<DateTimeManager>()
   private val getTimeSectionsUseCase = mockk<GetTimeSectionsUseCase>()
   private val getGreetingTextUseCase = mockk<GetGreetingTextUseCase>()
   private val googleTasksAuthManager = mockk<GoogleTasksAuthManager>()
@@ -58,7 +70,9 @@ class ScheduleHomeViewModelTest : BaseTest() {
     // Pro by default so existing menu/gating expectations don't all need to opt in; tests that
     // care about the free-user experience override this locally.
     every { buildInfo.isPro } returns true
-    every { getActiveEventsForTheDayUseCase(any()) } returns flowOf(emptyList())
+    every { dateTimeManager.getCurrentDateTime() } returns NOW
+    every { observeTodayScheduleUseCase() } returns flowOf(emptyList())
+    coEvery { todayItemHomeEventMapper(any(), any()) } returns emptyList()
     every { getTimeSectionsUseCase(any()) } returns emptyList()
     coEvery { getNavigationItemsUseCase(any(), any()) } returns emptyList()
     every { legalDocumentRepository.hasUpdate(any()) } returns false
@@ -69,7 +83,9 @@ class ScheduleHomeViewModelTest : BaseTest() {
     viewModel =
       ScheduleHomeViewModel(
         dispatcherProvider = mockDispatcherProvider(),
-        getActiveEventsForTheDayUseCase = getActiveEventsForTheDayUseCase,
+        observeTodayScheduleUseCase = observeTodayScheduleUseCase,
+        todayItemHomeEventMapper = todayItemHomeEventMapper,
+        dateTimeManager = dateTimeManager,
         getTimeSectionsUseCase = getTimeSectionsUseCase,
         getGreetingTextUseCase = getGreetingTextUseCase,
         googleTasksAuthManager = googleTasksAuthManager,
@@ -158,7 +174,9 @@ class ScheduleHomeViewModelTest : BaseTest() {
           time = LocalTime.of(9, 0),
           type = HomeEvent.EventType.Reminder,
         )
-      every { getActiveEventsForTheDayUseCase(any()) } returns flowOf(listOf(event))
+      val item = birthdayItem("r1", TodayBucket.Timed, NOW.plusHours(1))
+      every { observeTodayScheduleUseCase() } returns flowOf(listOf(item))
+      coEvery { todayItemHomeEventMapper(listOf(item), NOW) } returns listOf(event)
       every { getTimeSectionsUseCase(listOf(event)) } returns
         listOf(com.github.naz013.feature.home.TimeSection(time = "9:00", event = event))
 
@@ -167,6 +185,43 @@ class ScheduleHomeViewModelTest : BaseTest() {
       val listState = state.listState
       assertTrue(listState is ListState.Ready)
       assertEquals(1, (listState as ListState.Ready).sections.size)
+    }
+
+  @Test
+  fun `loadData splits timed items into earlier and upcoming and keeps all-day and anytime buckets`() =
+    runTest {
+      val past = birthdayItem("past", TodayBucket.Timed, NOW.minusHours(2))
+      val future = birthdayItem("future", TodayBucket.Timed, NOW.plusHours(2))
+      val allDay = birthdayItem("allDay", TodayBucket.AllDay, NOW.toLocalDate().atStartOfDay())
+      val anytime = birthdayItem("anytime", TodayBucket.Anytime, NOW.toLocalDate().atStartOfDay())
+      every { observeTodayScheduleUseCase() } returns flowOf(listOf(allDay, past, future, anytime))
+
+      val state = viewModel.state.first()
+
+      val schedule = (state.listState as ListState.Ready).schedule
+      assertEquals(listOf(past), schedule.earlierTimed)
+      assertEquals(listOf(future), schedule.upcomingTimed)
+      assertEquals(listOf(allDay), schedule.allDay)
+      assertEquals(listOf(anytime), schedule.anytime)
+      assertFalse(schedule.isEarlierExpanded)
+    }
+
+  @Test
+  fun `onEarlierTodayToggled flips the earlier today expanded flag`() =
+    runTest {
+      val past = birthdayItem("past", TodayBucket.Timed, NOW.minusHours(2))
+      every { observeTodayScheduleUseCase() } returns flowOf(listOf(past))
+      val states = mutableListOf<HomeScreenState>()
+      val job = launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.toList(states) }
+
+      viewModel.onEarlierTodayToggled()
+      val expandedAfterFirst = (states.last().listState as ListState.Ready).schedule.isEarlierExpanded
+      viewModel.onEarlierTodayToggled()
+      val expandedAfterSecond = (states.last().listState as ListState.Ready).schedule.isEarlierExpanded
+      job.cancel()
+
+      assertTrue(expandedAfterFirst)
+      assertFalse(expandedAfterSecond)
     }
 
   @Test
@@ -424,5 +479,15 @@ class ScheduleHomeViewModelTest : BaseTest() {
       ScheduleHomeViewModel.ViewModelEvent.OpenHeaderItemsSettings,
       viewModel.event.value?.peekContent(),
     )
+  }
+
+  private fun birthdayItem(
+    id: String,
+    bucket: TodayBucket,
+    dateTime: LocalDateTime,
+  ) = TodayItem.Birthday(Birthday(uuId = id, name = id, syncState = SyncState.Synced), dateTime, bucket)
+
+  companion object {
+    private val NOW = LocalDateTime.of(2026, 7, 15, 12, 0)
   }
 }

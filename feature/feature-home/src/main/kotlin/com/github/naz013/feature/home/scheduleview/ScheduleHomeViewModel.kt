@@ -11,6 +11,10 @@ import com.github.naz013.feature.home.HeaderNavigationItem
 import com.github.naz013.feature.home.HomeEvent
 import com.github.naz013.feature.home.HomeScreenState
 import com.github.naz013.feature.home.ListState
+import com.github.naz013.feature.home.TodaySchedule
+import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.logic.reminder.today.TodayBucket
+import com.github.naz013.logic.reminder.today.TodayItem
 import com.github.naz013.feature.home.withSelectedEvent
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
@@ -39,9 +43,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime
 
-class ScheduleHomeViewModel(
+class ScheduleHomeViewModel internal constructor(
   private val dispatcherProvider: DispatcherProvider,
-  private val getActiveEventsForTheDayUseCase: GetActiveEventsForTheDayUseCase,
+  private val observeTodayScheduleUseCase: ObserveTodayScheduleUseCase,
+  private val todayItemHomeEventMapper: TodayItemHomeEventMapper,
+  private val dateTimeManager: DateTimeManager,
   private val getTimeSectionsUseCase: GetTimeSectionsUseCase,
   private val getGreetingTextUseCase: GetGreetingTextUseCase,
   private val googleTasksAuthManager: GoogleTasksAuthManager,
@@ -56,6 +62,7 @@ class ScheduleHomeViewModel(
 
   private val _state = MutableStateFlow(HomeScreenState())
   private val _selectedEventId = MutableStateFlow<String?>(null)
+  private val _isEarlierExpanded = MutableStateFlow(false)
   val state = combine(_state, _selectedEventId, HomeScreenState::withSelectedEvent)
     .stateInWhileSubscribed(HomeScreenState())
     .onStart { loadData() }
@@ -174,6 +181,11 @@ class ScheduleHomeViewModel(
     }
   }
 
+  fun onEarlierTodayToggled() {
+    Logger.i(TAG, "On earlier today toggled")
+    _isEarlierExpanded.update { !it }
+  }
+
   fun onSelectedEventIdChanged(id: String?) {
     _selectedEventId.value = id
   }
@@ -221,17 +233,30 @@ class ScheduleHomeViewModel(
       }
     }
     viewModelScope.launch(dispatcherProvider.default()) {
-      getActiveEventsForTheDayUseCase(LocalDateTime.now())
-        .map { events -> getTimeSectionsUseCase(events) }
-        .collect { sections ->
-          Logger.d(TAG, "Loaded ${sections.size} sections")
-          _state.update {
-            it.copy(
-              listState = if (sections.isEmpty()) ListState.Empty else ListState.Ready(sections),
-            )
-          }
+      combine(observeTodayScheduleUseCase(), _isEarlierExpanded, ::Pair)
+        .map { (items, expanded) -> buildListState(items, expanded) }
+        .collect { listState ->
+          _state.update { it.copy(listState = listState) }
         }
     }
+  }
+
+  private suspend fun buildListState(items: List<TodayItem>, isEarlierExpanded: Boolean): ListState {
+    Logger.d(TAG, "Loaded ${items.size} today items")
+    if (items.isEmpty()) return ListState.Empty
+    val now = dateTimeManager.getCurrentDateTime()
+    val events = todayItemHomeEventMapper(items, now).sortedBy { it.time }
+    val (earlier, upcoming) = items
+      .filter { it.bucket == TodayBucket.Timed }
+      .partition { it.dateTime.isBefore(now) }
+    val schedule = TodaySchedule(
+      earlierTimed = earlier,
+      upcomingTimed = upcoming,
+      allDay = items.filter { it.bucket == TodayBucket.AllDay },
+      anytime = items.filter { it.bucket == TodayBucket.Anytime },
+      isEarlierExpanded = isEarlierExpanded,
+    )
+    return ListState.Ready(sections = getTimeSectionsUseCase(events), schedule = schedule)
   }
 
   /** Quick add is PRO-only and hidden from the menu entirely for free users - unlike Pomodoro's

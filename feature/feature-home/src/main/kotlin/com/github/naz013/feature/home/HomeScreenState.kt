@@ -2,6 +2,7 @@ package com.github.naz013.feature.home
 
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.feature.home.scheduleview.ScheduleHomeViewModel
+import com.github.naz013.logic.reminder.today.TodayItem
 import com.github.naz013.ui.common.icon.DrawableCatalog
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -17,8 +18,8 @@ data class HomeScreenState(
 fun HomeScreenState.withSelectedEvent(selectedEventId: String?): HomeScreenState {
   val ready = listState as? ListState.Ready ?: return this
   return copy(
-    listState = ListState.Ready(
-      ready.sections.map { it.copy(event = it.event.copy(isSelected = it.event.id == selectedEventId)) },
+    listState = ready.copy(
+      sections = ready.sections.map { it.copy(event = it.event.copy(isSelected = it.event.id == selectedEventId)) },
     ),
   )
 }
@@ -36,10 +37,19 @@ sealed interface ListState {
 
   data class Ready(
     val sections: List<TimeSection>,
+    val schedule: TodaySchedule = TodaySchedule(),
   ) : ListState
 
   data object Empty : ListState
 }
+
+data class TodaySchedule(
+  val earlierTimed: List<TodayItem> = emptyList(),
+  val upcomingTimed: List<TodayItem> = emptyList(),
+  val allDay: List<TodayItem> = emptyList(),
+  val anytime: List<TodayItem> = emptyList(),
+  val isEarlierExpanded: Boolean = false,
+)
 
 data class TimeSection(
   val time: String,
