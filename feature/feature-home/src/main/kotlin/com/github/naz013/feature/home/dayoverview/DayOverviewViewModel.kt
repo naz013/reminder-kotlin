@@ -20,6 +20,8 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.TextStyle
+import org.threeten.bp.temporal.TemporalAdjusters
+import org.threeten.bp.temporal.WeekFields
 import java.util.Locale
 
 internal class DayOverviewViewModel(
@@ -105,21 +107,13 @@ internal class DayOverviewViewModel(
   }
 
   private fun buildWeekDays(today: LocalDate): List<DayOverviewState.WeekDay> {
-    val monday = today.with(DayOfWeek.MONDAY)
     val locale = Locale.getDefault()
-    return (0L until DAYS_IN_WEEK).map { offset ->
-      val date = monday.plusDays(offset)
-      DayOverviewState.WeekDay(
-        weekDayLabel = date.dayOfWeek.getDisplayName(TextStyle.SHORT, locale),
-        dayOfMonth = date.dayOfMonth.toString(),
-        isToday = date == today,
-      )
-    }
+    return buildWeekDays(today, WeekFields.of(locale).firstDayOfWeek, locale)
   }
 
   private fun formatMinute(minute: Int): String {
     val time = if (minute >= DayOverviewCalculator.DAY_END_MINUTE) {
-      LocalTime.of(LAST_HOUR, LAST_MINUTE)
+      LocalTime.MIDNIGHT
     } else {
       LocalTime.of(minute / MINUTES_IN_HOUR, minute % MINUTES_IN_HOUR)
     }
@@ -131,9 +125,24 @@ internal class DayOverviewViewModel(
   companion object {
     private const val TAG = "DayOverviewViewModel"
     private const val SUMMARY_SEPARATOR = " · "
-    private const val DAYS_IN_WEEK = 7L
     private const val MINUTES_IN_HOUR = 60
-    private const val LAST_HOUR = 23
-    private const val LAST_MINUTE = 59
+  }
+}
+
+private const val DAYS_IN_WEEK = 7L
+
+internal fun buildWeekDays(
+  today: LocalDate,
+  firstDayOfWeek: DayOfWeek,
+  locale: Locale,
+): List<DayOverviewState.WeekDay> {
+  val weekStart = today.with(TemporalAdjusters.previousOrSame(firstDayOfWeek))
+  return (0L until DAYS_IN_WEEK).map { offset ->
+    val date = weekStart.plusDays(offset)
+    DayOverviewState.WeekDay(
+      weekDayLabel = date.dayOfWeek.getDisplayName(TextStyle.SHORT, locale),
+      dayOfMonth = date.dayOfMonth.toString(),
+      isToday = date == today,
+    )
   }
 }
