@@ -4,4 +4,5 @@ import org.koin.dsl.module
 
 val uiReminderModule = module {
   factory { ShopItemsFormatter(get()) }
+  factory { ReminderRowMapper(get(), get()) }
 }

@@ -5,6 +5,7 @@ import com.github.naz013.testing.BaseTest
 import com.github.naz013.feature.home.HomeEvent
 import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.feature.home.ResolvedEventAction
+import com.github.naz013.ui.reminder.ReminderRowMapper
 import com.github.naz013.ui.reminder.ShopItemsFormatter
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
@@ -104,7 +105,7 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
       groupV2Repository = groupV2Repository,
       modelDateTimeFormatter = modelDateTimeFormatter,
       textProvider = textProvider,
-      shopItemsFormatter = shopItemsFormatter,
+      reminderRowMapper = ReminderRowMapper(dateTimeManager, shopItemsFormatter),
       contextProvider = contextProvider,
       homePreferences = homePreferences,
     )

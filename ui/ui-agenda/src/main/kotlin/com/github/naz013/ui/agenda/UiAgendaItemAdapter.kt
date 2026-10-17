@@ -2,6 +2,7 @@ package com.github.naz013.ui.agenda
 
 import com.github.naz013.ui.birthday.UiBirthdayListAdapter
 import com.github.naz013.ui.common.R
+import com.github.naz013.ui.reminder.ReminderRowMapper
 import com.github.naz013.ui.reminder.UiReminderListAdapter
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
@@ -27,6 +28,7 @@ class UiAgendaItemAdapter(
   private val dateTimeManager: DateTimeManager,
   private val textProvider: TextProvider,
   private val reminderSettingsRepository: ReminderSettingsRepository,
+  private val reminderRowMapper: ReminderRowMapper,
 ) {
   fun convertV2(
     reminders: List<ReminderV2>,
@@ -105,8 +107,7 @@ class UiAgendaItemAdapter(
       tags = uiReminderList.tags,
       actions = uiReminderList.actions,
       state = uiReminderList.state,
-      isOverdue = uiReminderList.state.isActive &&
-        uiReminderList.dueDateTime?.isAfter(dateTimeManager.getCurrentDateTime()) == false,
+      isOverdue = reminderRowMapper.isOverdue(uiReminderList.state.isActive, uiReminderList.dueDateTime),
       priority = reminder.notification.resolve(group = group?.notification, defaults = notificationDefaults).priority,
     )
   }
