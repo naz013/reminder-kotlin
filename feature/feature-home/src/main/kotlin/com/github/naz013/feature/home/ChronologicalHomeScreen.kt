@@ -51,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -193,7 +194,10 @@ private fun LazyListScope.scheduleItems(
       )
     }
     if (schedule.isEarlierExpanded) {
-      itemsIndexed(schedule.earlierTimed, key = { _, it -> "earlier_${it.event.id}" }) { index, section ->
+      itemsIndexed(
+        items = schedule.earlierTimed,
+        key = { _, section -> "earlier_${section.event.id}" },
+      ) { index, section ->
         TimeSectionRow(
           modifier = Modifier.padding(horizontal = 16.dp),
           timeSection = section,
@@ -213,7 +217,10 @@ private fun LazyListScope.scheduleItems(
     item(key = "upcoming_title") {
       SectionTitle(text = stringResource(R.string.upcoming_events))
     }
-    itemsIndexed(schedule.upcomingTimed, key = { _, it -> "upcoming_${it.event.id}" }) { index, section ->
+    itemsIndexed(
+      items = schedule.upcomingTimed,
+      key = { _, section -> "upcoming_${section.event.id}" },
+    ) { index, section ->
       TimeSectionRow(
         modifier = Modifier.padding(horizontal = 16.dp),
         timeSection = section,
@@ -284,7 +291,7 @@ private fun AllDayChip(
   Surface(
     modifier = modifier
       .clip(AppShapes.tile)
-      .clickable(onClick = onClick),
+      .clickable(role = Role.Button, onClick = onClick),
     shape = AppShapes.tile,
     color = containerColor,
   ) {
@@ -294,7 +301,7 @@ private fun AllDayChip(
       horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
       Icon(
-        painter = AppIcons.Fluent.FoodCake,
+        painter = painterResource(event.iconRes),
         contentDescription = null,
         modifier = Modifier.size(18.dp),
         tint = MaterialTheme.colorScheme.onTertiaryContainer,
@@ -323,7 +330,7 @@ private fun EarlierTodayHeader(
     modifier = modifier
       .fillMaxWidth()
       .clip(AppShapes.tile)
-      .clickable(onClick = onClick)
+      .clickable(role = Role.Button, onClick = onClick)
       .padding(vertical = 8.dp),
     verticalAlignment = Alignment.CenterVertically,
     horizontalArrangement = Arrangement.SpaceBetween,
@@ -639,12 +646,12 @@ private fun EventCard(
     ),
   ) {
     Row(modifier = Modifier.height(IntrinsicSize.Min)) {
-      if (event.type == HomeEvent.EventType.Reminder) {
+      event.accentColor?.let { accent ->
         Box(
           modifier = Modifier
             .width(6.dp)
             .fillMaxHeight()
-            .background(event.color),
+            .background(accent),
         )
       }
       EventCardContent(

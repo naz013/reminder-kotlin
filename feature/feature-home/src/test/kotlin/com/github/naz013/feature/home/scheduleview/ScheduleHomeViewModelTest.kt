@@ -11,6 +11,8 @@ import com.github.naz013.feature.home.HomeEvent
 import com.github.naz013.feature.home.HomeScreenState
 import com.github.naz013.feature.home.ListState
 import com.github.naz013.feature.home.TimeSection
+import com.github.naz013.feature.home.TodaySchedule
+import com.github.naz013.feature.home.withSelectedEvent
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
@@ -210,6 +212,37 @@ class ScheduleHomeViewModelTest : BaseTest() {
       assertTrue(schedule.showNowMarker)
       assertFalse(schedule.isEarlierExpanded)
     }
+
+  @Test
+  fun `loadData shows a ready state when only anytime items exist`() =
+    runTest {
+      val anytime = birthdayItem("anytime", TodayBucket.Anytime, NOW.toLocalDate().atStartOfDay())
+      every { observeTodayScheduleUseCase() } returns flowOf(snapshot(anytime))
+      coEvery { todayItemHomeEventMapper(any(), any()) } returns listOf(homeEvent("anytime"))
+
+      val state = viewModel.state.first()
+
+      val schedule = (state.listState as ListState.Ready).schedule
+      assertEquals(listOf("anytime"), schedule.anytime.map { it.id })
+      assertFalse(schedule.showNowMarker)
+    }
+
+  @Test
+  fun `withSelectedEvent marks all-day and earlier timed events as selected`() {
+    val schedule = TodaySchedule(
+      earlierTimed = listOf(TimeSection("t", homeEvent("early"))),
+      allDay = listOf(homeEvent("allDay")),
+    )
+    val state = HomeScreenState(listState = ListState.Ready(schedule))
+
+    val allDaySelected = (state.withSelectedEvent("allDay").listState as ListState.Ready).schedule
+    val earlierSelected = (state.withSelectedEvent("early").listState as ListState.Ready).schedule
+
+    assertTrue(allDaySelected.allDay.single().isSelected)
+    assertFalse(allDaySelected.earlierTimed.single().event.isSelected)
+    assertTrue(earlierSelected.earlierTimed.single().event.isSelected)
+    assertFalse(earlierSelected.allDay.single().isSelected)
+  }
 
   @Test
   fun `loadData does not show the now marker when the day has only all-day items`() =

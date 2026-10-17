@@ -79,6 +79,8 @@ data class HomeEvent(
   val type: EventType,
   val isSelected: Boolean = false,
   val isOverdue: Boolean = false,
+  val iconRes: Int = DrawableCatalog.Fluent.Alert,
+  val accentColor: Color? = null,
 ) {
   data class EventAction(
     val icon: Int,

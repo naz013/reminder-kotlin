@@ -15,6 +15,7 @@ import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.toColor
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.reminder.ShopItemsFormatter
 import org.threeten.bp.LocalDate
@@ -59,6 +60,8 @@ internal class TodayItemHomeEventMapper(
       action = getActionFromReminderAction(reminder.action),
       type = HomeEvent.EventType.Reminder,
       isOverdue = item.isOverdue || !item.dateTime.isAfter(now),
+      iconRes = DrawableCatalog.Fluent.Alert,
+      accentColor = color,
     )
   }
 
@@ -92,6 +95,7 @@ internal class TodayItemHomeEventMapper(
       date = futureDateTime.toLocalDate(),
       time = futureDateTime.toLocalTime(),
       type = HomeEvent.EventType.Birthday,
+      iconRes = DrawableCatalog.Fluent.FoodCake,
     )
   }
 
