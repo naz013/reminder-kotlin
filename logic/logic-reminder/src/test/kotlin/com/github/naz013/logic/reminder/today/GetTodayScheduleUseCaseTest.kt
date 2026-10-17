@@ -242,7 +242,9 @@ class GetTodayScheduleUseCaseTest {
 
   @Test
   fun `shows birthday that was not shown this year`() = runTest {
-    coEvery { birthdayRepository.getAll("17|9") } returns listOf(Birthday(name = "Ann", showedYear = 2025, syncState = SyncState.Synced))
+    coEvery { birthdayRepository.getAll("17|9") } returns listOf(
+      Birthday(name = "Ann", showedYear = 2025, syncState = SyncState.Synced)
+    )
 
     val result = useCase(now)
 
@@ -251,7 +253,9 @@ class GetTodayScheduleUseCaseTest {
 
   @Test
   fun `excludes birthday already shown this year`() = runTest {
-    coEvery { birthdayRepository.getAll("17|9") } returns listOf(Birthday(name = "Ann", showedYear = 2026, syncState = SyncState.Synced))
+    coEvery { birthdayRepository.getAll("17|9") } returns listOf(
+      Birthday(name = "Ann", showedYear = 2026, syncState = SyncState.Synced)
+    )
 
     val result = useCase(now)
 
