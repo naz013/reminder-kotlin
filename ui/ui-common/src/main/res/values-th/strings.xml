@@ -1212,4 +1212,31 @@
     <string name="workflow_builder_wifi_ssid_hint">ชื่อเครือข่าย (SSID)</string>
     <string name="bluetooth_connect">การเข้าถึงบลูทูธ</string>
     <string name="bluetooth_connect_explanation">จำเป็นสำหรับอ่านชื่ออุปกรณ์บลูทูธที่จับคู่ไว้ เพื่อให้คุณสามารถเลือกอุปกรณ์สำหรับกฎเวิร์กโฟลว์ได้</string>
+    <string name="home_now">ตอนนี้</string>
+    <string name="home_earlier_today">ก่อนหน้านี้วันนี้ (%1$d)</string>
+    <string name="home_anytime_today">เวลาใดก็ได้วันนี้</string>
+    <string name="home_also_in_calendar">อยู่ในปฏิทินด้วย</string>
+    <string name="home_also_in_tasks">อยู่ใน Google Tasks ด้วย</string>
+    <plurals name="home_summary_left">
+        <item quantity="other">เหลือ %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="other">เสร็จแล้ว %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="other">เกินกำหนด %d</item>
+    </plurals>
+    <string name="home_overdue_title">เกินกำหนด (%1$d)</string>
+    <string name="home_empty_today_title">วันนี้ไม่มีแผนอะไร</string>
+    <string name="home_empty_today_action">เพิ่ม</string>
+    <string name="home_first_run_title">ยินดีต้อนรับ! เริ่มกันเลย</string>
+    <string name="home_first_run_message">สร้างการแจ้งเตือน วันเกิด หรือบันทึกแรกของคุณด้วยปุ่ม +</string>
+    <string name="day_overview_title">ภาพรวมของวัน</string>
+    <string name="day_overview_next_up">ถัดไป</string>
+    <string name="day_overview_no_next">วันนี้ไม่มีรายการอื่นอีกแล้ว</string>
+    <string name="day_overview_free_time">เวลาว่าง</string>
+    <string name="day_overview_free_until">ว่างถึง %1$s</string>
+    <string name="day_overview_free_rest_of_day">ว่างตลอดทั้งวันที่เหลือ</string>
+    <string name="day_overview_largest_free">ช่วงเวลาว่างที่ยาวที่สุด: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">กำลังไม่ว่างในขณะนี้</string>
 </resources>

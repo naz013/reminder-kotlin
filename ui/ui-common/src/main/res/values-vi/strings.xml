@@ -1216,4 +1216,31 @@
     <string name="workflow_builder_wifi_ssid_hint">Tên mạng (SSID)</string>
     <string name="bluetooth_connect">Quyền truy cập Bluetooth</string>
     <string name="bluetooth_connect_explanation">Cần thiết để đọc tên các thiết bị Bluetooth đã ghép nối của bạn để bạn có thể chọn một thiết bị cho quy tắc quy trình làm việc</string>
+    <string name="home_now">Bây giờ</string>
+    <string name="home_earlier_today">Sớm hơn hôm nay (%1$d)</string>
+    <string name="home_anytime_today">Bất cứ lúc nào hôm nay</string>
+    <string name="home_also_in_calendar">Cũng có trong lịch</string>
+    <string name="home_also_in_tasks">Cũng có trong Google Tasks</string>
+    <plurals name="home_summary_left">
+        <item quantity="other">Còn lại: %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="other">Xong: %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="other">Quá hạn: %d</item>
+    </plurals>
+    <string name="home_overdue_title">Quá hạn (%1$d)</string>
+    <string name="home_empty_today_title">Hôm nay chưa có kế hoạch nào</string>
+    <string name="home_empty_today_action">Thêm</string>
+    <string name="home_first_run_title">Chào mừng! Bắt đầu nào</string>
+    <string name="home_first_run_message">Tạo lời nhắc, sinh nhật hoặc ghi chú đầu tiên bằng nút +.</string>
+    <string name="day_overview_title">Tổng quan trong ngày</string>
+    <string name="day_overview_next_up">Tiếp theo</string>
+    <string name="day_overview_no_next">Hôm nay không còn gì được lên lịch</string>
+    <string name="day_overview_free_time">Thời gian rảnh</string>
+    <string name="day_overview_free_until">Rảnh đến %1$s</string>
+    <string name="day_overview_free_rest_of_day">Rảnh trong phần còn lại của ngày</string>
+    <string name="day_overview_largest_free">Khoảng trống dài nhất: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Hiện đang bận</string>
 </resources>

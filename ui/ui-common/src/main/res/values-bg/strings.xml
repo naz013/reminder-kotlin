@@ -1218,4 +1218,34 @@
     <string name="workflow_builder_wifi_ssid_hint">Име на мрежата (SSID)</string>
     <string name="bluetooth_connect">Достъп до Bluetooth</string>
     <string name="bluetooth_connect_explanation">Необходим за четене на имената на вашите сдвоени Bluetooth устройства, за да изберете едно за правило на работния процес</string>
+    <string name="home_now">Сега</string>
+    <string name="home_earlier_today">По-рано днес (%1$d)</string>
+    <string name="home_anytime_today">По всяко време днес</string>
+    <string name="home_also_in_calendar">Също в календара</string>
+    <string name="home_also_in_tasks">Също в Google Tasks</string>
+    <plurals name="home_summary_left">
+        <item quantity="one">Оставащи: %d</item>
+        <item quantity="other">Оставащи: %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="one">Готови: %d</item>
+        <item quantity="other">Готови: %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="one">Просрочени: %d</item>
+        <item quantity="other">Просрочени: %d</item>
+    </plurals>
+    <string name="home_overdue_title">Просрочени (%1$d)</string>
+    <string name="home_empty_today_title">Нищо планирано за днес</string>
+    <string name="home_empty_today_action">Добави</string>
+    <string name="home_first_run_title">Добре дошли! Да започнем</string>
+    <string name="home_first_run_message">Създайте първото си напомняне, рожден ден или бележка с бутона +.</string>
+    <string name="day_overview_title">Преглед на деня</string>
+    <string name="day_overview_next_up">Следва</string>
+    <string name="day_overview_no_next">Няма повече планирани неща за днес</string>
+    <string name="day_overview_free_time">Свободно време</string>
+    <string name="day_overview_free_until">Свободно до %1$s</string>
+    <string name="day_overview_free_rest_of_day">Свободно до края на деня</string>
+    <string name="day_overview_largest_free">Най-голям свободен блок: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">В момента е заето</string>
 </resources>

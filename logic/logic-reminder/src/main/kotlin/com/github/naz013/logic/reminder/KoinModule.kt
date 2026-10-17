@@ -27,6 +27,7 @@ import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
 import com.github.naz013.logic.reminder.usecase.UpdatePermanentReminderNotificationUseCase
 import com.github.naz013.logic.reminder.usecase.google.SaveReminderToGoogleCalendarUseCase
 import com.github.naz013.logic.reminder.usecase.google.SaveReminderToGoogleTasksUseCase
+import com.github.naz013.logic.reminder.today.GetTodayScheduleUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -66,6 +67,7 @@ val logicReminderModule = module {
   factoryOf(::TogglePinnedReminderUseCase)
   factoryOf(::SyncReminderToCloudUseCase)
   factory { EventDateTimeCalculatorV2(get(), get()) }
+  factoryOf(::GetTodayScheduleUseCase)
 
   factory { SnoozeReminderUseCaseImpl(get(), get(), get(), get(), get(), lazy { get() }) as SnoozeReminderUseCase }
 }

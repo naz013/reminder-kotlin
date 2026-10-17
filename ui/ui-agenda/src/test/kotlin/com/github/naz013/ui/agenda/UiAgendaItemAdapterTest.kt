@@ -7,6 +7,7 @@ import com.github.naz013.ui.birthday.UiBirthdayList
 import com.github.naz013.ui.common.text.UiTextFormat
 import com.github.naz013.ui.reminder.UiReminderList
 import com.github.naz013.ui.reminder.UiReminderListActions
+import com.github.naz013.ui.reminder.ReminderRowMapper
 import com.github.naz013.ui.reminder.UiReminderListAdapter
 import com.github.naz013.ui.reminder.UiReminderListState
 import com.github.naz013.common.TextProvider
@@ -62,6 +63,7 @@ class UiAgendaItemAdapterTest {
       dateTimeManager,
       textProvider,
       reminderSettingsRepository,
+      ReminderRowMapper(dateTimeManager, mockk(relaxed = true)),
     )
   }
 

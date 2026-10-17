@@ -7,10 +7,15 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.feature.home.ResolvedEventAction
 import com.github.naz013.feature.home.BannerState
+import com.github.naz013.feature.home.EmptyKind
 import com.github.naz013.feature.home.HeaderNavigationItem
 import com.github.naz013.feature.home.HomeEvent
 import com.github.naz013.feature.home.HomeScreenState
 import com.github.naz013.feature.home.ListState
+import com.github.naz013.feature.home.TimeSection
+import com.github.naz013.feature.home.TodaySchedule
+import com.github.naz013.logic.reminder.today.TodayBucket
+import com.github.naz013.logic.reminder.today.TodayItem
 import com.github.naz013.feature.home.withSelectedEvent
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
@@ -18,6 +23,7 @@ import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -39,9 +45,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.threeten.bp.LocalDateTime
 
-class ScheduleHomeViewModel(
+class ScheduleHomeViewModel internal constructor(
   private val dispatcherProvider: DispatcherProvider,
-  private val getActiveEventsForTheDayUseCase: GetActiveEventsForTheDayUseCase,
+  private val observeTodayScheduleUseCase: ObserveTodayScheduleUseCase,
+  private val todayItemHomeEventMapper: TodayItemHomeEventMapper,
   private val getTimeSectionsUseCase: GetTimeSectionsUseCase,
   private val getGreetingTextUseCase: GetGreetingTextUseCase,
   private val googleTasksAuthManager: GoogleTasksAuthManager,
@@ -52,10 +59,14 @@ class ScheduleHomeViewModel(
   private val analyticsEventSender: AnalyticsEventSender,
   private val legalDocumentRepository: LegalDocumentRepository,
   private val buildInfo: BuildInfo,
+  private val textProvider: TextProvider,
+  private val hasAnyUserContentUseCase: HasAnyUserContentUseCase,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(HomeScreenState())
   private val _selectedEventId = MutableStateFlow<String?>(null)
+  private val _isEarlierExpanded = MutableStateFlow(false)
+  private val _isOverdueExpanded = MutableStateFlow(true)
   val state = combine(_state, _selectedEventId, HomeScreenState::withSelectedEvent)
     .stateInWhileSubscribed(HomeScreenState())
     .onStart { loadData() }
@@ -171,7 +182,25 @@ class ScheduleHomeViewModel(
       HomeEvent.EventType.Birthday -> {
         event.emit(ViewModelEvent.OpenBirthdayDetails(homeEvent.id))
       }
+
+      HomeEvent.EventType.CalendarEvent -> {
+        event.emit(ViewModelEvent.OpenCalendar)
+      }
+
+      HomeEvent.EventType.Task -> {
+        event.emit(ViewModelEvent.OpenGoogleTasks)
+      }
     }
+  }
+
+  fun onEarlierTodayToggled() {
+    Logger.i(TAG, "On earlier today toggled")
+    _isEarlierExpanded.update { !it }
+  }
+
+  fun onOverdueToggled() {
+    Logger.i(TAG, "On overdue toggled")
+    _isOverdueExpanded.update { !it }
   }
 
   fun onSelectedEventIdChanged(id: String?) {
@@ -221,17 +250,93 @@ class ScheduleHomeViewModel(
       }
     }
     viewModelScope.launch(dispatcherProvider.default()) {
-      getActiveEventsForTheDayUseCase(LocalDateTime.now())
-        .map { events -> getTimeSectionsUseCase(events) }
-        .collect { sections ->
-          Logger.d(TAG, "Loaded ${sections.size} sections")
-          _state.update {
-            it.copy(
-              listState = if (sections.isEmpty()) ListState.Empty else ListState.Ready(sections),
-            )
-          }
+      val loadedToday = observeTodayScheduleUseCase().map { snapshot -> loadToday(snapshot) }
+      combine(loadedToday, _isEarlierExpanded, _isOverdueExpanded) { loaded, earlierExpanded, overdueExpanded ->
+          toRendered(loaded, earlierExpanded, overdueExpanded)
+        }
+        .collect { rendered ->
+          _state.update { it.copy(listState = rendered.listState, daySummary = rendered.daySummary) }
         }
     }
+  }
+
+  private suspend fun loadToday(snapshot: TodaySnapshot): LoadedToday {
+    Logger.d(TAG, "Loaded ${snapshot.items.size} today items")
+    val (allItems, now) = snapshot
+    val (overdueItems, items) = allItems.partition { it is TodayItem.Reminder && it.isOverdue }
+    val (earlier, upcoming) = items
+      .filter { it.bucket == TodayBucket.Timed }
+      .partition { it.dateTime.isBefore(now) }
+    val loaded = LoadedToday(
+      earlierTimed = getTimeSectionsUseCase(mapSorted(earlier, now)),
+      upcomingTimed = getTimeSectionsUseCase(mapSorted(upcoming, now)),
+      allDay = mapSorted(items.filter { it.bucket == TodayBucket.AllDay }, now),
+      anytime = mapSorted(items.filter { it.bucket == TodayBucket.Anytime }, now),
+      overdue = mapSorted(overdueItems, now),
+    )
+    return loaded.copy(
+      isFirstRun = loaded.isEmpty && !hasAnyUserContentUseCase(),
+    )
+  }
+
+  /**
+   * left = upcoming timed + all-day + anytime items of today; done = timed items of today whose
+   * time has passed; overdue = reminders from earlier days. Zero counts are omitted.
+   */
+  private fun buildDaySummary(loaded: LoadedToday): String {
+    val left = loaded.upcomingTimed.size + loaded.allDay.size + loaded.anytime.size
+    val done = loaded.earlierTimed.size
+    val overdue = loaded.overdue.size
+    return listOf(
+      R.plurals.home_summary_left to left,
+      R.plurals.home_summary_done to done,
+      R.plurals.home_summary_overdue to overdue,
+    )
+      .filter { (_, count) -> count > 0 }
+      .joinToString(SUMMARY_SEPARATOR) { (id, count) -> textProvider.getQuantityString(id, count) }
+  }
+
+  private suspend fun mapSorted(items: List<TodayItem>, now: LocalDateTime): List<HomeEvent> {
+    if (items.isEmpty()) return emptyList()
+    return todayItemHomeEventMapper(items, now).sortedBy { it.date.atTime(it.time) }
+  }
+
+  private fun toRendered(
+    loaded: LoadedToday,
+    isEarlierExpanded: Boolean,
+    isOverdueExpanded: Boolean,
+  ): RenderedToday {
+    if (loaded.isEmpty) return RenderedToday(ListState.Empty(
+      if (loaded.isFirstRun) EmptyKind.FirstRun else EmptyKind.NothingPlanned,
+    ), "")
+    val schedule = TodaySchedule(
+      earlierTimed = loaded.earlierTimed,
+      upcomingTimed = loaded.upcomingTimed,
+      allDay = loaded.allDay,
+      anytime = loaded.anytime,
+      isEarlierExpanded = isEarlierExpanded,
+      overdue = loaded.overdue,
+      isOverdueExpanded = isOverdueExpanded,
+    )
+    return RenderedToday(ListState.Ready(schedule), buildDaySummary(loaded))
+  }
+
+  private data class RenderedToday(
+    val listState: ListState,
+    val daySummary: String,
+  )
+
+  private data class LoadedToday(
+    val earlierTimed: List<TimeSection>,
+    val upcomingTimed: List<TimeSection>,
+    val allDay: List<HomeEvent>,
+    val anytime: List<HomeEvent>,
+    val overdue: List<HomeEvent>,
+    val isFirstRun: Boolean = false,
+  ) {
+    val isEmpty: Boolean
+      get() = earlierTimed.isEmpty() && upcomingTimed.isEmpty() && allDay.isEmpty() &&
+        anytime.isEmpty() && overdue.isEmpty()
   }
 
   /** Quick add is PRO-only and hidden from the menu entirely for free users - unlike Pomodoro's
@@ -334,5 +439,6 @@ class ScheduleHomeViewModel(
 
   companion object {
     private const val TAG = "ScheduleHomeViewModel"
+    private const val SUMMARY_SEPARATOR = " · "
   }
 }

@@ -1218,4 +1218,34 @@
     <string name="workflow_builder_wifi_ssid_hint">Ağ adı (SSID)</string>
     <string name="bluetooth_connect">Bluetooth erişimi</string>
     <string name="bluetooth_connect_explanation">Bir iş akışı kuralı için seçebilmeniz amacıyla eşleştirilmiş Bluetooth cihazlarınızın adlarını okumak için gereklidir</string>
+    <string name="home_now">Şimdi</string>
+    <string name="home_earlier_today">Bugün daha erken (%1$d)</string>
+    <string name="home_anytime_today">Bugün herhangi bir zaman</string>
+    <string name="home_also_in_calendar">Takvimde de var</string>
+    <string name="home_also_in_tasks">Google Tasks’ta da var</string>
+    <plurals name="home_summary_left">
+        <item quantity="one">Kalan: %d</item>
+        <item quantity="other">Kalan: %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="one">Biten: %d</item>
+        <item quantity="other">Biten: %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="one">Geciken: %d</item>
+        <item quantity="other">Geciken: %d</item>
+    </plurals>
+    <string name="home_overdue_title">Geciken (%1$d)</string>
+    <string name="home_empty_today_title">Bugün için planlanmış bir şey yok</string>
+    <string name="home_empty_today_action">Ekle</string>
+    <string name="home_first_run_title">Hoş geldiniz! Başlayalım</string>
+    <string name="home_first_run_message">+ düğmesiyle ilk hatırlatıcınızı, doğum gününüzü veya notunuzu oluşturun.</string>
+    <string name="day_overview_title">Günün özeti</string>
+    <string name="day_overview_next_up">Sıradaki</string>
+    <string name="day_overview_no_next">Bugün için planlanmış başka bir şey yok</string>
+    <string name="day_overview_free_time">Boş zaman</string>
+    <string name="day_overview_free_until">%1$s saatine kadar boş</string>
+    <string name="day_overview_free_rest_of_day">Günün geri kalanında boş</string>
+    <string name="day_overview_largest_free">En uzun boş aralık: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Şu anda meşgul</string>
 </resources>

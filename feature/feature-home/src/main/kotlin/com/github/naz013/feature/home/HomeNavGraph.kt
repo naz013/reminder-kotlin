@@ -11,13 +11,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.feature.home.dayoverview.DayOverviewPane
 import com.github.naz013.feature.home.scheduleview.ScheduleHomeViewModel
-import com.github.naz013.ui.common.R
-import com.github.naz013.ui.common.compose.AppIcons
-import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -53,12 +50,7 @@ fun EntryProviderScope<NavKey>.homeEntries(
 ) {
   entry<HomeNavKey.Main>(
     metadata = ListDetailSceneStrategy.listPane(
-      detailPlaceholder = {
-        DetailPanePlaceholder(
-          text = stringResource(R.string.select_reminder_or_birthday_to_see_details),
-          icon = AppIcons.Fluent.Calendar,
-        )
-      },
+      detailPlaceholder = { DayOverviewPane() },
     ),
   ) {
     HomeEntry(
@@ -257,6 +249,8 @@ private fun HomeEntry(
         onHeaderNavigationItemLongClick = { viewModel.onHeaderNavigationItemLongClicked() },
         onEventClick = { viewModel.onEventClicked(it) },
         onEventActionClick = { viewModel.onEventActionClicked(it) },
+        onEarlierTodayClick = { viewModel.onEarlierTodayToggled() },
+        onOverdueClick = { viewModel.onOverdueToggled() },
         onAddMenuItemClick = { viewModel.onEventTypeSelected(it) },
       )
     },

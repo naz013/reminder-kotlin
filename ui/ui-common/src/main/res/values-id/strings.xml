@@ -1216,4 +1216,31 @@
     <string name="workflow_builder_wifi_ssid_hint">Nama jaringan (SSID)</string>
     <string name="bluetooth_connect">Akses Bluetooth</string>
     <string name="bluetooth_connect_explanation">Diperlukan untuk membaca nama perangkat Bluetooth yang dipasangkan agar Anda dapat memilih salah satu untuk aturan alur kerja</string>
+    <string name="home_now">Sekarang</string>
+    <string name="home_earlier_today">Lebih awal hari ini (%1$d)</string>
+    <string name="home_anytime_today">Kapan saja hari ini</string>
+    <string name="home_also_in_calendar">Juga di kalender</string>
+    <string name="home_also_in_tasks">Juga di Google Tasks</string>
+    <plurals name="home_summary_left">
+        <item quantity="other">Tersisa: %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="other">Selesai: %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="other">Terlambat: %d</item>
+    </plurals>
+    <string name="home_overdue_title">Terlambat (%1$d)</string>
+    <string name="home_empty_today_title">Tidak ada rencana untuk hari ini</string>
+    <string name="home_empty_today_action">Tambah</string>
+    <string name="home_first_run_title">Selamat datang! Mari mulai</string>
+    <string name="home_first_run_message">Buat pengingat, ulang tahun, atau catatan pertama Anda dengan tombol +.</string>
+    <string name="day_overview_title">Ringkasan hari ini</string>
+    <string name="day_overview_next_up">Berikutnya</string>
+    <string name="day_overview_no_next">Tidak ada lagi yang dijadwalkan hari ini</string>
+    <string name="day_overview_free_time">Waktu luang</string>
+    <string name="day_overview_free_until">Luang hingga %1$s</string>
+    <string name="day_overview_free_rest_of_day">Luang sepanjang sisa hari</string>
+    <string name="day_overview_largest_free">Blok waktu luang terbesar: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Sedang sibuk</string>
 </resources>
