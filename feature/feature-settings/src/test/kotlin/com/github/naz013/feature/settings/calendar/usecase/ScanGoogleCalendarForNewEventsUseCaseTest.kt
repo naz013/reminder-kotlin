@@ -137,6 +137,32 @@ class ScanGoogleCalendarForNewEventsUseCaseTest {
     }
 
   @Test
+  fun `CURRENT BEHAVIOR invoke re-imports an event exported by the app itself because only deviceEventId dedup exists`() =
+    runTest {
+      val exportedByReminder =
+        EventItem(
+          title = "Call mom",
+          description = "From Reminder",
+          rrule = "",
+          rDate = "",
+          calendarId = CALENDAR_ID,
+          allDay = 0,
+          dtStart = FUTURE_MILLIS,
+          dtEnd = FUTURE_MILLIS + 60_000L,
+          id = 555L,
+          localId = "reminder-uuid-that-use-case-cannot-see",
+        )
+      every { googleCalendarApi.getEvents(listOf(CALENDAR_ID)) } returns listOf(exportedByReminder)
+
+      useCase()
+
+      val saved = mutableListOf<GoogleCalendarEvent>()
+      coVerify(exactly = 1) { googleCalendarEventRepository.save(capture(saved)) }
+      assert(saved.single().deviceEventId == 555L)
+      assert(saved.single().description == "From Reminder")
+    }
+
+  @Test
   fun `invoke schedules a notification for a future event`() =
     runTest {
       val futureLocal = NOW.plusHours(1)
