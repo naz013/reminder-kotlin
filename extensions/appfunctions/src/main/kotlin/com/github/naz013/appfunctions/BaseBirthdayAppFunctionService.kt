@@ -1,7 +1,7 @@
 package com.github.naz013.appfunctions
 
 import androidx.annotation.RequiresApi
-import androidx.appfunctions.AppFunction
+import androidx.appfunctions.AppFunctionDeclaration
 import androidx.appfunctions.AppFunctionAppUnknownException
 import androidx.appfunctions.AppFunctionElementNotFoundException
 import androidx.appfunctions.AppFunctionInvalidArgumentException
@@ -56,7 +56,7 @@ abstract class BaseBirthdayAppFunctionService :
    *
    * @param params The name and date of birth, and whether the birth year should be hidden.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun createBirthday(params: CreateBirthdayParams): BirthdayFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -82,7 +82,7 @@ abstract class BaseBirthdayAppFunctionService :
    *
    * @param params How many days from now to look for upcoming birthdays in.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun listUpcomingBirthdays(params: ListUpcomingBirthdaysParams): List<BirthdayFunctionResult> =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -100,7 +100,7 @@ abstract class BaseBirthdayAppFunctionService :
    *
    * @param params The id of the birthday to update, plus its new name, date, and whether to hide the year.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun updateBirthday(params: UpdateBirthdayParams): BirthdayFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -126,7 +126,7 @@ abstract class BaseBirthdayAppFunctionService :
    *
    * @param params The id of the birthday to delete.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun deleteBirthday(params: BirthdayIdParams): BirthdayFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -148,7 +148,7 @@ abstract class BaseBirthdayAppFunctionService :
    *
    * @param params The name text to search for.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun searchBirthdays(params: SearchBirthdaysParams): List<BirthdayFunctionResult> =
     withContext(Dispatchers.IO) {
       requirePro()

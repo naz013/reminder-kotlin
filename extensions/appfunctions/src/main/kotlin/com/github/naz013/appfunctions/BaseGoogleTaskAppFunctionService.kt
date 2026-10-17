@@ -1,7 +1,7 @@
 package com.github.naz013.appfunctions
 
 import androidx.annotation.RequiresApi
-import androidx.appfunctions.AppFunction
+import androidx.appfunctions.AppFunctionDeclaration
 import androidx.appfunctions.AppFunctionAppUnknownException
 import androidx.appfunctions.AppFunctionElementNotFoundException
 import androidx.appfunctions.AppFunctionInvalidArgumentException
@@ -62,7 +62,7 @@ abstract class BaseGoogleTaskAppFunctionService :
    *
    * @param params The title, optional notes and optional due date/time for the task.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun createGoogleTask(params: CreateGoogleTaskParams): GoogleTaskFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -88,7 +88,7 @@ abstract class BaseGoogleTaskAppFunctionService :
    *
    * @param params Whether to include already-completed tasks.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun listGoogleTasks(params: ListGoogleTasksParams): List<GoogleTaskFunctionResult> =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -104,7 +104,7 @@ abstract class BaseGoogleTaskAppFunctionService :
    *
    * @param params The id of the task to complete.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun completeGoogleTask(params: GoogleTaskIdParams): GoogleTaskFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -126,7 +126,7 @@ abstract class BaseGoogleTaskAppFunctionService :
    *
    * @param params The id of the task to update, plus its new title, optional notes, and optional due date/time.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun updateGoogleTask(params: UpdateGoogleTaskParams): GoogleTaskFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -155,7 +155,7 @@ abstract class BaseGoogleTaskAppFunctionService :
    *
    * @param params The id of the task to delete.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun deleteGoogleTask(params: GoogleTaskIdParams): GoogleTaskFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -177,7 +177,7 @@ abstract class BaseGoogleTaskAppFunctionService :
    *
    * @param params The text to search for.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun searchGoogleTasks(params: SearchGoogleTasksParams): List<GoogleTaskFunctionResult> =
     withContext(Dispatchers.IO) {
       requirePro()

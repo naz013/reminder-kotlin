@@ -1,7 +1,7 @@
 package com.github.naz013.appfunctions
 
 import androidx.annotation.RequiresApi
-import androidx.appfunctions.AppFunction
+import androidx.appfunctions.AppFunctionDeclaration
 import androidx.appfunctions.AppFunctionElementNotFoundException
 import androidx.appfunctions.AppFunctionInvalidArgumentException
 import androidx.appfunctions.AppFunctionPermissionRequiredException
@@ -57,7 +57,7 @@ abstract class BaseReminderAppFunctionService :
    *
    * @param params The title, due date/time, and optional notes for the reminder.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun createReminder(params: CreateReminderParams): ReminderFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -83,7 +83,7 @@ abstract class BaseReminderAppFunctionService :
    *
    * @param params How many days from now to look for due reminders in.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun listUpcomingReminders(params: ListUpcomingRemindersParams): List<ReminderFunctionResult> =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -101,7 +101,7 @@ abstract class BaseReminderAppFunctionService :
    *
    * @param params The id of the reminder to complete.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun completeReminder(params: ReminderIdParams): ReminderFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -120,7 +120,7 @@ abstract class BaseReminderAppFunctionService :
    *
    * @param params The id of the reminder to delete.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun deleteReminder(params: ReminderIdParams): ReminderFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -139,7 +139,7 @@ abstract class BaseReminderAppFunctionService :
    *
    * @param params The id of the reminder to update, plus its new title, due date/time, and optional notes.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun updateReminder(params: UpdateReminderParams): ReminderFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -165,7 +165,7 @@ abstract class BaseReminderAppFunctionService :
    *
    * @param params The text to search for.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun searchReminders(params: SearchRemindersParams): List<ReminderFunctionResult> =
     withContext(Dispatchers.IO) {
       requirePro()

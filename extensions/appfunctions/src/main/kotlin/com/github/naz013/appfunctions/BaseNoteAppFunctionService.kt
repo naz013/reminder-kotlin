@@ -1,7 +1,7 @@
 package com.github.naz013.appfunctions
 
 import androidx.annotation.RequiresApi
-import androidx.appfunctions.AppFunction
+import androidx.appfunctions.AppFunctionDeclaration
 import androidx.appfunctions.AppFunctionElementNotFoundException
 import androidx.appfunctions.AppFunctionInvalidArgumentException
 import androidx.appfunctions.AppFunctionPermissionRequiredException
@@ -50,7 +50,7 @@ abstract class BaseNoteAppFunctionService :
    *
    * @param params The title and body text of the note.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun createNote(params: CreateNoteParams): NoteFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -70,7 +70,7 @@ abstract class BaseNoteAppFunctionService :
    *
    * @param params The text to search for.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun searchNotes(params: SearchNotesParams): List<NoteFunctionResult> =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -90,7 +90,7 @@ abstract class BaseNoteAppFunctionService :
    *
    * @param params The id of the note to update, plus its new title and content.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun updateNote(params: UpdateNoteParams): NoteFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
@@ -112,7 +112,7 @@ abstract class BaseNoteAppFunctionService :
    *
    * @param params The id of the note to delete.
    */
-  @AppFunction(isDescribedByKDoc = true)
+  @AppFunctionDeclaration(isDescribedByKDoc = true)
   internal suspend fun deleteNote(params: NoteIdParams): NoteFunctionResult =
     withContext(Dispatchers.IO) {
       requirePro()
