@@ -2,12 +2,14 @@ package com.github.naz013.feature.settings.calendar.usecase
 
 import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.domain.CalendarEvent
 import com.github.naz013.domain.GoogleCalendarEvent
 import com.github.naz013.feature.settings.calendar.CalendarSettingsPreferences
 import com.github.naz013.googlecalendar.CalendarItem
 import com.github.naz013.googlecalendar.EventItem
 import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.notification.NotificationApi
+import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.EventOccurrenceRepository
 import com.github.naz013.repository.GoogleCalendarEventRepository
 import com.github.naz013.scheduler.JobSchedulerApi
@@ -26,6 +28,7 @@ class ScanGoogleCalendarForNewEventsUseCaseTest {
   private lateinit var googleCalendarApi: GoogleCalendarApi
   private lateinit var dateTimeManager: DateTimeManager
   private lateinit var googleCalendarEventRepository: GoogleCalendarEventRepository
+  private lateinit var calendarEventRepository: CalendarEventRepository
   private lateinit var eventOccurrenceRepository: EventOccurrenceRepository
   private lateinit var calculateGoogleCalendarEventOccurrencesUseCase: CalculateGoogleCalendarEventOccurrencesUseCase
   private lateinit var jobSchedulerApi: JobSchedulerApi
@@ -39,6 +42,7 @@ class ScanGoogleCalendarForNewEventsUseCaseTest {
     googleCalendarApi = mockk()
     dateTimeManager = mockk()
     googleCalendarEventRepository = mockk(relaxed = true)
+    calendarEventRepository = mockk(relaxed = true)
     eventOccurrenceRepository = mockk(relaxed = true)
     calculateGoogleCalendarEventOccurrencesUseCase = mockk(relaxed = true)
     jobSchedulerApi = mockk(relaxed = true)
@@ -48,6 +52,7 @@ class ScanGoogleCalendarForNewEventsUseCaseTest {
     every { prefs.scanGoogleCalendarEvents } returns true
     every { prefs.selectedGoogleCalendarIds } returns setOf(CALENDAR_ID)
     coEvery { googleCalendarEventRepository.getVisible() } returns emptyList()
+    coEvery { calendarEventRepository.getAll() } returns emptyList()
     coEvery { googleCalendarEventRepository.knownDeviceEventIds() } returns emptyList()
     every { googleCalendarApi.getCalendarById(CALENDAR_ID) } returns CalendarItem("Work", CALENDAR_ID)
     // Identity-ish conversions so the use case's date-time math is exercised without a real timezone.
@@ -64,6 +69,7 @@ class ScanGoogleCalendarForNewEventsUseCaseTest {
         googleCalendarApi = googleCalendarApi,
         dateTimeManager = dateTimeManager,
         googleCalendarEventRepository = googleCalendarEventRepository,
+        calendarEventRepository = calendarEventRepository,
         eventOccurrenceRepository = eventOccurrenceRepository,
         calculateGoogleCalendarEventOccurrencesUseCase = calculateGoogleCalendarEventOccurrencesUseCase,
         jobSchedulerApi = jobSchedulerApi,
@@ -136,30 +142,84 @@ class ScanGoogleCalendarForNewEventsUseCaseTest {
       coVerify(exactly = 0) { googleCalendarEventRepository.save(any()) }
     }
 
+  private fun exportedItem(id: Long) =
+    EventItem(
+      title = "Call mom",
+      description = "From Reminder",
+      rrule = "",
+      rDate = "",
+      calendarId = CALENDAR_ID,
+      allDay = 0,
+      dtStart = FUTURE_MILLIS,
+      dtEnd = FUTURE_MILLIS + 60_000L,
+      id = id,
+    )
+
+  private fun link(eventId: Long) =
+    CalendarEvent(reminderId = "reminder-uuid", event = "Call mom", eventId = eventId, allDay = false)
+
+  private fun trackedEvent(
+    deviceEventId: Long,
+    uuId: String,
+    uniqueId: Int,
+  ) = GoogleCalendarEvent(
+    deviceEventId = deviceEventId,
+    calendarId = CALENDAR_ID,
+    calendarName = "Work",
+    title = "Call mom",
+    description = "",
+    startDateTime = NOW,
+    endDateTime = null,
+    allDay = false,
+    rrule = "",
+    uuId = uuId,
+    uniqueId = uniqueId,
+  )
+
   @Test
-  fun `CURRENT BEHAVIOR invoke re-imports an event exported by the app itself because only deviceEventId dedup exists`() =
+  fun `invoke does not import an event exported by the app itself but still imports others`() =
     runTest {
-      val exportedByReminder =
-        EventItem(
-          title = "Call mom",
-          description = "From Reminder",
-          rrule = "",
-          rDate = "",
-          calendarId = CALENDAR_ID,
-          allDay = 0,
-          dtStart = FUTURE_MILLIS,
-          dtEnd = FUTURE_MILLIS + 60_000L,
-          id = 555L,
-          localId = "reminder-uuid-that-use-case-cannot-see",
-        )
-      every { googleCalendarApi.getEvents(listOf(CALENDAR_ID)) } returns listOf(exportedByReminder)
+      coEvery { calendarEventRepository.getAll() } returns listOf(link(555L))
+      every { googleCalendarApi.getEvents(listOf(CALENDAR_ID)) } returns
+        listOf(exportedItem(555L), eventItem(id = 100L, dtStart = FUTURE_MILLIS))
 
       useCase()
 
       val saved = mutableListOf<GoogleCalendarEvent>()
       coVerify(exactly = 1) { googleCalendarEventRepository.save(capture(saved)) }
-      assert(saved.single().deviceEventId == 555L)
-      assert(saved.single().description == "From Reminder")
+      assert(saved.single().deviceEventId == 100L)
+    }
+
+  @Test
+  fun `invoke imports every event when the link table is empty`() =
+    runTest {
+      every { googleCalendarApi.getEvents(listOf(CALENDAR_ID)) } returns
+        listOf(exportedItem(555L), eventItem(id = 100L, dtStart = FUTURE_MILLIS))
+
+      useCase()
+
+      coVerify(exactly = 2) { googleCalendarEventRepository.save(any()) }
+      coVerify(exactly = 0) { googleCalendarEventRepository.deleteByDeviceEventId(any()) }
+    }
+
+  @Test
+  fun `invoke removes a previously imported copy of an exported event and keeps other imports`() =
+    runTest {
+      coEvery { calendarEventRepository.getAll() } returns listOf(link(555L))
+      coEvery { googleCalendarEventRepository.getVisible() } returns
+        listOf(trackedEvent(555L, "dup-uuid", 7), trackedEvent(100L, "keep-uuid", 8))
+      coEvery { googleCalendarEventRepository.knownDeviceEventIds() } returns listOf(100L)
+      every { googleCalendarApi.getEvents(listOf(CALENDAR_ID)) } returns
+        listOf(exportedItem(555L), eventItem(id = 100L, dtStart = FUTURE_MILLIS))
+
+      useCase()
+
+      coVerify(exactly = 1) { googleCalendarEventRepository.deleteByDeviceEventId(555L) }
+      coVerify(exactly = 0) { googleCalendarEventRepository.deleteByDeviceEventId(100L) }
+      coVerify { eventOccurrenceRepository.deleteByEventId("dup-uuid") }
+      coVerify { jobSchedulerApi.cancelGoogleCalendarEvent(7) }
+      coVerify { notificationApi.cancel(7) }
+      coVerify(exactly = 0) { googleCalendarEventRepository.save(any()) }
     }
 
   @Test

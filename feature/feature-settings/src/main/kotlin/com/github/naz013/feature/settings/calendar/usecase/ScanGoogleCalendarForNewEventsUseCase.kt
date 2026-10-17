@@ -9,6 +9,7 @@ import com.github.naz013.googlecalendar.EventItem
 import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.logging.Logger
 import com.github.naz013.notification.NotificationApi
+import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.EventOccurrenceRepository
 import com.github.naz013.repository.GoogleCalendarEventRepository
 import com.github.naz013.scheduler.JobSchedulerApi
@@ -20,12 +21,15 @@ import kotlinx.coroutines.withContext
  * against [GoogleCalendarEventRepository.knownDeviceEventIds], which includes dismissed
  * (user-deleted-from-app) rows, so a dismissed event never comes back. Events removed on the
  * device side (not a user app-delete) are cleaned up the same way a fresh scan discovers new ones.
+ * Events the app itself exported (present in [CalendarEventRepository]) are never imported, and
+ * copies imported before that rule existed are removed.
  */
 internal class ScanGoogleCalendarForNewEventsUseCase(
   private val prefs: CalendarSettingsPreferences,
   private val googleCalendarApi: GoogleCalendarApi,
   private val dateTimeManager: DateTimeManager,
   private val googleCalendarEventRepository: GoogleCalendarEventRepository,
+  private val calendarEventRepository: CalendarEventRepository,
   private val eventOccurrenceRepository: EventOccurrenceRepository,
   private val calculateGoogleCalendarEventOccurrencesUseCase: CalculateGoogleCalendarEventOccurrencesUseCase,
   private val jobSchedulerApi: JobSchedulerApi,
@@ -55,11 +59,14 @@ internal class ScanGoogleCalendarForNewEventsUseCase(
 
     reconcileRemovedEvents(calendarIds, events.mapTo(mutableSetOf()) { it.id })
 
+    val exportedIds = calendarEventRepository.getAll().mapTo(mutableSetOf()) { it.eventId }
+    removeImportedExports(exportedIds)
+
     if (events.isEmpty()) return
 
     val calendarNames = calendarIds.associateWith { googleCalendarApi.getCalendarById(it)?.name.orEmpty() }
     val knownIds = googleCalendarEventRepository.knownDeviceEventIds().toSet()
-    val newEvents = events.filterNot { it.id in knownIds }
+    val newEvents = events.filterNot { it.id in knownIds || it.id in exportedIds }
 
     newEvents.forEach { importEvent(it, calendarNames) }
     Logger.i(TAG, "Imported ${newEvents.size} new Google Calendar event(s)")
@@ -77,12 +84,27 @@ internal class ScanGoogleCalendarForNewEventsUseCase(
     for (event in tracked) {
       if (event.deviceEventId !in currentDeviceIds) {
         Logger.i(TAG, "Google Calendar event no longer on device, removing: ${event.uuId}")
-        eventOccurrenceRepository.deleteByEventId(event.uuId)
-        googleCalendarEventRepository.deleteByDeviceEventId(event.deviceEventId)
-        jobSchedulerApi.cancelGoogleCalendarEvent(event.uniqueId)
-        notificationApi.cancel(event.uniqueId)
+        removeTrackedEvent(event)
       }
     }
+  }
+
+  /** Drops only the local imported copy (visible rows); the device event itself is never touched. */
+  private suspend fun removeImportedExports(exportedIds: Set<Long>) {
+    if (exportedIds.isEmpty()) return
+    googleCalendarEventRepository.getVisible()
+      .filter { it.deviceEventId in exportedIds }
+      .forEach {
+        Logger.i(TAG, "Removing imported copy of an event exported by the app: ${it.uuId}")
+        removeTrackedEvent(it)
+      }
+  }
+
+  private suspend fun removeTrackedEvent(event: GoogleCalendarEvent) {
+    eventOccurrenceRepository.deleteByEventId(event.uuId)
+    googleCalendarEventRepository.deleteByDeviceEventId(event.deviceEventId)
+    jobSchedulerApi.cancelGoogleCalendarEvent(event.uniqueId)
+    notificationApi.cancel(event.uniqueId)
   }
 
   private suspend fun importEvent(
