@@ -4,6 +4,7 @@ import com.github.naz013.feature.home.scheduleview.GetActiveEventsForTheDayUseCa
 import com.github.naz013.feature.home.scheduleview.GetGreetingTextUseCase
 import com.github.naz013.feature.home.scheduleview.GetNavigationItemsUseCase
 import com.github.naz013.feature.home.scheduleview.GetTimeSectionsUseCase
+import com.github.naz013.feature.home.scheduleview.HasAnyUserContentUseCase
 import com.github.naz013.feature.home.scheduleview.ObserveTodayScheduleUseCase
 import com.github.naz013.feature.home.scheduleview.ScheduleHomeViewModel
 import com.github.naz013.feature.home.scheduleview.TodayItemHomeEventMapper
@@ -20,6 +21,7 @@ val featureHomeModule = module {
   factoryOf(::GetTimeSectionsUseCase)
   factoryOf(::GetGreetingTextUseCase)
   factoryOf(::GetNavigationItemsUseCase)
+  factoryOf(::HasAnyUserContentUseCase)
   singleOf(::WhatsNewManager)
 
   viewModelOf(::ScheduleHomeViewModel)

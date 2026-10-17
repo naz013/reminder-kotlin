@@ -1221,4 +1221,18 @@
     <string name="home_anytime_today">Kapan saja hari ini</string>
     <string name="home_also_in_calendar">Juga di kalender</string>
     <string name="home_also_in_tasks">Juga di Google Tasks</string>
+    <plurals name="home_summary_left">
+        <item quantity="other">Tersisa: %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="other">Selesai: %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="other">Terlambat: %d</item>
+    </plurals>
+    <string name="home_overdue_title">Terlambat (%1$d)</string>
+    <string name="home_empty_today_title">Tidak ada rencana untuk hari ini</string>
+    <string name="home_empty_today_action">Tambah</string>
+    <string name="home_first_run_title">Selamat datang! Mari mulai</string>
+    <string name="home_first_run_message">Buat pengingat, ulang tahun, atau catatan pertama Anda dengan tombol +.</string>
 </resources>

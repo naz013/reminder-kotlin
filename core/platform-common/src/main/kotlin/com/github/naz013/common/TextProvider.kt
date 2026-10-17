@@ -2,6 +2,7 @@ package com.github.naz013.common
 
 import android.content.Context
 import androidx.annotation.ArrayRes
+import androidx.annotation.PluralsRes
 import androidx.annotation.StringRes
 
 class TextProvider(initContext: Context) {
@@ -31,6 +32,10 @@ class TextProvider(initContext: Context) {
 
   fun getText(@StringRes id: Int, vararg args: Any): String {
     return getString(id, *args)
+  }
+
+  fun getQuantityString(@PluralsRes id: Int, quantity: Int): String {
+    return context.resources.getQuantityString(id, quantity, quantity)
   }
 
   fun getStringArray(@ArrayRes id: Int): Array<String> {

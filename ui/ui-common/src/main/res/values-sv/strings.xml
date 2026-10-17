@@ -1221,4 +1221,21 @@
     <string name="home_anytime_today">När som helst idag</string>
     <string name="home_also_in_calendar">Även i kalendern</string>
     <string name="home_also_in_tasks">Även i Google Tasks</string>
+    <plurals name="home_summary_left">
+        <item quantity="one">Kvar: %d</item>
+        <item quantity="other">Kvar: %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="one">Klara: %d</item>
+        <item quantity="other">Klara: %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="one">Försenade: %d</item>
+        <item quantity="other">Försenade: %d</item>
+    </plurals>
+    <string name="home_overdue_title">Försenade (%1$d)</string>
+    <string name="home_empty_today_title">Inget planerat för i dag</string>
+    <string name="home_empty_today_action">Lägg till</string>
+    <string name="home_first_run_title">Välkommen! Nu sätter vi igång</string>
+    <string name="home_first_run_message">Skapa din första påminnelse, födelsedag eller anteckning med +-knappen.</string>
 </resources>

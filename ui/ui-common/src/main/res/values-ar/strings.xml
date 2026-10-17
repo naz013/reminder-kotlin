@@ -1221,4 +1221,33 @@
     <string name="home_anytime_today">في أي وقت اليوم</string>
     <string name="home_also_in_calendar">أيضًا في التقويم</string>
     <string name="home_also_in_tasks">أيضًا في مهام Google</string>
+    <plurals name="home_summary_left">
+        <item quantity="zero">المتبقي: %d</item>
+        <item quantity="one">المتبقي: %d</item>
+        <item quantity="two">المتبقي: %d</item>
+        <item quantity="few">المتبقي: %d</item>
+        <item quantity="many">المتبقي: %d</item>
+        <item quantity="other">المتبقي: %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="zero">المنجز: %d</item>
+        <item quantity="one">المنجز: %d</item>
+        <item quantity="two">المنجز: %d</item>
+        <item quantity="few">المنجز: %d</item>
+        <item quantity="many">المنجز: %d</item>
+        <item quantity="other">المنجز: %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="zero">المتأخر: %d</item>
+        <item quantity="one">المتأخر: %d</item>
+        <item quantity="two">المتأخر: %d</item>
+        <item quantity="few">المتأخر: %d</item>
+        <item quantity="many">المتأخر: %d</item>
+        <item quantity="other">المتأخر: %d</item>
+    </plurals>
+    <string name="home_overdue_title">متأخرة (%1$d)</string>
+    <string name="home_empty_today_title">لا شيء مخطط له اليوم</string>
+    <string name="home_empty_today_action">إضافة</string>
+    <string name="home_first_run_title">مرحبًا! لنبدأ</string>
+    <string name="home_first_run_message">أنشئ أول تذكير أو عيد ميلاد أو ملاحظة باستخدام زر +.</string>
 </resources>

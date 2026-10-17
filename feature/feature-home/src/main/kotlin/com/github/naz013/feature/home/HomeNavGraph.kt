@@ -258,6 +258,7 @@ private fun HomeEntry(
         onEventClick = { viewModel.onEventClicked(it) },
         onEventActionClick = { viewModel.onEventActionClicked(it) },
         onEarlierTodayClick = { viewModel.onEarlierTodayToggled() },
+        onOverdueClick = { viewModel.onOverdueToggled() },
         onAddMenuItemClick = { viewModel.onEventTypeSelected(it) },
       )
     },

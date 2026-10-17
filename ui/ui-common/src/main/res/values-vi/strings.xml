@@ -1221,4 +1221,18 @@
     <string name="home_anytime_today">Bất cứ lúc nào hôm nay</string>
     <string name="home_also_in_calendar">Cũng có trong lịch</string>
     <string name="home_also_in_tasks">Cũng có trong Google Tasks</string>
+    <plurals name="home_summary_left">
+        <item quantity="other">Còn lại: %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="other">Xong: %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="other">Quá hạn: %d</item>
+    </plurals>
+    <string name="home_overdue_title">Quá hạn (%1$d)</string>
+    <string name="home_empty_today_title">Hôm nay chưa có kế hoạch nào</string>
+    <string name="home_empty_today_action">Thêm</string>
+    <string name="home_first_run_title">Chào mừng! Bắt đầu nào</string>
+    <string name="home_first_run_message">Tạo lời nhắc, sinh nhật hoặc ghi chú đầu tiên bằng nút +.</string>
 </resources>

@@ -8,6 +8,7 @@ import org.threeten.bp.LocalTime
 
 data class HomeScreenState(
   val greeting: String = "",
+  val daySummary: String = "",
   val headerNavigationItems: List<HeaderNavigationItem> = emptyList(),
   val addMenuItems: List<ScheduleHomeViewModel.EventType> = emptyList(),
   val listState: ListState = ListState.Loading,
@@ -26,6 +27,7 @@ fun HomeScreenState.withSelectedEvent(selectedEventId: String?): HomeScreenState
         upcomingTimed = schedule.upcomingTimed.select(),
         allDay = schedule.allDay.map { it.select() },
         anytime = schedule.anytime.map { it.select() },
+        overdue = schedule.overdue.map { it.select() },
       ),
     ),
   )
@@ -46,7 +48,10 @@ sealed interface ListState {
     val schedule: TodaySchedule = TodaySchedule(),
   ) : ListState
 
-  data object Empty : ListState
+  /** [isFirstRun] distinguishes a brand new user (no content anywhere) from a clear day. */
+  data class Empty(
+    val isFirstRun: Boolean = false,
+  ) : ListState
 }
 
 data class TodaySchedule(
@@ -55,7 +60,10 @@ data class TodaySchedule(
   val allDay: List<HomeEvent> = emptyList(),
   val anytime: List<HomeEvent> = emptyList(),
   val isEarlierExpanded: Boolean = false,
+  val overdue: List<HomeEvent> = emptyList(),
+  val isOverdueExpanded: Boolean = false,
 ) {
+  val overdueCount: Int get() = overdue.size
   val earlierCount: Int get() = earlierTimed.size
   val showNowMarker: Boolean get() = earlierTimed.isNotEmpty() || upcomingTimed.isNotEmpty()
   val showEarlierHeader: Boolean get() = earlierTimed.isNotEmpty()

@@ -18,7 +18,9 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.ui.common.R
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.LegalDocumentType
 import io.mockk.coEvery
@@ -57,6 +59,8 @@ class ScheduleHomeViewModelTest : BaseTest() {
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val legalDocumentRepository = mockk<LegalDocumentRepository>(relaxed = true)
   private val buildInfo = mockk<BuildInfo>(relaxed = true)
+  private val textProvider = mockk<TextProvider>()
+  private val hasAnyUserContentUseCase = mockk<HasAnyUserContentUseCase>()
 
   private lateinit var viewModel: ScheduleHomeViewModel
 
@@ -79,6 +83,15 @@ class ScheduleHomeViewModelTest : BaseTest() {
     every { homePreferences.isUserLogged } returns true
     every { featureFlags.isEnabled(any()) } returns false
     every { whatsNewManager.hasChanges() } returns false
+    coEvery { hasAnyUserContentUseCase() } returns true
+    every { textProvider.getQuantityString(any(), any()) } answers {
+      val label = when (firstArg<Int>()) {
+        R.plurals.home_summary_left -> "left"
+        R.plurals.home_summary_done -> "done"
+        else -> "overdue"
+      }
+      "${secondArg<Int>()} $label"
+    }
 
     viewModel =
       ScheduleHomeViewModel(
@@ -95,6 +108,8 @@ class ScheduleHomeViewModelTest : BaseTest() {
         analyticsEventSender = analyticsEventSender,
         legalDocumentRepository = legalDocumentRepository,
         buildInfo = buildInfo,
+        textProvider = textProvider,
+        hasAnyUserContentUseCase = hasAnyUserContentUseCase,
       )
   }
 
@@ -154,7 +169,103 @@ class ScheduleHomeViewModelTest : BaseTest() {
     runTest {
       val state = viewModel.state.first()
 
-      assertEquals(ListState.Empty, state.listState)
+      assertEquals(ListState.Empty(isFirstRun = false), state.listState)
+    }
+
+  @Test
+  fun `loadData marks the empty state as first run when the user has no content at all`() =
+    runTest {
+      coEvery { hasAnyUserContentUseCase() } returns false
+
+      val state = viewModel.state.first()
+
+      assertEquals(ListState.Empty(isFirstRun = true), state.listState)
+      assertEquals("", state.daySummary)
+    }
+
+  @Test
+  fun `loadData does not mark a clear day as first run when the user has content`() =
+    runTest {
+      coEvery { hasAnyUserContentUseCase() } returns true
+
+      val state = viewModel.state.first()
+
+      assertEquals(ListState.Empty(isFirstRun = false), state.listState)
+    }
+
+  @Test
+  fun `loadData builds the day summary from left, done and overdue counts`() =
+    runTest {
+      val items = listOf(
+        birthdayItem("done1", TodayBucket.Timed, NOW.minusHours(2)),
+        birthdayItem("done2", TodayBucket.Timed, NOW.minusHours(1)),
+        birthdayItem("timed", TodayBucket.Timed, NOW.plusHours(1)),
+        birthdayItem("allDay", TodayBucket.AllDay, NOW.toLocalDate().atStartOfDay()),
+        birthdayItem("anytime", TodayBucket.Anytime, NOW.toLocalDate().atStartOfDay()),
+        overdueReminder(),
+      )
+      stubSchedule(items)
+
+      val state = viewModel.state.first()
+
+      assertEquals("3 left · 2 done · 1 overdue", state.daySummary)
+    }
+
+  @Test
+  fun `loadData omits zero counts from the day summary`() =
+    runTest {
+      stubSchedule(listOf(birthdayItem("anytime", TodayBucket.Anytime, NOW.toLocalDate().atStartOfDay())))
+
+      val state = viewModel.state.first()
+
+      assertEquals("1 left", state.daySummary)
+    }
+
+  @Test
+  fun `loadData extracts earlier day reminders into the overdue strip only`() =
+    runTest {
+      val overdue = overdueReminder("late")
+      val timed = birthdayItem("timed", TodayBucket.Timed, NOW.plusHours(1))
+      stubSchedule(listOf(overdue, timed))
+
+      val state = viewModel.state.first()
+
+      val schedule = (state.listState as ListState.Ready).schedule
+      assertEquals(listOf("late"), schedule.overdue.map { it.id })
+      assertEquals(listOf("timed"), schedule.upcomingTimed.map { it.event.id })
+      assertTrue(schedule.earlierTimed.isEmpty())
+      assertEquals(1, schedule.overdueCount)
+    }
+
+  @Test
+  fun `loadData shows a ready state when only overdue reminders exist`() =
+    runTest {
+      stubSchedule(listOf(overdueReminder("late")))
+
+      val state = viewModel.state.first()
+
+      val schedule = (state.listState as ListState.Ready).schedule
+      assertEquals(listOf("late"), schedule.overdue.map { it.id })
+      assertEquals("1 overdue", state.daySummary)
+    }
+
+  @Test
+  fun `onOverdueToggled collapses and re-expands the overdue strip`() =
+    runTest {
+      stubSchedule(listOf(overdueReminder("late")))
+      val states = mutableListOf<HomeScreenState>()
+      val job = launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.toList(states) }
+
+      val initial = (states.last().listState as ListState.Ready).schedule.isOverdueExpanded
+      viewModel.onOverdueToggled()
+      val afterFirst = (states.last().listState as ListState.Ready).schedule.isOverdueExpanded
+      viewModel.onOverdueToggled()
+      val afterSecond = (states.last().listState as ListState.Ready).schedule.isOverdueExpanded
+      job.cancel()
+
+      assertTrue(initial)
+      assertFalse(afterFirst)
+      assertTrue(afterSecond)
     }
 
   @Test
@@ -560,6 +671,24 @@ class ScheduleHomeViewModelTest : BaseTest() {
   }
 
   private fun snapshot(vararg items: TodayItem) = TodaySnapshot(items.toList(), NOW)
+
+  private fun overdueReminder(id: String = "overdue"): TodayItem =
+    mockk<TodayItem.Reminder>(relaxed = true) {
+      every { this@mockk.id } returns id
+      every { bucket } returns TodayBucket.Timed
+      every { dateTime } returns NOW.minusDays(1)
+      every { isOverdue } returns true
+    }
+
+  private fun stubSchedule(items: List<TodayItem>) {
+    every { observeTodayScheduleUseCase() } returns flowOf(TodaySnapshot(items, NOW))
+    coEvery { todayItemHomeEventMapper(any(), any()) } answers {
+      firstArg<List<TodayItem>>().map { homeEvent(it.id) }
+    }
+    every { getTimeSectionsUseCase(any()) } answers {
+      firstArg<List<HomeEvent>>().map { TimeSection(time = "t", event = it) }
+    }
+  }
 
   private fun homeEvent(id: String) =
     HomeEvent(

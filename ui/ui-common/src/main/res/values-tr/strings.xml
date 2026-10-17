@@ -1223,4 +1223,21 @@
     <string name="home_anytime_today">Bugün herhangi bir zaman</string>
     <string name="home_also_in_calendar">Takvimde de var</string>
     <string name="home_also_in_tasks">Google Tasks’ta da var</string>
+    <plurals name="home_summary_left">
+        <item quantity="one">Kalan: %d</item>
+        <item quantity="other">Kalan: %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="one">Biten: %d</item>
+        <item quantity="other">Biten: %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="one">Geciken: %d</item>
+        <item quantity="other">Geciken: %d</item>
+    </plurals>
+    <string name="home_overdue_title">Geciken (%1$d)</string>
+    <string name="home_empty_today_title">Bugün için planlanmış bir şey yok</string>
+    <string name="home_empty_today_action">Ekle</string>
+    <string name="home_first_run_title">Hoş geldiniz! Başlayalım</string>
+    <string name="home_first_run_message">+ düğmesiyle ilk hatırlatıcınızı, doğum gününüzü veya notunuzu oluşturun.</string>
 </resources>

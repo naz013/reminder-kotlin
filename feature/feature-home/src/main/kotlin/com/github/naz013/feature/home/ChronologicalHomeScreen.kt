@@ -35,6 +35,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -55,6 +56,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,7 +66,6 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppShapes
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
-import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.isDesktopScreen
 import com.github.naz013.ui.common.compose.foundation.isTabletScreen
@@ -93,6 +94,7 @@ fun ChronologicalHomeScreen(
   onEventClick: (HomeEvent) -> Unit,
   onEventActionClick: (HomeEvent.EventAction) -> Unit,
   onEarlierTodayClick: () -> Unit,
+  onOverdueClick: () -> Unit,
 ) {
   // On Medium+ width, PersistentNavRailSceneDecoratorStrategy already wraps this screen in a
   // navigation rail carrying the same destinations - showing the grid/row too would be
@@ -121,6 +123,7 @@ fun ChronologicalHomeScreen(
       Header(
         modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
         text = state.greeting,
+        summary = state.daySummary,
         addMenuItems = state.addMenuItems,
         onAddMenuItemClick = onAddMenuItemClick,
         onSettingsClick = onSettingsClick,
@@ -149,6 +152,7 @@ fun ChronologicalHomeScreen(
           scheduleItems(
             schedule = state.listState.schedule,
             onEarlierTodayClick = onEarlierTodayClick,
+            onOverdueClick = onOverdueClick,
             onEventClick = onEventClick,
             onEventActionClick = onEventActionClick,
           )
@@ -156,10 +160,14 @@ fun ChronologicalHomeScreen(
 
         is ListState.Empty -> {
           item {
-            EmptyState(
-              icon = AppIcons.Fluent.CalendarAgenda,
-              message = stringResource(R.string.no_events),
+            HomeEmptyState(
               modifier = Modifier.fillParentMaxSize(),
+              title = stringResource(
+                if (state.listState.isFirstRun) R.string.home_first_run_title else R.string.home_empty_today_title,
+              ),
+              message = if (state.listState.isFirstRun) stringResource(R.string.home_first_run_message) else null,
+              addMenuItems = state.addMenuItems,
+              onAddMenuItemClick = onAddMenuItemClick,
             )
           }
         }
@@ -173,9 +181,31 @@ fun ChronologicalHomeScreen(
 private fun LazyListScope.scheduleItems(
   schedule: TodaySchedule,
   onEarlierTodayClick: () -> Unit,
+  onOverdueClick: () -> Unit,
   onEventClick: (HomeEvent) -> Unit,
   onEventActionClick: (HomeEvent.EventAction) -> Unit,
 ) {
+  if (schedule.overdue.isNotEmpty()) {
+    item(key = "overdue_header") {
+      CollapsibleHeader(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        text = stringResource(R.string.home_overdue_title, schedule.overdueCount),
+        color = MaterialTheme.colorScheme.error,
+        isExpanded = schedule.isOverdueExpanded,
+        onClick = onOverdueClick,
+      )
+    }
+    if (schedule.isOverdueExpanded) {
+      items(schedule.overdue, key = { "overdue_${it.id}" }) { event ->
+        EventCard(
+          modifier = Modifier.padding(horizontal = 16.dp),
+          event = event,
+          onEventClick = onEventClick,
+          onEventActionClick = onEventActionClick,
+        )
+      }
+    }
+  }
   if (schedule.allDay.isNotEmpty()) {
     item(key = "all_day") {
       AllDayBand(
@@ -186,9 +216,9 @@ private fun LazyListScope.scheduleItems(
   }
   if (schedule.showEarlierHeader) {
     item(key = "earlier_header") {
-      EarlierTodayHeader(
+      CollapsibleHeader(
         modifier = Modifier.padding(horizontal = 16.dp),
-        count = schedule.earlierCount,
+        text = stringResource(R.string.home_earlier_today, schedule.earlierCount),
         isExpanded = schedule.isEarlierExpanded,
         onClick = onEarlierTodayClick,
       )
@@ -320,11 +350,12 @@ private fun AllDayChip(
 }
 
 @Composable
-private fun EarlierTodayHeader(
+private fun CollapsibleHeader(
   modifier: Modifier = Modifier,
-  count: Int,
+  text: String,
   isExpanded: Boolean,
   onClick: () -> Unit,
+  color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
 ) {
   Row(
     modifier = modifier
@@ -336,15 +367,15 @@ private fun EarlierTodayHeader(
     horizontalArrangement = Arrangement.SpaceBetween,
   ) {
     Text(
-      text = stringResource(R.string.home_earlier_today, count),
+      text = text,
       style = MaterialTheme.typography.titleSmall,
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
+      color = color,
     )
     Icon(
       painter = if (isExpanded) AppIcons.Fluent.ArrowUp else AppIcons.Fluent.ArrowDown,
       contentDescription = null,
       modifier = Modifier.size(18.dp),
-      tint = MaterialTheme.colorScheme.onSurfaceVariant,
+      tint = color,
     )
   }
 }
@@ -383,12 +414,14 @@ private fun Header(
   addMenuItems: List<ScheduleHomeViewModel.EventType>,
   onAddMenuItemClick: (ScheduleHomeViewModel.EventType) -> Unit,
   onSettingsClick: () -> Unit,
+  summary: String = "",
   showSettingsButton: Boolean = true,
 ) {
   var addMenuExpanded by remember { mutableStateOf(false) }
   Greeting(
     modifier = modifier,
     greeting = text,
+    summary = summary,
     trailingContent = {
       AddButton(
         items = addMenuItems,
@@ -413,15 +446,8 @@ private fun Header(
 }
 
 @Composable
-private fun AddButton(
-  modifier: Modifier = Modifier,
-  items: List<ScheduleHomeViewModel.EventType>,
-  expanded: Boolean,
-  onExpand: () -> Unit,
-  onDismiss: () -> Unit,
-  onItemClick: (ScheduleHomeViewModel.EventType) -> Unit,
-) {
-  val menuItems = items.mapIndexed { index, eventType ->
+private fun addPopupMenuItems(items: List<ScheduleHomeViewModel.EventType>): List<PopupMenuItem> =
+  items.mapIndexed { index, eventType ->
     PopupMenuItem(
       id = index,
       title = stringResource(eventType.title),
@@ -435,6 +461,76 @@ private fun AddButton(
       },
     )
   }
+
+@Composable
+private fun HomeEmptyState(
+  modifier: Modifier = Modifier,
+  title: String,
+  message: String?,
+  addMenuItems: List<ScheduleHomeViewModel.EventType>,
+  onAddMenuItemClick: (ScheduleHomeViewModel.EventType) -> Unit,
+) {
+  var addMenuExpanded by remember { mutableStateOf(false) }
+  Column(
+    modifier = modifier.padding(horizontal = 24.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center,
+  ) {
+    Icon(
+      painter = AppIcons.Fluent.CalendarAgenda,
+      contentDescription = null,
+      modifier = Modifier.size(64.dp),
+      tint = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    Text(
+      modifier = Modifier.padding(top = 12.dp),
+      text = title,
+      style = MaterialTheme.typography.titleMedium,
+      color = MaterialTheme.colorScheme.onSurface,
+      textAlign = TextAlign.Center,
+    )
+    message?.let {
+      Text(
+        modifier = Modifier.padding(top = 4.dp),
+        text = it,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = TextAlign.Center,
+      )
+    }
+    Box(modifier = Modifier.padding(top = 16.dp)) {
+      FilledTonalButton(onClick = { addMenuExpanded = true }) {
+        Icon(
+          painter = AppIcons.Fluent.Add,
+          contentDescription = null,
+          modifier = Modifier.size(18.dp),
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = stringResource(R.string.home_empty_today_action))
+      }
+      AppDropdownMenu(
+        expanded = addMenuExpanded,
+        onDismissRequest = { addMenuExpanded = false },
+        items = addPopupMenuItems(addMenuItems),
+        onItemClick = {
+          addMenuExpanded = false
+          onAddMenuItemClick(addMenuItems[it])
+        },
+      )
+    }
+  }
+}
+
+@Composable
+private fun AddButton(
+  modifier: Modifier = Modifier,
+  items: List<ScheduleHomeViewModel.EventType>,
+  expanded: Boolean,
+  onExpand: () -> Unit,
+  onDismiss: () -> Unit,
+  onItemClick: (ScheduleHomeViewModel.EventType) -> Unit,
+) {
+  val menuItems = addPopupMenuItems(items)
   Box(modifier = modifier) {
     MenuIconButton(
       modifier = Modifier.size(56.dp),
@@ -455,7 +551,7 @@ private fun AddButton(
 
 private val HEADER_NAV_ITEM_WIDTH = 128.dp
 private val HEADER_NAV_ITEM_SPACING = 8.dp
-private val HEADER_NAV_CAROUSEL_HEIGHT = 56.dp
+private val HEADER_NAV_CAROUSEL_HEIGHT = 48.dp
 
 // A single fixed-height row regardless of how many sections are enabled - the tile count used to
 // drive a wrapping grid's height directly, which could push the event list below the fold once a
@@ -522,13 +618,13 @@ private fun HeaderNavigationTile(
       color = MaterialTheme.colorScheme.surfaceContainer,
     ) {
       Row(
-        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
       ) {
         Box(
           modifier = Modifier
-            .size(32.dp)
+            .size(28.dp)
             .clip(CircleShape)
             .background(item.color.copy(alpha = TILE_ICON_TINT_ALPHA)),
           contentAlignment = Alignment.Center,
@@ -753,6 +849,7 @@ private fun EventCardContent(
 private fun Greeting(
   modifier: Modifier = Modifier,
   greeting: String,
+  summary: String = "",
   trailingContent: @Composable RowScope.() -> Unit,
 ) {
   Row(
@@ -760,12 +857,20 @@ private fun Greeting(
     horizontalArrangement = Arrangement.SpaceBetween,
     verticalAlignment = Alignment.CenterVertically,
   ) {
-    Text(
-      modifier = Modifier.weight(1f),
-      text = greeting,
-      style = MaterialTheme.typography.headlineMediumEmphasized,
-      color = MaterialTheme.colorScheme.onBackground,
-    )
+    Column(modifier = Modifier.weight(1f)) {
+      Text(
+        text = greeting,
+        style = MaterialTheme.typography.headlineMediumEmphasized,
+        color = MaterialTheme.colorScheme.onBackground,
+      )
+      if (summary.isNotEmpty()) {
+        Text(
+          text = summary,
+          style = MaterialTheme.typography.bodyMedium,
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+      }
+    }
     Spacer(modifier = Modifier.width(16.dp))
     trailingContent()
   }
@@ -921,10 +1026,10 @@ private fun NowMarkerPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun EarlierTodayHeaderPreview() {
-  EarlierTodayHeader(
+private fun CollapsibleHeaderPreview() {
+  CollapsibleHeader(
     modifier = Modifier.padding(16.dp),
-    count = 3,
+    text = "Earlier today (3)",
     isExpanded = false,
     onClick = {},
   )

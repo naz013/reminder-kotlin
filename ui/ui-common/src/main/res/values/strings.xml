@@ -1239,4 +1239,21 @@
     <string name="home_anytime_today">Anytime today</string>
     <string name="home_also_in_calendar">Also in calendar</string>
     <string name="home_also_in_tasks">Also in Google Tasks</string>
+    <plurals name="home_summary_left">
+        <item quantity="one">%d left</item>
+        <item quantity="other">%d left</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="one">%d done</item>
+        <item quantity="other">%d done</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="one">%d overdue</item>
+        <item quantity="other">%d overdue</item>
+    </plurals>
+    <string name="home_overdue_title">Overdue (%1$d)</string>
+    <string name="home_empty_today_title">Nothing planned for today</string>
+    <string name="home_empty_today_action">Add</string>
+    <string name="home_first_run_title">Welcome! Let’s get started</string>
+    <string name="home_first_run_message">Create your first reminder, birthday or note with the + button.</string>
 </resources>

@@ -1223,4 +1223,24 @@
     <string name="home_anytime_today">À tout moment aujourd’hui</string>
     <string name="home_also_in_calendar">Aussi dans l’agenda</string>
     <string name="home_also_in_tasks">Aussi dans Google Tasks</string>
+    <plurals name="home_summary_left">
+        <item quantity="one">Restants : %d</item>
+        <item quantity="many">Restants : %d</item>
+        <item quantity="other">Restants : %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="one">Terminés : %d</item>
+        <item quantity="many">Terminés : %d</item>
+        <item quantity="other">Terminés : %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="one">En retard : %d</item>
+        <item quantity="many">En retard : %d</item>
+        <item quantity="other">En retard : %d</item>
+    </plurals>
+    <string name="home_overdue_title">En retard (%1$d)</string>
+    <string name="home_empty_today_title">Rien de prévu aujourd’hui</string>
+    <string name="home_empty_today_action">Ajouter</string>
+    <string name="home_first_run_title">Bienvenue ! Commençons</string>
+    <string name="home_first_run_message">Créez votre premier rappel, anniversaire ou note avec le bouton +.</string>
 </resources>

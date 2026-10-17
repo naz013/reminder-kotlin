@@ -1223,4 +1223,27 @@
     <string name="home_anytime_today">Будь-коли сьогодні</string>
     <string name="home_also_in_calendar">Також у календарі</string>
     <string name="home_also_in_tasks">Також у Google Tasks</string>
+    <plurals name="home_summary_left">
+        <item quantity="one">Залишилось: %d</item>
+        <item quantity="few">Залишилось: %d</item>
+        <item quantity="many">Залишилось: %d</item>
+        <item quantity="other">Залишилось: %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="one">Виконано: %d</item>
+        <item quantity="few">Виконано: %d</item>
+        <item quantity="many">Виконано: %d</item>
+        <item quantity="other">Виконано: %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="one">Прострочено: %d</item>
+        <item quantity="few">Прострочено: %d</item>
+        <item quantity="many">Прострочено: %d</item>
+        <item quantity="other">Прострочено: %d</item>
+    </plurals>
+    <string name="home_overdue_title">Прострочено (%1$d)</string>
+    <string name="home_empty_today_title">На сьогодні нічого не заплановано</string>
+    <string name="home_empty_today_action">Додати</string>
+    <string name="home_first_run_title">Ласкаво просимо! Почнімо</string>
+    <string name="home_first_run_message">Створіть перше нагадування, день народження або нотатку кнопкою +.</string>
 </resources>
