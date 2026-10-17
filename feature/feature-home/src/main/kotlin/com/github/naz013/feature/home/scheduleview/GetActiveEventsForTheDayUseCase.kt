@@ -5,7 +5,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.feature.home.ResolvedEventAction
 import com.github.naz013.feature.home.HomeEvent
-import com.github.naz013.ui.reminder.ShopItemsFormatter
+import com.github.naz013.ui.reminder.ReminderRowMapper
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
@@ -32,7 +32,7 @@ class GetActiveEventsForTheDayUseCase(
   private val groupV2Repository: GroupV2Repository,
   private val modelDateTimeFormatter: ModelDateTimeFormatter,
   private val textProvider: TextProvider,
-  private val shopItemsFormatter: ShopItemsFormatter,
+  private val reminderRowMapper: ReminderRowMapper,
   private val contextProvider: ContextProvider,
   private val homePreferences: HomePreferences,
 ) {
@@ -58,12 +58,12 @@ class GetActiveEventsForTheDayUseCase(
     reminder: ReminderV2,
     group: GroupV2?,
   ): HomeEvent? {
-    val dueDateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) } ?: return null
     val now = dateTimeManager.getCurrentDateTime()
+    val row = reminderRowMapper.map(reminder, group, now)
+    val dueDateTime = row.dueDateTime ?: return null
 
     val color =
-      group
-        ?.color
+      row.groupColor
         ?.let {
           ThemeProvider.themedColor(contextProvider.themedContext, it)
         }?.toColor() ?: Color.Black
@@ -71,15 +71,15 @@ class GetActiveEventsForTheDayUseCase(
     return HomeEvent(
       id = reminder.uuId,
       text = createMainText(reminder),
-      description = createSecondaryText(reminder),
-      groupName = group?.title,
+      description = row.secondaryText,
+      groupName = row.groupName,
       color = color,
       remaining = modelDateTimeFormatter.getRemaining(dueDateTime, now),
       date = dueDateTime.toLocalDate(),
       time = dueDateTime.toLocalTime(),
-      action = getActionFromReminderAction(reminder.action),
+      action = getActionFromReminderAction(row.action),
       type = HomeEvent.EventType.Reminder,
-      isOverdue = !dueDateTime.isAfter(now),
+      isOverdue = row.isOverdue,
     )
   }
 
@@ -90,23 +90,6 @@ class GetActiveEventsForTheDayUseCase(
       "($text)"
     }
   }
-
-  private fun createSecondaryText(reminder: ReminderV2): String? =
-    if (reminder.action is ReminderAction.Shopping) {
-      formatSubTasks(reminder)
-    } else {
-      getTargetFromAction(reminder.action)
-    }
-
-  private fun getTargetFromAction(action: ReminderAction): String? =
-    when (action) {
-      is ReminderAction.Call -> action.target
-      is ReminderAction.Sms -> action.target
-      is ReminderAction.Link -> action.target
-      is ReminderAction.App -> action.target
-      is ReminderAction.Email -> "${action.target}\n${action.subject}"
-      ReminderAction.Shopping, ReminderAction.None -> null
-    }
 
   private fun getActionFromReminderAction(action: ReminderAction): HomeEvent.EventAction? {
     val resolvedEventAction = when (action) {
@@ -148,15 +131,6 @@ class GetActiveEventsForTheDayUseCase(
           value = resolvedEventAction,
         )
       }
-    }
-  }
-
-  private fun formatSubTasks(reminder: ReminderV2): String {
-    val itemsToShow = reminder.shoppingItems.filter { !it.isChecked && !it.isDeleted }
-    return if (itemsToShow.size > 5) {
-      shopItemsFormatter.formatV2(itemsToShow.take(5)) + "\n..."
-    } else {
-      shopItemsFormatter.formatV2(itemsToShow)
     }
   }
 
