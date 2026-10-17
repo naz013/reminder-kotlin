@@ -260,14 +260,15 @@ class ScheduleHomeViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `loadData shows an empty list state when only calendar or task items exist`() =
+  fun `loadData shows a ready list state when only calendar or task items exist`() =
     runTest {
       val task = TodayItem.Task(mockk(), NOW, TodayBucket.Anytime)
       every { observeTodayScheduleUseCase() } returns flowOf(snapshot(task))
+      coEvery { todayItemHomeEventMapper(any(), any()) } returns listOf(homeEvent("task"))
 
       val state = viewModel.state.first()
 
-      assertEquals(ListState.Empty, state.listState)
+      assertEquals(listOf("task"), (state.listState as ListState.Ready).schedule.anytime.map { it.id })
     }
 
   @Test
@@ -508,6 +509,15 @@ class ScheduleHomeViewModelTest : BaseTest() {
       ScheduleHomeViewModel.ViewModelEvent.OpenBirthdayDetails("b1"),
       viewModel.event.value?.peekContent(),
     )
+  }
+
+  @Test
+  fun `onEventClicked on a calendar event posts OpenCalendar and on a task posts OpenGoogleTasks`() {
+    viewModel.onEventClicked(homeEvent("c1").copy(type = HomeEvent.EventType.CalendarEvent))
+    assertEquals(ScheduleHomeViewModel.ViewModelEvent.OpenCalendar, viewModel.event.value?.peekContent())
+
+    viewModel.onEventClicked(homeEvent("t1").copy(type = HomeEvent.EventType.Task))
+    assertEquals(ScheduleHomeViewModel.ViewModelEvent.OpenGoogleTasks, viewModel.event.value?.peekContent())
   }
 
   @Test

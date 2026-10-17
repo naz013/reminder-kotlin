@@ -1219,4 +1219,6 @@
     <string name="home_now">Sekarang</string>
     <string name="home_earlier_today">Lebih awal hari ini (%1$d)</string>
     <string name="home_anytime_today">Kapan saja hari ini</string>
+    <string name="home_also_in_calendar">Juga di kalender</string>
+    <string name="home_also_in_tasks">Juga di Google Tasks</string>
 </resources>

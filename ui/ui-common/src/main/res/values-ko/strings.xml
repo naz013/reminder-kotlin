@@ -1217,4 +1217,6 @@
     <string name="home_now">지금</string>
     <string name="home_earlier_today">오늘 이른 시간 (%1$d)</string>
     <string name="home_anytime_today">오늘 언제든</string>
+    <string name="home_also_in_calendar">캘린더에도 있음</string>
+    <string name="home_also_in_tasks">Google Tasks에도 있음</string>
 </resources>

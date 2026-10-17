@@ -1215,4 +1215,6 @@
     <string name="home_now">ตอนนี้</string>
     <string name="home_earlier_today">ก่อนหน้านี้วันนี้ (%1$d)</string>
     <string name="home_anytime_today">เวลาใดก็ได้วันนี้</string>
+    <string name="home_also_in_calendar">อยู่ในปฏิทินด้วย</string>
+    <string name="home_also_in_tasks">อยู่ใน Google Tasks ด้วย</string>
 </resources>

@@ -736,6 +736,16 @@ private fun EventCardContent(
         color = onContainerColor,
       )
     }
+
+    event.badge?.let {
+      Spacer(modifier = Modifier.height(4.dp))
+      Text(
+        text = it,
+        style = MaterialTheme.typography.labelSmall,
+        modifier = Modifier.fillMaxWidth(),
+        color = onContainerColor,
+      )
+    }
   }
 }
 

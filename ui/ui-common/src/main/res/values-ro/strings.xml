@@ -1221,4 +1221,6 @@
     <string name="home_now">Acum</string>
     <string name="home_earlier_today">Mai devreme azi (%1$d)</string>
     <string name="home_anytime_today">Oricând azi</string>
+    <string name="home_also_in_calendar">Și în calendar</string>
+    <string name="home_also_in_tasks">Și în Google Tasks</string>
 </resources>

@@ -177,6 +177,14 @@ class ScheduleHomeViewModel internal constructor(
       HomeEvent.EventType.Birthday -> {
         event.emit(ViewModelEvent.OpenBirthdayDetails(homeEvent.id))
       }
+
+      HomeEvent.EventType.CalendarEvent -> {
+        event.emit(ViewModelEvent.OpenCalendar)
+      }
+
+      HomeEvent.EventType.Task -> {
+        event.emit(ViewModelEvent.OpenGoogleTasks)
+      }
     }
   }
 

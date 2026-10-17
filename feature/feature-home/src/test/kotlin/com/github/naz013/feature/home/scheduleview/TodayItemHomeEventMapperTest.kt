@@ -7,6 +7,7 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.GoogleCalendarEvent
 import com.github.naz013.domain.GoogleTask
+import com.github.naz013.domain.GoogleTaskList
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -15,6 +16,7 @@ import com.github.naz013.feature.home.HomeEvent
 import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.logic.reminder.today.TodayBucket
 import com.github.naz013.logic.reminder.today.TodayItem
+import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
@@ -44,6 +46,7 @@ class TodayItemHomeEventMapperTest : BaseTest() {
   private val shopItemsFormatter = mockk<ShopItemsFormatter>(relaxed = true)
   private val contextProvider = mockk<ContextProvider>(relaxed = true)
   private val homePreferences = mockk<HomePreferences>(relaxed = true)
+  private val googleTaskListRepository = mockk<GoogleTaskListRepository>()
   private val now = LocalDateTime.of(2026, 7, 24, 12, 0)
 
   private lateinit var mapper: TodayItemHomeEventMapper
@@ -55,6 +58,8 @@ class TodayItemHomeEventMapperTest : BaseTest() {
     every { ThemeProvider.colorBirthdayCalendar(any<Context>(), any()) } returns 0
     every { ThemeProvider.themedColor(any<Context>(), any()) } returns 0
     coEvery { groupV2Repository.getAll() } returns emptyList()
+    coEvery { googleTaskListRepository.getAll() } returns emptyList()
+    every { textProvider.getString(any()) } returns "text"
     every { dateTimeManager.getBirthdayLocalTime() } returns null
     every { dateTimeManager.parseBirthdayDate(any()) } returns LocalDate.of(1990, 7, 24)
     mapper = TodayItemHomeEventMapper(
@@ -65,6 +70,7 @@ class TodayItemHomeEventMapperTest : BaseTest() {
       shopItemsFormatter,
       contextProvider,
       homePreferences,
+      googleTaskListRepository,
     )
   }
 
@@ -122,14 +128,88 @@ class TodayItemHomeEventMapperTest : BaseTest() {
     assertEquals(LocalTime.of(9, 0), event.time)
   }
 
+  private fun calendarItem(allDay: Boolean, dateTime: LocalDateTime) = TodayItem.CalendarEvent(
+    event = GoogleCalendarEvent(
+      deviceEventId = 1,
+      calendarId = 2,
+      calendarName = "Work cal",
+      title = "Standup",
+      description = "Daily",
+      startDateTime = dateTime,
+      endDateTime = null,
+      allDay = allDay,
+      rrule = "",
+      uuId = "c1",
+    ),
+    dateTime = dateTime,
+    endDateTime = null,
+  )
+
   @Test
-  fun `skips calendar events and tasks`() = runTest {
-    val calendar = TodayItem.CalendarEvent(mockk<GoogleCalendarEvent>(), now, null)
-    val task = TodayItem.Task(mockk<GoogleTask>(), now, TodayBucket.Anytime)
+  fun `maps a timed calendar event with its calendar name`() = runTest {
+    val item = calendarItem(allDay = false, dateTime = now.plusHours(2))
 
-    val result = mapper(listOf(calendar, task), now)
+    val event = mapper(listOf(item), now).single()
 
-    assertTrue(result.isEmpty())
+    assertEquals(HomeEvent.EventType.CalendarEvent, event.type)
+    assertEquals("Standup", event.text)
+    assertEquals("Work cal", event.groupName)
+    assertEquals("Daily", event.description)
+    assertEquals(LocalTime.of(14, 0), event.time)
+    assertFalse(event.isOverdue)
+  }
+
+  @Test
+  fun `maps an all-day calendar event`() = runTest {
+    val item = calendarItem(allDay = true, dateTime = now.toLocalDate().atStartOfDay())
+
+    val event = mapper(listOf(item), now).single()
+
+    assertEquals(TodayBucket.AllDay, item.bucket)
+    assertEquals(HomeEvent.EventType.CalendarEvent, event.type)
+    assertEquals(now.toLocalDate(), event.date)
+  }
+
+  @Test
+  fun `maps a date-only task with its list title`() = runTest {
+    coEvery { googleTaskListRepository.getAll() } returns listOf(GoogleTaskList(title = "Errands", listId = "l1"))
+    val task = GoogleTask(title = "Buy milk", taskId = "t1", listId = "l1", notes = "2 liters")
+    val item = TodayItem.Task(task, now.toLocalDate().atStartOfDay(), TodayBucket.Anytime)
+
+    val event = mapper(listOf(item), now).single()
+
+    assertEquals(HomeEvent.EventType.Task, event.type)
+    assertEquals("Buy milk", event.text)
+    assertEquals("Errands", event.groupName)
+    assertEquals("2 liters", event.description)
+    assertEquals(LocalTime.MIDNIGHT, event.time)
+  }
+
+  @Test
+  fun `maps a timed task`() = runTest {
+    val task = GoogleTask(title = "Call bank", taskId = "t2", listId = "missing")
+    val item = TodayItem.Task(task, now.plusHours(3), TodayBucket.Timed)
+
+    val event = mapper(listOf(item), now).single()
+
+    assertEquals(LocalTime.of(15, 0), event.time)
+    assertEquals(null, event.groupName)
+  }
+
+  @Test
+  fun `adds badge text when a reminder is also in the calendar and tasks`() = runTest {
+    every { textProvider.getString(com.github.naz013.ui.common.R.string.home_also_in_calendar) } returns "Cal"
+    every { textProvider.getString(com.github.naz013.ui.common.R.string.home_also_in_tasks) } returns "Tasks"
+
+    val both = reminderItem(isOverdue = false).copy(alsoInCalendar = true, alsoInTasks = true)
+    val calOnly = reminderItem(isOverdue = false).copy(alsoInCalendar = true)
+    val none = reminderItem(isOverdue = false)
+
+    val events = mapper(listOf(both, calOnly, none), now)
+
+    assertEquals("Cal · Tasks", events[0].badge)
+    assertEquals("Cal", events[1].badge)
+    assertEquals(null, events[2].badge)
   }
 
   @Test

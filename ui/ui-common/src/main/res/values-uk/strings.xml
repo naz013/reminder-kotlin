@@ -1221,4 +1221,6 @@
     <string name="home_now">Зараз</string>
     <string name="home_earlier_today">Раніше сьогодні (%1$d)</string>
     <string name="home_anytime_today">Будь-коли сьогодні</string>
+    <string name="home_also_in_calendar">Також у календарі</string>
+    <string name="home_also_in_tasks">Також у Google Tasks</string>
 </resources>

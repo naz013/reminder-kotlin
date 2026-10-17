@@ -1220,4 +1220,6 @@
     <string name="home_now">Сейчас</string>
     <string name="home_earlier_today">Ранее сегодня (%1$d)</string>
     <string name="home_anytime_today">В любое время сегодня</string>
+    <string name="home_also_in_calendar">Также в календаре</string>
+    <string name="home_also_in_tasks">Также в Google Задачах</string>
 </resources>

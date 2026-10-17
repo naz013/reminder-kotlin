@@ -1237,4 +1237,6 @@
     <string name="home_now">Now</string>
     <string name="home_earlier_today">Earlier today (%1$d)</string>
     <string name="home_anytime_today">Anytime today</string>
+    <string name="home_also_in_calendar">Also in calendar</string>
+    <string name="home_also_in_tasks">Also in Google Tasks</string>
 </resources>

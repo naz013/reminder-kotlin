@@ -1219,4 +1219,6 @@
     <string name="home_now">Nu</string>
     <string name="home_earlier_today">Tidigare idag (%1$d)</string>
     <string name="home_anytime_today">När som helst idag</string>
+    <string name="home_also_in_calendar">Även i kalendern</string>
+    <string name="home_also_in_tasks">Även i Google Tasks</string>
 </resources>

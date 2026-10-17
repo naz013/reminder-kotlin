@@ -1219,4 +1219,6 @@
     <string name="home_now">Bây giờ</string>
     <string name="home_earlier_today">Sớm hơn hôm nay (%1$d)</string>
     <string name="home_anytime_today">Bất cứ lúc nào hôm nay</string>
+    <string name="home_also_in_calendar">Cũng có trong lịch</string>
+    <string name="home_also_in_tasks">Cũng có trong Google Tasks</string>
 </resources>

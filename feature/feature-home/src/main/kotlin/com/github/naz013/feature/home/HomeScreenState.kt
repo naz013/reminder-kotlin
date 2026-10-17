@@ -81,6 +81,7 @@ data class HomeEvent(
   val isOverdue: Boolean = false,
   val iconRes: Int = DrawableCatalog.Fluent.Alert,
   val accentColor: Color? = null,
+  val badge: String? = null,
 ) {
   data class EventAction(
     val icon: Int,
@@ -98,6 +99,8 @@ data class HomeEvent(
   enum class EventType {
     Reminder,
     Birthday,
+    CalendarEvent,
+    Task,
   }
 }
 

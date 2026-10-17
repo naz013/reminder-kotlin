@@ -1219,4 +1219,6 @@
     <string name="home_now">Nu</string>
     <string name="home_earlier_today">Eerder vandaag (%1$d)</string>
     <string name="home_anytime_today">Op elk moment vandaag</string>
+    <string name="home_also_in_calendar">Ook in de agenda</string>
+    <string name="home_also_in_tasks">Ook in Google Tasks</string>
 </resources>

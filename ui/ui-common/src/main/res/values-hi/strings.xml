@@ -1217,4 +1217,6 @@
     <string name="home_now">अभी</string>
     <string name="home_earlier_today">आज पहले (%1$d)</string>
     <string name="home_anytime_today">आज कभी भी</string>
+    <string name="home_also_in_calendar">कैलेंडर में भी</string>
+    <string name="home_also_in_tasks">Google Tasks में भी</string>
 </resources>

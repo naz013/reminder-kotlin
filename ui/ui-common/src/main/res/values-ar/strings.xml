@@ -1219,4 +1219,6 @@
     <string name="home_now">الآن</string>
     <string name="home_earlier_today">في وقت سابق اليوم (%1$d)</string>
     <string name="home_anytime_today">في أي وقت اليوم</string>
+    <string name="home_also_in_calendar">أيضًا في التقويم</string>
+    <string name="home_also_in_tasks">أيضًا في مهام Google</string>
 </resources>

@@ -1221,4 +1221,6 @@
     <string name="home_now">Adesso</string>
     <string name="home_earlier_today">Prima oggi (%1$d)</string>
     <string name="home_anytime_today">In qualsiasi momento oggi</string>
+    <string name="home_also_in_calendar">Anche nel calendario</string>
+    <string name="home_also_in_tasks">Anche in Google Tasks</string>
 </resources>

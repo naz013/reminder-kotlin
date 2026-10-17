@@ -11,6 +11,7 @@ import com.github.naz013.feature.home.HomeEvent
 import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.feature.home.ResolvedEventAction
 import com.github.naz013.logic.reminder.today.TodayItem
+import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.toColor
@@ -22,7 +23,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
-/** Maps reminder and birthday [TodayItem]s to the legacy [HomeEvent] rows; other item types yield null. */
+/** Maps every [TodayItem] type to a [HomeEvent] row. */
 internal class TodayItemHomeEventMapper(
   private val dateTimeManager: DateTimeManager,
   private val groupV2Repository: GroupV2Repository,
@@ -31,16 +32,65 @@ internal class TodayItemHomeEventMapper(
   private val shopItemsFormatter: ShopItemsFormatter,
   private val contextProvider: ContextProvider,
   private val homePreferences: HomePreferences,
+  private val googleTaskListRepository: GoogleTaskListRepository,
 ) {
   suspend operator fun invoke(items: List<TodayItem>, now: LocalDateTime): List<HomeEvent> {
     val groups = groupV2Repository.getAll().associateBy { it.uuId }
-    return items.mapNotNull { item ->
+    val taskLists = if (items.any { it is TodayItem.Task }) {
+      googleTaskListRepository.getAll().associateBy { it.listId }
+    } else {
+      emptyMap()
+    }
+    return items.map { item ->
       when (item) {
         is TodayItem.Reminder -> toHomeEvent(item, item.reminder.groupId?.let { groups[it] }, now)
         is TodayItem.Birthday -> toHomeEvent(item, now)
-        is TodayItem.CalendarEvent, is TodayItem.Task -> null
+        is TodayItem.CalendarEvent -> toHomeEvent(item)
+        is TodayItem.Task -> toHomeEvent(item, taskLists[item.task.listId]?.title)
       }
     }
+  }
+
+  private fun toHomeEvent(item: TodayItem.CalendarEvent): HomeEvent {
+    val event = item.event
+    return HomeEvent(
+      id = item.id,
+      text = event.title.ifBlank { "(${textProvider.getString(R.string.schedule_empty_summary)})" },
+      description = event.description.takeIf { it.isNotBlank() },
+      groupName = event.calendarName.takeIf { it.isNotBlank() },
+      remaining = null,
+      color = Color.Black,
+      action = null,
+      date = item.dateTime.toLocalDate(),
+      time = item.dateTime.toLocalTime(),
+      type = HomeEvent.EventType.CalendarEvent,
+      iconRes = DrawableCatalog.Fluent.Calendar,
+    )
+  }
+
+  private fun toHomeEvent(item: TodayItem.Task, listTitle: String?): HomeEvent {
+    val task = item.task
+    return HomeEvent(
+      id = item.id,
+      text = task.title.ifBlank { "(${textProvider.getString(R.string.schedule_empty_summary)})" },
+      description = task.notes.takeIf { it.isNotBlank() },
+      groupName = listTitle?.takeIf { it.isNotBlank() },
+      remaining = null,
+      color = Color.Black,
+      action = null,
+      date = item.dateTime.toLocalDate(),
+      time = item.dateTime.toLocalTime(),
+      type = HomeEvent.EventType.Task,
+      iconRes = DrawableCatalog.Fluent.CheckmarkCircle,
+    )
+  }
+
+  private fun createBadge(item: TodayItem.Reminder): String? {
+    val parts = buildList {
+      if (item.alsoInCalendar) add(textProvider.getString(R.string.home_also_in_calendar))
+      if (item.alsoInTasks) add(textProvider.getString(R.string.home_also_in_tasks))
+    }
+    return parts.takeIf { it.isNotEmpty() }?.joinToString(" · ")
   }
 
   private fun toHomeEvent(item: TodayItem.Reminder, group: GroupV2?, now: LocalDateTime): HomeEvent {
@@ -62,6 +112,7 @@ internal class TodayItemHomeEventMapper(
       isOverdue = item.isOverdue || !item.dateTime.isAfter(now),
       iconRes = DrawableCatalog.Fluent.Alert,
       accentColor = color,
+      badge = createBadge(item),
     )
   }
 
