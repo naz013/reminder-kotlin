@@ -176,6 +176,61 @@ class GetTodayScheduleUseCaseTest {
   }
 
   @Test
+  fun `falls back to base start when recurrence rule cannot be parsed`() = runTest {
+    every { dateTimeManager.toMillis(any<LocalDateTime>()) } answers {
+      firstArg<LocalDateTime>().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    }
+    val broken = calendarEvent(deviceEventId = 6, start = now.withHour(9)).copy(rrule = "FREQ=NOPE;;")
+    coEvery { googleCalendarEventRepository.getVisible() } returns listOf(broken)
+
+    val item = useCase(now).single() as TodayItem.CalendarEvent
+
+    assertEquals(now.withHour(9), item.dateTime)
+  }
+
+  @Test
+  fun `shows timed calendar event that started yesterday and ends today`() = runTest {
+    val event = calendarEvent(deviceEventId = 7, start = now.minusDays(1).withHour(22))
+      .copy(endDateTime = now.withHour(2))
+    coEvery { googleCalendarEventRepository.getVisible() } returns listOf(event)
+
+    val item = useCase(now).single() as TodayItem.CalendarEvent
+
+    assertEquals(TodayBucket.Timed, item.bucket)
+    assertEquals(now.withHour(2), item.endDateTime)
+  }
+
+  @Test
+  fun `sorts overdue reminder before todays timed items`() = runTest {
+    coEvery { reminderRepository.getAll(active = true, removed = false) } returns listOf(
+      reminder("today", now.withHour(8)),
+      reminder("old", now.minusDays(3).withHour(20)),
+    )
+    coEvery { googleCalendarEventRepository.getVisible() } returns
+      listOf(calendarEvent(deviceEventId = 8, start = now.withHour(7)))
+
+    val result = useCase(now)
+
+    assertEquals(3, result.size)
+    assertTrue(result.all { it.bucket == TodayBucket.Timed })
+    assertEquals("old", result.first().id)
+  }
+
+  @Test
+  fun `hides calendar event mirroring an active reminder that is due later`() = runTest {
+    coEvery { reminderRepository.getAll(active = true, removed = false) } returns
+      listOf(reminder("future", now.plusDays(2)))
+    coEvery { googleCalendarEventRepository.getVisible() } returns
+      listOf(calendarEvent(deviceEventId = 77, start = now.withHour(15)))
+    coEvery { calendarEventRepository.getAll() } returns
+      listOf(CalendarEvent(reminderId = "future", event = "x", eventId = 77, allDay = false))
+
+    val result = useCase(now)
+
+    assertTrue(result.isEmpty())
+  }
+
+  @Test
   fun `puts midnight google task due today into the anytime bucket`() = runTest {
     coEvery { googleTaskRepository.getAll() } returns
       listOf(task(uuId = "t1", due = now.toLocalDate().atStartOfDay()))

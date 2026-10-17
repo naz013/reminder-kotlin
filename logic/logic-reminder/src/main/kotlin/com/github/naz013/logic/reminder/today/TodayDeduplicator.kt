@@ -18,13 +18,14 @@ internal fun dedupToday(
   calendarEvents: List<TodayItem.CalendarEvent>,
   tasks: List<TodayItem.Task>,
   calendarLinks: List<CalendarEvent>,
+  matchCandidates: List<TodayItem.Reminder> = reminders,
 ): DedupedToday {
-  val remindersById = reminders.associateBy { it.reminder.uuId }
+  val remindersById = matchCandidates.associateBy { it.reminder.uuId }
   val linkedInCalendar = mutableSetOf<String>()
   val linkedInTasks = mutableSetOf<String>()
 
   val keptEvents = calendarEvents.filter { item ->
-    val matched = findReminderForEvent(item, remindersById, reminders, calendarLinks)
+    val matched = findReminderForEvent(item, remindersById, matchCandidates, calendarLinks)
     if (matched != null) linkedInCalendar.add(matched.reminder.uuId)
     matched == null
   }

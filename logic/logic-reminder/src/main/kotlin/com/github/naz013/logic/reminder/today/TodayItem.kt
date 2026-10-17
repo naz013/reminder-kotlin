@@ -42,7 +42,7 @@ sealed class TodayItem {
     override val dateTime: LocalDateTime,
     val endDateTime: LocalDateTime?,
   ) : TodayItem() {
-    override val id: String get() = event.uuId
+    override val id: String get() = "${event.uuId}_$dateTime"
     override val bucket: TodayBucket
       get() = if (event.allDay) TodayBucket.AllDay else TodayBucket.Timed
   }

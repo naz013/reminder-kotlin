@@ -34,11 +34,13 @@ class GetTodayScheduleUseCase(
     val dayStart = now.toLocalDate().atStartOfDay()
     val dayEnd = dayStart.plusDays(1)
 
-    val reminders = loadReminders(dayEnd, dayStart)
+    val activeReminders = loadActiveReminders(dayStart)
+    val reminders = activeReminders.filter { it.dateTime.isBefore(dayEnd) }
     val calendarEvents = loadCalendarEvents(dayStart, dayEnd)
     val tasks = loadTasks(dayStart, dayEnd)
     val deduped = dedupToday(
       reminders = reminders,
+      matchCandidates = activeReminders,
       calendarEvents = calendarEvents,
       tasks = tasks,
       calendarLinks = calendarEventRepository.getAll(),
@@ -49,26 +51,13 @@ class GetTodayScheduleUseCase(
       .sortedWith(compareBy<TodayItem> { it.bucket }.thenBy { it.dateTime })
   }
 
-  private suspend fun loadReminders(
-    dayEnd: LocalDateTime,
-    dayStart: LocalDateTime,
-  ): List<TodayItem.Reminder> = reminderV2Repository
+  private suspend fun loadActiveReminders(dayStart: LocalDateTime): List<TodayItem.Reminder> = reminderV2Repository
     .getAll(active = true, removed = false)
-    .mapNotNull { toReminderItem(it, dayStart, dayEnd) }
-
-  private fun toReminderItem(
-    reminder: ReminderV2,
-    dayStart: LocalDateTime,
-    dayEnd: LocalDateTime,
-  ): TodayItem.Reminder? {
-    val dateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) } ?: return null
-    if (!dateTime.isBefore(dayEnd)) return null
-    return TodayItem.Reminder(
-      reminder = reminder,
-      dateTime = dateTime,
-      isOverdue = dateTime.isBefore(dayStart),
-    )
-  }
+    .mapNotNull { reminder ->
+      val dateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }
+        ?: return@mapNotNull null
+      TodayItem.Reminder(reminder, dateTime, isOverdue = dateTime.isBefore(dayStart))
+    }
 
   private suspend fun loadBirthdays(now: LocalDateTime): List<TodayItem.Birthday> {
     val time = dateTimeManager.getBirthdayLocalTime()
@@ -114,7 +103,10 @@ class GetTodayScheduleUseCase(
       expandRecurrence(event.rrule, start, dayStart, duration, dayEnd)
     }
     return starts
-      .filter { it.isBefore(dayEnd) && (!it.isBefore(dayStart) || it.plus(duration, ChronoUnit.MILLIS).isAfter(dayStart)) }
+      .filter {
+        val endsAfterDayStart = it.plus(duration, ChronoUnit.MILLIS).isAfter(dayStart)
+        it.isBefore(dayEnd) && (!it.isBefore(dayStart) || endsAfterDayStart)
+      }
       .map { occurrenceStart ->
         val occurrenceEnd = if (end != null) occurrenceStart.plus(duration, ChronoUnit.MILLIS) else null
         TodayItem.CalendarEvent(event, occurrenceStart, occurrenceEnd)
