@@ -11,11 +11,20 @@ import com.github.naz013.repository.ReminderV2Repository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onStart
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.temporal.ChronoUnit
+
+internal data class TodaySnapshot(
+  val items: List<TodayItem>,
+  val now: LocalDateTime,
+)
 
 /**
  * Re-queries [GetTodayScheduleUseCase] whenever reminders, birthdays or Google tasks change, and
@@ -30,29 +39,34 @@ internal class ObserveTodayScheduleUseCase(
   private val googleTaskRepository: GoogleTaskRepository,
 ) {
   @OptIn(ExperimentalCoroutinesApi::class)
-  operator fun invoke(): Flow<List<TodayItem>> {
+  operator fun invoke(): Flow<TodaySnapshot> {
     val changes = merge(
       reminderV2Repository.observeByRemovedStatus(false).map { },
       birthdayRepository.observeAll().map { },
       googleTaskRepository.observeAll().map { },
     ).onStart { emit(Unit) }
-    return changes.flatMapLatest { scheduleWithTicker() }
+    return changes
+      .conflate()
+      .flatMapLatest { scheduleWithTicker() }
+      .distinctUntilChanged { old, new ->
+        old.items == new.items && old.now.truncatedTo(ChronoUnit.MINUTES) == new.now.truncatedTo(ChronoUnit.MINUTES)
+      }
   }
 
-  private fun scheduleWithTicker(): Flow<List<TodayItem>> = flow {
-    var items = load()
-    emit(items)
-    while (items.any { it.bucket == TodayBucket.Timed }) {
+  private fun scheduleWithTicker(): Flow<TodaySnapshot> = flow {
+    var snapshot = load()
+    emit(snapshot)
+    while (snapshot.items.any { it.bucket == TodayBucket.Timed }) {
       delay(TICK_MILLIS)
-      items = load()
-      emit(items)
+      snapshot = load()
+      emit(snapshot)
     }
   }
 
-  private suspend fun load(): List<TodayItem> {
+  private suspend fun load(): TodaySnapshot {
     val now = dateTimeManager.getCurrentDateTime()
     Logger.d(TAG, "Loading today schedule for $now")
-    return getTodayScheduleUseCase(now)
+    return TodaySnapshot(getTodayScheduleUseCase(now), now)
   }
 
   companion object {

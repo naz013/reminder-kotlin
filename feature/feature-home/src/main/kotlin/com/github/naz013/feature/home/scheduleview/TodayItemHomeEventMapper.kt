@@ -17,7 +17,9 @@ import com.github.naz013.ui.common.compose.toColor
 import com.github.naz013.ui.common.datetime.ModelDateTimeFormatter
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.reminder.ShopItemsFormatter
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 
 /** Maps reminder and birthday [TodayItem]s to the legacy [HomeEvent] rows; other item types yield null. */
 internal class TodayItemHomeEventMapper(
@@ -62,6 +64,14 @@ internal class TodayItemHomeEventMapper(
 
   private fun toHomeEvent(item: TodayItem.Birthday, now: LocalDateTime): HomeEvent {
     val birthday = item.birthday
+    val birthTime = dateTimeManager.getBirthdayLocalTime() ?: LocalTime.now()
+    val birthdayDate = dateTimeManager.parseBirthdayDate(birthday.date) ?: LocalDate.now()
+    val futureDateTime = modelDateTimeFormatter.getFutureBirthdayDate(
+      birthdayTime = birthTime,
+      birthdayDate = birthdayDate,
+      nowDateTime = now,
+      birthday = birthday,
+    )
     val color = ThemeProvider
       .colorBirthdayCalendar(contextProvider.context, homePreferences.birthdayColor)
       .toColor()
@@ -71,7 +81,7 @@ internal class TodayItemHomeEventMapper(
       description = birthday.number.takeIf { it.isNotBlank() },
       groupName = textProvider.getString(R.string.birthday),
       remaining = modelDateTimeFormatter.getBirthdayRemaining(
-        futureBirthdayDateTime = item.dateTime,
+        futureBirthdayDateTime = futureDateTime,
         ignoreYear = birthday.ignoreYear,
         nowDateTime = now,
       ),
@@ -79,8 +89,8 @@ internal class TodayItemHomeEventMapper(
       action = ResolvedEventAction.MakeCall(birthday.number)
         .takeIf { birthday.number.isNotBlank() }
         ?.let { HomeEvent.EventAction(HomeEvent.EventAction.MakeCall, it) },
-      date = item.dateTime.toLocalDate(),
-      time = item.dateTime.toLocalTime(),
+      date = futureDateTime.toLocalDate(),
+      time = futureDateTime.toLocalTime(),
       type = HomeEvent.EventType.Birthday,
     )
   }

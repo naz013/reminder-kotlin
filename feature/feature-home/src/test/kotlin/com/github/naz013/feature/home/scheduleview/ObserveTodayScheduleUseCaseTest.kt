@@ -27,6 +27,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.temporal.ChronoUnit
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ObserveTodayScheduleUseCaseTest : BaseTest() {
@@ -60,8 +61,11 @@ class ObserveTodayScheduleUseCaseTest : BaseTest() {
 
   @Test
   fun `re-queries every minute while timed items exist`() = runTest {
-    coEvery { getTodayScheduleUseCase(now) } returns listOf(item(TodayBucket.Timed))
-    val emissions = mutableListOf<List<TodayItem>>()
+    coEvery { getTodayScheduleUseCase(any()) } returns listOf(item(TodayBucket.Timed))
+    every { dateTimeManager.getCurrentDateTime() } answers {
+      now.plus(testScheduler.currentTime, ChronoUnit.MILLIS)
+    }
+    val emissions = mutableListOf<TodaySnapshot>()
 
     val job = useCase().onEach { emissions.add(it) }.launchIn(this)
     runCurrent()
@@ -69,6 +73,7 @@ class ObserveTodayScheduleUseCaseTest : BaseTest() {
     job.cancel()
 
     assertEquals(3, emissions.size)
+    assertEquals(now.plusMinutes(2), emissions.last().now)
   }
 
   @Test

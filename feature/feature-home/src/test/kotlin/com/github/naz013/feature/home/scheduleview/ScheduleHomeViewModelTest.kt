@@ -28,7 +28,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logic.reminder.today.TodayBucket
@@ -45,7 +44,6 @@ import org.threeten.bp.LocalTime
 class ScheduleHomeViewModelTest : BaseTest() {
   private val observeTodayScheduleUseCase = mockk<ObserveTodayScheduleUseCase>()
   private val todayItemHomeEventMapper = mockk<TodayItemHomeEventMapper>()
-  private val dateTimeManager = mockk<DateTimeManager>()
   private val getTimeSectionsUseCase = mockk<GetTimeSectionsUseCase>()
   private val getGreetingTextUseCase = mockk<GetGreetingTextUseCase>()
   private val googleTasksAuthManager = mockk<GoogleTasksAuthManager>()
@@ -70,8 +68,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
     // Pro by default so existing menu/gating expectations don't all need to opt in; tests that
     // care about the free-user experience override this locally.
     every { buildInfo.isPro } returns true
-    every { dateTimeManager.getCurrentDateTime() } returns NOW
-    every { observeTodayScheduleUseCase() } returns flowOf(emptyList())
+    every { observeTodayScheduleUseCase() } returns flowOf(snapshot())
     coEvery { todayItemHomeEventMapper(any(), any()) } returns emptyList()
     every { getTimeSectionsUseCase(any()) } returns emptyList()
     coEvery { getNavigationItemsUseCase(any(), any()) } returns emptyList()
@@ -85,7 +82,6 @@ class ScheduleHomeViewModelTest : BaseTest() {
         dispatcherProvider = mockDispatcherProvider(),
         observeTodayScheduleUseCase = observeTodayScheduleUseCase,
         todayItemHomeEventMapper = todayItemHomeEventMapper,
-        dateTimeManager = dateTimeManager,
         getTimeSectionsUseCase = getTimeSectionsUseCase,
         getGreetingTextUseCase = getGreetingTextUseCase,
         googleTasksAuthManager = googleTasksAuthManager,
@@ -175,7 +171,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
           type = HomeEvent.EventType.Reminder,
         )
       val item = birthdayItem("r1", TodayBucket.Timed, NOW.plusHours(1))
-      every { observeTodayScheduleUseCase() } returns flowOf(listOf(item))
+      every { observeTodayScheduleUseCase() } returns flowOf(snapshot(item))
       coEvery { todayItemHomeEventMapper(listOf(item), NOW) } returns listOf(event)
       every { getTimeSectionsUseCase(listOf(event)) } returns
         listOf(com.github.naz013.feature.home.TimeSection(time = "9:00", event = event))
@@ -194,7 +190,8 @@ class ScheduleHomeViewModelTest : BaseTest() {
       val future = birthdayItem("future", TodayBucket.Timed, NOW.plusHours(2))
       val allDay = birthdayItem("allDay", TodayBucket.AllDay, NOW.toLocalDate().atStartOfDay())
       val anytime = birthdayItem("anytime", TodayBucket.Anytime, NOW.toLocalDate().atStartOfDay())
-      every { observeTodayScheduleUseCase() } returns flowOf(listOf(allDay, past, future, anytime))
+      every { observeTodayScheduleUseCase() } returns flowOf(snapshot(allDay, past, future, anytime))
+      coEvery { todayItemHomeEventMapper(any(), any()) } returns listOf(homeEvent("x"))
 
       val state = viewModel.state.first()
 
@@ -207,10 +204,22 @@ class ScheduleHomeViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `loadData shows an empty list state when only calendar or task items exist`() =
+    runTest {
+      val task = TodayItem.Task(mockk(), NOW, TodayBucket.Anytime)
+      every { observeTodayScheduleUseCase() } returns flowOf(snapshot(task))
+
+      val state = viewModel.state.first()
+
+      assertEquals(ListState.Empty, state.listState)
+    }
+
+  @Test
   fun `onEarlierTodayToggled flips the earlier today expanded flag`() =
     runTest {
       val past = birthdayItem("past", TodayBucket.Timed, NOW.minusHours(2))
-      every { observeTodayScheduleUseCase() } returns flowOf(listOf(past))
+      every { observeTodayScheduleUseCase() } returns flowOf(snapshot(past))
+      coEvery { todayItemHomeEventMapper(any(), any()) } returns listOf(homeEvent("x"))
       val states = mutableListOf<HomeScreenState>()
       val job = launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.toList(states) }
 
@@ -480,6 +489,22 @@ class ScheduleHomeViewModelTest : BaseTest() {
       viewModel.event.value?.peekContent(),
     )
   }
+
+  private fun snapshot(vararg items: TodayItem) = TodaySnapshot(items.toList(), NOW)
+
+  private fun homeEvent(id: String) =
+    HomeEvent(
+      id = id,
+      text = null,
+      description = null,
+      groupName = null,
+      remaining = null,
+      color = androidx.compose.ui.graphics.Color.Black,
+      action = null,
+      date = NOW.toLocalDate(),
+      time = NOW.toLocalTime(),
+      type = HomeEvent.EventType.Reminder,
+    )
 
   private fun birthdayItem(
     id: String,

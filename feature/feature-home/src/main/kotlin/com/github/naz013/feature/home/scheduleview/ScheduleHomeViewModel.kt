@@ -11,10 +11,9 @@ import com.github.naz013.feature.home.HeaderNavigationItem
 import com.github.naz013.feature.home.HomeEvent
 import com.github.naz013.feature.home.HomeScreenState
 import com.github.naz013.feature.home.ListState
+import com.github.naz013.feature.home.TimeSection
 import com.github.naz013.feature.home.TodaySchedule
-import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.logic.reminder.today.TodayBucket
-import com.github.naz013.logic.reminder.today.TodayItem
 import com.github.naz013.feature.home.withSelectedEvent
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
@@ -47,7 +46,6 @@ class ScheduleHomeViewModel internal constructor(
   private val dispatcherProvider: DispatcherProvider,
   private val observeTodayScheduleUseCase: ObserveTodayScheduleUseCase,
   private val todayItemHomeEventMapper: TodayItemHomeEventMapper,
-  private val dateTimeManager: DateTimeManager,
   private val getTimeSectionsUseCase: GetTimeSectionsUseCase,
   private val getGreetingTextUseCase: GetGreetingTextUseCase,
   private val googleTasksAuthManager: GoogleTasksAuthManager,
@@ -233,19 +231,25 @@ class ScheduleHomeViewModel internal constructor(
       }
     }
     viewModelScope.launch(dispatcherProvider.default()) {
-      combine(observeTodayScheduleUseCase(), _isEarlierExpanded, ::Pair)
-        .map { (items, expanded) -> buildListState(items, expanded) }
+      observeTodayScheduleUseCase()
+        .map { snapshot -> loadToday(snapshot) }
+        .combine(_isEarlierExpanded, ::toListState)
         .collect { listState ->
           _state.update { it.copy(listState = listState) }
         }
     }
   }
 
-  private suspend fun buildListState(items: List<TodayItem>, isEarlierExpanded: Boolean): ListState {
-    Logger.d(TAG, "Loaded ${items.size} today items")
-    if (items.isEmpty()) return ListState.Empty
-    val now = dateTimeManager.getCurrentDateTime()
-    val events = todayItemHomeEventMapper(items, now).sortedBy { it.time }
+  private suspend fun loadToday(snapshot: TodaySnapshot): LoadedToday {
+    Logger.d(TAG, "Loaded ${snapshot.items.size} today items")
+    val events = todayItemHomeEventMapper(snapshot.items, snapshot.now)
+      .sortedBy { it.date.atTime(it.time) }
+    return LoadedToday(snapshot, getTimeSectionsUseCase(events), hasRows = events.isNotEmpty())
+  }
+
+  private fun toListState(loaded: LoadedToday, isEarlierExpanded: Boolean): ListState {
+    if (!loaded.hasRows) return ListState.Empty
+    val (items, now) = loaded.snapshot
     val (earlier, upcoming) = items
       .filter { it.bucket == TodayBucket.Timed }
       .partition { it.dateTime.isBefore(now) }
@@ -256,8 +260,14 @@ class ScheduleHomeViewModel internal constructor(
       anytime = items.filter { it.bucket == TodayBucket.Anytime },
       isEarlierExpanded = isEarlierExpanded,
     )
-    return ListState.Ready(sections = getTimeSectionsUseCase(events), schedule = schedule)
+    return ListState.Ready(sections = loaded.sections, schedule = schedule)
   }
+
+  private class LoadedToday(
+    val snapshot: TodaySnapshot,
+    val sections: List<TimeSection>,
+    val hasRows: Boolean,
+  )
 
   /** Quick add is PRO-only and hidden from the menu entirely for free users - unlike Pomodoro's
    * "always show, gate on tap" pattern, elsewhere in this same class - rather than shown-but-locked. */
