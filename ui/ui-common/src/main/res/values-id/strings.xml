@@ -1235,4 +1235,12 @@
     <string name="home_empty_today_action">Tambah</string>
     <string name="home_first_run_title">Selamat datang! Mari mulai</string>
     <string name="home_first_run_message">Buat pengingat, ulang tahun, atau catatan pertama Anda dengan tombol +.</string>
+    <string name="day_overview_title">Ringkasan hari ini</string>
+    <string name="day_overview_next_up">Berikutnya</string>
+    <string name="day_overview_no_next">Tidak ada lagi yang dijadwalkan hari ini</string>
+    <string name="day_overview_free_time">Waktu luang</string>
+    <string name="day_overview_free_until">Luang hingga %1$s</string>
+    <string name="day_overview_free_rest_of_day">Luang sepanjang sisa hari</string>
+    <string name="day_overview_largest_free">Blok waktu luang terbesar: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Sedang sibuk</string>
 </resources>

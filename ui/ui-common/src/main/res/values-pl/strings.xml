@@ -1246,4 +1246,12 @@
     <string name="home_empty_today_action">Dodaj</string>
     <string name="home_first_run_title">Witaj! Zaczynajmy</string>
     <string name="home_first_run_message">Utwórz pierwsze przypomnienie, urodziny lub notatkę przyciskiem +.</string>
+    <string name="day_overview_title">Przegląd dnia</string>
+    <string name="day_overview_next_up">Następne</string>
+    <string name="day_overview_no_next">Na dziś nie zaplanowano już nic więcej</string>
+    <string name="day_overview_free_time">Wolny czas</string>
+    <string name="day_overview_free_until">Wolne do %1$s</string>
+    <string name="day_overview_free_rest_of_day">Wolne do końca dnia</string>
+    <string name="day_overview_largest_free">Najdłuższy wolny blok: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Zajęte w tej chwili</string>
 </resources>

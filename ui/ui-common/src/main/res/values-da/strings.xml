@@ -1238,4 +1238,12 @@
     <string name="home_empty_today_action">Tilføj</string>
     <string name="home_first_run_title">Velkommen! Lad os komme i gang</string>
     <string name="home_first_run_message">Opret din første påmindelse, fødselsdag eller note med +-knappen.</string>
+    <string name="day_overview_title">Dagsoverblik</string>
+    <string name="day_overview_next_up">Næste</string>
+    <string name="day_overview_no_next">Intet andet planlagt i dag</string>
+    <string name="day_overview_free_time">Fri tid</string>
+    <string name="day_overview_free_until">Fri indtil %1$s</string>
+    <string name="day_overview_free_rest_of_day">Fri resten af dagen</string>
+    <string name="day_overview_largest_free">Største frie blok: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Optaget lige nu</string>
 </resources>

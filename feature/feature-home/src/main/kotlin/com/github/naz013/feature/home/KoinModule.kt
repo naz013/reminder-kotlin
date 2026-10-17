@@ -1,5 +1,6 @@
 package com.github.naz013.feature.home
 
+import com.github.naz013.feature.home.dayoverview.DayOverviewViewModel
 import com.github.naz013.feature.home.scheduleview.GetActiveEventsForTheDayUseCase
 import com.github.naz013.feature.home.scheduleview.GetGreetingTextUseCase
 import com.github.naz013.feature.home.scheduleview.GetNavigationItemsUseCase
@@ -25,4 +26,5 @@ val featureHomeModule = module {
   singleOf(::WhatsNewManager)
 
   viewModelOf(::ScheduleHomeViewModel)
+  viewModelOf(::DayOverviewViewModel)
 }

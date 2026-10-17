@@ -1246,4 +1246,12 @@
     <string name="home_empty_today_action">Додати</string>
     <string name="home_first_run_title">Ласкаво просимо! Почнімо</string>
     <string name="home_first_run_message">Створіть перше нагадування, день народження або нотатку кнопкою +.</string>
+    <string name="day_overview_title">Огляд дня</string>
+    <string name="day_overview_next_up">Далі</string>
+    <string name="day_overview_no_next">На сьогодні більше нічого не заплановано</string>
+    <string name="day_overview_free_time">Вільний час</string>
+    <string name="day_overview_free_until">Вільно до %1$s</string>
+    <string name="day_overview_free_rest_of_day">Вільно до кінця дня</string>
+    <string name="day_overview_largest_free">Найбільший вільний проміжок: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Зараз зайнято</string>
 </resources>

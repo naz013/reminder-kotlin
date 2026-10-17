@@ -1236,4 +1236,12 @@
     <string name="home_empty_today_action">Hinzufügen</string>
     <string name="home_first_run_title">Willkommen! Legen wir los</string>
     <string name="home_first_run_message">Erstelle mit der +-Schaltfläche deine erste Erinnerung, einen Geburtstag oder eine Notiz.</string>
+    <string name="day_overview_title">Tagesübersicht</string>
+    <string name="day_overview_next_up">Als Nächstes</string>
+    <string name="day_overview_no_next">Heute ist nichts mehr geplant</string>
+    <string name="day_overview_free_time">Freie Zeit</string>
+    <string name="day_overview_free_until">Frei bis %1$s</string>
+    <string name="day_overview_free_rest_of_day">Frei für den Rest des Tages</string>
+    <string name="day_overview_largest_free">Größter freier Block: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Gerade beschäftigt</string>
 </resources>

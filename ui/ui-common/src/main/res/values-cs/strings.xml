@@ -1246,4 +1246,12 @@
     <string name="home_empty_today_action">Přidat</string>
     <string name="home_first_run_title">Vítejte! Začněme</string>
     <string name="home_first_run_message">Vytvořte první připomenutí, narozeniny nebo poznámku tlačítkem +.</string>
+    <string name="day_overview_title">Přehled dne</string>
+    <string name="day_overview_next_up">Další</string>
+    <string name="day_overview_no_next">Na dnešek už není nic naplánováno</string>
+    <string name="day_overview_free_time">Volný čas</string>
+    <string name="day_overview_free_until">Volno do %1$s</string>
+    <string name="day_overview_free_rest_of_day">Volno do konce dne</string>
+    <string name="day_overview_largest_free">Nejdelší volný blok: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Právě obsazeno</string>
 </resources>

@@ -1231,4 +1231,12 @@
     <string name="home_empty_today_action">เพิ่ม</string>
     <string name="home_first_run_title">ยินดีต้อนรับ! เริ่มกันเลย</string>
     <string name="home_first_run_message">สร้างการแจ้งเตือน วันเกิด หรือบันทึกแรกของคุณด้วยปุ่ม +</string>
+    <string name="day_overview_title">ภาพรวมของวัน</string>
+    <string name="day_overview_next_up">ถัดไป</string>
+    <string name="day_overview_no_next">วันนี้ไม่มีรายการอื่นอีกแล้ว</string>
+    <string name="day_overview_free_time">เวลาว่าง</string>
+    <string name="day_overview_free_until">ว่างถึง %1$s</string>
+    <string name="day_overview_free_rest_of_day">ว่างตลอดทั้งวันที่เหลือ</string>
+    <string name="day_overview_largest_free">ช่วงเวลาว่างที่ยาวที่สุด: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">กำลังไม่ว่างในขณะนี้</string>
 </resources>

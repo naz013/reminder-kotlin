@@ -1245,4 +1245,12 @@
     <string name="home_empty_today_action">Добавить</string>
     <string name="home_first_run_title">Добро пожаловать! Начнём</string>
     <string name="home_first_run_message">Создайте первое напоминание, день рождения или заметку кнопкой +.</string>
+    <string name="day_overview_title">Обзор дня</string>
+    <string name="day_overview_next_up">Далее</string>
+    <string name="day_overview_no_next">На сегодня больше ничего не запланировано</string>
+    <string name="day_overview_free_time">Свободное время</string>
+    <string name="day_overview_free_until">Свободно до %1$s</string>
+    <string name="day_overview_free_rest_of_day">Свободно до конца дня</string>
+    <string name="day_overview_largest_free">Самый большой свободный промежуток: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Сейчас занято</string>
 </resources>

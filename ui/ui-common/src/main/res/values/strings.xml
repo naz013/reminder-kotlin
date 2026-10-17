@@ -1256,4 +1256,12 @@
     <string name="home_empty_today_action">Add</string>
     <string name="home_first_run_title">Welcome! Let’s get started</string>
     <string name="home_first_run_message">Create your first reminder, birthday or note with the + button.</string>
+    <string name="day_overview_title">Day overview</string>
+    <string name="day_overview_next_up">Next up</string>
+    <string name="day_overview_no_next">Nothing else scheduled today</string>
+    <string name="day_overview_free_time">Free time</string>
+    <string name="day_overview_free_until">Free until %1$s</string>
+    <string name="day_overview_free_rest_of_day">Free for the rest of the day</string>
+    <string name="day_overview_largest_free">Largest free block: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Busy right now</string>
 </resources>

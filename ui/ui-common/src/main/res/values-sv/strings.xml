@@ -1238,4 +1238,12 @@
     <string name="home_empty_today_action">Lägg till</string>
     <string name="home_first_run_title">Välkommen! Nu sätter vi igång</string>
     <string name="home_first_run_message">Skapa din första påminnelse, födelsedag eller anteckning med +-knappen.</string>
+    <string name="day_overview_title">Dagsöversikt</string>
+    <string name="day_overview_next_up">Nästa</string>
+    <string name="day_overview_no_next">Inget mer planerat för i dag</string>
+    <string name="day_overview_free_time">Ledig tid</string>
+    <string name="day_overview_free_until">Ledig till %1$s</string>
+    <string name="day_overview_free_rest_of_day">Ledig resten av dagen</string>
+    <string name="day_overview_largest_free">Största lediga block: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Upptagen just nu</string>
 </resources>

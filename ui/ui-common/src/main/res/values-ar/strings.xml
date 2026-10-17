@@ -1250,4 +1250,12 @@
     <string name="home_empty_today_action">إضافة</string>
     <string name="home_first_run_title">مرحبًا! لنبدأ</string>
     <string name="home_first_run_message">أنشئ أول تذكير أو عيد ميلاد أو ملاحظة باستخدام زر +.</string>
+    <string name="day_overview_title">نظرة عامة على اليوم</string>
+    <string name="day_overview_next_up">التالي</string>
+    <string name="day_overview_no_next">لا يوجد شيء آخر مجدول لهذا اليوم</string>
+    <string name="day_overview_free_time">وقت فراغ</string>
+    <string name="day_overview_free_until">متاح حتى %1$s</string>
+    <string name="day_overview_free_rest_of_day">متاح لبقية اليوم</string>
+    <string name="day_overview_largest_free">أطول فترة فراغ: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">مشغول الآن</string>
 </resources>

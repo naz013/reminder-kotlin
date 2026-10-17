@@ -1233,4 +1233,12 @@
     <string name="home_empty_today_action">添加</string>
     <string name="home_first_run_title">欢迎！开始使用吧</string>
     <string name="home_first_run_message">点击 + 按钮创建您的第一个提醒、生日或笔记。</string>
+    <string name="day_overview_title">今日概览</string>
+    <string name="day_overview_next_up">接下来</string>
+    <string name="day_overview_no_next">今天没有其他安排了</string>
+    <string name="day_overview_free_time">空闲时间</string>
+    <string name="day_overview_free_until">空闲至 %1$s</string>
+    <string name="day_overview_free_rest_of_day">今天剩余时间都有空</string>
+    <string name="day_overview_largest_free">最长空闲时段：%1$s – %2$s</string>
+    <string name="day_overview_busy_now">当前有安排</string>
 </resources>

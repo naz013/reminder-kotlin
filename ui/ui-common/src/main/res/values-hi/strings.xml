@@ -1236,4 +1236,12 @@
     <string name="home_empty_today_action">जोड़ें</string>
     <string name="home_first_run_title">स्वागत है! शुरू करते हैं</string>
     <string name="home_first_run_message">+ बटन से अपना पहला रिमाइंडर, जन्मदिन या नोट बनाएँ।</string>
+    <string name="day_overview_title">दिन का अवलोकन</string>
+    <string name="day_overview_next_up">आगे</string>
+    <string name="day_overview_no_next">आज के लिए कुछ और निर्धारित नहीं है</string>
+    <string name="day_overview_free_time">खाली समय</string>
+    <string name="day_overview_free_until">%1$s तक खाली</string>
+    <string name="day_overview_free_rest_of_day">दिन के बाकी समय खाली</string>
+    <string name="day_overview_largest_free">सबसे लंबा खाली समय: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">अभी व्यस्त</string>
 </resources>

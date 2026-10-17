@@ -1240,4 +1240,12 @@
     <string name="home_empty_today_action">Ekle</string>
     <string name="home_first_run_title">Hoş geldiniz! Başlayalım</string>
     <string name="home_first_run_message">+ düğmesiyle ilk hatırlatıcınızı, doğum gününüzü veya notunuzu oluşturun.</string>
+    <string name="day_overview_title">Günün özeti</string>
+    <string name="day_overview_next_up">Sıradaki</string>
+    <string name="day_overview_no_next">Bugün için planlanmış başka bir şey yok</string>
+    <string name="day_overview_free_time">Boş zaman</string>
+    <string name="day_overview_free_until">%1$s saatine kadar boş</string>
+    <string name="day_overview_free_rest_of_day">Günün geri kalanında boş</string>
+    <string name="day_overview_largest_free">En uzun boş aralık: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Şu anda meşgul</string>
 </resources>

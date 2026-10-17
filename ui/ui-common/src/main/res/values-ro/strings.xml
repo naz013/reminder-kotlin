@@ -1243,4 +1243,12 @@
     <string name="home_empty_today_action">Adaugă</string>
     <string name="home_first_run_title">Bun venit! Să începem</string>
     <string name="home_first_run_message">Creează primul tău memento, o zi de naștere sau o notiță cu butonul +.</string>
+    <string name="day_overview_title">Prezentarea zilei</string>
+    <string name="day_overview_next_up">Urmează</string>
+    <string name="day_overview_no_next">Nu mai este nimic programat pentru azi</string>
+    <string name="day_overview_free_time">Timp liber</string>
+    <string name="day_overview_free_until">Liber până la %1$s</string>
+    <string name="day_overview_free_rest_of_day">Liber pentru restul zilei</string>
+    <string name="day_overview_largest_free">Cel mai mare interval liber: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Ocupat în acest moment</string>
 </resources>

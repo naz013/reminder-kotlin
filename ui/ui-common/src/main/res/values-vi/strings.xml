@@ -1235,4 +1235,12 @@
     <string name="home_empty_today_action">Thêm</string>
     <string name="home_first_run_title">Chào mừng! Bắt đầu nào</string>
     <string name="home_first_run_message">Tạo lời nhắc, sinh nhật hoặc ghi chú đầu tiên bằng nút +.</string>
+    <string name="day_overview_title">Tổng quan trong ngày</string>
+    <string name="day_overview_next_up">Tiếp theo</string>
+    <string name="day_overview_no_next">Hôm nay không còn gì được lên lịch</string>
+    <string name="day_overview_free_time">Thời gian rảnh</string>
+    <string name="day_overview_free_until">Rảnh đến %1$s</string>
+    <string name="day_overview_free_rest_of_day">Rảnh trong phần còn lại của ngày</string>
+    <string name="day_overview_largest_free">Khoảng trống dài nhất: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Hiện đang bận</string>
 </resources>

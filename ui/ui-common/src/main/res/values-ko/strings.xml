@@ -1233,4 +1233,12 @@
     <string name="home_empty_today_action">추가</string>
     <string name="home_first_run_title">환영합니다! 시작해 볼까요</string>
     <string name="home_first_run_message">+ 버튼으로 첫 알림, 생일 또는 메모를 만들어 보세요.</string>
+    <string name="day_overview_title">오늘 개요</string>
+    <string name="day_overview_next_up">다음 일정</string>
+    <string name="day_overview_no_next">오늘은 더 이상 예정된 일정이 없습니다</string>
+    <string name="day_overview_free_time">여유 시간</string>
+    <string name="day_overview_free_until">%1$s까지 여유</string>
+    <string name="day_overview_free_rest_of_day">오늘 남은 시간 동안 여유</string>
+    <string name="day_overview_largest_free">가장 긴 여유 시간: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">지금은 일정이 있음</string>
 </resources>

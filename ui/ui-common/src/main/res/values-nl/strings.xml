@@ -1238,4 +1238,12 @@
     <string name="home_empty_today_action">Toevoegen</string>
     <string name="home_first_run_title">Welkom! Laten we beginnen</string>
     <string name="home_first_run_message">Maak je eerste herinnering, verjaardag of notitie met de +-knop.</string>
+    <string name="day_overview_title">Dagoverzicht</string>
+    <string name="day_overview_next_up">Hierna</string>
+    <string name="day_overview_no_next">Vandaag staat er niets meer gepland</string>
+    <string name="day_overview_free_time">Vrije tijd</string>
+    <string name="day_overview_free_until">Vrij tot %1$s</string>
+    <string name="day_overview_free_rest_of_day">Vrij voor de rest van de dag</string>
+    <string name="day_overview_largest_free">Grootste vrije blok: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Nu bezet</string>
 </resources>

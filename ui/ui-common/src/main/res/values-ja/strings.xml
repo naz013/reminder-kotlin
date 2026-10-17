@@ -1233,4 +1233,12 @@
     <string name="home_empty_today_action">追加</string>
     <string name="home_first_run_title">ようこそ！始めましょう</string>
     <string name="home_first_run_message">＋ボタンで最初のリマインダー、誕生日、メモを作成しましょう。</string>
+    <string name="day_overview_title">今日の概要</string>
+    <string name="day_overview_next_up">次の予定</string>
+    <string name="day_overview_no_next">今日はこれ以上の予定はありません</string>
+    <string name="day_overview_free_time">空き時間</string>
+    <string name="day_overview_free_until">%1$s まで空き</string>
+    <string name="day_overview_free_rest_of_day">今日はこのあとずっと空き</string>
+    <string name="day_overview_largest_free">最長の空き時間: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">現在予定あり</string>
 </resources>

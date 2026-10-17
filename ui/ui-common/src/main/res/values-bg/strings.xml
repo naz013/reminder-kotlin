@@ -1240,4 +1240,12 @@
     <string name="home_empty_today_action">Добави</string>
     <string name="home_first_run_title">Добре дошли! Да започнем</string>
     <string name="home_first_run_message">Създайте първото си напомняне, рожден ден или бележка с бутона +.</string>
+    <string name="day_overview_title">Преглед на деня</string>
+    <string name="day_overview_next_up">Следва</string>
+    <string name="day_overview_no_next">Няма повече планирани неща за днес</string>
+    <string name="day_overview_free_time">Свободно време</string>
+    <string name="day_overview_free_until">Свободно до %1$s</string>
+    <string name="day_overview_free_rest_of_day">Свободно до края на деня</string>
+    <string name="day_overview_largest_free">Най-голям свободен блок: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">В момента е заето</string>
 </resources>
