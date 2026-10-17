@@ -8,6 +8,7 @@ import com.github.naz013.domain.GoogleTask
 import com.github.naz013.domain.reminder.v2.CalendarExportSettings
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.CalendarEventRepository
 import com.github.naz013.repository.GoogleCalendarEventRepository
@@ -157,6 +158,24 @@ class GetTodayScheduleUseCaseTest {
   }
 
   @Test
+  fun `expands recurring calendar event to its occurrence today`() = runTest {
+    every { dateTimeManager.toMillis(any<LocalDateTime>()) } answers {
+      firstArg<LocalDateTime>().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    }
+    val series = calendarEvent(
+      deviceEventId = 5,
+      start = now.minusDays(3).withHour(9),
+      title = "Standup",
+    ).copy(rrule = "FREQ=DAILY;COUNT=10")
+    coEvery { googleCalendarEventRepository.getVisible() } returns listOf(series)
+
+    val result = useCase(now)
+
+    val item = result.single() as TodayItem.CalendarEvent
+    assertEquals(LocalDateTime.of(2026, 10, 17, 9, 0), item.dateTime)
+  }
+
+  @Test
   fun `puts midnight google task due today into the anytime bucket`() = runTest {
     coEvery { googleTaskRepository.getAll() } returns
       listOf(task(uuId = "t1", due = now.toLocalDate().atStartOfDay()))
@@ -168,7 +187,7 @@ class GetTodayScheduleUseCaseTest {
 
   @Test
   fun `shows birthday that was not shown this year`() = runTest {
-    coEvery { birthdayRepository.getAll("17|9") } returns listOf(Birthday(name = "Ann", showedYear = 2025))
+    coEvery { birthdayRepository.getAll("17|9") } returns listOf(Birthday(name = "Ann", showedYear = 2025, syncState = SyncState.Synced))
 
     val result = useCase(now)
 
@@ -177,7 +196,7 @@ class GetTodayScheduleUseCaseTest {
 
   @Test
   fun `excludes birthday already shown this year`() = runTest {
-    coEvery { birthdayRepository.getAll("17|9") } returns listOf(Birthday(name = "Ann", showedYear = 2026))
+    coEvery { birthdayRepository.getAll("17|9") } returns listOf(Birthday(name = "Ann", showedYear = 2026, syncState = SyncState.Synced))
 
     val result = useCase(now)
 
@@ -187,7 +206,7 @@ class GetTodayScheduleUseCaseTest {
   @Test
   fun `places birthday at configured time in the timed bucket`() = runTest {
     every { dateTimeManager.getBirthdayLocalTime() } returns LocalTime.of(9, 0)
-    coEvery { birthdayRepository.getAll("17|9") } returns listOf(Birthday(name = "Ann"))
+    coEvery { birthdayRepository.getAll("17|9") } returns listOf(Birthday(name = "Ann", syncState = SyncState.Synced))
 
     val item = useCase(now).single()
 
