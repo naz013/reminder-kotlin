@@ -1218,4 +1218,40 @@
     <string name="workflow_builder_wifi_ssid_hint">Назва мережі (SSID)</string>
     <string name="bluetooth_connect">Доступ до Bluetooth</string>
     <string name="bluetooth_connect_explanation">Потрібно для читання назв ваших спряжених пристроїв Bluetooth, щоб ви могли вибрати один для правила робочого процесу</string>
+    <string name="home_now">Зараз</string>
+    <string name="home_earlier_today">Раніше сьогодні (%1$d)</string>
+    <string name="home_anytime_today">Будь-коли сьогодні</string>
+    <string name="home_also_in_calendar">Також у календарі</string>
+    <string name="home_also_in_tasks">Також у Google Tasks</string>
+    <plurals name="home_summary_left">
+        <item quantity="one">Залишилось: %d</item>
+        <item quantity="few">Залишилось: %d</item>
+        <item quantity="many">Залишилось: %d</item>
+        <item quantity="other">Залишилось: %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="one">Виконано: %d</item>
+        <item quantity="few">Виконано: %d</item>
+        <item quantity="many">Виконано: %d</item>
+        <item quantity="other">Виконано: %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="one">Прострочено: %d</item>
+        <item quantity="few">Прострочено: %d</item>
+        <item quantity="many">Прострочено: %d</item>
+        <item quantity="other">Прострочено: %d</item>
+    </plurals>
+    <string name="home_overdue_title">Прострочено (%1$d)</string>
+    <string name="home_empty_today_title">На сьогодні нічого не заплановано</string>
+    <string name="home_empty_today_action">Додати</string>
+    <string name="home_first_run_title">Ласкаво просимо! Почнімо</string>
+    <string name="home_first_run_message">Створіть перше нагадування, день народження або нотатку кнопкою +.</string>
+    <string name="day_overview_title">Огляд дня</string>
+    <string name="day_overview_next_up">Далі</string>
+    <string name="day_overview_no_next">На сьогодні більше нічого не заплановано</string>
+    <string name="day_overview_free_time">Вільний час</string>
+    <string name="day_overview_free_until">Вільно до %1$s</string>
+    <string name="day_overview_free_rest_of_day">Вільно до кінця дня</string>
+    <string name="day_overview_largest_free">Найбільший вільний проміжок: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Зараз зайнято</string>
 </resources>

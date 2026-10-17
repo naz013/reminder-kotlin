@@ -20,6 +20,7 @@ dependencies {
 
   implementation(libs.koin.core)
   implementation(libs.threetenbp)
+  implementation(libs.lib.recur)
 
   testImplementation(libs.junit)
   testImplementation(libs.mockk)

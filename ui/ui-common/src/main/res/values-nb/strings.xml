@@ -1216,4 +1216,34 @@
     <string name="workflow_builder_wifi_ssid_hint">Nettverksnavn (SSID)</string>
     <string name="bluetooth_connect">Bluetooth-tilgang</string>
     <string name="bluetooth_connect_explanation">Nødvendig for å lese navnene på dine sammenkoblede Bluetooth-enheter, slik at du kan velge en for en arbeidsflytregel</string>
+    <string name="home_now">Nå</string>
+    <string name="home_earlier_today">Tidligere i dag (%1$d)</string>
+    <string name="home_anytime_today">Når som helst i dag</string>
+    <string name="home_also_in_calendar">Også i kalenderen</string>
+    <string name="home_also_in_tasks">Også i Google Tasks</string>
+    <plurals name="home_summary_left">
+        <item quantity="one">Igjen: %d</item>
+        <item quantity="other">Igjen: %d</item>
+    </plurals>
+    <plurals name="home_summary_done">
+        <item quantity="one">Fullført: %d</item>
+        <item quantity="other">Fullført: %d</item>
+    </plurals>
+    <plurals name="home_summary_overdue">
+        <item quantity="one">Forfalt: %d</item>
+        <item quantity="other">Forfalt: %d</item>
+    </plurals>
+    <string name="home_overdue_title">Forfalt (%1$d)</string>
+    <string name="home_empty_today_title">Ingenting planlagt i dag</string>
+    <string name="home_empty_today_action">Legg til</string>
+    <string name="home_first_run_title">Velkommen! La oss komme i gang</string>
+    <string name="home_first_run_message">Opprett din første påminnelse, bursdag eller notat med +-knappen.</string>
+    <string name="day_overview_title">Dagsoversikt</string>
+    <string name="day_overview_next_up">Neste</string>
+    <string name="day_overview_no_next">Ingenting mer planlagt i dag</string>
+    <string name="day_overview_free_time">Ledig tid</string>
+    <string name="day_overview_free_until">Ledig til %1$s</string>
+    <string name="day_overview_free_rest_of_day">Ledig resten av dagen</string>
+    <string name="day_overview_largest_free">Største ledige blokk: %1$s – %2$s</string>
+    <string name="day_overview_busy_now">Opptatt akkurat nå</string>
 </resources>
