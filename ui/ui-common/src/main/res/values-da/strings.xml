@@ -1216,4 +1216,7 @@
     <string name="workflow_builder_wifi_ssid_hint">Netværksnavn (SSID)</string>
     <string name="bluetooth_connect">Bluetooth-adgang</string>
     <string name="bluetooth_connect_explanation">Nødvendig for at læse navnene på dine parrede Bluetooth-enheder, så du kan vælge en til en workflow-regel</string>
+    <string name="home_now">Nu</string>
+    <string name="home_earlier_today">Tidligere i dag (%1$d)</string>
+    <string name="home_anytime_today">Når som helst i dag</string>
 </resources>

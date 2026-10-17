@@ -1216,4 +1216,7 @@
     <string name="workflow_builder_wifi_ssid_hint">اسم الشبكة (SSID)</string>
     <string name="bluetooth_connect">الوصول إلى البلوتوث</string>
     <string name="bluetooth_connect_explanation">مطلوب لقراءة أسماء أجهزة البلوتوث المقترنة لديك حتى تتمكن من اختيار واحد لقاعدة سير العمل</string>
+    <string name="home_now">الآن</string>
+    <string name="home_earlier_today">في وقت سابق اليوم (%1$d)</string>
+    <string name="home_anytime_today">في أي وقت اليوم</string>
 </resources>

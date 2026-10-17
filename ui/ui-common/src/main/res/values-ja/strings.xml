@@ -1214,4 +1214,7 @@
     <string name="workflow_builder_wifi_ssid_hint">ネットワーク名（SSID）</string>
     <string name="bluetooth_connect">Bluetoothへのアクセス</string>
     <string name="bluetooth_connect_explanation">ワークフロールールで選択できるように、ペアリング済みのBluetoothデバイスの名前を読み取るために必要です</string>
+    <string name="home_now">今</string>
+    <string name="home_earlier_today">今日の早い時間 (%1$d)</string>
+    <string name="home_anytime_today">今日いつでも</string>
 </resources>

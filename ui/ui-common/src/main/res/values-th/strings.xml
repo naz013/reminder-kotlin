@@ -1212,4 +1212,7 @@
     <string name="workflow_builder_wifi_ssid_hint">ชื่อเครือข่าย (SSID)</string>
     <string name="bluetooth_connect">การเข้าถึงบลูทูธ</string>
     <string name="bluetooth_connect_explanation">จำเป็นสำหรับอ่านชื่ออุปกรณ์บลูทูธที่จับคู่ไว้ เพื่อให้คุณสามารถเลือกอุปกรณ์สำหรับกฎเวิร์กโฟลว์ได้</string>
+    <string name="home_now">ตอนนี้</string>
+    <string name="home_earlier_today">ก่อนหน้านี้วันนี้ (%1$d)</string>
+    <string name="home_anytime_today">เวลาใดก็ได้วันนี้</string>
 </resources>

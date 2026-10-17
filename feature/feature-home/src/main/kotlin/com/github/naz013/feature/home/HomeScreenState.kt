@@ -2,7 +2,6 @@ package com.github.naz013.feature.home
 
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.feature.home.scheduleview.ScheduleHomeViewModel
-import com.github.naz013.logic.reminder.today.TodayItem
 import com.github.naz013.ui.common.icon.DrawableCatalog
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -17,9 +16,17 @@ data class HomeScreenState(
 
 fun HomeScreenState.withSelectedEvent(selectedEventId: String?): HomeScreenState {
   val ready = listState as? ListState.Ready ?: return this
+  val schedule = ready.schedule
+  fun HomeEvent.select() = copy(isSelected = id == selectedEventId)
+  fun List<TimeSection>.select() = map { it.copy(event = it.event.select()) }
   return copy(
     listState = ready.copy(
-      sections = ready.sections.map { it.copy(event = it.event.copy(isSelected = it.event.id == selectedEventId)) },
+      schedule = schedule.copy(
+        earlierTimed = schedule.earlierTimed.select(),
+        upcomingTimed = schedule.upcomingTimed.select(),
+        allDay = schedule.allDay.map { it.select() },
+        anytime = schedule.anytime.map { it.select() },
+      ),
     ),
   )
 }
@@ -36,7 +43,6 @@ sealed interface ListState {
   data object Loading : ListState
 
   data class Ready(
-    val sections: List<TimeSection>,
     val schedule: TodaySchedule = TodaySchedule(),
   ) : ListState
 
@@ -44,12 +50,16 @@ sealed interface ListState {
 }
 
 data class TodaySchedule(
-  val earlierTimed: List<TodayItem> = emptyList(),
-  val upcomingTimed: List<TodayItem> = emptyList(),
-  val allDay: List<TodayItem> = emptyList(),
-  val anytime: List<TodayItem> = emptyList(),
+  val earlierTimed: List<TimeSection> = emptyList(),
+  val upcomingTimed: List<TimeSection> = emptyList(),
+  val allDay: List<HomeEvent> = emptyList(),
+  val anytime: List<HomeEvent> = emptyList(),
   val isEarlierExpanded: Boolean = false,
-)
+) {
+  val earlierCount: Int get() = earlierTimed.size
+  val showNowMarker: Boolean get() = earlierTimed.isNotEmpty() || upcomingTimed.isNotEmpty()
+  val showEarlierHeader: Boolean get() = earlierTimed.isNotEmpty()
+}
 
 data class TimeSection(
   val time: String,

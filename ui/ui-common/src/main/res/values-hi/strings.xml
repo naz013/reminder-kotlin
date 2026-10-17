@@ -1214,4 +1214,7 @@
     <string name="workflow_builder_wifi_ssid_hint">नेटवर्क का नाम (SSID)</string>
     <string name="bluetooth_connect">ब्लूटूथ एक्सेस</string>
     <string name="bluetooth_connect_explanation">वर्कफ़्लो नियम के लिए एक डिवाइस चुनने हेतु आपके पेयर किए गए ब्लूटूथ डिवाइस के नाम पढ़ने के लिए आवश्यक</string>
+    <string name="home_now">अभी</string>
+    <string name="home_earlier_today">आज पहले (%1$d)</string>
+    <string name="home_anytime_today">आज कभी भी</string>
 </resources>

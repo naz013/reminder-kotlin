@@ -10,6 +10,7 @@ import com.github.naz013.feature.home.HeaderNavigationItem
 import com.github.naz013.feature.home.HomeEvent
 import com.github.naz013.feature.home.HomeScreenState
 import com.github.naz013.feature.home.ListState
+import com.github.naz013.feature.home.TimeSection
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
@@ -180,7 +181,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
 
       val listState = state.listState
       assertTrue(listState is ListState.Ready)
-      assertEquals(1, (listState as ListState.Ready).sections.size)
+      assertEquals(1, (listState as ListState.Ready).schedule.upcomingTimed.size)
     }
 
   @Test
@@ -191,16 +192,38 @@ class ScheduleHomeViewModelTest : BaseTest() {
       val allDay = birthdayItem("allDay", TodayBucket.AllDay, NOW.toLocalDate().atStartOfDay())
       val anytime = birthdayItem("anytime", TodayBucket.Anytime, NOW.toLocalDate().atStartOfDay())
       every { observeTodayScheduleUseCase() } returns flowOf(snapshot(allDay, past, future, anytime))
-      coEvery { todayItemHomeEventMapper(any(), any()) } returns listOf(homeEvent("x"))
+      listOf(past, future, allDay, anytime).forEach { item ->
+        coEvery { todayItemHomeEventMapper(listOf(item), NOW) } returns listOf(homeEvent(item.id))
+      }
+      every { getTimeSectionsUseCase(any()) } answers {
+        firstArg<List<HomeEvent>>().map { TimeSection(time = "t", event = it) }
+      }
 
       val state = viewModel.state.first()
 
       val schedule = (state.listState as ListState.Ready).schedule
-      assertEquals(listOf(past), schedule.earlierTimed)
-      assertEquals(listOf(future), schedule.upcomingTimed)
-      assertEquals(listOf(allDay), schedule.allDay)
-      assertEquals(listOf(anytime), schedule.anytime)
+      assertEquals(listOf("past"), schedule.earlierTimed.map { it.event.id })
+      assertEquals(listOf("future"), schedule.upcomingTimed.map { it.event.id })
+      assertEquals(listOf("allDay"), schedule.allDay.map { it.id })
+      assertEquals(listOf("anytime"), schedule.anytime.map { it.id })
+      assertEquals(1, schedule.earlierCount)
+      assertTrue(schedule.showNowMarker)
       assertFalse(schedule.isEarlierExpanded)
+    }
+
+  @Test
+  fun `loadData does not show the now marker when the day has only all-day items`() =
+    runTest {
+      val allDay = birthdayItem("allDay", TodayBucket.AllDay, NOW.toLocalDate().atStartOfDay())
+      every { observeTodayScheduleUseCase() } returns flowOf(snapshot(allDay))
+      coEvery { todayItemHomeEventMapper(any(), any()) } returns listOf(homeEvent("allDay"))
+
+      val state = viewModel.state.first()
+
+      val schedule = (state.listState as ListState.Ready).schedule
+      assertFalse(schedule.showNowMarker)
+      assertFalse(schedule.showEarlierHeader)
+      assertEquals(listOf("allDay"), schedule.allDay.map { it.id })
     }
 
   @Test
@@ -220,6 +243,9 @@ class ScheduleHomeViewModelTest : BaseTest() {
       val past = birthdayItem("past", TodayBucket.Timed, NOW.minusHours(2))
       every { observeTodayScheduleUseCase() } returns flowOf(snapshot(past))
       coEvery { todayItemHomeEventMapper(any(), any()) } returns listOf(homeEvent("x"))
+      every { getTimeSectionsUseCase(any()) } answers {
+        firstArg<List<HomeEvent>>().map { TimeSection(time = "t", event = it) }
+      }
       val states = mutableListOf<HomeScreenState>()
       val job = launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.toList(states) }
 

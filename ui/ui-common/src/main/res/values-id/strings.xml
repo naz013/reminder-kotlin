@@ -1216,4 +1216,7 @@
     <string name="workflow_builder_wifi_ssid_hint">Nama jaringan (SSID)</string>
     <string name="bluetooth_connect">Akses Bluetooth</string>
     <string name="bluetooth_connect_explanation">Diperlukan untuk membaca nama perangkat Bluetooth yang dipasangkan agar Anda dapat memilih salah satu untuk aturan alur kerja</string>
+    <string name="home_now">Sekarang</string>
+    <string name="home_earlier_today">Lebih awal hari ini (%1$d)</string>
+    <string name="home_anytime_today">Kapan saja hari ini</string>
 </resources>

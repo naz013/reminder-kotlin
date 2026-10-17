@@ -14,6 +14,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -26,12 +27,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -87,6 +91,7 @@ fun ChronologicalHomeScreen(
   onHeaderNavigationItemLongClick: () -> Unit,
   onEventClick: (HomeEvent) -> Unit,
   onEventActionClick: (HomeEvent.EventAction) -> Unit,
+  onEarlierTodayClick: () -> Unit,
 ) {
   // On Medium+ width, PersistentNavRailSceneDecoratorStrategy already wraps this screen in a
   // navigation rail carrying the same destinations - showing the grid/row too would be
@@ -140,25 +145,12 @@ fun ChronologicalHomeScreen(
       }
       when (state.listState) {
         is ListState.Ready -> {
-          if (state.listState.sections.isNotEmpty()) {
-            item {
-              Text(
-                text = stringResource(R.string.upcoming_events),
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.tertiary,
-                modifier = modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
-              )
-            }
-          }
-          items(state.listState.sections.size) { index ->
-            TimeSectionRow(
-              modifier = Modifier.padding(horizontal = 16.dp),
-              timeSection = state.listState.sections[index],
-              index = index,
-              onEventClick = onEventClick,
-              onEventActionClick = onEventActionClick,
-            )
-          }
+          scheduleItems(
+            schedule = state.listState.schedule,
+            onEarlierTodayClick = onEarlierTodayClick,
+            onEventClick = onEventClick,
+            onEventActionClick = onEventActionClick,
+          )
         }
 
         is ListState.Empty -> {
@@ -174,6 +166,206 @@ fun ChronologicalHomeScreen(
         is ListState.Loading -> {}
       }
     }
+  }
+}
+
+private fun LazyListScope.scheduleItems(
+  schedule: TodaySchedule,
+  onEarlierTodayClick: () -> Unit,
+  onEventClick: (HomeEvent) -> Unit,
+  onEventActionClick: (HomeEvent.EventAction) -> Unit,
+) {
+  if (schedule.allDay.isNotEmpty()) {
+    item(key = "all_day") {
+      AllDayBand(
+        events = schedule.allDay,
+        onEventClick = onEventClick,
+      )
+    }
+  }
+  if (schedule.showEarlierHeader) {
+    item(key = "earlier_header") {
+      EarlierTodayHeader(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        count = schedule.earlierCount,
+        isExpanded = schedule.isEarlierExpanded,
+        onClick = onEarlierTodayClick,
+      )
+    }
+    if (schedule.isEarlierExpanded) {
+      itemsIndexed(schedule.earlierTimed, key = { _, it -> "earlier_${it.event.id}" }) { index, section ->
+        TimeSectionRow(
+          modifier = Modifier.padding(horizontal = 16.dp),
+          timeSection = section,
+          index = index,
+          onEventClick = onEventClick,
+          onEventActionClick = onEventActionClick,
+        )
+      }
+    }
+  }
+  if (schedule.showNowMarker) {
+    item(key = "now_marker") {
+      NowMarker(modifier = Modifier.padding(horizontal = 16.dp))
+    }
+  }
+  if (schedule.upcomingTimed.isNotEmpty()) {
+    item(key = "upcoming_title") {
+      SectionTitle(text = stringResource(R.string.upcoming_events))
+    }
+    itemsIndexed(schedule.upcomingTimed, key = { _, it -> "upcoming_${it.event.id}" }) { index, section ->
+      TimeSectionRow(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        timeSection = section,
+        index = index,
+        onEventClick = onEventClick,
+        onEventActionClick = onEventActionClick,
+      )
+    }
+  }
+  if (schedule.anytime.isNotEmpty()) {
+    item(key = "anytime_title") {
+      SectionTitle(text = stringResource(R.string.home_anytime_today))
+    }
+    items(schedule.anytime, key = { "anytime_${it.id}" }) { event ->
+      EventCard(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        event = event,
+        onEventClick = onEventClick,
+        onEventActionClick = onEventActionClick,
+      )
+    }
+  }
+}
+
+@Composable
+private fun SectionTitle(
+  modifier: Modifier = Modifier,
+  text: String,
+) {
+  Text(
+    text = text,
+    style = MaterialTheme.typography.titleSmall,
+    color = MaterialTheme.colorScheme.tertiary,
+    modifier = modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
+  )
+}
+
+@Composable
+private fun AllDayBand(
+  modifier: Modifier = Modifier,
+  events: List<HomeEvent>,
+  onEventClick: (HomeEvent) -> Unit,
+) {
+  Column(modifier = modifier) {
+    SectionTitle(text = stringResource(R.string.all_day))
+    LazyRow(
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
+      contentPadding = PaddingValues(horizontal = 16.dp),
+    ) {
+      items(events, key = { it.id }) { event ->
+        AllDayChip(event = event, onClick = { onEventClick(event) })
+      }
+    }
+  }
+}
+
+@Composable
+private fun AllDayChip(
+  modifier: Modifier = Modifier,
+  event: HomeEvent,
+  onClick: () -> Unit,
+) {
+  val containerColor = if (event.isSelected) {
+    MaterialTheme.colorScheme.primaryContainer
+  } else {
+    MaterialTheme.colorScheme.tertiaryContainer
+  }
+  Surface(
+    modifier = modifier
+      .clip(AppShapes.tile)
+      .clickable(onClick = onClick),
+    shape = AppShapes.tile,
+    color = containerColor,
+  ) {
+    Row(
+      modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+      Icon(
+        painter = AppIcons.Fluent.FoodCake,
+        contentDescription = null,
+        modifier = Modifier.size(18.dp),
+        tint = MaterialTheme.colorScheme.onTertiaryContainer,
+      )
+      event.text?.let {
+        Text(
+          text = it,
+          style = MaterialTheme.typography.labelLargeEmphasized,
+          color = MaterialTheme.colorScheme.onTertiaryContainer,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis,
+        )
+      }
+    }
+  }
+}
+
+@Composable
+private fun EarlierTodayHeader(
+  modifier: Modifier = Modifier,
+  count: Int,
+  isExpanded: Boolean,
+  onClick: () -> Unit,
+) {
+  Row(
+    modifier = modifier
+      .fillMaxWidth()
+      .clip(AppShapes.tile)
+      .clickable(onClick = onClick)
+      .padding(vertical = 8.dp),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.SpaceBetween,
+  ) {
+    Text(
+      text = stringResource(R.string.home_earlier_today, count),
+      style = MaterialTheme.typography.titleSmall,
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+    Icon(
+      painter = if (isExpanded) AppIcons.Fluent.ArrowUp else AppIcons.Fluent.ArrowDown,
+      contentDescription = null,
+      modifier = Modifier.size(18.dp),
+      tint = MaterialTheme.colorScheme.onSurfaceVariant,
+    )
+  }
+}
+
+@Composable
+private fun NowMarker(
+  modifier: Modifier = Modifier,
+) {
+  Row(
+    modifier = modifier.fillMaxWidth(),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    Box(
+      modifier = Modifier
+        .size(8.dp)
+        .clip(CircleShape)
+        .background(MaterialTheme.colorScheme.primary),
+    )
+    Text(
+      text = stringResource(R.string.home_now),
+      style = MaterialTheme.typography.labelMediumEmphasized,
+      color = MaterialTheme.colorScheme.primary,
+    )
+    HorizontalDivider(
+      modifier = Modifier.weight(1f),
+      color = MaterialTheme.colorScheme.primary,
+    )
   }
 }
 
@@ -446,71 +638,96 @@ private fun EventCard(
       pressedElevation = 2.dp,
     ),
   ) {
-    Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 16.dp, vertical = 16.dp),
+    Row(modifier = Modifier.height(IntrinsicSize.Min)) {
+      if (event.type == HomeEvent.EventType.Reminder) {
+        Box(
+          modifier = Modifier
+            .width(6.dp)
+            .fillMaxHeight()
+            .background(event.color),
+        )
+      }
+      EventCardContent(
+        modifier = Modifier.weight(1f),
+        event = event,
+        onContainerColor = onContainerColor,
+        onEventActionClick = onEventActionClick,
+      )
+    }
+  }
+}
+
+@Composable
+private fun EventCardContent(
+  modifier: Modifier = Modifier,
+  event: HomeEvent,
+  onContainerColor: Color,
+  onEventActionClick: (HomeEvent.EventAction) -> Unit,
+) {
+  Column(
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp, vertical = 16.dp),
+  ) {
+    Row(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically,
     ) {
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+      Column(
+        modifier = Modifier.weight(1f),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
       ) {
-        Column(
-          modifier = Modifier.weight(1f),
-          verticalArrangement = Arrangement.spacedBy(2.dp),
-        ) {
-          event.text?.let {
-            Text(
-              text = it,
-              style = MaterialTheme.typography.bodyMediumEmphasized,
-              color = onContainerColor,
-            )
-          }
-          event.description?.let {
-            Text(
-              text = it,
-              style = MaterialTheme.typography.bodySmall,
-              color = onContainerColor,
-            )
-          }
+        event.text?.let {
+          Text(
+            text = it,
+            style = MaterialTheme.typography.bodyMediumEmphasized,
+            color = onContainerColor,
+          )
         }
-        event.action?.let { action ->
-          MenuIconButton(
-            modifier = Modifier.size(48.dp),
-            icon = painterResource(action.icon),
-            iconColor = onContainerColor,
-            contentDescription = when (action.value) {
-              is ResolvedEventAction.MakeCall -> stringResource(R.string.make_call)
-              is ResolvedEventAction.SendSms -> stringResource(R.string.send_sms)
-              is ResolvedEventAction.SendEmail -> stringResource(R.string.action_send_email)
-              is ResolvedEventAction.OpenApp -> stringResource(R.string.action_open)
-              is ResolvedEventAction.OpenLink -> stringResource(R.string.open_link)
-            },
-            onClick = { onEventActionClick(event.action) },
+        event.description?.let {
+          Text(
+            text = it,
+            style = MaterialTheme.typography.bodySmall,
+            color = onContainerColor,
           )
         }
       }
-
-      event.groupName?.let {
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-          text = it,
-          style = MaterialTheme.typography.bodySmallEmphasized,
-          modifier = Modifier.fillMaxWidth(),
-          color = onContainerColor,
+      event.action?.let { action ->
+        MenuIconButton(
+          modifier = Modifier.size(48.dp),
+          icon = painterResource(action.icon),
+          iconColor = onContainerColor,
+          contentDescription = when (action.value) {
+            is ResolvedEventAction.MakeCall -> stringResource(R.string.make_call)
+            is ResolvedEventAction.SendSms -> stringResource(R.string.send_sms)
+            is ResolvedEventAction.SendEmail -> stringResource(R.string.action_send_email)
+            is ResolvedEventAction.OpenApp -> stringResource(R.string.action_open)
+            is ResolvedEventAction.OpenLink -> stringResource(R.string.open_link)
+          },
+          onClick = { onEventActionClick(event.action) },
         )
       }
+    }
 
-      event.remaining?.let {
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-          text = it,
-          style = MaterialTheme.typography.bodySmall,
-          modifier = Modifier.fillMaxWidth(),
-          color = onContainerColor,
-        )
-      }
+    event.groupName?.let {
+      Spacer(modifier = Modifier.height(4.dp))
+      Text(
+        text = it,
+        style = MaterialTheme.typography.bodySmallEmphasized,
+        modifier = Modifier.fillMaxWidth(),
+        color = onContainerColor,
+      )
+    }
+
+    event.remaining?.let {
+      Spacer(modifier = Modifier.height(4.dp))
+      Text(
+        text = it,
+        style = MaterialTheme.typography.bodySmall,
+        modifier = Modifier.fillMaxWidth(),
+        color = onContainerColor,
+      )
     }
   }
 }
@@ -677,6 +894,45 @@ private fun EventCardPreview_Birthday() {
       onEventActionClick = {},
     )
   }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun NowMarkerPreview() {
+  NowMarker(modifier = Modifier.padding(16.dp))
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EarlierTodayHeaderPreview() {
+  EarlierTodayHeader(
+    modifier = Modifier.padding(16.dp),
+    count = 3,
+    isExpanded = false,
+    onClick = {},
+  )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AllDayBandPreview() {
+  AllDayBand(
+    events = listOf(
+      HomeEvent(
+        id = "b1",
+        text = "Jane's birthday",
+        description = null,
+        groupName = null,
+        remaining = null,
+        color = Color.Magenta,
+        action = null,
+        date = LocalDate.of(2026, 6, 15),
+        time = LocalTime.MIDNIGHT,
+        type = HomeEvent.EventType.Birthday,
+      ),
+    ),
+    onEventClick = {},
+  )
 }
 
 @Preview(showBackground = true)

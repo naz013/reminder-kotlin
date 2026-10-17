@@ -257,6 +257,7 @@ private fun HomeEntry(
         onHeaderNavigationItemLongClick = { viewModel.onHeaderNavigationItemLongClicked() },
         onEventClick = { viewModel.onEventClicked(it) },
         onEventActionClick = { viewModel.onEventActionClicked(it) },
+        onEarlierTodayClick = { viewModel.onEarlierTodayToggled() },
         onAddMenuItemClick = { viewModel.onEventTypeSelected(it) },
       )
     },

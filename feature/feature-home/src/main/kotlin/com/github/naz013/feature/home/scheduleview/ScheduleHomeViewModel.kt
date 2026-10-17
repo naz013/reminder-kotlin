@@ -14,6 +14,7 @@ import com.github.naz013.feature.home.ListState
 import com.github.naz013.feature.home.TimeSection
 import com.github.naz013.feature.home.TodaySchedule
 import com.github.naz013.logic.reminder.today.TodayBucket
+import com.github.naz013.logic.reminder.today.TodayItem
 import com.github.naz013.feature.home.withSelectedEvent
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
@@ -242,31 +243,41 @@ class ScheduleHomeViewModel internal constructor(
 
   private suspend fun loadToday(snapshot: TodaySnapshot): LoadedToday {
     Logger.d(TAG, "Loaded ${snapshot.items.size} today items")
-    val events = todayItemHomeEventMapper(snapshot.items, snapshot.now)
-      .sortedBy { it.date.atTime(it.time) }
-    return LoadedToday(snapshot, getTimeSectionsUseCase(events), hasRows = events.isNotEmpty())
-  }
-
-  private fun toListState(loaded: LoadedToday, isEarlierExpanded: Boolean): ListState {
-    if (!loaded.hasRows) return ListState.Empty
-    val (items, now) = loaded.snapshot
+    val (items, now) = snapshot
     val (earlier, upcoming) = items
       .filter { it.bucket == TodayBucket.Timed }
       .partition { it.dateTime.isBefore(now) }
+    return LoadedToday(
+      earlierTimed = getTimeSectionsUseCase(mapSorted(earlier, now)),
+      upcomingTimed = getTimeSectionsUseCase(mapSorted(upcoming, now)),
+      allDay = mapSorted(items.filter { it.bucket == TodayBucket.AllDay }, now),
+      anytime = mapSorted(items.filter { it.bucket == TodayBucket.Anytime }, now),
+    )
+  }
+
+  private suspend fun mapSorted(items: List<TodayItem>, now: LocalDateTime): List<HomeEvent> {
+    if (items.isEmpty()) return emptyList()
+    return todayItemHomeEventMapper(items, now).sortedBy { it.date.atTime(it.time) }
+  }
+
+  private fun toListState(loaded: LoadedToday, isEarlierExpanded: Boolean): ListState {
     val schedule = TodaySchedule(
-      earlierTimed = earlier,
-      upcomingTimed = upcoming,
-      allDay = items.filter { it.bucket == TodayBucket.AllDay },
-      anytime = items.filter { it.bucket == TodayBucket.Anytime },
+      earlierTimed = loaded.earlierTimed,
+      upcomingTimed = loaded.upcomingTimed,
+      allDay = loaded.allDay,
+      anytime = loaded.anytime,
       isEarlierExpanded = isEarlierExpanded,
     )
-    return ListState.Ready(sections = loaded.sections, schedule = schedule)
+    val isEmpty = schedule.earlierTimed.isEmpty() && schedule.upcomingTimed.isEmpty() &&
+      schedule.allDay.isEmpty() && schedule.anytime.isEmpty()
+    return if (isEmpty) ListState.Empty else ListState.Ready(schedule)
   }
 
   private class LoadedToday(
-    val snapshot: TodaySnapshot,
-    val sections: List<TimeSection>,
-    val hasRows: Boolean,
+    val earlierTimed: List<TimeSection>,
+    val upcomingTimed: List<TimeSection>,
+    val allDay: List<HomeEvent>,
+    val anytime: List<HomeEvent>,
   )
 
   /** Quick add is PRO-only and hidden from the menu entirely for free users - unlike Pomodoro's

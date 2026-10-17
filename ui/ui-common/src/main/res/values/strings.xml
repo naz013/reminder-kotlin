@@ -1234,4 +1234,7 @@
     <string name="workflow_builder_wifi_ssid_hint">Network name (SSID)</string>
     <string name="bluetooth_connect">Bluetooth access</string>
     <string name="bluetooth_connect_explanation">Needed to read the names of your paired Bluetooth devices so you can pick one for a workflow rule</string>
+    <string name="home_now">Now</string>
+    <string name="home_earlier_today">Earlier today (%1$d)</string>
+    <string name="home_anytime_today">Anytime today</string>
 </resources>

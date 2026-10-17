@@ -1216,4 +1216,7 @@
     <string name="workflow_builder_wifi_ssid_hint">Tên mạng (SSID)</string>
     <string name="bluetooth_connect">Quyền truy cập Bluetooth</string>
     <string name="bluetooth_connect_explanation">Cần thiết để đọc tên các thiết bị Bluetooth đã ghép nối của bạn để bạn có thể chọn một thiết bị cho quy tắc quy trình làm việc</string>
+    <string name="home_now">Bây giờ</string>
+    <string name="home_earlier_today">Sớm hơn hôm nay (%1$d)</string>
+    <string name="home_anytime_today">Bất cứ lúc nào hôm nay</string>
 </resources>

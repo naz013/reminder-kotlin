@@ -1218,4 +1218,7 @@
     <string name="workflow_builder_wifi_ssid_hint">Nome rete (SSID)</string>
     <string name="bluetooth_connect">Accesso Bluetooth</string>
     <string name="bluetooth_connect_explanation">Necessario per leggere i nomi dei tuoi dispositivi Bluetooth associati, così da poterne scegliere uno per una regola del workflow</string>
+    <string name="home_now">Adesso</string>
+    <string name="home_earlier_today">Prima oggi (%1$d)</string>
+    <string name="home_anytime_today">In qualsiasi momento oggi</string>
 </resources>

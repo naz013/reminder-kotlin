@@ -1218,4 +1218,7 @@
     <string name="workflow_builder_wifi_ssid_hint">Назва мережі (SSID)</string>
     <string name="bluetooth_connect">Доступ до Bluetooth</string>
     <string name="bluetooth_connect_explanation">Потрібно для читання назв ваших спряжених пристроїв Bluetooth, щоб ви могли вибрати один для правила робочого процесу</string>
+    <string name="home_now">Зараз</string>
+    <string name="home_earlier_today">Раніше сьогодні (%1$d)</string>
+    <string name="home_anytime_today">Будь-коли сьогодні</string>
 </resources>

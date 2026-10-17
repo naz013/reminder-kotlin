@@ -1218,4 +1218,7 @@
     <string name="workflow_builder_wifi_ssid_hint">Ağ adı (SSID)</string>
     <string name="bluetooth_connect">Bluetooth erişimi</string>
     <string name="bluetooth_connect_explanation">Bir iş akışı kuralı için seçebilmeniz amacıyla eşleştirilmiş Bluetooth cihazlarınızın adlarını okumak için gereklidir</string>
+    <string name="home_now">Şimdi</string>
+    <string name="home_earlier_today">Bugün daha erken (%1$d)</string>
+    <string name="home_anytime_today">Bugün herhangi bir zaman</string>
 </resources>

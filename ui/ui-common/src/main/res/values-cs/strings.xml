@@ -1218,4 +1218,7 @@
     <string name="workflow_builder_wifi_ssid_hint">Název sítě (SSID)</string>
     <string name="bluetooth_connect">Přístup k Bluetooth</string>
     <string name="bluetooth_connect_explanation">Potřebné ke čtení názvů vašich spárovaných zařízení Bluetooth, abyste mohli jedno vybrat pro pravidlo pracovního postupu</string>
+    <string name="home_now">Nyní</string>
+    <string name="home_earlier_today">Dříve dnes (%1$d)</string>
+    <string name="home_anytime_today">Kdykoli dnes</string>
 </resources>
