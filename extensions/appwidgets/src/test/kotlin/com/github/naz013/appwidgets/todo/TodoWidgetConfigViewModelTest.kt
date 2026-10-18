@@ -1,7 +1,10 @@
 package com.github.naz013.appwidgets.todo
 
 import com.github.naz013.analytics.AnalyticsEventSender
+import androidx.compose.ui.graphics.Color
+import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -35,12 +38,18 @@ class TodoWidgetConfigViewModelTest {
   private val prefsProvider = mockk<TodoWidgetPrefsProvider>(relaxed = true)
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val reminderRepository = mockk<ReminderV2Repository>()
+  private val appWidgetPreferences = mockk<AppWidgetPreferences>(relaxed = true)
+  private val composeResourceProvider = mockk<ComposeResourceProvider>()
+  private val palette = listOf(Color.Red, Color.Green, Color.Blue)
 
   @Before
   fun setUp() {
     Dispatchers.setMain(dispatcher)
     every { dispatcherProvider.io() } returns dispatcher
     every { prefsProvider.getReminderId() } returns null
+    every { prefsProvider.getBackground() } returns 0
+    every { composeResourceProvider.getBackgroundColors() } returns palette
+    every { composeResourceProvider.bestForegroundColor(any(), any(), any()) } returns Color.White
   }
 
   @After
@@ -71,7 +80,9 @@ class TodoWidgetConfigViewModelTest {
     dispatcherProvider = dispatcherProvider,
     prefsProvider = prefsProvider,
     analyticsEventSender = analyticsEventSender,
-    reminderV2Repository = reminderRepository
+    reminderV2Repository = reminderRepository,
+    appWidgetPreferences = appWidgetPreferences,
+    composeResourceProvider = composeResourceProvider
   )
 
   @Test
@@ -140,5 +151,29 @@ class TodoWidgetConfigViewModelTest {
 
     verify(exactly = 1) { prefsProvider.setReminderId("a") }
     verify(exactly = 1) { appWidgetUpdater.updateAllWidgets() }
+  }
+
+  @Test
+  fun `restores stored background color on start`() = runTest {
+    coEvery { reminderRepository.getAll(active = true, removed = false) } returns emptyList()
+    every { prefsProvider.getBackground() } returns 2
+
+    val viewModel = createViewModel()
+
+    assertEquals(2, viewModel.state.value.backgroundIndex)
+    assertEquals(Color.Blue, viewModel.state.value.backgroundColor)
+  }
+
+  @Test
+  fun `save stores selected background color`() = runTest {
+    coEvery { reminderRepository.getAll(active = true, removed = false) } returns
+      listOf(reminder("a"))
+    val viewModel = createViewModel()
+    viewModel.onReminderSelected("a")
+    viewModel.onBackgroundColorSelected(1)
+
+    viewModel.onSaveClick()
+
+    verify(exactly = 1) { prefsProvider.setBackground(1) }
   }
 }

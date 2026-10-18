@@ -12,12 +12,14 @@ internal class TodoAppWidgetViewModel(
 
   suspend fun getState(): TodoAppWidgetState {
     val widgetId = prefsProvider.widgetId
+    val backgroundColor = prefsProvider.getBackground()
     val reminder = prefsProvider.getReminderId()
       ?.let { reminderV2Repository.getById(it) }
       ?.takeIf { it.isActive && !it.isRemoved }
-      ?: return TodoAppWidgetState(widgetId = widgetId)
+      ?: return TodoAppWidgetState(widgetId = widgetId, backgroundColor = backgroundColor)
     return TodoAppWidgetState(
       widgetId = widgetId,
+      backgroundColor = backgroundColor,
       reminderId = reminder.uuId,
       title = reminder.summary,
       items = reminder.toWidgetItems()

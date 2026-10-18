@@ -10,7 +10,7 @@ import androidx.datastore.dataStoreFile
 import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
-import androidx.glance.GlanceTheme
+import androidx.glance.LocalContext
 import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.action.ActionParameters
@@ -22,7 +22,6 @@ import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.lazy.items
 import androidx.glance.appwidget.provideContent
-import androidx.glance.background
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Box
@@ -38,6 +37,7 @@ import androidx.glance.state.GlanceStateDefinition
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import androidx.glance.unit.ColorProvider
 import com.github.naz013.analytics.Widget
 import com.github.naz013.appwidgets.AppWidgetActionActivity
 import com.github.naz013.appwidgets.Direction
@@ -45,7 +45,9 @@ import com.github.naz013.appwidgets.GlanceAppWidgetIdExtractor
 import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.WidgetId
 import com.github.naz013.appwidgets.WidgetIntentProtocol
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
 import com.github.naz013.appwidgets.compose.GlanceAppWidgetTheme
+import com.github.naz013.appwidgets.compose.roundedBackground
 import com.github.naz013.appwidgets.compose.systemWidgetShape
 import com.github.naz013.appwidgets.events.data.UiShopListWidget
 import com.github.naz013.common.intent.IntentKeys
@@ -132,18 +134,19 @@ internal class TodoGlanceAppWidget : GlanceAppWidget(), KoinComponent {
     emptyStateText: String
   ) {
     val reminderId = state.reminderId
+    val widgetColors = ComposeResourceProvider(LocalContext.current).getColors(state.backgroundColor)
     Box(
       modifier = modifier
         .fillMaxSize()
+        .roundedBackground(widgetColors.background)
         .systemWidgetShape()
-        .background(GlanceTheme.colors.widgetBackground)
         .padding(8.dp),
       contentAlignment = Alignment.Center
     ) {
       if (reminderId == null) {
         Text(
           text = emptyStateText,
-          style = TextStyle(color = GlanceTheme.colors.onSurface)
+          style = TextStyle(color = widgetColors.foreground)
         )
       } else {
         Column(modifier = GlanceModifier.fillMaxSize()) {
@@ -167,13 +170,13 @@ internal class TodoGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             style = TextStyle(
               fontSize = 18.sp,
               fontWeight = FontWeight.Medium,
-              color = GlanceTheme.colors.onSurface
+              color = widgetColors.foreground
             ),
             maxLines = 2
           )
           LazyColumn(modifier = GlanceModifier.fillMaxSize()) {
             items(state.items) { item ->
-              TodoItem(item = item, reminderId = reminderId)
+              TodoItem(item = item, reminderId = reminderId, textColor = widgetColors.foreground)
             }
           }
         }
@@ -185,7 +188,8 @@ internal class TodoGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   private fun TodoItem(
     modifier: GlanceModifier = GlanceModifier,
     item: UiShopListWidget,
-    reminderId: String
+    reminderId: String,
+    textColor: ColorProvider
   ) {
     Row(
       modifier = modifier
@@ -205,13 +209,13 @@ internal class TodoGlanceAppWidget : GlanceAppWidget(), KoinComponent {
         modifier = GlanceModifier.size(24.dp),
         provider = ImageProvider(item.iconRes),
         contentDescription = null,
-        colorFilter = ColorFilter.tint(GlanceTheme.colors.onSurface)
+        colorFilter = ColorFilter.tint(textColor)
       )
       Spacer(modifier = GlanceModifier.width(8.dp))
       Text(
         text = item.text,
         modifier = GlanceModifier.fillMaxWidth(),
-        style = TextStyle(fontSize = 14.sp, color = GlanceTheme.colors.onSurface),
+        style = TextStyle(fontSize = 14.sp, color = textColor),
         maxLines = 2
       )
     }

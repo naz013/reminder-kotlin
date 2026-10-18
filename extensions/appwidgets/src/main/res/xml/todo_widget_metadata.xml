@@ -4,7 +4,7 @@
     android:initialLayout="@layout/glance_default_loading_layout"
     android:minHeight="110dp"
     android:minWidth="110dp"
-    android:previewImage="@drawable/widget_events_preview"
+    android:previewImage="@drawable/widget_todo_preview"
     android:resizeMode="horizontal|vertical"
     android:description="@string/widget_todo_description"
     android:updatePeriodMillis="1800000"

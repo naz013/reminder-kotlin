@@ -33,7 +33,8 @@ internal class TodoWidgetConfigActivity : ComposeWidgetConfigActivity() {
       state = state,
       onBackClick = { finish() },
       onSaveClick = viewModel::onSaveClick,
-      onReminderSelected = viewModel::onReminderSelected
+      onReminderSelected = viewModel::onReminderSelected,
+      onBackgroundColorSelected = viewModel::onBackgroundColorSelected
     )
   }
 }

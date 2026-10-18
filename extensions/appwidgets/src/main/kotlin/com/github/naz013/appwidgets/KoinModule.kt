@@ -120,7 +120,15 @@ val appWidgetsModule = module {
   }
 
   viewModel { (widgetId: Int) ->
-    TodoWidgetConfigViewModel(get(), get(), TodoWidgetPrefsProvider(get(), widgetId), get(), get())
+    TodoWidgetConfigViewModel(
+      get(),
+      get(),
+      TodoWidgetPrefsProvider(get(), widgetId),
+      get(),
+      get(),
+      get(),
+      get()
+    )
   }
 
   viewModel { (widgetId: Int) ->

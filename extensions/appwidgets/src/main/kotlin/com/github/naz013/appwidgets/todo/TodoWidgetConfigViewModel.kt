@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Widget
 import com.github.naz013.analytics.WidgetUsedEvent
+import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.AppWidgetUpdater
+import com.github.naz013.appwidgets.compose.ComposeResourceProvider
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.repository.ReminderV2Repository
@@ -21,7 +23,9 @@ internal class TodoWidgetConfigViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val prefsProvider: TodoWidgetPrefsProvider,
   private val analyticsEventSender: AnalyticsEventSender,
-  private val reminderV2Repository: ReminderV2Repository
+  private val reminderV2Repository: ReminderV2Repository,
+  appWidgetPreferences: AppWidgetPreferences,
+  private val composeResourceProvider: ComposeResourceProvider
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(TodoWidgetConfigState())
@@ -31,6 +35,13 @@ internal class TodoWidgetConfigViewModel(
   val events = _events.receiveAsFlow()
 
   init {
+    _state.update {
+      it.copy(
+        palette = composeResourceProvider.getBackgroundColors(),
+        hapticFeedbackEnabled = appWidgetPreferences.isHapticFeedbackEnabled
+      )
+    }
+    onBackgroundColorSelected(prefsProvider.getBackground())
     viewModelScope.launch(dispatcherProvider.io()) {
       val reminders = reminderV2Repository.getAll(active = true, removed = false)
         .filter { it.action is ReminderAction.Shopping }
@@ -51,6 +62,16 @@ internal class TodoWidgetConfigViewModel(
     _state.update { it.copy(selectedReminderId = id) }
   }
 
+  fun onBackgroundColorSelected(index: Int) {
+    _state.update {
+      it.copy(
+        backgroundIndex = index,
+        backgroundColor = it.palette[index],
+        foregroundColor = composeResourceProvider.bestForegroundColor(it.palette[index])
+      )
+    }
+  }
+
   fun onSaveClick() {
     val reminderId = state.value.selectedReminderId
     if (reminderId == null) {
@@ -59,6 +80,7 @@ internal class TodoWidgetConfigViewModel(
     }
     viewModelScope.launch(dispatcherProvider.io()) {
       prefsProvider.setReminderId(reminderId)
+      prefsProvider.setBackground(state.value.backgroundIndex)
       analyticsEventSender.send(WidgetUsedEvent(Widget.TODO))
       appWidgetUpdater.updateAllWidgets()
       _events.trySend(TodoWidgetConfigEvent.Saved)
