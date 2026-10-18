@@ -86,7 +86,7 @@ import org.koin.dsl.module
 
 val libModule = module {
   // platform
-  factoryOf<BuildInfo>(::BuildInfoImpl)
+  factory<BuildInfo> { BuildInfoImpl(get()) }
   factory { ProTrialUseCase(get()) }
   single { DateTimePreferencesImpl(get()) as DateTimePreferences }
   factoryOf(::InstallReferrerReader)
