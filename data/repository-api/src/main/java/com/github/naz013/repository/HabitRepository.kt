@@ -11,8 +11,6 @@ interface HabitRepository {
 
   suspend fun getById(id: String): Habit?
 
-  fun observeById(id: String): Flow<Habit?>
-
   suspend fun save(habit: Habit)
 
   suspend fun delete(id: String)

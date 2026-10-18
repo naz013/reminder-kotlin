@@ -140,7 +140,11 @@ class HabitStreakCalculatorTest {
 
   @Test
   fun `period count is today for daily and the ISO week total for weekly`() {
-    val items = listOf(checkIn(today, 2), checkIn(LocalDate.of(2026, 10, 12), 3), checkIn(LocalDate.of(2026, 10, 11), 5))
+    val items = listOf(
+      checkIn(today, 2),
+      checkIn(LocalDate.of(2026, 10, 12), 3),
+      checkIn(LocalDate.of(2026, 10, 11), 5)
+    )
 
     assertEquals(2, calculator.periodCount(habit(HabitFrequency.DAILY), items, today))
     assertEquals(5, calculator.periodCount(habit(HabitFrequency.WEEKLY), items, today))

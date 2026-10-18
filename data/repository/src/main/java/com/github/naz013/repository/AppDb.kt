@@ -12,6 +12,8 @@ import com.github.naz013.repository.dao.GoogleCalendarEventDao
 import com.github.naz013.repository.dao.GoogleTaskListsDao
 import com.github.naz013.repository.dao.GoogleTasksDao
 import com.github.naz013.repository.dao.GroupV2Dao
+import com.github.naz013.repository.dao.HabitCheckInDao
+import com.github.naz013.repository.dao.HabitDao
 import com.github.naz013.repository.dao.HolidayDao
 import com.github.naz013.repository.dao.NotesDao
 import com.github.naz013.repository.dao.PlacesDao
@@ -22,8 +24,6 @@ import com.github.naz013.repository.dao.ReminderDao
 import com.github.naz013.repository.dao.ReminderGroupDao
 import com.github.naz013.repository.dao.ReminderV2Dao
 import com.github.naz013.repository.dao.RemoteFileMetadataDao
-import com.github.naz013.repository.dao.HabitCheckInDao
-import com.github.naz013.repository.dao.HabitDao
 import com.github.naz013.repository.dao.RoutineDao
 import com.github.naz013.repository.dao.RoutineExecutionDao
 import com.github.naz013.repository.dao.TagAssignmentDao
@@ -39,6 +39,8 @@ import com.github.naz013.repository.entity.GoogleCalendarEventEntity
 import com.github.naz013.repository.entity.GoogleTaskEntity
 import com.github.naz013.repository.entity.GoogleTaskListEntity
 import com.github.naz013.repository.entity.GroupV2Entity
+import com.github.naz013.repository.entity.HabitCheckInEntity
+import com.github.naz013.repository.entity.HabitEntity
 import com.github.naz013.repository.entity.HolidayEntity
 import com.github.naz013.repository.entity.ImageFileEntity
 import com.github.naz013.repository.entity.NoteEntity
@@ -50,8 +52,6 @@ import com.github.naz013.repository.entity.ReminderEntity
 import com.github.naz013.repository.entity.ReminderGroupEntity
 import com.github.naz013.repository.entity.ReminderV2Entity
 import com.github.naz013.repository.entity.RemoteFileMetadataEntity
-import com.github.naz013.repository.entity.HabitCheckInEntity
-import com.github.naz013.repository.entity.HabitEntity
 import com.github.naz013.repository.entity.RoutineEntity
 import com.github.naz013.repository.entity.RoutineExecutionEntity
 import com.github.naz013.repository.entity.TagAssignmentEntity

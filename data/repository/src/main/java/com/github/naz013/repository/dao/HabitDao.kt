@@ -20,9 +20,6 @@ internal abstract class HabitDao {
   @Query("SELECT * FROM Habit WHERE id=:id")
   abstract fun getById(id: String): HabitEntity?
 
-  @Query("SELECT * FROM Habit WHERE id=:id")
-  abstract fun observeById(id: String): Flow<HabitEntity?>
-
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   abstract fun insert(habit: HabitEntity)
 

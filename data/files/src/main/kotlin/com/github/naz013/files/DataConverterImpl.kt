@@ -195,6 +195,12 @@ internal fun detectClass(json: JsonObject): Class<*> = when {
   else -> throw IllegalArgumentException("Unable to determine object type from JSON structure: ${json.keySet()}")
 }
 
+private fun Any.toHabitDomain(): Any = when (this) {
+  is HabitJson -> toDomain()
+  is HabitCheckInJson -> toDomain()
+  else -> this
+}
+
 /** Internal, not private, so [DataConverterImplTest] can exercise the Birthday/Place syncState
  * fix-up directly - same reasoning as [WorkflowRuleJson.toDomain] above. */
 internal fun Any.toDomain(): Any {
@@ -204,8 +210,7 @@ internal fun Any.toDomain(): Any {
     is TagJson -> this.toDomain()
     is RoutineJson -> this.toDomain()
     is RoutineExecutionJson -> this.toDomain()
-    is HabitJson -> this.toDomain()
-    is HabitCheckInJson -> this.toDomain()
+    is HabitJson, is HabitCheckInJson -> toHabitDomain()
     is WorkflowRuleJson -> this.toDomain()
     is WorkflowTemplateJson -> this.toDomain()
     is ReminderGroup -> this.toGroupV2()

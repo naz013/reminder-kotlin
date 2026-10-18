@@ -29,8 +29,6 @@ internal class HabitRepositoryImpl(
     return habitDao.getById(id)?.toDomain()
   }
 
-  override fun observeById(id: String): Flow<Habit?> = habitDao.observeById(id).map { it?.toDomain() }
-
   override suspend fun save(habit: Habit) {
     Logger.d(TAG, "Save habit: ${habit.id}")
     habitDao.insert(habit.toEntity())
