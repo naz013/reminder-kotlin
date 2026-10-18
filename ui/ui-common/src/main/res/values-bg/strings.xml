@@ -1248,4 +1248,8 @@
     <string name="day_overview_free_rest_of_day">Свободно до края на деня</string>
     <string name="day_overview_largest_free">Най-голям свободен блок: %1$s – %2$s</string>
     <string name="day_overview_busy_now">В момента е заето</string>
+    <string name="widget_todo_description">Вижте списък със задачи на началния екран</string>
+    <string name="widget_todo_not_available">Списъкът със задачи не е наличен</string>
+    <string name="widget_todo_not_selected">Списъкът със задачи не е избран</string>
+    <string name="widget_todo_no_lists">Няма активни списъци със задачи с елементи</string>
 </resources>

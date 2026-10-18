@@ -1246,4 +1246,8 @@
     <string name="day_overview_free_rest_of_day">Ledig resten av dagen</string>
     <string name="day_overview_largest_free">Største ledige blokk: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Opptatt akkurat nå</string>
+    <string name="widget_todo_description">Se en av gjøremålslistene dine på startskjermen</string>
+    <string name="widget_todo_not_available">Gjøremålslisten er ikke tilgjengelig</string>
+    <string name="widget_todo_not_selected">Gjøremålslisten er ikke valgt</string>
+    <string name="widget_todo_no_lists">Ingen aktive gjøremålslister med elementer</string>
 </resources>

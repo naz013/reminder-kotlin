@@ -30,6 +30,9 @@ import com.github.naz013.appwidgets.singlenote.SingleNoteWidgetConfigViewModel
 import com.github.naz013.appwidgets.singlenote.SingleNoteWidgetPrefsProvider
 import com.github.naz013.appwidgets.singlenote.adapter.RecyclableUiNoteWidgetAdapter
 import com.github.naz013.appwidgets.singlenote.data.UiNoteWidgetAdapter
+import com.github.naz013.appwidgets.todo.TodoAppWidgetViewModel
+import com.github.naz013.appwidgets.todo.TodoWidgetConfigViewModel
+import com.github.naz013.appwidgets.todo.TodoWidgetPrefsProvider
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -110,6 +113,14 @@ val appWidgetsModule = module {
 
   factory { (context: Context, prefs: SingleNoteWidgetPrefsProvider) ->
     SingleNoteAppWidgetViewModel(context, prefs, get(), get())
+  }
+
+  factory { (prefs: TodoWidgetPrefsProvider) ->
+    TodoAppWidgetViewModel(prefs, get())
+  }
+
+  viewModel { (widgetId: Int) ->
+    TodoWidgetConfigViewModel(get(), get(), TodoWidgetPrefsProvider(get(), widgetId), get(), get())
   }
 
   viewModel { (widgetId: Int) ->

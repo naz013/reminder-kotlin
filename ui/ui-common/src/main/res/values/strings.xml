@@ -1264,4 +1264,8 @@
     <string name="day_overview_free_rest_of_day">Free for the rest of the day</string>
     <string name="day_overview_largest_free">Largest free block: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Busy right now</string>
+    <string name="widget_todo_description">See one of your todo lists on the Home Screen</string>
+    <string name="widget_todo_not_available">Todo list not available</string>
+    <string name="widget_todo_not_selected">Todo list not selected</string>
+    <string name="widget_todo_no_lists">No active todo lists with items</string>
 </resources>

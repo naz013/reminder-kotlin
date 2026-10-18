@@ -215,7 +215,8 @@ enum class Widget(val value: String) {
   COMBINED("combined"),
   GOOGLE_TASKS("google_tasks"),
   SINGLE_NOTE("single_note"),
-  NEXT_REMINDER("next_reminder")
+  NEXT_REMINDER("next_reminder"),
+  TODO("todo")
 }
 
 enum class Event(val value: String) {

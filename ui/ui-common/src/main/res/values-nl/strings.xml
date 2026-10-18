@@ -1246,4 +1246,8 @@
     <string name="day_overview_free_rest_of_day">Vrij voor de rest van de dag</string>
     <string name="day_overview_largest_free">Grootste vrije blok: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Nu bezet</string>
+    <string name="widget_todo_description">Bekijk een van je takenlijsten op het startscherm</string>
+    <string name="widget_todo_not_available">Takenlijst niet beschikbaar</string>
+    <string name="widget_todo_not_selected">Takenlijst niet geselecteerd</string>
+    <string name="widget_todo_no_lists">Geen actieve takenlijsten met items</string>
 </resources>

@@ -1248,4 +1248,8 @@
     <string name="day_overview_free_rest_of_day">Günün geri kalanında boş</string>
     <string name="day_overview_largest_free">En uzun boş aralık: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Şu anda meşgul</string>
+    <string name="widget_todo_description">Yapılacaklar listelerinizden birini ana ekranda görün</string>
+    <string name="widget_todo_not_available">Yapılacaklar listesi kullanılamıyor</string>
+    <string name="widget_todo_not_selected">Yapılacaklar listesi seçilmedi</string>
+    <string name="widget_todo_no_lists">Öğe içeren etkin yapılacaklar listesi yok</string>
 </resources>

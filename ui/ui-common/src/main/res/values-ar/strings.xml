@@ -1258,4 +1258,8 @@
     <string name="day_overview_free_rest_of_day">متاح لبقية اليوم</string>
     <string name="day_overview_largest_free">أطول فترة فراغ: %1$s – %2$s</string>
     <string name="day_overview_busy_now">مشغول الآن</string>
+    <string name="widget_todo_description">شاهد إحدى قوائم المهام على الشاشة الرئيسية</string>
+    <string name="widget_todo_not_available">قائمة المهام غير متاحة</string>
+    <string name="widget_todo_not_selected">لم يتم تحديد قائمة المهام</string>
+    <string name="widget_todo_no_lists">لا توجد قوائم مهام نشطة تحتوي على عناصر</string>
 </resources>

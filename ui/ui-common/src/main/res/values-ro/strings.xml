@@ -1251,4 +1251,8 @@
     <string name="day_overview_free_rest_of_day">Liber pentru restul zilei</string>
     <string name="day_overview_largest_free">Cel mai mare interval liber: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Ocupat în acest moment</string>
+    <string name="widget_todo_description">Vezi una dintre listele tale de sarcini pe ecranul principal</string>
+    <string name="widget_todo_not_available">Lista de sarcini nu este disponibilă</string>
+    <string name="widget_todo_not_selected">Lista de sarcini nu este selectată</string>
+    <string name="widget_todo_no_lists">Nu există liste de sarcini active cu elemente</string>
 </resources>

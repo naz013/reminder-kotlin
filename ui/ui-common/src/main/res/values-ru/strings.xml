@@ -1253,4 +1253,8 @@
     <string name="day_overview_free_rest_of_day">Свободно до конца дня</string>
     <string name="day_overview_largest_free">Самый большой свободный промежуток: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Сейчас занято</string>
+    <string name="widget_todo_description">Показывайте один из списков дел на главном экране</string>
+    <string name="widget_todo_not_available">Список дел недоступен</string>
+    <string name="widget_todo_not_selected">Список дел не выбран</string>
+    <string name="widget_todo_no_lists">Нет активных списков дел с элементами</string>
 </resources>

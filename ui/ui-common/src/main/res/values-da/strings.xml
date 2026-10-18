@@ -1246,4 +1246,8 @@
     <string name="day_overview_free_rest_of_day">Fri resten af dagen</string>
     <string name="day_overview_largest_free">Største frie blok: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Optaget lige nu</string>
+    <string name="widget_todo_description">Se en af dine opgavelister på startskærmen</string>
+    <string name="widget_todo_not_available">Opgavelisten er ikke tilgængelig</string>
+    <string name="widget_todo_not_selected">Opgavelisten er ikke valgt</string>
+    <string name="widget_todo_no_lists">Ingen aktive opgavelister med elementer</string>
 </resources>

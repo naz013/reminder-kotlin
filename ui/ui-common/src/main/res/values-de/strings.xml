@@ -1244,4 +1244,8 @@
     <string name="day_overview_free_rest_of_day">Frei für den Rest des Tages</string>
     <string name="day_overview_largest_free">Größter freier Block: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Gerade beschäftigt</string>
+    <string name="widget_todo_description">Sieh eine deiner To-do-Listen auf dem Startbildschirm</string>
+    <string name="widget_todo_not_available">To-do-Liste nicht verfügbar</string>
+    <string name="widget_todo_not_selected">To-do-Liste nicht ausgewählt</string>
+    <string name="widget_todo_no_lists">Keine aktiven To-do-Listen mit Einträgen</string>
 </resources>

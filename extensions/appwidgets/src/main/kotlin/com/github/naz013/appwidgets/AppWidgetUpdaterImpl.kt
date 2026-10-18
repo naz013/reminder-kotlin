@@ -12,6 +12,7 @@ import com.github.naz013.appwidgets.googletasks.GoogleTasksGlanceAppWidget
 import com.github.naz013.appwidgets.nextreminder.NextReminderGlanceAppWidget
 import com.github.naz013.appwidgets.notes.NotesGlanceAppWidget
 import com.github.naz013.appwidgets.singlenote.SingleNoteGlanceAppWidget
+import com.github.naz013.appwidgets.todo.TodoGlanceAppWidget
 import com.github.naz013.feature.common.coroutine.invokeSuspend
 import com.github.naz013.logging.Logger
 
@@ -26,6 +27,7 @@ internal class AppWidgetUpdaterImpl(
     updateCalendarWidget()
     updateScheduleWidget()
     updateBirthdaysWidget()
+    invokeSuspend { updateGlanceWidget(TodoGlanceAppWidget(), WidgetId.NO_ID) }
   }
 
   override suspend fun updateEventsWidget(widgetId: Int) {
