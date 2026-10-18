@@ -20,4 +20,5 @@ val logicRoutineModule = module {
   factoryOf(::RecordRoutineExecutionUseCase)
 
   factory { RoutineConfigImpl(get()) as RoutineConfig }
+  factory { HabitConfigImpl(get(), get()) as HabitConfig }
 }

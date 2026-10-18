@@ -247,6 +247,7 @@ dependencies {
   implementation(project(":feature:feature-settings"))
   implementation(project(":feature:feature-places"))
   implementation(project(":feature:feature-routine"))
+  implementation(project(":feature:feature-habit"))
   implementation(project(":feature:feature-pomodoro"))
   implementation(project(":extensions:localbackup"))
 
@@ -268,6 +269,7 @@ dependencies {
   implementation(project(":logic:logic-demo-data"))
   implementation(project(":logic:logic-googletask"))
   implementation(project(":logic:logic-group"))
+  implementation(project(":logic:logic-habit"))
   implementation(project(":logic:logic-note"))
   implementation(project(":logic:logic-notification-action"))
   implementation(project(":logic:logic-reminder"))

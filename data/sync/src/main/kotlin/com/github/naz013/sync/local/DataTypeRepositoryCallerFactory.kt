@@ -3,6 +3,7 @@ package com.github.naz013.sync.local
 import com.github.naz013.files.DataType
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.HabitRepository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.PlaceRepository
 import com.github.naz013.repository.RecurPresetRepository
@@ -22,7 +23,8 @@ internal class DataTypeRepositoryCallerFactory(
   private val tagRepository: TagRepository,
   private val routineRepository: RoutineRepository,
   private val workflowRuleRepository: WorkflowRuleRepository,
-  private val workflowTemplateRepository: WorkflowTemplateRepository
+  private val workflowTemplateRepository: WorkflowTemplateRepository,
+  private val habitRepository: HabitRepository
 ) {
 
   fun getCaller(dataType: DataType): DataTypeRepositoryCaller<*> {
@@ -42,6 +44,7 @@ internal class DataTypeRepositoryCallerFactory(
       DataType.Routines -> RoutineRepositoryCaller(routineRepository)
       DataType.WorkflowRules -> WorkflowRuleRepositoryCaller(workflowRuleRepository)
       DataType.WorkflowTemplates -> WorkflowTemplateRepositoryCaller(workflowTemplateRepository)
+      DataType.Habits -> HabitRepositoryCaller(habitRepository)
     }
   }
 }

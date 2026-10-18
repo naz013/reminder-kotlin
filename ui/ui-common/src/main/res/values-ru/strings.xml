@@ -1257,4 +1257,22 @@
     <string name="widget_todo_not_available">Список дел недоступен</string>
     <string name="widget_todo_not_selected">Список дел не выбран</string>
     <string name="widget_todo_no_lists">Нет активных списков дел с элементами</string>
+    <string name="habits">Привычки</string>
+    <string name="no_habits">Привычек пока нет</string>
+    <string name="new_habit">Новая привычка</string>
+    <string name="habit_check_in">Отметить</string>
+    <string name="habit_streak_description">Серия: %1$d</string>
+    <string name="habit_week_progress">На этой неделе: %1$d/%2$d</string>
+    <string name="edit_habit">Изменить привычку</string>
+    <string name="habit_name_required">Укажите название</string>
+    <string name="habit_description_hint">Описание (необязательно)</string>
+    <string name="habit_frequency">Частота</string>
+    <string name="habit_frequency_daily">Ежедневно</string>
+    <string name="habit_frequency_weekly">Еженедельно</string>
+    <string name="habit_target_per_day">%1$d в день</string>
+    <string name="habit_target_per_week">%1$d в неделю</string>
+    <string name="habit_target_decrease">Уменьшить цель</string>
+    <string name="habit_target_increase">Увеличить цель</string>
+    <string name="delete_habit_title">Удалить эту привычку?</string>
+    <string name="delete_habit_message">История отметок тоже будет удалена.</string>
 </resources>

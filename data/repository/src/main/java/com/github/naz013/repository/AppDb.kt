@@ -12,6 +12,8 @@ import com.github.naz013.repository.dao.GoogleCalendarEventDao
 import com.github.naz013.repository.dao.GoogleTaskListsDao
 import com.github.naz013.repository.dao.GoogleTasksDao
 import com.github.naz013.repository.dao.GroupV2Dao
+import com.github.naz013.repository.dao.HabitCheckInDao
+import com.github.naz013.repository.dao.HabitDao
 import com.github.naz013.repository.dao.HolidayDao
 import com.github.naz013.repository.dao.NotesDao
 import com.github.naz013.repository.dao.PlacesDao
@@ -37,6 +39,8 @@ import com.github.naz013.repository.entity.GoogleCalendarEventEntity
 import com.github.naz013.repository.entity.GoogleTaskEntity
 import com.github.naz013.repository.entity.GoogleTaskListEntity
 import com.github.naz013.repository.entity.GroupV2Entity
+import com.github.naz013.repository.entity.HabitCheckInEntity
+import com.github.naz013.repository.entity.HabitEntity
 import com.github.naz013.repository.entity.HolidayEntity
 import com.github.naz013.repository.entity.ImageFileEntity
 import com.github.naz013.repository.entity.NoteEntity
@@ -90,6 +94,7 @@ import com.github.naz013.repository.migrations.MIGRATION_39_40
 import com.github.naz013.repository.migrations.MIGRATION_3_4
 import com.github.naz013.repository.migrations.MIGRATION_40_41
 import com.github.naz013.repository.migrations.MIGRATION_41_42
+import com.github.naz013.repository.migrations.MIGRATION_42_43
 import com.github.naz013.repository.migrations.MIGRATION_4_5
 import com.github.naz013.repository.migrations.MIGRATION_5_6
 import com.github.naz013.repository.migrations.MIGRATION_6_7
@@ -124,9 +129,11 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     RoutineEntity::class,
     RoutineExecutionEntity::class,
     GoogleCalendarEventEntity::class,
-    PomodoroSessionEntity::class
+    PomodoroSessionEntity::class,
+    HabitEntity::class,
+    HabitCheckInEntity::class
   ],
-  version = 42,
+  version = 43,
   exportSchema = false
 )
 @Suppress("TooManyFunctions") // one DAO accessor per entity - inherent to this class, not a smell
@@ -157,6 +164,8 @@ internal abstract class AppDb : RoomDatabase() {
   abstract fun routineExecutionDao(): RoutineExecutionDao
   abstract fun googleCalendarEventDao(): GoogleCalendarEventDao
   abstract fun pomodoroSessionDao(): PomodoroSessionDao
+  abstract fun habitDao(): HabitDao
+  abstract fun habitCheckInDao(): HabitCheckInDao
 
   companion object {
 
@@ -207,7 +216,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_38_39,
             MIGRATION_39_40,
             MIGRATION_40_41,
-            MIGRATION_41_42
+            MIGRATION_41_42,
+            MIGRATION_42_43
           )
           .allowMainThreadQueries()
           .build()

@@ -1255,4 +1255,22 @@
     <string name="widget_todo_not_available">Lista de sarcini nu este disponibilă</string>
     <string name="widget_todo_not_selected">Lista de sarcini nu este selectată</string>
     <string name="widget_todo_no_lists">Nu există liste de sarcini active cu elemente</string>
+    <string name="habits">Obiceiuri</string>
+    <string name="no_habits">Niciun obicei încă</string>
+    <string name="new_habit">Obicei nou</string>
+    <string name="habit_check_in">Bifează</string>
+    <string name="habit_streak_description">Serie: %1$d</string>
+    <string name="habit_week_progress">Săptămâna aceasta: %1$d/%2$d</string>
+    <string name="edit_habit">Editează obiceiul</string>
+    <string name="habit_name_required">Numele este obligatoriu</string>
+    <string name="habit_description_hint">Descriere (opțional)</string>
+    <string name="habit_frequency">Frecvență</string>
+    <string name="habit_frequency_daily">Zilnic</string>
+    <string name="habit_frequency_weekly">Săptămânal</string>
+    <string name="habit_target_per_day">%1$d pe zi</string>
+    <string name="habit_target_per_week">%1$d pe săptămână</string>
+    <string name="habit_target_decrease">Scade ținta</string>
+    <string name="habit_target_increase">Crește ținta</string>
+    <string name="delete_habit_title">Ștergi acest obicei?</string>
+    <string name="delete_habit_message">Istoricul bifărilor va fi șters și el.</string>
 </resources>

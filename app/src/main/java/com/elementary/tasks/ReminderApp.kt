@@ -35,6 +35,7 @@ import com.github.naz013.feature.calendar.featureCalendarModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.featureCommonModule
 import com.github.naz013.feature.googletask.featureGoogleTaskModule
+import com.github.naz013.feature.habit.habitModule
 import com.github.naz013.feature.home.featureHomeModule
 import com.github.naz013.feature.note.featureNoteModule
 import com.github.naz013.feature.places.featurePlacesModule
@@ -56,6 +57,7 @@ import com.github.naz013.logging.initLogging
 import com.github.naz013.logic.birthday.logicBirthdayModule
 import com.github.naz013.logic.demodata.logicDemoDataModule
 import com.github.naz013.logic.googletask.logicGoogleTaskModule
+import com.github.naz013.logic.habit.logicHabitModule
 import com.github.naz013.logic.note.logicNoteModule
 import com.github.naz013.logic.notificationaction.logicNotificationActionModule
 import com.github.naz013.logic.reminder.logicReminderModule
@@ -202,7 +204,9 @@ class ReminderApp :
           logicReminderModule,
           logicNotificationActionModule,
           logicRoutineModule,
+          logicHabitModule,
           routineModule,
+          habitModule,
           featureReminderModule,
           uiTagModule,
           logicTagModule,

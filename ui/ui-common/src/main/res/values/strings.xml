@@ -1268,4 +1268,22 @@
     <string name="widget_todo_not_available">Todo list not available</string>
     <string name="widget_todo_not_selected">Todo list not selected</string>
     <string name="widget_todo_no_lists">No active todo lists with items</string>
+    <string name="habits">Habits</string>
+    <string name="no_habits">No habits yet</string>
+    <string name="new_habit">New habit</string>
+    <string name="habit_check_in">Check in</string>
+    <string name="habit_streak_description">Streak: %1$d</string>
+    <string name="habit_week_progress">This week: %1$d/%2$d</string>
+    <string name="edit_habit">Edit habit</string>
+    <string name="habit_name_required">Name is required</string>
+    <string name="habit_description_hint">Description (optional)</string>
+    <string name="habit_frequency">Frequency</string>
+    <string name="habit_frequency_daily">Daily</string>
+    <string name="habit_frequency_weekly">Weekly</string>
+    <string name="habit_target_per_day">%1$d per day</string>
+    <string name="habit_target_per_week">%1$d per week</string>
+    <string name="habit_target_decrease">Decrease target</string>
+    <string name="habit_target_increase">Increase target</string>
+    <string name="delete_habit_title">Delete this habit?</string>
+    <string name="delete_habit_message">Its check-in history will be removed too.</string>
 </resources>

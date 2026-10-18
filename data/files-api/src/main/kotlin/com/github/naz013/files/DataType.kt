@@ -20,5 +20,6 @@ enum class DataType(
   TagAssignments(".tga1"),
   Routines(".rt1"),
   WorkflowRules(".wr1", isProOnly = true),
-  WorkflowTemplates(".wt1", isProOnly = true)
+  WorkflowTemplates(".wt1", isProOnly = true),
+  Habits(".hb1", isProOnly = true)
 }

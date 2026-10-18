@@ -130,6 +130,7 @@ val featureSettingsModule = module {
       insertDemoDataUseCase = get(),
       googleCalendarEventRepository = get(),
       pomodoroSessionRepository = get(),
+      habitRepository = get(),
     )
   }
   viewModelOf(::ObjectExportViewModel)

@@ -32,7 +32,8 @@ class DataTypeRepositoryCallerFactoryTest {
       tagRepository = mockk<TagRepository>(),
       routineRepository = mockk<RoutineRepository>(),
       workflowRuleRepository = mockk<WorkflowRuleRepository>(),
-      workflowTemplateRepository = mockk<WorkflowTemplateRepository>()
+      workflowTemplateRepository = mockk<WorkflowTemplateRepository>(),
+      habitRepository = mockk<com.github.naz013.repository.HabitRepository>()
     )
   }
 

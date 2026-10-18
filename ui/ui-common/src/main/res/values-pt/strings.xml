@@ -1255,4 +1255,22 @@
     <string name="widget_todo_not_available">Lista de tarefas indisponível</string>
     <string name="widget_todo_not_selected">Lista de tarefas não selecionada</string>
     <string name="widget_todo_no_lists">Nenhuma lista de tarefas ativa com itens</string>
+    <string name="habits">Hábitos</string>
+    <string name="no_habits">Ainda não há hábitos</string>
+    <string name="new_habit">Novo hábito</string>
+    <string name="habit_check_in">Registrar</string>
+    <string name="habit_streak_description">Sequência: %1$d</string>
+    <string name="habit_week_progress">Esta semana: %1$d/%2$d</string>
+    <string name="edit_habit">Editar hábito</string>
+    <string name="habit_name_required">O nome é obrigatório</string>
+    <string name="habit_description_hint">Descrição (opcional)</string>
+    <string name="habit_frequency">Frequência</string>
+    <string name="habit_frequency_daily">Diário</string>
+    <string name="habit_frequency_weekly">Semanal</string>
+    <string name="habit_target_per_day">%1$d por dia</string>
+    <string name="habit_target_per_week">%1$d por semana</string>
+    <string name="habit_target_decrease">Diminuir meta</string>
+    <string name="habit_target_increase">Aumentar meta</string>
+    <string name="delete_habit_title">Excluir este hábito?</string>
+    <string name="delete_habit_message">O histórico de registros também será excluído.</string>
 </resources>

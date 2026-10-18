@@ -16,5 +16,6 @@ enum class FeatureFlag(
   BUY_ME_A_COFFEE("feature_buy_me_a_coffee", false),
   WORKFLOW_ENABLED("feature_workflow_enabled", false),
   ROUTINE_ENABLED("feature_routine_enabled", false),
+  HABIT_ENABLED("feature_habit_enabled", false),
   AI_DIGEST("feature_ai_digest", false),
 }

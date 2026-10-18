@@ -1247,4 +1247,22 @@
     <string name="widget_todo_not_available">Danh sách việc cần làm không khả dụng</string>
     <string name="widget_todo_not_selected">Chưa chọn danh sách việc cần làm</string>
     <string name="widget_todo_no_lists">Không có danh sách việc cần làm đang hoạt động có mục</string>
+    <string name="habits">Thói quen</string>
+    <string name="no_habits">Chưa có thói quen nào</string>
+    <string name="new_habit">Thói quen mới</string>
+    <string name="habit_check_in">Điểm danh</string>
+    <string name="habit_streak_description">Chuỗi: %1$d</string>
+    <string name="habit_week_progress">Tuần này: %1$d/%2$d</string>
+    <string name="edit_habit">Sửa thói quen</string>
+    <string name="habit_name_required">Cần nhập tên</string>
+    <string name="habit_description_hint">Mô tả (tùy chọn)</string>
+    <string name="habit_frequency">Tần suất</string>
+    <string name="habit_frequency_daily">Hằng ngày</string>
+    <string name="habit_frequency_weekly">Hằng tuần</string>
+    <string name="habit_target_per_day">%1$d lần mỗi ngày</string>
+    <string name="habit_target_per_week">%1$d lần mỗi tuần</string>
+    <string name="habit_target_decrease">Giảm mục tiêu</string>
+    <string name="habit_target_increase">Tăng mục tiêu</string>
+    <string name="delete_habit_title">Xóa thói quen này?</string>
+    <string name="delete_habit_message">Lịch sử điểm danh cũng sẽ bị xóa.</string>
 </resources>

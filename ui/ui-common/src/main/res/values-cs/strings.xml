@@ -1258,4 +1258,22 @@
     <string name="widget_todo_not_available">Seznam úkolů není dostupný</string>
     <string name="widget_todo_not_selected">Seznam úkolů není vybrán</string>
     <string name="widget_todo_no_lists">Žádné aktivní seznamy úkolů s položkami</string>
+    <string name="habits">Návyky</string>
+    <string name="no_habits">Zatím žádné návyky</string>
+    <string name="new_habit">Nový návyk</string>
+    <string name="habit_check_in">Zaznamenat</string>
+    <string name="habit_streak_description">Série: %1$d</string>
+    <string name="habit_week_progress">Tento týden: %1$d/%2$d</string>
+    <string name="edit_habit">Upravit návyk</string>
+    <string name="habit_name_required">Název je povinný</string>
+    <string name="habit_description_hint">Popis (volitelný)</string>
+    <string name="habit_frequency">Frekvence</string>
+    <string name="habit_frequency_daily">Denně</string>
+    <string name="habit_frequency_weekly">Týdně</string>
+    <string name="habit_target_per_day">%1$d denně</string>
+    <string name="habit_target_per_week">%1$d týdně</string>
+    <string name="habit_target_decrease">Snížit cíl</string>
+    <string name="habit_target_increase">Zvýšit cíl</string>
+    <string name="delete_habit_title">Smazat tento návyk?</string>
+    <string name="delete_habit_message">Smaže se také historie jeho záznamů.</string>
 </resources>

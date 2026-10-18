@@ -9,6 +9,7 @@ dependencies {
   implementation(project(":core:date-calculations"))
   implementation(project(":data:repository-api"))
   implementation(project(":data:files-api"))
+  implementation(project(":data:sync"))
   implementation(project(":logic:logic-schedule"))
 
   implementation(libs.threetenbp)

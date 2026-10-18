@@ -1250,4 +1250,22 @@
     <string name="widget_todo_not_available">Takenlijst niet beschikbaar</string>
     <string name="widget_todo_not_selected">Takenlijst niet geselecteerd</string>
     <string name="widget_todo_no_lists">Geen actieve takenlijsten met items</string>
+    <string name="habits">Gewoonten</string>
+    <string name="no_habits">Nog geen gewoonten</string>
+    <string name="new_habit">Nieuwe gewoonte</string>
+    <string name="habit_check_in">Afvinken</string>
+    <string name="habit_streak_description">Reeks: %1$d</string>
+    <string name="habit_week_progress">Deze week: %1$d/%2$d</string>
+    <string name="edit_habit">Gewoonte bewerken</string>
+    <string name="habit_name_required">Naam is verplicht</string>
+    <string name="habit_description_hint">Beschrijving (optioneel)</string>
+    <string name="habit_frequency">Frequentie</string>
+    <string name="habit_frequency_daily">Dagelijks</string>
+    <string name="habit_frequency_weekly">Wekelijks</string>
+    <string name="habit_target_per_day">%1$d per dag</string>
+    <string name="habit_target_per_week">%1$d per week</string>
+    <string name="habit_target_decrease">Doel verlagen</string>
+    <string name="habit_target_increase">Doel verhogen</string>
+    <string name="delete_habit_title">Deze gewoonte verwijderen?</string>
+    <string name="delete_habit_message">De bijbehorende geschiedenis wordt ook verwijderd.</string>
 </resources>

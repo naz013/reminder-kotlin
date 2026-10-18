@@ -27,4 +27,6 @@ enum class Table(val tableName: String) {
   Routine("Routine"),
   RoutineExecution("RoutineExecution"),
   PomodoroSession("PomodoroSession"),
+  Habit("Habit"),
+  HabitCheckIn("HabitCheckIn"),
 }

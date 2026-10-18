@@ -1250,4 +1250,22 @@
     <string name="widget_todo_not_available">Opgavelisten er ikke tilgængelig</string>
     <string name="widget_todo_not_selected">Opgavelisten er ikke valgt</string>
     <string name="widget_todo_no_lists">Ingen aktive opgavelister med elementer</string>
+    <string name="habits">Vaner</string>
+    <string name="no_habits">Ingen vaner endnu</string>
+    <string name="new_habit">Ny vane</string>
+    <string name="habit_check_in">Afkryds</string>
+    <string name="habit_streak_description">Serie: %1$d</string>
+    <string name="habit_week_progress">Denne uge: %1$d/%2$d</string>
+    <string name="edit_habit">Rediger vane</string>
+    <string name="habit_name_required">Navn er påkrævet</string>
+    <string name="habit_description_hint">Beskrivelse (valgfri)</string>
+    <string name="habit_frequency">Hyppighed</string>
+    <string name="habit_frequency_daily">Dagligt</string>
+    <string name="habit_frequency_weekly">Ugentligt</string>
+    <string name="habit_target_per_day">%1$d om dagen</string>
+    <string name="habit_target_per_week">%1$d om ugen</string>
+    <string name="habit_target_decrease">Sænk målet</string>
+    <string name="habit_target_increase">Øg målet</string>
+    <string name="delete_habit_title">Slet denne vane?</string>
+    <string name="delete_habit_message">Dens historik slettes også.</string>
 </resources>

@@ -405,6 +405,8 @@ class ScheduleHomeViewModel internal constructor(
 
     data object OpenRoutines : ViewModelEvent
 
+    data object OpenHabits : ViewModelEvent
+
     data object OpenWorkflowGallery : ViewModelEvent
 
     data object OpenPomodoro : ViewModelEvent

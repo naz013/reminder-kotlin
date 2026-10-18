@@ -1255,4 +1255,22 @@
     <string name="widget_todo_not_available">Liste de tâches indisponible</string>
     <string name="widget_todo_not_selected">Liste de tâches non sélectionnée</string>
     <string name="widget_todo_no_lists">Aucune liste de tâches active avec des éléments</string>
+    <string name="habits">Habitudes</string>
+    <string name="no_habits">Aucune habitude pour le moment</string>
+    <string name="new_habit">Nouvelle habitude</string>
+    <string name="habit_check_in">Valider</string>
+    <string name="habit_streak_description">Série : %1$d</string>
+    <string name="habit_week_progress">Cette semaine : %1$d/%2$d</string>
+    <string name="edit_habit">Modifier l\'habitude</string>
+    <string name="habit_name_required">Le nom est obligatoire</string>
+    <string name="habit_description_hint">Description (facultative)</string>
+    <string name="habit_frequency">Fréquence</string>
+    <string name="habit_frequency_daily">Quotidienne</string>
+    <string name="habit_frequency_weekly">Hebdomadaire</string>
+    <string name="habit_target_per_day">%1$d par jour</string>
+    <string name="habit_target_per_week">%1$d par semaine</string>
+    <string name="habit_target_decrease">Réduire l\'objectif</string>
+    <string name="habit_target_increase">Augmenter l\'objectif</string>
+    <string name="delete_habit_title">Supprimer cette habitude ?</string>
+    <string name="delete_habit_message">Son historique sera aussi supprimé.</string>
 </resources>
