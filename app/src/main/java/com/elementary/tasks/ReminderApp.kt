@@ -59,6 +59,7 @@ import com.github.naz013.logic.googletask.logicGoogleTaskModule
 import com.github.naz013.logic.note.logicNoteModule
 import com.github.naz013.logic.notificationaction.logicNotificationActionModule
 import com.github.naz013.logic.reminder.logicReminderModule
+import com.github.naz013.logic.habit.logicHabitModule
 import com.github.naz013.logic.routine.logicRoutineModule
 import com.github.naz013.logic.schedule.logicScheduleModule
 import com.github.naz013.logic.tag.logicTagModule
@@ -202,6 +203,7 @@ class ReminderApp :
           logicReminderModule,
           logicNotificationActionModule,
           logicRoutineModule,
+          logicHabitModule,
           routineModule,
           featureReminderModule,
           uiTagModule,
