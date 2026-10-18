@@ -3,9 +3,10 @@ package com.elementary.tasks.module.platform
 import com.elementary.tasks.core.utils.params.Prefs
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 
-class ProTrialUseCase internal constructor(
+internal class ProTrialUseCase(
   private val prefs: Prefs,
   private val proTrial: ProTrial,
 ) {
@@ -19,16 +20,11 @@ class ProTrialUseCase internal constructor(
     while (true) {
       val remaining = proTrial.remainingMillis(prefs.proTrialExpiryMillis)
       emit(remaining)
-      if (remaining == 0L) {
-        delay(IDLE_POLL_MILLIS)
-      } else {
-        delay(remaining.coerceAtMost(TICK_MILLIS))
-      }
+      delay(POLL_MILLIS)
     }
-  }
+  }.distinctUntilChanged()
 
   private companion object {
-    const val TICK_MILLIS = 1000L
-    const val IDLE_POLL_MILLIS = 1000L
+    const val POLL_MILLIS = 1000L
   }
 }

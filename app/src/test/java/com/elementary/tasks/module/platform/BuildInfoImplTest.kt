@@ -17,4 +17,13 @@ class BuildInfoImplTest {
 
     assertEquals(BuildConfig.IS_PRO, buildInfo.isPro)
   }
+
+  @Test
+  fun `isPro is true while trial expiry is in the future`() {
+    val prefs = mockk<Prefs>()
+    every { prefs.proTrialExpiryMillis } returns Long.MAX_VALUE
+    val buildInfo = BuildInfoImpl(prefs)
+
+    assertEquals(true, buildInfo.isPro)
+  }
 }
