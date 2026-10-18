@@ -26,7 +26,7 @@ import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.common.system.ProTrialController
-import com.github.naz013.common.system.formatProTrialRemaining
+import com.github.naz013.common.system.observeIsActive
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -269,12 +269,9 @@ class ScheduleHomeViewModel internal constructor(
   private fun observeProTrial() {
     proTrialJob?.cancel()
     proTrialJob = viewModelScope.launch {
-      proTrialController.observeRemainingMillis().collect { remaining ->
+      proTrialController.observeIsActive().collect {
         _state.update {
-          it.copy(
-            proTrialRemaining = formatProTrialRemaining(remaining).takeIf { time -> time.isNotEmpty() },
-            addMenuItems = EventType.entries.filter { type -> isAddMenuItemAvailable(type) },
-          )
+          it.copy(addMenuItems = EventType.entries.filter { type -> isAddMenuItemAvailable(type) })
         }
       }
     }

@@ -15,8 +15,6 @@ data class HomeScreenState(
   val addMenuItems: List<ScheduleHomeViewModel.EventType> = emptyList(),
   val listState: ListState = ListState.Loading,
   val bannerState: BannerState? = null,
-  /** Formatted `hh:mm` time left of the running PRO trial, `null` when no trial is running. */
-  val proTrialRemaining: String? = null,
 )
 
 fun HomeScreenState.withSelectedEvent(selectedEventId: String?): HomeScreenState {

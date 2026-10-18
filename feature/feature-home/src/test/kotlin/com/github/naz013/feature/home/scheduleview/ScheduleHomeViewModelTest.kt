@@ -123,34 +123,6 @@ class ScheduleHomeViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `proTrialRemaining is null when the pro trial is not running`() = runTest {
-    val state = viewModel.state.first()
-
-    assertNull(state.proTrialRemaining)
-  }
-
-  @Test
-  fun `proTrialRemaining shows hours and minutes while the pro trial is running`() = runTest {
-    remainingMillis.value = TimeUnit.HOURS.toMillis(3) + TimeUnit.MINUTES.toMillis(5)
-
-    val state = viewModel.state.first()
-
-    assertEquals("03:05", state.proTrialRemaining)
-  }
-
-  @Test
-  fun `proTrialRemaining is cleared when the pro trial expires`() = runTest {
-    remainingMillis.value = TimeUnit.HOURS.toMillis(1)
-    val states = mutableListOf<HomeScreenState>()
-    val job = launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.toList(states) }
-
-    remainingMillis.value = 0L
-
-    assertNull(states.last().proTrialRemaining)
-    job.cancel()
-  }
-
-  @Test
   fun `add menu offers quick add once the pro trial makes the user pro`() = runTest {
     every { buildInfo.isPro } returns false
     val states = mutableListOf<HomeScreenState>()
