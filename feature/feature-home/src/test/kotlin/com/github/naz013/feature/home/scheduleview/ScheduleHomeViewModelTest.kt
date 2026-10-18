@@ -251,7 +251,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onOverdueToggled collapses and re-expands the overdue strip`() =
+  fun `onOverdueToggled expands and re-collapses the overdue strip`() =
     runTest {
       stubSchedule(listOf(overdueReminder("late")))
       val states = mutableListOf<HomeScreenState>()
@@ -264,9 +264,9 @@ class ScheduleHomeViewModelTest : BaseTest() {
       val afterSecond = (states.last().listState as ListState.Ready).schedule.isOverdueExpanded
       job.cancel()
 
-      assertTrue(initial)
-      assertFalse(afterFirst)
-      assertTrue(afterSecond)
+      assertFalse(initial)
+      assertTrue(afterFirst)
+      assertFalse(afterSecond)
     }
 
   @Test

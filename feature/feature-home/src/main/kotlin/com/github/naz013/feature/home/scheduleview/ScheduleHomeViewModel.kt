@@ -66,7 +66,7 @@ class ScheduleHomeViewModel internal constructor(
   private val _state = MutableStateFlow(HomeScreenState())
   private val _selectedEventId = MutableStateFlow<String?>(null)
   private val _isEarlierExpanded = MutableStateFlow(false)
-  private val _isOverdueExpanded = MutableStateFlow(true)
+  private val _isOverdueExpanded = MutableStateFlow(false)
   val state = combine(_state, _selectedEventId, HomeScreenState::withSelectedEvent)
     .stateInWhileSubscribed(HomeScreenState())
     .onStart { loadData() }
