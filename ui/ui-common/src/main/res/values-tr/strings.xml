@@ -1258,4 +1258,16 @@
     <string name="habit_check_in">İşaretle</string>
     <string name="habit_streak_description">Seri: %1$d</string>
     <string name="habit_week_progress">Bu hafta: %1$d/%2$d</string>
+    <string name="edit_habit">Alışkanlığı düzenle</string>
+    <string name="habit_name_required">Ad gerekli</string>
+    <string name="habit_description_hint">Açıklama (isteğe bağlı)</string>
+    <string name="habit_frequency">Sıklık</string>
+    <string name="habit_frequency_daily">Günlük</string>
+    <string name="habit_frequency_weekly">Haftalık</string>
+    <string name="habit_target_per_day">Günde %1$d</string>
+    <string name="habit_target_per_week">Haftada %1$d</string>
+    <string name="habit_target_decrease">Hedefi azalt</string>
+    <string name="habit_target_increase">Hedefi artır</string>
+    <string name="delete_habit_title">Bu alışkanlık silinsin mi?</string>
+    <string name="delete_habit_message">İşaretleme geçmişi de silinecek.</string>
 </resources>

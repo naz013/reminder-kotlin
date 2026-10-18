@@ -6,4 +6,9 @@ import kotlinx.serialization.Serializable
 sealed interface HabitNavKey : NavKey {
   @Serializable
   data object List : HabitNavKey
+
+  @Serializable
+  data class Editor(
+    val habitId: String? = null
+  ) : HabitNavKey
 }

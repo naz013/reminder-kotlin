@@ -1258,4 +1258,16 @@
     <string name="habit_check_in">Отбелязване</string>
     <string name="habit_streak_description">Серия: %1$d</string>
     <string name="habit_week_progress">Тази седмица: %1$d/%2$d</string>
+    <string name="edit_habit">Редактиране на навик</string>
+    <string name="habit_name_required">Името е задължително</string>
+    <string name="habit_description_hint">Описание (по избор)</string>
+    <string name="habit_frequency">Честота</string>
+    <string name="habit_frequency_daily">Ежедневно</string>
+    <string name="habit_frequency_weekly">Седмично</string>
+    <string name="habit_target_per_day">%1$d на ден</string>
+    <string name="habit_target_per_week">%1$d на седмица</string>
+    <string name="habit_target_decrease">Намаляване на целта</string>
+    <string name="habit_target_increase">Увеличаване на целта</string>
+    <string name="delete_habit_title">Да се изтрие ли този навик?</string>
+    <string name="delete_habit_message">Историята на отбелязванията също ще бъде изтрита.</string>
 </resources>

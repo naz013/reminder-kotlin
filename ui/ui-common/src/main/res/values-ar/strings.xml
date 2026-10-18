@@ -1268,4 +1268,16 @@
     <string name="habit_check_in">تسجيل</string>
     <string name="habit_streak_description">السلسلة: %1$d</string>
     <string name="habit_week_progress">هذا الأسبوع: %1$d/%2$d</string>
+    <string name="edit_habit">تعديل العادة</string>
+    <string name="habit_name_required">الاسم مطلوب</string>
+    <string name="habit_description_hint">الوصف (اختياري)</string>
+    <string name="habit_frequency">التكرار</string>
+    <string name="habit_frequency_daily">يوميًا</string>
+    <string name="habit_frequency_weekly">أسبوعيًا</string>
+    <string name="habit_target_per_day">%1$d في اليوم</string>
+    <string name="habit_target_per_week">%1$d في الأسبوع</string>
+    <string name="habit_target_decrease">تقليل الهدف</string>
+    <string name="habit_target_increase">زيادة الهدف</string>
+    <string name="delete_habit_title">حذف هذه العادة؟</string>
+    <string name="delete_habit_message">سيتم حذف سجل التسجيل الخاص بها أيضًا.</string>
 </resources>

@@ -345,11 +345,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
           onReminderPreviewClick = { backStack.add(ReminderPreviewNavKey.Preview(it)) },
           onRulesForGroupClick = { backStack.add(WorkflowNavKey.RulesForGroup(it)) }
         )
-        habitEntries(
-          backStack = backStack,
-          // Create/edit screen is not built yet; taps on the add button and cards do nothing for now.
-          onOpenHabitEditor = { _ -> },
-        )
+        habitEntries(backStack = backStack)
         routineEntries(
           backStack = backStack,
           isRenderedAsDetailPane = isRenderedAsDetailPane,

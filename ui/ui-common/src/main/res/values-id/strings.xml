@@ -1253,4 +1253,16 @@
     <string name="habit_check_in">Catat</string>
     <string name="habit_streak_description">Rentetan: %1$d</string>
     <string name="habit_week_progress">Minggu ini: %1$d/%2$d</string>
+    <string name="edit_habit">Ubah kebiasaan</string>
+    <string name="habit_name_required">Nama wajib diisi</string>
+    <string name="habit_description_hint">Deskripsi (opsional)</string>
+    <string name="habit_frequency">Frekuensi</string>
+    <string name="habit_frequency_daily">Harian</string>
+    <string name="habit_frequency_weekly">Mingguan</string>
+    <string name="habit_target_per_day">%1$d per hari</string>
+    <string name="habit_target_per_week">%1$d per minggu</string>
+    <string name="habit_target_decrease">Kurangi target</string>
+    <string name="habit_target_increase">Tambah target</string>
+    <string name="delete_habit_title">Hapus kebiasaan ini?</string>
+    <string name="delete_habit_message">Riwayat pencatatannya juga akan dihapus.</string>
 </resources>

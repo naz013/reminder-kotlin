@@ -1256,4 +1256,16 @@
     <string name="habit_check_in">Checka in</string>
     <string name="habit_streak_description">Svit: %1$d</string>
     <string name="habit_week_progress">Den här veckan: %1$d/%2$d</string>
+    <string name="edit_habit">Redigera vana</string>
+    <string name="habit_name_required">Namn krävs</string>
+    <string name="habit_description_hint">Beskrivning (valfritt)</string>
+    <string name="habit_frequency">Frekvens</string>
+    <string name="habit_frequency_daily">Dagligen</string>
+    <string name="habit_frequency_weekly">Veckovis</string>
+    <string name="habit_target_per_day">%1$d per dag</string>
+    <string name="habit_target_per_week">%1$d per vecka</string>
+    <string name="habit_target_decrease">Minska målet</string>
+    <string name="habit_target_increase">Öka målet</string>
+    <string name="delete_habit_title">Ta bort den här vanan?</string>
+    <string name="delete_habit_message">Dess historik tas också bort.</string>
 </resources>

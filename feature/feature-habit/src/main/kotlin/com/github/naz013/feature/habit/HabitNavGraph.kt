@@ -5,42 +5,66 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.feature.habit.editor.HabitEditorScreen
+import com.github.naz013.feature.habit.editor.HabitEditorViewModel
 import com.github.naz013.feature.habit.list.HabitListScreen
-import com.github.naz013.feature.habit.list.HabitListState
 import com.github.naz013.feature.habit.list.HabitListViewModel
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
-/**
- * [onOpenHabitEditor] receives the habit id to edit, or null for a new habit. The create/edit
- * screen is registered by a later change; until then the host supplies a no-op.
- */
-fun EntryProviderScope<NavKey>.habitEntries(
-  backStack: MutableList<NavKey>,
-  onOpenHabitEditor: (habitId: String?) -> Unit = {},
-) {
-  entry<HabitNavKey.List> { HabitListEntry(backStack, onOpenHabitEditor) }
+fun EntryProviderScope<NavKey>.habitEntries(backStack: MutableList<NavKey>) {
+  entry<HabitNavKey.List> { HabitListEntry(backStack) }
+  entry<HabitNavKey.Editor> { key -> HabitEditorEntry(key, backStack) }
 }
 
 @Composable
-private fun HabitListEntry(
-  backStack: MutableList<NavKey>,
-  onOpenHabitEditor: (String?) -> Unit,
-) {
+private fun HabitListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<HabitListViewModel>()
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      is HabitListViewModel.NavigationEvent.OpenEditor -> onOpenHabitEditor(event.id)
+      is HabitListViewModel.NavigationEvent.OpenEditor -> backStack.add(HabitNavKey.Editor(event.id))
     }
   }
 
-  val state by viewModel.state.collectAsState(HabitListState())
+  val state by viewModel.state.collectAsState()
   HabitListScreen(
     state = state,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onAddClick = viewModel::onAddClick,
     onHabitClick = viewModel::onHabitClick,
     onCheckInClick = viewModel::onCheckInClick,
+  )
+}
+
+@Composable
+private fun HabitEditorEntry(
+  key: HabitNavKey.Editor,
+  backStack: MutableList<NavKey>,
+) {
+  val viewModel = koinViewModel<HabitEditorViewModel> { parametersOf(key.habitId) }
+
+  viewModel.navigationEvent.ObserveEvent { event ->
+    when (event) {
+      HabitEditorViewModel.NavigationEvent.Back -> if (backStack.size > 1) backStack.removeLastOrNull()
+    }
+  }
+
+  val state by viewModel.state.collectAsState()
+  HabitEditorScreen(
+    state = state,
+    onBackClick = viewModel::onBackClick,
+    onNameChange = viewModel::onNameChange,
+    onDescriptionChange = viewModel::onDescriptionChange,
+    onFrequencyChange = viewModel::onFrequencyChange,
+    onTargetDecrease = viewModel::onTargetDecrease,
+    onTargetIncrease = viewModel::onTargetIncrease,
+    onColorSelected = viewModel::onColorSelected,
+    onIconSelected = viewModel::onIconSelected,
+    onSaveClick = viewModel::onSaveClick,
+    onDeleteClick = viewModel::onDeleteClick,
+    onDeleteConfirmed = viewModel::onDeleteConfirmed,
+    onDeleteDismissed = viewModel::onDeleteDismissed,
   )
 }

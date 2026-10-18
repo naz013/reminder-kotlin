@@ -1251,4 +1251,16 @@
     <string name="habit_check_in">打卡</string>
     <string name="habit_streak_description">连续: %1$d</string>
     <string name="habit_week_progress">本周: %1$d/%2$d</string>
+    <string name="edit_habit">编辑习惯</string>
+    <string name="habit_name_required">名称为必填项</string>
+    <string name="habit_description_hint">描述(可选)</string>
+    <string name="habit_frequency">频率</string>
+    <string name="habit_frequency_daily">每天</string>
+    <string name="habit_frequency_weekly">每周</string>
+    <string name="habit_target_per_day">每天 %1$d 次</string>
+    <string name="habit_target_per_week">每周 %1$d 次</string>
+    <string name="habit_target_decrease">减少目标</string>
+    <string name="habit_target_increase">增加目标</string>
+    <string name="delete_habit_title">删除此习惯？</string>
+    <string name="delete_habit_message">其打卡记录也将被删除。</string>
 </resources>

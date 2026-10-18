@@ -1254,4 +1254,16 @@
     <string name="habit_check_in">चेक इन करें</string>
     <string name="habit_streak_description">लगातार: %1$d</string>
     <string name="habit_week_progress">इस सप्ताह: %1$d/%2$d</string>
+    <string name="edit_habit">आदत संपादित करें</string>
+    <string name="habit_name_required">नाम आवश्यक है</string>
+    <string name="habit_description_hint">विवरण (वैकल्पिक)</string>
+    <string name="habit_frequency">आवृत्ति</string>
+    <string name="habit_frequency_daily">दैनिक</string>
+    <string name="habit_frequency_weekly">साप्ताहिक</string>
+    <string name="habit_target_per_day">प्रति दिन %1$d</string>
+    <string name="habit_target_per_week">प्रति सप्ताह %1$d</string>
+    <string name="habit_target_decrease">लक्ष्य घटाएं</string>
+    <string name="habit_target_increase">लक्ष्य बढ़ाएं</string>
+    <string name="delete_habit_title">यह आदत हटाएं?</string>
+    <string name="delete_habit_message">इसका चेक-इन इतिहास भी हट जाएगा।</string>
 </resources>

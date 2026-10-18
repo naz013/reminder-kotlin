@@ -1249,4 +1249,16 @@
     <string name="habit_check_in">เช็กอิน</string>
     <string name="habit_streak_description">ต่อเนื่อง: %1$d</string>
     <string name="habit_week_progress">สัปดาห์นี้: %1$d/%2$d</string>
+    <string name="edit_habit">แก้ไขนิสัย</string>
+    <string name="habit_name_required">ต้องระบุชื่อ</string>
+    <string name="habit_description_hint">คำอธิบาย (ไม่บังคับ)</string>
+    <string name="habit_frequency">ความถี่</string>
+    <string name="habit_frequency_daily">ทุกวัน</string>
+    <string name="habit_frequency_weekly">ทุกสัปดาห์</string>
+    <string name="habit_target_per_day">%1$d ครั้งต่อวัน</string>
+    <string name="habit_target_per_week">%1$d ครั้งต่อสัปดาห์</string>
+    <string name="habit_target_decrease">ลดเป้าหมาย</string>
+    <string name="habit_target_increase">เพิ่มเป้าหมาย</string>
+    <string name="delete_habit_title">ลบนิสัยนี้หรือไม่?</string>
+    <string name="delete_habit_message">ประวัติการเช็กอินจะถูกลบด้วย</string>
 </resources>

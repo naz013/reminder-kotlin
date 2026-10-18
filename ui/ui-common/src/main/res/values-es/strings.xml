@@ -1261,4 +1261,16 @@
     <string name="habit_check_in">Registrar</string>
     <string name="habit_streak_description">Racha: %1$d</string>
     <string name="habit_week_progress">Esta semana: %1$d/%2$d</string>
+    <string name="edit_habit">Editar hábito</string>
+    <string name="habit_name_required">El nombre es obligatorio</string>
+    <string name="habit_description_hint">Descripción (opcional)</string>
+    <string name="habit_frequency">Frecuencia</string>
+    <string name="habit_frequency_daily">Diario</string>
+    <string name="habit_frequency_weekly">Semanal</string>
+    <string name="habit_target_per_day">%1$d al día</string>
+    <string name="habit_target_per_week">%1$d a la semana</string>
+    <string name="habit_target_decrease">Reducir objetivo</string>
+    <string name="habit_target_increase">Aumentar objetivo</string>
+    <string name="delete_habit_title">¿Eliminar este hábito?</string>
+    <string name="delete_habit_message">Su historial de registros también se eliminará.</string>
 </resources>
