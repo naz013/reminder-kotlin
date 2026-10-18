@@ -171,7 +171,7 @@ internal class TodoGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             maxLines = 2
           )
           LazyColumn(modifier = GlanceModifier.fillMaxSize()) {
-            items(state.items) { item -> TodoItem(item) }
+            items(state.items) { item -> TodoItem(item = item) }
           }
         }
       }
@@ -179,9 +179,9 @@ internal class TodoGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   }
 
   @Composable
-  private fun TodoItem(item: UiShopListWidget) {
+  private fun TodoItem(modifier: GlanceModifier = GlanceModifier, item: UiShopListWidget) {
     Row(
-      modifier = GlanceModifier.fillMaxWidth().padding(vertical = 2.dp),
+      modifier = modifier.fillMaxWidth().padding(vertical = 2.dp),
       verticalAlignment = Alignment.Vertical.CenterVertically
     ) {
       Image(

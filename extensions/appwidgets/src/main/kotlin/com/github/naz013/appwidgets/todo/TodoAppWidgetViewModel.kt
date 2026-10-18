@@ -1,9 +1,9 @@
 package com.github.naz013.appwidgets.todo
 
-import com.github.naz013.appwidgets.R
 import com.github.naz013.appwidgets.events.data.UiShopListWidget
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.repository.ReminderV2Repository
+import com.github.naz013.ui.common.icon.DrawableCatalog
 
 internal class TodoAppWidgetViewModel(
   private val prefsProvider: TodoWidgetPrefsProvider,
@@ -28,9 +28,9 @@ internal class TodoAppWidgetViewModel(
     return shoppingItems.filterNot { it.isDeleted }.map {
       UiShopListWidget(
         iconRes = if (it.isChecked) {
-          R.drawable.ic_fluent_checkbox_checked
+          DrawableCatalog.Fluent.CheckboxChecked
         } else {
-          R.drawable.ic_fluent_checkbox_unchecked
+          DrawableCatalog.Fluent.CheckboxUnchecked
         },
         text = it.summary
       )

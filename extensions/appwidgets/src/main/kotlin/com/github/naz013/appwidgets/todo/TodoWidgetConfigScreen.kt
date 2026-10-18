@@ -53,13 +53,11 @@ internal fun TodoWidgetConfigScreen(
             verticalAlignment = Alignment.CenterVertically
           ) {
             RadioButton(selected = reminder.id == state.selectedReminderId, onClick = null)
-            Column(modifier = Modifier.padding(start = 16.dp)) {
-              Text(text = reminder.summary, style = MaterialTheme.typography.bodyLarge)
-              Text(
-                text = reminder.itemsCount.toString(),
-                style = MaterialTheme.typography.bodySmall
-              )
-            }
+            Text(
+              text = reminder.summary,
+              style = MaterialTheme.typography.bodyLarge,
+              modifier = Modifier.padding(start = 16.dp)
+            )
           }
         }
       }
