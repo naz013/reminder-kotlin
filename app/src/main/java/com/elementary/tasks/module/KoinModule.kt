@@ -31,7 +31,10 @@ import com.elementary.tasks.module.logicschedule.SchedulePreferencesImpl
 import com.elementary.tasks.pomodoro.PomodoroForegroundNotifierImpl
 import com.elementary.tasks.pomodoro.PomodoroPreferencesImpl
 import com.elementary.tasks.module.platform.BuildInfoImpl
+import com.elementary.tasks.module.platform.ProTrialAdsUseCase
 import com.elementary.tasks.module.platform.ProTrialUseCase
+import com.elementary.tasks.module.platform.RewardedTrialAds
+import com.elementary.tasks.module.platform.RewardedTrialAdsImpl
 import com.elementary.tasks.module.platform.DateTimePreferencesImpl
 import com.elementary.tasks.module.platform.InstallReferrerReader
 import com.elementary.tasks.module.sync.SyncDataConverterImpl
@@ -88,6 +91,8 @@ val libModule = module {
   // platform
   factory<BuildInfo> { BuildInfoImpl(get()) }
   factory { ProTrialUseCase(get()) }
+  factory<RewardedTrialAds> { RewardedTrialAdsImpl() }
+  factory { ProTrialAdsUseCase(get(), get(), get()) }
   single { DateTimePreferencesImpl(get()) as DateTimePreferences }
   factoryOf(::InstallReferrerReader)
 
