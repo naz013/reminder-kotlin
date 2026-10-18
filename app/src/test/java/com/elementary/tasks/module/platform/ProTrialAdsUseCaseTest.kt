@@ -23,8 +23,8 @@ class ProTrialAdsUseCaseTest {
   private val useCase = ProTrialAdsUseCase(rewardedTrialAds, proTrialUseCase, analyticsEventSender)
 
   @Test
-  fun `run returns success after three rewarded ads`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.REWARDED, RewardedAdResult.REWARDED)
+  fun `run returns success after the rewarded ad`() = runTest {
+    givenAdResults(RewardedAdResult.REWARDED)
 
     val result = useCase.run(activity)
 
@@ -32,8 +32,8 @@ class ProTrialAdsUseCaseTest {
   }
 
   @Test
-  fun `run activates trial exactly once after three rewarded ads`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.REWARDED, RewardedAdResult.REWARDED)
+  fun `run activates trial exactly once after the rewarded ad`() = runTest {
+    givenAdResults(RewardedAdResult.REWARDED)
 
     useCase.run(activity)
 
@@ -41,8 +41,8 @@ class ProTrialAdsUseCaseTest {
   }
 
   @Test
-  fun `run sends trial activated event after three rewarded ads`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.REWARDED, RewardedAdResult.REWARDED)
+  fun `run sends trial activated event after the rewarded ad`() = runTest {
+    givenAdResults(RewardedAdResult.REWARDED)
 
     useCase.run(activity)
 
@@ -50,17 +50,17 @@ class ProTrialAdsUseCaseTest {
   }
 
   @Test
-  fun `run shows exactly three ads when every ad is rewarded`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.REWARDED, RewardedAdResult.REWARDED)
+  fun `run shows exactly the required number of ads when every ad is rewarded`() = runTest {
+    givenAdResults(RewardedAdResult.REWARDED)
 
     useCase.run(activity)
 
-    coVerify(exactly = 3) { rewardedTrialAds.show(activity) }
+    coVerify(exactly = ProTrialAdsUseCase.REQUIRED_ADS) { rewardedTrialAds.show(activity) }
   }
 
   @Test
-  fun `run does not activate trial when ads are unavailable mid-flow`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.UNAVAILABLE)
+  fun `run does not activate trial when ads are unavailable`() = runTest {
+    givenAdResults(RewardedAdResult.UNAVAILABLE)
 
     useCase.run(activity)
 
@@ -68,8 +68,8 @@ class ProTrialAdsUseCaseTest {
   }
 
   @Test
-  fun `run returns ads unavailable when an ad is unavailable mid-flow`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.UNAVAILABLE)
+  fun `run returns ads unavailable when the ad is unavailable`() = runTest {
+    givenAdResults(RewardedAdResult.UNAVAILABLE)
 
     val result = useCase.run(activity)
 
@@ -86,8 +86,8 @@ class ProTrialAdsUseCaseTest {
   }
 
   @Test
-  fun `run resets progress when ads are unavailable mid-flow`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.REWARDED, RewardedAdResult.UNAVAILABLE)
+  fun `run keeps progress at zero when ads are unavailable`() = runTest {
+    givenAdResults(RewardedAdResult.UNAVAILABLE)
 
     useCase.run(activity)
 
@@ -95,8 +95,8 @@ class ProTrialAdsUseCaseTest {
   }
 
   @Test
-  fun `run does not activate trial when user dismisses ad mid-flow`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.DISMISSED)
+  fun `run does not activate trial when user dismisses the ad`() = runTest {
+    givenAdResults(RewardedAdResult.DISMISSED)
 
     useCase.run(activity)
 
@@ -104,8 +104,8 @@ class ProTrialAdsUseCaseTest {
   }
 
   @Test
-  fun `run returns cancelled when user dismisses ad mid-flow`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.REWARDED, RewardedAdResult.DISMISSED)
+  fun `run returns cancelled when user dismisses the ad`() = runTest {
+    givenAdResults(RewardedAdResult.DISMISSED)
 
     val result = useCase.run(activity)
 
@@ -113,21 +113,12 @@ class ProTrialAdsUseCaseTest {
   }
 
   @Test
-  fun `run does not send trial activated event when user dismisses ad`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.DISMISSED)
+  fun `run does not send trial activated event when user dismisses the ad`() = runTest {
+    givenAdResults(RewardedAdResult.DISMISSED)
 
     useCase.run(activity)
 
     verify(exactly = 0) { analyticsEventSender.send(any()) }
-  }
-
-  @Test
-  fun `run resets progress when user dismisses ad mid-flow`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.REWARDED, RewardedAdResult.DISMISSED)
-
-    useCase.run(activity)
-
-    assertEquals(0, useCase.adsWatched.value)
   }
 
   @Test
@@ -141,9 +132,9 @@ class ProTrialAdsUseCaseTest {
 
   @Test
   fun `run starts from zero progress on a second run after a cancelled first run`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.REWARDED, RewardedAdResult.DISMISSED)
+    givenAdResults(RewardedAdResult.DISMISSED)
     useCase.run(activity)
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.DISMISSED)
+    givenAdResults(RewardedAdResult.DISMISSED)
 
     val result = useCase.run(activity)
 
@@ -153,10 +144,10 @@ class ProTrialAdsUseCaseTest {
   }
 
   @Test
-  fun `run activates trial again when a second run completes all three ads`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.REWARDED, RewardedAdResult.REWARDED)
+  fun `run activates trial again when a second run completes`() = runTest {
+    givenAdResults(RewardedAdResult.REWARDED)
     useCase.run(activity)
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.REWARDED, RewardedAdResult.REWARDED)
+    givenAdResults(RewardedAdResult.REWARDED)
 
     val result = useCase.run(activity)
 
@@ -166,10 +157,10 @@ class ProTrialAdsUseCaseTest {
   }
 
   @Test
-  fun `run does not carry rewards from a failed run into a successful one`() = runTest {
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.UNAVAILABLE)
+  fun `run does not carry state from a failed run into a successful one`() = runTest {
+    givenAdResults(RewardedAdResult.UNAVAILABLE)
     useCase.run(activity)
-    givenAdResults(RewardedAdResult.REWARDED, RewardedAdResult.REWARDED, RewardedAdResult.REWARDED)
+    givenAdResults(RewardedAdResult.REWARDED)
 
     val result = useCase.run(activity)
 
@@ -179,10 +170,7 @@ class ProTrialAdsUseCaseTest {
 
   @Test
   fun `run resets progress when coroutine is cancelled mid-flow`() = runTest {
-    var calls = 0
-    coEvery { rewardedTrialAds.show(any()) } coAnswers {
-      if (++calls < 3) RewardedAdResult.REWARDED else throw CancellationException("cancelled")
-    }
+    coEvery { rewardedTrialAds.show(any()) } coAnswers { throw CancellationException("cancelled") }
 
     runCatching { useCase.run(activity) }
 

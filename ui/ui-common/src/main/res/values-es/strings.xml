@@ -1276,11 +1276,11 @@
     <string name="pro_trial_banner">Prueba PRO gratis</string>
     <string name="pro_trial_title">Prueba PRO gratis</string>
     <string name="pro_trial_how_it_works_title">Cómo funciona</string>
-    <string name="pro_trial_how_it_works">Mira 3 anuncios de video cortos y desbloquea todas las opciones PRO durante 24 horas. Puedes repetirlo cuando termine la prueba. Las funciones de la app Gemini no están incluidas en la prueba.</string>
+    <string name="pro_trial_how_it_works">Mira un anuncio de video corto y desbloquea todas las opciones PRO durante 24 horas. Puedes repetirlo cuando termine la prueba. Las funciones de la app Gemini no están incluidas en la prueba.</string>
     <string name="pro_trial_activate">Activar PRO durante 24 horas</string>
     <string name="pro_trial_ads_progress">Anuncios vistos: %1$d/%2$d</string>
     <string name="pro_trial_active_title">La prueba PRO está activa</string>
     <string name="pro_trial_remaining">Tiempo restante: %1$s</string>
     <string name="pro_trial_ads_unavailable">Los anuncios no están disponibles ahora. Inténtalo de nuevo más tarde.</string>
-    <string name="pro_trial_cancelled">El video se cerró antes de recibir la recompensa. Mira todos los anuncios para activar la prueba.</string>
+    <string name="pro_trial_cancelled">El anuncio se cerró antes de recibir la recompensa. Mira el anuncio hasta el final para activar la prueba.</string>
 </resources>

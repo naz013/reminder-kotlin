@@ -1268,11 +1268,11 @@
     <string name="pro_trial_banner">Coba PRO gratis</string>
     <string name="pro_trial_title">Coba PRO gratis</string>
     <string name="pro_trial_how_it_works_title">Cara kerjanya</string>
-    <string name="pro_trial_how_it_works">Tonton 3 iklan video singkat dan buka semua opsi PRO selama 24 jam. Anda dapat mengulanginya setelah uji coba berakhir. Fungsi aplikasi Gemini tidak termasuk dalam uji coba.</string>
+    <string name="pro_trial_how_it_works">Tonton satu iklan video singkat dan buka semua opsi PRO selama 24 jam. Anda dapat mengulanginya setelah uji coba berakhir. Fungsi aplikasi Gemini tidak termasuk dalam uji coba.</string>
     <string name="pro_trial_activate">Aktifkan PRO selama 24 jam</string>
     <string name="pro_trial_ads_progress">Iklan ditonton: %1$d/%2$d</string>
     <string name="pro_trial_active_title">Uji coba PRO aktif</string>
     <string name="pro_trial_remaining">Sisa waktu: %1$s</string>
     <string name="pro_trial_ads_unavailable">Iklan tidak tersedia saat ini. Silakan coba lagi nanti.</string>
-    <string name="pro_trial_cancelled">Video ditutup sebelum hadiah diberikan. Tonton semua iklan untuk mengaktifkan uji coba.</string>
+    <string name="pro_trial_cancelled">Iklan ditutup sebelum hadiah diberikan. Tonton iklan sampai selesai untuk mengaktifkan uji coba.</string>
 </resources>

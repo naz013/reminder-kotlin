@@ -40,7 +40,7 @@ internal class ProTrialViewModel(
   }
 
   fun onActivateClick() {
-    if (_state.value.isRunning) return
+    if (_state.value.isRunning || _state.value.isTrialActive) return
     event.emit(ProTrialEvent.RequestActivity)
   }
 

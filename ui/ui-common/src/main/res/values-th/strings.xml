@@ -1264,11 +1264,11 @@
     <string name="pro_trial_banner">ลองใช้ PRO ฟรี</string>
     <string name="pro_trial_title">ลองใช้ PRO ฟรี</string>
     <string name="pro_trial_how_it_works_title">วิธีการทำงาน</string>
-    <string name="pro_trial_how_it_works">ดูโฆษณาวิดีโอสั้น 3 รายการเพื่อปลดล็อกตัวเลือก PRO ทั้งหมดเป็นเวลา 24 ชั่วโมง คุณสามารถทำซ้ำได้เมื่อช่วงทดลองสิ้นสุด ฟังก์ชันแอป Gemini ไม่รวมอยู่ในช่วงทดลอง</string>
+    <string name="pro_trial_how_it_works">ดูโฆษณาวิดีโอสั้น 1 รายการเพื่อปลดล็อกตัวเลือก PRO ทั้งหมดเป็นเวลา 24 ชั่วโมง คุณสามารถทำซ้ำได้เมื่อช่วงทดลองสิ้นสุด ฟังก์ชันแอป Gemini ไม่รวมอยู่ในช่วงทดลอง</string>
     <string name="pro_trial_activate">เปิดใช้งาน PRO เป็นเวลา 24 ชั่วโมง</string>
     <string name="pro_trial_ads_progress">โฆษณาที่ดูแล้ว: %1$d/%2$d</string>
     <string name="pro_trial_active_title">ช่วงทดลอง PRO กำลังใช้งานอยู่</string>
     <string name="pro_trial_remaining">เวลาที่เหลือ: %1$s</string>
     <string name="pro_trial_ads_unavailable">ขณะนี้ไม่มีโฆษณาให้ดู โปรดลองอีกครั้งในภายหลัง</string>
-    <string name="pro_trial_cancelled">วิดีโอถูกปิดก่อนได้รับรางวัล ดูโฆษณาทั้งหมดเพื่อเปิดใช้งานช่วงทดลอง</string>
+    <string name="pro_trial_cancelled">โฆษณาถูกปิดก่อนได้รับรางวัล ดูโฆษณาให้จบเพื่อเปิดใช้งานช่วงทดลอง</string>
 </resources>

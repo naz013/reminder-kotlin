@@ -27,7 +27,7 @@ class ProTrialViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    every { proTrialController.requiredAds } returns 3
+    every { proTrialController.requiredAds } returns 1
     every { proTrialController.adsWatched } returns adsWatched
     every { proTrialController.observeRemainingMillis() } returns remainingMillis
     coEvery { proTrialController.watchAdsAndActivate(activity) } returns ProTrialResult.SUCCESS
@@ -42,7 +42,7 @@ class ProTrialViewModelTest : BaseTest() {
     assertFalse(state.isTrialActive)
     assertFalse(state.isRunning)
     assertEquals("", state.remainingTime)
-    assertEquals(3, state.requiredAds)
+    assertEquals(1, state.requiredAds)
     assertNull(state.message)
   }
 
@@ -90,6 +90,16 @@ class ProTrialViewModelTest : BaseTest() {
     viewModel.onActivateClick()
 
     assertEquals(ProTrialEvent.RequestActivity, viewModel.event.value?.peekContent())
+  }
+
+  @Test
+  fun `onActivateClick does nothing while the trial is active`() {
+    remainingMillis.value = TimeUnit.HOURS.toMillis(1)
+    val viewModel = newViewModel()
+
+    viewModel.onActivateClick()
+
+    assertNull(viewModel.event.value)
   }
 
   @Test

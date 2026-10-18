@@ -68,7 +68,7 @@ internal fun ProTrialScreen(
         ProTrialStatus(state = state)
         Button(
           onClick = onActivateClick,
-          enabled = !state.isRunning,
+          enabled = !state.isRunning && !state.isTrialActive,
           modifier = Modifier.fillMaxWidth(),
         ) {
           Text(text = stringResource(R.string.pro_trial_activate))
@@ -84,7 +84,7 @@ private fun ProTrialStatus(
   modifier: Modifier = Modifier,
   state: ProTrialState,
 ) {
-  val hasStatus = state.isTrialActive || state.isRunning || state.message != null
+  val hasStatus = state.isTrialActive || state.isProgressVisible || state.message != null
   if (!hasStatus) return
 
   Column(modifier = modifier.padding(bottom = 16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -100,7 +100,7 @@ private fun ProTrialStatus(
         color = MaterialTheme.colorScheme.onSurface,
       )
     }
-    if (state.isRunning) {
+    if (state.isProgressVisible) {
       Text(
         text = stringResource(R.string.pro_trial_ads_progress, state.adsWatched, state.requiredAds),
         style = MaterialTheme.typography.bodyLarge,
@@ -129,7 +129,7 @@ private fun ProTrialMessage.textRes(): Int {
 private fun ProTrialScreenPreview() {
   AppTheme(darkTheme = false) {
     ProTrialScreen(
-      state = ProTrialState(isRunning = true, adsWatched = 1, requiredAds = 3),
+      state = ProTrialState(isRunning = true, requiredAds = 1),
       onBackClick = {},
       onActivateClick = {},
     )
@@ -141,7 +141,7 @@ private fun ProTrialScreenPreview() {
 private fun ProTrialScreenPreview_Active() {
   AppTheme(darkTheme = true) {
     ProTrialScreen(
-      state = ProTrialState(isTrialActive = true, remainingTime = "23:40", requiredAds = 3),
+      state = ProTrialState(isTrialActive = true, remainingTime = "23:40", requiredAds = 1),
       onBackClick = {},
       onActivateClick = {},
     )

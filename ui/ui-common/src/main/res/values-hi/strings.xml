@@ -1269,11 +1269,11 @@
     <string name="pro_trial_banner">PRO मुफ़्त में आज़माएँ</string>
     <string name="pro_trial_title">PRO मुफ़्त में आज़माएँ</string>
     <string name="pro_trial_how_it_works_title">यह कैसे काम करता है</string>
-    <string name="pro_trial_how_it_works">3 छोटे वीडियो विज्ञापन देखें और 24 घंटे के लिए सभी PRO विकल्प अनलॉक करें। ट्रायल खत्म होने पर आप इसे दोहरा सकते हैं। Gemini ऐप फ़ंक्शन ट्रायल में शामिल नहीं हैं।</string>
+    <string name="pro_trial_how_it_works">एक छोटा वीडियो विज्ञापन देखें और 24 घंटे के लिए सभी PRO विकल्प अनलॉक करें। ट्रायल खत्म होने पर आप इसे दोहरा सकते हैं। Gemini ऐप फ़ंक्शन ट्रायल में शामिल नहीं हैं।</string>
     <string name="pro_trial_activate">24 घंटे के लिए PRO सक्रिय करें</string>
     <string name="pro_trial_ads_progress">देखे गए विज्ञापन: %1$d/%2$d</string>
     <string name="pro_trial_active_title">PRO ट्रायल सक्रिय है</string>
     <string name="pro_trial_remaining">शेष समय: %1$s</string>
     <string name="pro_trial_ads_unavailable">विज्ञापन अभी उपलब्ध नहीं हैं। कृपया बाद में पुनः प्रयास करें।</string>
-    <string name="pro_trial_cancelled">इनाम मिलने से पहले वीडियो बंद कर दिया गया। ट्रायल सक्रिय करने के लिए सभी विज्ञापन देखें।</string>
+    <string name="pro_trial_cancelled">इनाम मिलने से पहले विज्ञापन बंद कर दिया गया। ट्रायल सक्रिय करने के लिए विज्ञापन को अंत तक देखें।</string>
 </resources>

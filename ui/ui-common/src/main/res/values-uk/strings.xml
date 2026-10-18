@@ -1279,11 +1279,11 @@
     <string name="pro_trial_banner">Спробуйте PRO безкоштовно</string>
     <string name="pro_trial_title">Спробуйте PRO безкоштовно</string>
     <string name="pro_trial_how_it_works_title">Як це працює</string>
-    <string name="pro_trial_how_it_works">Перегляньте 3 короткі відеореклами та відкрийте всі функції PRO на 24 години. Це можна повторювати після завершення пробного періоду. Функції застосунку Gemini в пробний період не входять.</string>
+    <string name="pro_trial_how_it_works">Перегляньте одну коротку відеорекламу та відкрийте всі функції PRO на 24 години. Це можна повторювати після завершення пробного періоду. Функції застосунку Gemini в пробний період не входять.</string>
     <string name="pro_trial_activate">Активувати PRO на 24 години</string>
     <string name="pro_trial_ads_progress">Переглянуто реклам: %1$d/%2$d</string>
     <string name="pro_trial_active_title">Пробний період PRO активний</string>
     <string name="pro_trial_remaining">Залишилось часу: %1$s</string>
     <string name="pro_trial_ads_unavailable">Реклама зараз недоступна. Спробуйте пізніше.</string>
-    <string name="pro_trial_cancelled">Відео закрили до отримання нагороди. Перегляньте всю рекламу, щоб активувати пробний період.</string>
+    <string name="pro_trial_cancelled">Рекламу закрили до отримання нагороди. Передивіться рекламу до кінця, щоб активувати пробний період.</string>
 </resources>

@@ -1268,11 +1268,11 @@
     <string name="pro_trial_banner">Dùng thử PRO miễn phí</string>
     <string name="pro_trial_title">Dùng thử PRO miễn phí</string>
     <string name="pro_trial_how_it_works_title">Cách hoạt động</string>
-    <string name="pro_trial_how_it_works">Xem 3 quảng cáo video ngắn để mở khóa tất cả tùy chọn PRO trong 24 giờ. Bạn có thể lặp lại khi bản dùng thử kết thúc. Các chức năng ứng dụng Gemini không nằm trong bản dùng thử.</string>
+    <string name="pro_trial_how_it_works">Xem một quảng cáo video ngắn để mở khóa tất cả tùy chọn PRO trong 24 giờ. Bạn có thể lặp lại khi bản dùng thử kết thúc. Các chức năng ứng dụng Gemini không nằm trong bản dùng thử.</string>
     <string name="pro_trial_activate">Kích hoạt PRO trong 24 giờ</string>
     <string name="pro_trial_ads_progress">Quảng cáo đã xem: %1$d/%2$d</string>
     <string name="pro_trial_active_title">Bản dùng thử PRO đang hoạt động</string>
     <string name="pro_trial_remaining">Thời gian còn lại: %1$s</string>
     <string name="pro_trial_ads_unavailable">Hiện không có quảng cáo. Vui lòng thử lại sau.</string>
-    <string name="pro_trial_cancelled">Video đã bị đóng trước khi nhận thưởng. Hãy xem tất cả quảng cáo để kích hoạt bản dùng thử.</string>
+    <string name="pro_trial_cancelled">Quảng cáo đã bị đóng trước khi nhận thưởng. Hãy xem quảng cáo đến hết để kích hoạt bản dùng thử.</string>
 </resources>

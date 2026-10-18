@@ -1271,11 +1271,11 @@
     <string name="pro_trial_banner">Prøv PRO gratis</string>
     <string name="pro_trial_title">Prøv PRO gratis</string>
     <string name="pro_trial_how_it_works_title">Sådan fungerer det</string>
-    <string name="pro_trial_how_it_works">Se 3 korte videoreklamer, og lås op for alle PRO-muligheder i 24 timer. Du kan gentage det, når prøveperioden slutter. Gemini-appfunktioner er ikke inkluderet i prøveperioden.</string>
+    <string name="pro_trial_how_it_works">Se en kort videoreklame, og lås op for alle PRO-muligheder i 24 timer. Du kan gentage det, når prøveperioden slutter. Gemini-appfunktioner er ikke inkluderet i prøveperioden.</string>
     <string name="pro_trial_activate">Aktivér PRO i 24 timer</string>
     <string name="pro_trial_ads_progress">Sete reklamer: %1$d/%2$d</string>
     <string name="pro_trial_active_title">PRO-prøveperioden er aktiv</string>
     <string name="pro_trial_remaining">Tid tilbage: %1$s</string>
     <string name="pro_trial_ads_unavailable">Reklamer er ikke tilgængelige lige nu. Prøv igen senere.</string>
-    <string name="pro_trial_cancelled">Videoen blev lukket, før belønningen blev givet. Se alle reklamer for at aktivere prøveperioden.</string>
+    <string name="pro_trial_cancelled">Reklamen blev lukket, før belønningen blev givet. Se reklamen til ende for at aktivere prøveperioden.</string>
 </resources>

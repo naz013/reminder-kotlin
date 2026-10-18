@@ -1266,11 +1266,11 @@
     <string name="pro_trial_banner">PROを無料で試す</string>
     <string name="pro_trial_title">PROを無料で試す</string>
     <string name="pro_trial_how_it_works_title">仕組み</string>
-    <string name="pro_trial_how_it_works">短い動画広告を3本視聴すると、すべてのPRO機能が24時間利用できます。お試し期間が終了したら、何度でも繰り返せます。Geminiアプリ機能はお試しに含まれません。</string>
+    <string name="pro_trial_how_it_works">短い動画広告を1本視聴すると、すべてのPRO機能が24時間利用できます。お試し期間が終了したら、何度でも繰り返せます。Geminiアプリ機能はお試しに含まれません。</string>
     <string name="pro_trial_activate">24時間PROを有効にする</string>
     <string name="pro_trial_ads_progress">視聴した広告: %1$d/%2$d</string>
     <string name="pro_trial_active_title">PROお試しは有効です</string>
     <string name="pro_trial_remaining">残り時間: %1$s</string>
     <string name="pro_trial_ads_unavailable">現在、広告を利用できません。しばらくしてからもう一度お試しください。</string>
-    <string name="pro_trial_cancelled">報酬を受け取る前に動画が閉じられました。お試しを有効にするには、すべての広告を視聴してください。</string>
+    <string name="pro_trial_cancelled">報酬を受け取る前に広告が閉じられました。お試しを有効にするには、広告を最後まで視聴してください。</string>
 </resources>

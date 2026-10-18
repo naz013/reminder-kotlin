@@ -1279,11 +1279,11 @@
     <string name="pro_trial_banner">Wypróbuj PRO za darmo</string>
     <string name="pro_trial_title">Wypróbuj PRO za darmo</string>
     <string name="pro_trial_how_it_works_title">Jak to działa</string>
-    <string name="pro_trial_how_it_works">Obejrzyj 3 krótkie reklamy wideo i odblokuj wszystkie opcje PRO na 24 godziny. Możesz to powtórzyć po zakończeniu okresu próbnego. Funkcje aplikacji Gemini nie są objęte okresem próbnym.</string>
+    <string name="pro_trial_how_it_works">Obejrzyj krótką reklamę wideo i odblokuj wszystkie opcje PRO na 24 godziny. Możesz to powtórzyć po zakończeniu okresu próbnego. Funkcje aplikacji Gemini nie są objęte okresem próbnym.</string>
     <string name="pro_trial_activate">Aktywuj PRO na 24 godziny</string>
     <string name="pro_trial_ads_progress">Obejrzane reklamy: %1$d/%2$d</string>
     <string name="pro_trial_active_title">Okres próbny PRO jest aktywny</string>
     <string name="pro_trial_remaining">Pozostały czas: %1$s</string>
     <string name="pro_trial_ads_unavailable">Reklamy są teraz niedostępne. Spróbuj ponownie później.</string>
-    <string name="pro_trial_cancelled">Wideo zostało zamknięte przed przyznaniem nagrody. Obejrzyj wszystkie reklamy, aby aktywować okres próbny.</string>
+    <string name="pro_trial_cancelled">Reklama została zamknięta przed przyznaniem nagrody. Obejrzyj reklamę do końca, aby aktywować okres próbny.</string>
 </resources>

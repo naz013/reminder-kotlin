@@ -47,6 +47,6 @@ internal class ProTrialAdsUseCase(
   }
 
   companion object {
-    const val REQUIRED_ADS = 3
+    const val REQUIRED_ADS = 1
   }
 }
