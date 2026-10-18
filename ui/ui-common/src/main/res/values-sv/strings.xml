@@ -1250,4 +1250,10 @@
     <string name="widget_todo_not_available">Att göra-listan är inte tillgänglig</string>
     <string name="widget_todo_not_selected">Att göra-listan är inte vald</string>
     <string name="widget_todo_no_lists">Inga aktiva att göra-listor med objekt</string>
+    <string name="habits">Vanor</string>
+    <string name="no_habits">Inga vanor ännu</string>
+    <string name="new_habit">Ny vana</string>
+    <string name="habit_check_in">Checka in</string>
+    <string name="habit_streak_description">Svit: %1$d</string>
+    <string name="habit_week_progress">Den här veckan: %1$d/%2$d</string>
 </resources>

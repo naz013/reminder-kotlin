@@ -1250,4 +1250,10 @@
     <string name="widget_todo_not_available">Gjøremålslisten er ikke tilgjengelig</string>
     <string name="widget_todo_not_selected">Gjøremålslisten er ikke valgt</string>
     <string name="widget_todo_no_lists">Ingen aktive gjøremålslister med elementer</string>
+    <string name="habits">Vaner</string>
+    <string name="no_habits">Ingen vaner ennå</string>
+    <string name="new_habit">Ny vane</string>
+    <string name="habit_check_in">Registrer</string>
+    <string name="habit_streak_description">Rekke: %1$d</string>
+    <string name="habit_week_progress">Denne uken: %1$d/%2$d</string>
 </resources>

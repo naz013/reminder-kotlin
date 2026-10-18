@@ -1255,4 +1255,10 @@
     <string name="widget_todo_not_available">Lista de sarcini nu este disponibilă</string>
     <string name="widget_todo_not_selected">Lista de sarcini nu este selectată</string>
     <string name="widget_todo_no_lists">Nu există liste de sarcini active cu elemente</string>
+    <string name="habits">Obiceiuri</string>
+    <string name="no_habits">Niciun obicei încă</string>
+    <string name="new_habit">Obicei nou</string>
+    <string name="habit_check_in">Bifează</string>
+    <string name="habit_streak_description">Serie: %1$d</string>
+    <string name="habit_week_progress">Săptămâna aceasta: %1$d/%2$d</string>
 </resources>

@@ -14,6 +14,7 @@ enum class HeaderNavigationSection(
   ROUTINES,
   WORKFLOW,
   POMODORO,
+  HABITS,
   ;
 
   companion object {

@@ -1248,4 +1248,10 @@
     <string name="widget_todo_not_available">To-do-Liste nicht verfügbar</string>
     <string name="widget_todo_not_selected">To-do-Liste nicht ausgewählt</string>
     <string name="widget_todo_no_lists">Keine aktiven To-do-Listen mit Einträgen</string>
+    <string name="habits">Gewohnheiten</string>
+    <string name="no_habits">Noch keine Gewohnheiten</string>
+    <string name="new_habit">Neue Gewohnheit</string>
+    <string name="habit_check_in">Abhaken</string>
+    <string name="habit_streak_description">Serie: %1$d</string>
+    <string name="habit_week_progress">Diese Woche: %1$d/%2$d</string>
 </resources>

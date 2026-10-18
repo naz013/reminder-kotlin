@@ -1258,4 +1258,10 @@
     <string name="widget_todo_not_available">Lista zadań jest niedostępna</string>
     <string name="widget_todo_not_selected">Nie wybrano listy zadań</string>
     <string name="widget_todo_no_lists">Brak aktywnych list zadań z elementami</string>
+    <string name="habits">Nawyki</string>
+    <string name="no_habits">Brak nawyków</string>
+    <string name="new_habit">Nowy nawyk</string>
+    <string name="habit_check_in">Odznacz</string>
+    <string name="habit_streak_description">Seria: %1$d</string>
+    <string name="habit_week_progress">W tym tygodniu: %1$d/%2$d</string>
 </resources>

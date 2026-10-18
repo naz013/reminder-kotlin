@@ -1247,4 +1247,10 @@
     <string name="widget_todo_not_available">Danh sách việc cần làm không khả dụng</string>
     <string name="widget_todo_not_selected">Chưa chọn danh sách việc cần làm</string>
     <string name="widget_todo_no_lists">Không có danh sách việc cần làm đang hoạt động có mục</string>
+    <string name="habits">Thói quen</string>
+    <string name="no_habits">Chưa có thói quen nào</string>
+    <string name="new_habit">Thói quen mới</string>
+    <string name="habit_check_in">Điểm danh</string>
+    <string name="habit_streak_description">Chuỗi: %1$d</string>
+    <string name="habit_week_progress">Tuần này: %1$d/%2$d</string>
 </resources>

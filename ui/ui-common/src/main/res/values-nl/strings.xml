@@ -1250,4 +1250,10 @@
     <string name="widget_todo_not_available">Takenlijst niet beschikbaar</string>
     <string name="widget_todo_not_selected">Takenlijst niet geselecteerd</string>
     <string name="widget_todo_no_lists">Geen actieve takenlijsten met items</string>
+    <string name="habits">Gewoonten</string>
+    <string name="no_habits">Nog geen gewoonten</string>
+    <string name="new_habit">Nieuwe gewoonte</string>
+    <string name="habit_check_in">Afvinken</string>
+    <string name="habit_streak_description">Reeks: %1$d</string>
+    <string name="habit_week_progress">Deze week: %1$d/%2$d</string>
 </resources>

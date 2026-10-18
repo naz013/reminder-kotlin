@@ -247,6 +247,7 @@ dependencies {
   implementation(project(":feature:feature-settings"))
   implementation(project(":feature:feature-places"))
   implementation(project(":feature:feature-routine"))
+  implementation(project(":feature:feature-habit"))
   implementation(project(":feature:feature-pomodoro"))
   implementation(project(":extensions:localbackup"))
 

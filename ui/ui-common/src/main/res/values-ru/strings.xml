@@ -1257,4 +1257,10 @@
     <string name="widget_todo_not_available">Список дел недоступен</string>
     <string name="widget_todo_not_selected">Список дел не выбран</string>
     <string name="widget_todo_no_lists">Нет активных списков дел с элементами</string>
+    <string name="habits">Привычки</string>
+    <string name="no_habits">Привычек пока нет</string>
+    <string name="new_habit">Новая привычка</string>
+    <string name="habit_check_in">Отметить</string>
+    <string name="habit_streak_description">Серия: %1$d</string>
+    <string name="habit_week_progress">На этой неделе: %1$d/%2$d</string>
 </resources>

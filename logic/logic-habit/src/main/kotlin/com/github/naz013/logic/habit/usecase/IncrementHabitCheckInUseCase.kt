@@ -12,7 +12,11 @@ class IncrementHabitCheckInUseCase(
   private val habitCheckInRepository: HabitCheckInRepository,
   private val nowDateTimeProvider: NowDateTimeProvider
 ) {
-  suspend operator fun invoke(habitId: String, date: LocalDate = nowDateTimeProvider.nowDate()) {
+  suspend operator fun invoke(habitId: String) {
+    invoke(habitId, nowDateTimeProvider.nowDate())
+  }
+
+  suspend operator fun invoke(habitId: String, date: LocalDate) {
     val habit = habitRepository.getById(habitId)
     if (habit == null) {
       Logger.w(TAG, "Habit not found: $habitId")

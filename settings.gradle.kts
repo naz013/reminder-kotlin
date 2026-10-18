@@ -107,6 +107,7 @@ include(":feature:feature-workflow")
 include(":feature:feature-settings")
 include(":feature:feature-places")
 include(":feature:feature-routine")
+include(":feature:feature-habit")
 include(":feature:feature-onboarding")
 include(":feature:feature-pomodoro")
 

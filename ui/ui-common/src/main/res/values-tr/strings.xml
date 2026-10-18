@@ -1252,4 +1252,10 @@
     <string name="widget_todo_not_available">Yapılacaklar listesi kullanılamıyor</string>
     <string name="widget_todo_not_selected">Yapılacaklar listesi seçilmedi</string>
     <string name="widget_todo_no_lists">Öğe içeren etkin yapılacaklar listesi yok</string>
+    <string name="habits">Alışkanlıklar</string>
+    <string name="no_habits">Henüz alışkanlık yok</string>
+    <string name="new_habit">Yeni alışkanlık</string>
+    <string name="habit_check_in">İşaretle</string>
+    <string name="habit_streak_description">Seri: %1$d</string>
+    <string name="habit_week_progress">Bu hafta: %1$d/%2$d</string>
 </resources>

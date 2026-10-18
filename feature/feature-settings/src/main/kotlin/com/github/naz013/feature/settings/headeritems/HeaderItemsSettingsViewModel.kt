@@ -2,6 +2,7 @@ package com.github.naz013.feature.settings.headeritems
 
 import androidx.lifecycle.ViewModel
 import com.github.naz013.domain.home.HeaderNavigationSection
+import com.github.naz013.logic.routine.HabitConfig
 import com.github.naz013.logic.routine.RoutineConfig
 import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.ui.common.R
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.update
 internal class HeaderItemsSettingsViewModel(
   private val preferences: HeaderItemsPreferences,
   private val routineConfig: RoutineConfig,
+  private val habitConfig: HabitConfig,
   private val workflowConfig: WorkflowConfig,
 ) : ViewModel() {
   val state: StateFlow<HeaderItemsSettingsState> field = MutableStateFlow(buildState())
@@ -56,6 +58,7 @@ internal class HeaderItemsSettingsViewModel(
   private fun isAvailable(section: HeaderNavigationSection): Boolean = when (section) {
     HeaderNavigationSection.ROUTINES -> routineConfig.isEnabled
     HeaderNavigationSection.WORKFLOW -> workflowConfig.isEnabled
+    HeaderNavigationSection.HABITS -> habitConfig.isEnabled
     else -> true
   }
 
@@ -83,5 +86,7 @@ internal class HeaderItemsSettingsViewModel(
       HeaderItemRow(section, R.string.workflow_automations, DrawableCatalog.Fluent.Branch, isEnabled)
     HeaderNavigationSection.POMODORO ->
       HeaderItemRow(section, R.string.pomodoro_focus_timer, DrawableCatalog.Fluent.ClockAlarm, isEnabled)
+    HeaderNavigationSection.HABITS ->
+      HeaderItemRow(section, R.string.habits, DrawableCatalog.Fluent.CalendarCheckmark, isEnabled)
   }
 }

@@ -1262,4 +1262,10 @@
     <string name="widget_todo_not_available">قائمة المهام غير متاحة</string>
     <string name="widget_todo_not_selected">لم يتم تحديد قائمة المهام</string>
     <string name="widget_todo_no_lists">لا توجد قوائم مهام نشطة تحتوي على عناصر</string>
+    <string name="habits">العادات</string>
+    <string name="no_habits">لا توجد عادات بعد</string>
+    <string name="new_habit">عادة جديدة</string>
+    <string name="habit_check_in">تسجيل</string>
+    <string name="habit_streak_description">السلسلة: %1$d</string>
+    <string name="habit_week_progress">هذا الأسبوع: %1$d/%2$d</string>
 </resources>

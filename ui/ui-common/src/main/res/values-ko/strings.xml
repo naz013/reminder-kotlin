@@ -1245,4 +1245,10 @@
     <string name="widget_todo_not_available">할 일 목록을 사용할 수 없음</string>
     <string name="widget_todo_not_selected">할 일 목록이 선택되지 않음</string>
     <string name="widget_todo_no_lists">항목이 있는 활성 할 일 목록이 없습니다</string>
+    <string name="habits">습관</string>
+    <string name="no_habits">아직 습관이 없습니다</string>
+    <string name="new_habit">새 습관</string>
+    <string name="habit_check_in">체크인</string>
+    <string name="habit_streak_description">연속 기록: %1$d</string>
+    <string name="habit_week_progress">이번 주: %1$d/%2$d</string>
 </resources>

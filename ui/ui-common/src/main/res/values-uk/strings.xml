@@ -1258,4 +1258,10 @@
     <string name="widget_todo_not_available">Список справ недоступний</string>
     <string name="widget_todo_not_selected">Список справ не вибрано</string>
     <string name="widget_todo_no_lists">Немає активних списків справ з елементами</string>
+    <string name="habits">Звички</string>
+    <string name="no_habits">Звичок поки немає</string>
+    <string name="new_habit">Нова звичка</string>
+    <string name="habit_check_in">Позначити</string>
+    <string name="habit_streak_description">Серія: %1$d</string>
+    <string name="habit_week_progress">Цього тижня: %1$d/%2$d</string>
 </resources>

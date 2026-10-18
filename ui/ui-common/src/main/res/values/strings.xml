@@ -1268,4 +1268,10 @@
     <string name="widget_todo_not_available">Todo list not available</string>
     <string name="widget_todo_not_selected">Todo list not selected</string>
     <string name="widget_todo_no_lists">No active todo lists with items</string>
+    <string name="habits">Habits</string>
+    <string name="no_habits">No habits yet</string>
+    <string name="new_habit">New habit</string>
+    <string name="habit_check_in">Check in</string>
+    <string name="habit_streak_description">Streak: %1$d</string>
+    <string name="habit_week_progress">This week: %1$d/%2$d</string>
 </resources>

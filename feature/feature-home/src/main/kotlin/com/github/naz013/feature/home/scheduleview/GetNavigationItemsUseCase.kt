@@ -6,11 +6,13 @@ import com.github.naz013.domain.home.HeaderNavigationSection
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.home.HeaderNavigationItem
 import com.github.naz013.feature.home.HomePreferences
+import com.github.naz013.logic.routine.HabitConfig
 import com.github.naz013.logic.routine.RoutineConfig
 import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskRepository
 import com.github.naz013.repository.GroupV2Repository
+import com.github.naz013.repository.HabitRepository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.PomodoroSessionRepository
 import com.github.naz013.repository.ReminderV2Repository
@@ -39,7 +41,9 @@ class GetNavigationItemsUseCase(
   private val tagRepository: TagRepository,
   private val pomodoroSessionRepository: PomodoroSessionRepository,
   private val dateTimeManager: DateTimeManager,
+  private val habitRepository: HabitRepository,
   private val routineConfig: RoutineConfig,
+  private val habitConfig: HabitConfig,
   private val workflowConfig: WorkflowConfig,
   private val homePreferences: HomePreferences,
   private val contextProvider: ContextProvider,
@@ -63,6 +67,7 @@ class GetNavigationItemsUseCase(
   private fun isAvailable(section: HeaderNavigationSection): Boolean = when (section) {
     HeaderNavigationSection.ROUTINES -> routineConfig.isEnabled
     HeaderNavigationSection.WORKFLOW -> workflowConfig.isEnabled
+    HeaderNavigationSection.HABITS -> habitConfig.isEnabled
     else -> true
   }
 
@@ -80,6 +85,7 @@ class GetNavigationItemsUseCase(
     HeaderNavigationSection.ROUTINES -> getRoutineItem(scope = scope)
     HeaderNavigationSection.WORKFLOW -> getWorkflowItem(scope = scope)
     HeaderNavigationSection.POMODORO -> getPomodoroItem(scope = scope)
+    HeaderNavigationSection.HABITS -> getHabitItem(scope = scope)
   }
 
   private suspend fun getCalendarItem(scope: CoroutineScope): HeaderNavigationItem {
@@ -191,6 +197,18 @@ class GetNavigationItemsUseCase(
           color = sectionColor(AppColorIndex.CYAN),
           navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenTags,
           subtitle = "${tagRepository.getAll().size}",
+        )
+      }.await()
+
+  private suspend fun getHabitItem(scope: CoroutineScope): HeaderNavigationItem =
+    scope
+      .async(dispatcherProvider.io()) {
+        HeaderNavigationItem(
+          titleRes = R.string.habits,
+          iconRes = DrawableCatalog.Fluent.CalendarCheckmark,
+          color = sectionColor(AppColorIndex.LIME),
+          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenHabits,
+          subtitle = "${habitRepository.getAll().size}",
         )
       }.await()
 

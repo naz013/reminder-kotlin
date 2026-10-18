@@ -39,6 +39,7 @@ import com.github.naz013.feature.home.featureHomeModule
 import com.github.naz013.feature.note.featureNoteModule
 import com.github.naz013.feature.places.featurePlacesModule
 import com.github.naz013.feature.reminder.featureReminderModule
+import com.github.naz013.feature.habit.habitModule
 import com.github.naz013.feature.routine.routineModule
 import com.github.naz013.feature.settings.featureSettingsModule
 import com.github.naz013.feature.workflow.workflowModule
@@ -205,6 +206,7 @@ class ReminderApp :
           logicRoutineModule,
           logicHabitModule,
           routineModule,
+          habitModule,
           featureReminderModule,
           uiTagModule,
           logicTagModule,

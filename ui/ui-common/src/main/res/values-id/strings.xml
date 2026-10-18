@@ -1247,4 +1247,10 @@
     <string name="widget_todo_not_available">Daftar tugas tidak tersedia</string>
     <string name="widget_todo_not_selected">Daftar tugas belum dipilih</string>
     <string name="widget_todo_no_lists">Tidak ada daftar tugas aktif yang berisi item</string>
+    <string name="habits">Kebiasaan</string>
+    <string name="no_habits">Belum ada kebiasaan</string>
+    <string name="new_habit">Kebiasaan baru</string>
+    <string name="habit_check_in">Catat</string>
+    <string name="habit_streak_description">Rentetan: %1$d</string>
+    <string name="habit_week_progress">Minggu ini: %1$d/%2$d</string>
 </resources>

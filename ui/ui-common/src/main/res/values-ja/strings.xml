@@ -1245,4 +1245,10 @@
     <string name="widget_todo_not_available">ToDoリストを利用できません</string>
     <string name="widget_todo_not_selected">ToDoリストが選択されていません</string>
     <string name="widget_todo_no_lists">項目のあるアクティブなToDoリストはありません</string>
+    <string name="habits">習慣</string>
+    <string name="no_habits">まだ習慣がありません</string>
+    <string name="new_habit">新しい習慣</string>
+    <string name="habit_check_in">チェックイン</string>
+    <string name="habit_streak_description">連続記録: %1$d</string>
+    <string name="habit_week_progress">今週: %1$d/%2$d</string>
 </resources>

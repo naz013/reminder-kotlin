@@ -1248,4 +1248,10 @@
     <string name="widget_todo_not_available">टू-डू सूची उपलब्ध नहीं है</string>
     <string name="widget_todo_not_selected">टू-डू सूची चयनित नहीं है</string>
     <string name="widget_todo_no_lists">आइटम वाली कोई सक्रिय टू-डू सूची नहीं</string>
+    <string name="habits">आदतें</string>
+    <string name="no_habits">अभी तक कोई आदत नहीं</string>
+    <string name="new_habit">नई आदत</string>
+    <string name="habit_check_in">चेक इन करें</string>
+    <string name="habit_streak_description">लगातार: %1$d</string>
+    <string name="habit_week_progress">इस सप्ताह: %1$d/%2$d</string>
 </resources>

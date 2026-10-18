@@ -99,12 +99,15 @@ import com.github.naz013.onboarding.OnboardingNavKey
 import com.github.naz013.onboarding.onboardingEntries
 import com.github.naz013.feature.pomodoro.PomodoroNavKey
 import com.github.naz013.feature.pomodoro.pomodoroEntries
+import com.github.naz013.feature.habit.HabitNavKey
+import com.github.naz013.feature.habit.habitEntries
 import com.github.naz013.feature.routine.RoutineNavKey
 import com.github.naz013.feature.routine.routineEntries
 import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.tags.tagsEntries
 import com.github.naz013.domain.home.HeaderNavigationSection
 import com.github.naz013.feature.home.HomePreferences
+import com.github.naz013.logic.routine.HabitConfig
 import com.github.naz013.logic.routine.RoutineConfig
 import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.ui.common.R
@@ -164,6 +167,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
   // immediately reflects the user's latest order/visibility choice, with no app restart needed.
   val homePreferences = koinInject<HomePreferences>()
   val routineConfig = koinInject<RoutineConfig>()
+  val habitConfig = koinInject<HabitConfig>()
   val workflowConfig = koinInject<WorkflowConfig>()
   val buildInfo = koinInject<BuildInfo>()
   val analyticsEventSender = koinInject<AnalyticsEventSender>()
@@ -174,6 +178,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
           when (section) {
             HeaderNavigationSection.ROUTINES -> routineConfig.isEnabled
             HeaderNavigationSection.WORKFLOW -> workflowConfig.isEnabled
+            HeaderNavigationSection.HABITS -> habitConfig.isEnabled
             else -> true
           }
       }
@@ -309,6 +314,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
           onOpenGroups = { backStack.add(GroupsNavKey.List) },
           onOpenTags = { backStack.add(TagsNavKey.Manage) },
           onOpenRoutines = { backStack.add(RoutineNavKey.List) },
+          onOpenHabits = { backStack.add(HabitNavKey.List) },
           onOpenWorkflowGallery = { backStack.add(WorkflowNavKey.Gallery) },
           onOpenPomodoro = { backStack.add(PomodoroNavKey.Timer()) },
           onOpenQuickAdd = { backStack.add(QuickAddNavKey.Sheet) },
@@ -338,6 +344,11 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
           onNewReminderClick = { backStack.add(BuildReminderNavKey.Main(groupUuId = it)) },
           onReminderPreviewClick = { backStack.add(ReminderPreviewNavKey.Preview(it)) },
           onRulesForGroupClick = { backStack.add(WorkflowNavKey.RulesForGroup(it)) }
+        )
+        habitEntries(
+          backStack = backStack,
+          // Create/edit screen is not built yet; taps on the add button and cards do nothing for now.
+          onOpenHabitEditor = { _ -> },
         )
         routineEntries(
           backStack = backStack,
@@ -600,6 +611,12 @@ private fun headerSectionRailDestination(section: HeaderNavigationSection): AppD
         key = WorkflowNavKey.Gallery,
         icon = AppIcons.Fluent.ArrowRepeatAll,
         labelRes = R.string.workflow_automations,
+      )
+    HeaderNavigationSection.HABITS ->
+      AppDestination(
+        key = HabitNavKey.List,
+        icon = AppIcons.Fluent.CalendarCheckmark,
+        labelRes = R.string.habits,
       )
     HeaderNavigationSection.POMODORO -> {
       val buildInfo = koinInject<BuildInfo>()
