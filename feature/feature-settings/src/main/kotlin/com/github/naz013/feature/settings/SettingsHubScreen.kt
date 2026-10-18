@@ -60,6 +60,7 @@ internal fun SettingsHubScreen(
   onSearchResultClick: (SettingsSearchResult) -> Unit,
   onBuyProClick: () -> Unit,
   onTrialPromoClick: () -> Unit,
+  onTrialTimerClick: () -> Unit,
   onUpdateClick: () -> Unit,
   onGeneralClick: () -> Unit,
   onBackupClick: () -> Unit,
@@ -114,6 +115,17 @@ internal fun SettingsHubScreen(
         icon = AppIcons.Fluent.Play,
         trailingIcon = AppIcons.Fluent.ChevronRight,
         onClick = onTrialPromoClick,
+      )
+    }
+    if (state.proTrialRemaining != null) {
+      SettingsBanner(
+        text = stringResource(R.string.pro_trial_active_title) + " - " +
+          stringResource(R.string.pro_trial_remaining, state.proTrialRemaining),
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        icon = AppIcons.Fluent.Play,
+        trailingIcon = AppIcons.Fluent.ChevronRight,
+        onClick = onTrialTimerClick,
       )
     }
     if (state.saleMessage != null) {

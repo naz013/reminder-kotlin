@@ -8,7 +8,7 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.common.system.ProTrialController
-import com.github.naz013.common.system.observeIsActive
+import com.github.naz013.common.system.formatProTrialRemaining
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.feature.settings.search.SettingsSearchIndex
 import com.github.naz013.feature.settings.search.SettingsSearchResult
@@ -35,10 +35,12 @@ internal class SettingsHubViewModel(
   SettingsHubRemoteMessages.MessageObserver {
 
   private val _state = MutableStateFlow(SettingsHubState())
-  val state = combine(_state, proTrialController.observeIsActive()) { state, isTrialActive ->
+  val state = combine(_state, proTrialController.observeRemainingMillis()) { state, remainingMillis ->
+    val isTrialActive = remainingMillis > 0L
     state.copy(
       isBuyProBadgeVisible = !buildInfo.isPro && !systemInfo.isProAppInstalled,
       isTrialPromoVisible = !buildInfo.isBuildPro && !isTrialActive,
+      proTrialRemaining = if (isTrialActive) formatProTrialRemaining(remainingMillis) else null,
     )
   }
     .stateInWhileSubscribed(SettingsHubState())

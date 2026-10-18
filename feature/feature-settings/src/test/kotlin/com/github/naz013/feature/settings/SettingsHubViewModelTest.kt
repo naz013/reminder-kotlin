@@ -117,6 +117,20 @@ class SettingsHubViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `proTrialRemaining is null while the trial is inactive`() =
+    runTest {
+      assertNull(viewModel.state.first().proTrialRemaining)
+    }
+
+  @Test
+  fun `proTrialRemaining shows hours and minutes while the trial is active`() =
+    runTest {
+      remainingMillis.value = 2 * 3_600_000L + 30 * 60_000L
+
+      assertEquals("02:30", newViewModel().state.first().proTrialRemaining)
+    }
+
+  @Test
   fun `onTrialPromoClick sends the trial promo clicked event`() {
     viewModel.onTrialPromoClick()
 

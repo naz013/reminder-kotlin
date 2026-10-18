@@ -9,6 +9,8 @@ internal data class SettingsHubState(
   val isDoNotDisturbActive: Boolean = false,
   val isBuyProBadgeVisible: Boolean = false,
   val isTrialPromoVisible: Boolean = false,
+  /** Formatted `hh:mm` time left of the running PRO trial, `null` when no trial is running. */
+  val proTrialRemaining: String? = null,
   val isPlayServicesWarningVisible: Boolean = false,
   val hasPinCode: Boolean = false,
   val isDeveloperOptionVisible: Boolean = false,

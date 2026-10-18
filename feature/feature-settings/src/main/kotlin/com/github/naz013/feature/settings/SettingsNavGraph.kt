@@ -224,6 +224,7 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
         viewModel.onTrialPromoClick()
         backStack.navigateToSettingsDetailPane(SettingsNavKey.ProTrial)
       },
+      onTrialTimerClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.ProTrial) },
       onUpdateClick = { googlePlayMarketLauncher.launchSelf() },
       onGeneralClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.General) },
       onBackupClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.Backup) },
