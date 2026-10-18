@@ -18,6 +18,7 @@ dependencies {
   implementation(project(":ui:ui-note"))
   implementation(project(":ui:ui-common"))
   implementation(project(":core:analytics"))
+  implementation(project(":logic:logic-reminder"))
   implementation(project(":data:icalendar"))
   implementation(project(":core:date-calculations"))
 

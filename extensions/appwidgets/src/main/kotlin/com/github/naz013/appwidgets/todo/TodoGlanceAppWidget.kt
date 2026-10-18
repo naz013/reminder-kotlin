@@ -17,6 +17,7 @@ import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionParametersOf
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.lazy.items
@@ -171,7 +172,9 @@ internal class TodoGlanceAppWidget : GlanceAppWidget(), KoinComponent {
             maxLines = 2
           )
           LazyColumn(modifier = GlanceModifier.fillMaxSize()) {
-            items(state.items) { item -> TodoItem(item = item) }
+            items(state.items) { item ->
+              TodoItem(item = item, reminderId = reminderId)
+            }
           }
         }
       }
@@ -179,9 +182,23 @@ internal class TodoGlanceAppWidget : GlanceAppWidget(), KoinComponent {
   }
 
   @Composable
-  private fun TodoItem(modifier: GlanceModifier = GlanceModifier, item: UiShopListWidget) {
+  private fun TodoItem(
+    modifier: GlanceModifier = GlanceModifier,
+    item: UiShopListWidget,
+    reminderId: String
+  ) {
     Row(
-      modifier = modifier.fillMaxWidth().padding(vertical = 2.dp),
+      modifier = modifier
+        .fillMaxWidth()
+        .padding(vertical = 2.dp)
+        .clickable(
+          onClick = actionRunCallback<TodoItemToggleActionCallback>(
+            actionParametersOf(
+              TodoItemToggleActionCallback.REMINDER_ID_KEY to reminderId,
+              TodoItemToggleActionCallback.ITEM_ID_KEY to item.id
+            )
+          )
+        ),
       verticalAlignment = Alignment.Vertical.CenterVertically
     ) {
       Image(

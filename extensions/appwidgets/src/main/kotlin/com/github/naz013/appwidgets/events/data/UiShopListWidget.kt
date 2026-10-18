@@ -2,5 +2,6 @@ package com.github.naz013.appwidgets.events.data
 
 internal data class UiShopListWidget(
   val iconRes: Int,
-  val text: String
+  val text: String,
+  val id: String = ""
 )

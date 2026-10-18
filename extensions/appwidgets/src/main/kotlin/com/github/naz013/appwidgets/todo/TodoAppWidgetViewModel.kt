@@ -32,7 +32,8 @@ internal class TodoAppWidgetViewModel(
         } else {
           DrawableCatalog.Fluent.CheckboxUnchecked
         },
-        text = it.summary
+        text = it.summary,
+        id = it.uuId
       )
     }
   }
