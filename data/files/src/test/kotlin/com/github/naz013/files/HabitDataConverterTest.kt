@@ -6,6 +6,8 @@ import com.github.naz013.domain.habit.HabitFrequency
 import com.github.naz013.domain.reminder.v2.SyncMetadata
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.files.model.HabitJson
+import com.google.gson.Gson
+import com.google.gson.JsonParser
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -62,9 +64,44 @@ class HabitDataConverterTest {
   }
 
   @Test
-  fun `habits data type is pro only`() {
+  fun `habits data type is pro only with the hb1 extension`() {
     assertEquals(".hb1", DataType.Habits.fileExtension)
     assertTrue(DataType.Habits.isProOnly)
-    assertTrue(HabitJson(id = "x", createdAt = "", updatedAt = "").frequency == "DAILY")
+  }
+
+  @Test
+  fun `habit json defaults to a daily frequency with one target`() {
+    val json = HabitJson(id = "x", createdAt = "", updatedAt = "")
+
+    assertEquals("DAILY", json.frequency)
+    assertEquals(1, json.targetCount)
+  }
+
+  @Test
+  fun `detects raw habit json as a Habit`() {
+    val raw = """{"id":"h-1","name":"Run","frequency":"WEEKLY","targetCount":3,"color":0,""" +
+      """"isPinned":false,"createdAt":"2026-10-01T08:00:00","updatedAt":"2026-10-01T08:00:00","versionId":2}"""
+
+    val result = parseRaw(raw)
+
+    assertTrue(result is Habit)
+    assertEquals(HabitFrequency.WEEKLY, (result as Habit).frequency)
+  }
+
+  @Test
+  fun `detects raw check-in json as a HabitCheckIn`() {
+    val raw = """{"habitId":"h-1","date":"2026-10-18","count":1,"isCompleted":true,""" +
+      """"createdAt":"2026-10-18T07:00:00","updatedAt":"2026-10-18T07:00:00"}"""
+
+    val result = parseRaw(raw)
+
+    assertTrue(result is HabitCheckIn)
+    assertEquals(LocalDate.of(2026, 10, 18), (result as HabitCheckIn).date)
+  }
+
+  private fun parseRaw(raw: String): Any {
+    val json = JsonParser.parseString(raw).asJsonObject
+    val clazz = detectClass(json)
+    return Gson().fromJson(json, clazz).toDomain()
   }
 }

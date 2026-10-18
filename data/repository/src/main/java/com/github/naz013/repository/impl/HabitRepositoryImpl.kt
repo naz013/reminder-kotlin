@@ -43,16 +43,14 @@ internal class HabitRepositoryImpl(
 
   override suspend fun delete(id: String) {
     Logger.d(TAG, "Delete habit: $id")
-    checkInDao.deleteForHabit(id)
-    habitDao.delete(id)
+    habitDao.deleteWithCheckIns(id)
     tableChangeNotifier.notify(Table.HabitCheckIn)
     tableChangeNotifier.notify(Table.Habit)
   }
 
   override suspend fun deleteAll() {
     Logger.d(TAG, "Delete all habits")
-    habitDao.getAllIds().forEach { checkInDao.deleteForHabit(it) }
-    habitDao.deleteAll()
+    habitDao.deleteAllWithCheckIns()
     tableChangeNotifier.notify(Table.HabitCheckIn)
     tableChangeNotifier.notify(Table.Habit)
   }

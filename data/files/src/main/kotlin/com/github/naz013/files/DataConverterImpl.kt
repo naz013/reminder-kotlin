@@ -172,7 +172,7 @@ private fun Any.toJson(): Any {
  * but absent from the older [OldNote] schema. [NoteV4Json] is the current format (unique `spans`
  * key) and is checked first among the note shapes.
  */
-private fun detectClass(json: JsonObject): Class<*> = when {
+internal fun detectClass(json: JsonObject): Class<*> = when {
   json.has("recurrenceType") && json.has("actionType") -> ReminderV2Json::class.java
   json.has("steps") && json.has("recurrenceType") -> RoutineJson::class.java
   json.has("completedStepIds") -> RoutineExecutionJson::class.java
