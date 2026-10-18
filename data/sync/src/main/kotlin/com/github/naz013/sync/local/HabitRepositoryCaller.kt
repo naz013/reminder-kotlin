@@ -24,9 +24,7 @@ internal class HabitRepositoryCaller(
   }
 
   override suspend fun insertOrUpdate(item: Any) {
-    if (item !is Habit) {
-      throw IllegalArgumentException("Expected Habit type but got: ${item::class}")
-    }
+    require(item is Habit) { "Expected Habit type but got: ${item::class}" }
     habitRepository.save(item.copy(sync = item.sync.copy(syncState = SyncState.Synced)))
   }
 

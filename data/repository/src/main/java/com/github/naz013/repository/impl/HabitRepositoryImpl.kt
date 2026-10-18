@@ -1,11 +1,9 @@
 package com.github.naz013.repository.impl
 
 import com.github.naz013.domain.habit.Habit
-import com.github.naz013.domain.habit.HabitCheckIn
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.HabitRepository
-import com.github.naz013.repository.dao.HabitCheckInDao
 import com.github.naz013.repository.dao.HabitDao
 import com.github.naz013.repository.entity.toDomain
 import com.github.naz013.repository.entity.toEntity
@@ -13,11 +11,9 @@ import com.github.naz013.repository.observer.TableChangeNotifier
 import com.github.naz013.repository.table.Table
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.threeten.bp.LocalDate
 
 internal class HabitRepositoryImpl(
   private val habitDao: HabitDao,
-  private val checkInDao: HabitCheckInDao,
   private val tableChangeNotifier: TableChangeNotifier
 ) : HabitRepository {
 
@@ -75,37 +71,6 @@ internal class HabitRepositoryImpl(
   override suspend fun getAllIds(): List<String> {
     Logger.d(TAG, "Get all habit ids")
     return habitDao.getAllIds()
-  }
-
-  override fun observeCheckIns(habitId: String, from: LocalDate, to: LocalDate): Flow<List<HabitCheckIn>> =
-    checkInDao.observeRange(habitId, from.toString(), to.toString()).map { list -> list.map { it.toDomain() } }
-
-  override suspend fun getCheckIns(habitId: String, from: LocalDate, to: LocalDate): List<HabitCheckIn> {
-    Logger.d(TAG, "Get check-ins for habit: $habitId, $from..$to")
-    return checkInDao.getRange(habitId, from.toString(), to.toString()).map { it.toDomain() }
-  }
-
-  override suspend fun getCheckIn(habitId: String, date: LocalDate): HabitCheckIn? {
-    Logger.d(TAG, "Get check-in for habit: $habitId, date=$date")
-    return checkInDao.get(habitId, date.toString())?.toDomain()
-  }
-
-  override suspend fun saveCheckIn(checkIn: HabitCheckIn) {
-    Logger.d(TAG, "Save check-in: ${checkIn.habitId}, ${checkIn.date}")
-    checkInDao.insert(checkIn.toEntity())
-    tableChangeNotifier.notify(Table.HabitCheckIn)
-  }
-
-  override suspend fun deleteCheckIn(habitId: String, date: LocalDate) {
-    Logger.d(TAG, "Delete check-in: $habitId, $date")
-    checkInDao.delete(habitId, date.toString())
-    tableChangeNotifier.notify(Table.HabitCheckIn)
-  }
-
-  override suspend fun deleteCheckIns(habitId: String) {
-    Logger.d(TAG, "Delete all check-ins for habit: $habitId")
-    checkInDao.deleteForHabit(habitId)
-    tableChangeNotifier.notify(Table.HabitCheckIn)
   }
 
   companion object {

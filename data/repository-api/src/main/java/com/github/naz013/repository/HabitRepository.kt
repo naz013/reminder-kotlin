@@ -1,10 +1,8 @@
 package com.github.naz013.repository
 
 import com.github.naz013.domain.habit.Habit
-import com.github.naz013.domain.habit.HabitCheckIn
 import com.github.naz013.domain.sync.SyncState
 import kotlinx.coroutines.flow.Flow
-import org.threeten.bp.LocalDate
 
 interface HabitRepository {
   fun observeAll(): Flow<List<Habit>>
@@ -28,16 +26,4 @@ interface HabitRepository {
   suspend fun updateSyncState(id: String, state: SyncState)
 
   suspend fun getAllIds(): List<String>
-
-  fun observeCheckIns(habitId: String, from: LocalDate, to: LocalDate): Flow<List<HabitCheckIn>>
-
-  suspend fun getCheckIns(habitId: String, from: LocalDate, to: LocalDate): List<HabitCheckIn>
-
-  suspend fun getCheckIn(habitId: String, date: LocalDate): HabitCheckIn?
-
-  suspend fun saveCheckIn(checkIn: HabitCheckIn)
-
-  suspend fun deleteCheckIn(habitId: String, date: LocalDate)
-
-  suspend fun deleteCheckIns(habitId: String)
 }
