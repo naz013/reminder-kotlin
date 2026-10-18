@@ -99,8 +99,8 @@ internal fun HabitCard(
         onClick = onCheckInClick,
         modifier = Modifier.size(CHECK_BUTTON_SIZE).testTag("habit_check_in_${habit.id}"),
         colors = IconButtonDefaults.iconButtonColors(
-          containerColor = if (habit.isTargetReached) habit.contentColor else habit.backgroundColor,
-          contentColor = if (habit.isTargetReached) habit.backgroundColor else habit.contentColor,
+          containerColor = habit.checkButtonContainerColor,
+          contentColor = habit.checkButtonContentColor,
         ),
       ) {
         Icon(

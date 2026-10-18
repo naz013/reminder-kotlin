@@ -80,7 +80,8 @@ internal class HabitEditorViewModel(
   }
 
   fun onNameChange(name: String) {
-    state.update { it.copy(name = name, nameError = null, canSave = name.isNotBlank()) }
+    val limited = name.take(MAX_NAME_LENGTH)
+    state.update { it.copy(name = limited, nameError = null, canSave = limited.isNotBlank()) }
   }
 
   fun onDescriptionChange(description: String) {
@@ -180,6 +181,7 @@ internal class HabitEditorViewModel(
 
   companion object {
     private const val TAG = "HabitEditorViewModel"
+    private const val MAX_NAME_LENGTH = 100
     private const val MIN_TARGET = 1
     private const val MAX_TARGET = 99
     private const val DEFAULT_TARGET = 1

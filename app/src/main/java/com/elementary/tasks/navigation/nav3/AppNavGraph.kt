@@ -40,6 +40,8 @@ import com.github.naz013.feature.calendar.preview.GoogleCalendarEventPreviewNavK
 import com.github.naz013.feature.calendar.preview.googleCalendarEventPreviewEntries
 import com.elementary.tasks.core.os.datapicker.compose.rememberContactPhonePicker
 import com.elementary.tasks.eventaction.rememberEventActionDispatcher
+import com.github.naz013.feature.habit.HabitNavKey
+import com.github.naz013.feature.habit.habitEntries
 import com.github.naz013.feature.home.HomeNavKey
 import com.github.naz013.feature.home.homeEntries
 import com.elementary.tasks.navigation.BottomNavActivity
@@ -99,8 +101,6 @@ import com.github.naz013.onboarding.OnboardingNavKey
 import com.github.naz013.onboarding.onboardingEntries
 import com.github.naz013.feature.pomodoro.PomodoroNavKey
 import com.github.naz013.feature.pomodoro.pomodoroEntries
-import com.github.naz013.feature.habit.HabitNavKey
-import com.github.naz013.feature.habit.habitEntries
 import com.github.naz013.feature.routine.RoutineNavKey
 import com.github.naz013.feature.routine.routineEntries
 import com.github.naz013.tags.TagsNavKey

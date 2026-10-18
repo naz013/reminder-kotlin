@@ -15,6 +15,8 @@ internal data class UiHabitListItem(
   val streakLabel: String,
   val streakDescription: String,
   val isTargetReached: Boolean,
+  val checkButtonContainerColor: Color,
+  val checkButtonContentColor: Color,
 )
 
 internal sealed interface HabitListDisplayState {

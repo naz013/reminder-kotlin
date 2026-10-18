@@ -24,6 +24,7 @@ private fun HabitListEntry(backStack: MutableList<NavKey>) {
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
+      HabitListViewModel.NavigationEvent.Back -> backStack.popBackStack()
       is HabitListViewModel.NavigationEvent.OpenEditor -> backStack.add(HabitNavKey.Editor(event.id))
     }
   }
@@ -31,7 +32,7 @@ private fun HabitListEntry(backStack: MutableList<NavKey>) {
   val state by viewModel.state.collectAsState()
   HabitListScreen(
     state = state,
-    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    onBackClick = viewModel::onBackClick,
     onAddClick = viewModel::onAddClick,
     onHabitClick = viewModel::onHabitClick,
     onCheckInClick = viewModel::onCheckInClick,
@@ -47,7 +48,7 @@ private fun HabitEditorEntry(
 
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
-      HabitEditorViewModel.NavigationEvent.Back -> if (backStack.size > 1) backStack.removeLastOrNull()
+      HabitEditorViewModel.NavigationEvent.Back -> backStack.popBackStack()
     }
   }
 
@@ -67,4 +68,9 @@ private fun HabitEditorEntry(
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDeleteDismissed = viewModel::onDeleteDismissed,
   )
+}
+
+/** Never pops the last entry, so a stray Back event can't leave the host with an empty stack. */
+private fun MutableList<NavKey>.popBackStack() {
+  if (size > 1) removeLastOrNull()
 }

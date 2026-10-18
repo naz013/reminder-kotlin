@@ -4,8 +4,10 @@ import com.github.naz013.datecalc.NowDateTimeProvider
 import com.github.naz013.domain.habit.Habit
 import com.github.naz013.domain.habit.HabitCheckIn
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.files.DataType
 import com.github.naz013.logic.habit.HabitStreakCalculator
+import com.github.naz013.logic.habit.HabitWithProgress
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.logic.schedule.WorkType
 import com.github.naz013.repository.HabitCheckInRepository
@@ -17,6 +19,10 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -156,6 +162,44 @@ class HabitUseCasesTest {
     assertEquals(1, result.size)
     assertEquals(1, result[0].todayCount)
     assertEquals(2, result[0].streak)
+  }
+
+  @Test
+  fun `observe re-reads progress for the new day after midnight`() = runTest {
+    var date = LocalDate.of(2026, 10, 18)
+    var time = LocalDateTime.of(2026, 10, 18, 23, 59, 59)
+    val movingClock = mockk<NowDateTimeProvider> {
+      every { nowDate() } answers { date }
+      every { nowDateTime() } answers { time }
+    }
+    val dispatcher = StandardTestDispatcher(testScheduler)
+    val dispatchers = mockk<DispatcherProvider> { every { io() } returns dispatcher }
+    every { habitRepository.observeAll() } returns flowOf(listOf(habit()))
+    val requestedTo = mutableListOf<LocalDate>()
+    every { checkInRepository.observeRange("h-1", any(), any()) } answers {
+      requestedTo += thirdArg<LocalDate>()
+      flowOf(emptyList())
+    }
+    val results = mutableListOf<List<HabitWithProgress>>()
+    backgroundScope.launch(dispatcher) {
+      ObserveHabitsWithProgressUseCase(
+        habitRepository,
+        checkInRepository,
+        HabitStreakCalculator(),
+        movingClock,
+        dispatchers
+      )().collect { results += it }
+    }
+    runCurrent()
+    assertEquals(listOf(LocalDate.of(2026, 10, 18)), requestedTo)
+
+    date = LocalDate.of(2026, 10, 19)
+    time = LocalDateTime.of(2026, 10, 19, 0, 0, 0)
+    advanceTimeBy(1_100)
+    runCurrent()
+
+    assertEquals(listOf(LocalDate.of(2026, 10, 18), LocalDate.of(2026, 10, 19)), requestedTo)
+    assertEquals(2, results.size)
   }
 
   @Test

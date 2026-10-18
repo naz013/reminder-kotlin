@@ -114,6 +114,15 @@ class HabitEditorViewModelTest : BaseTest() {
   }
 
   @Test
+  fun `name longer than the limit is truncated`() {
+    val viewModel = createViewModel()
+
+    viewModel.onNameChange("a".repeat(150))
+
+    assertEquals(100, viewModel.state.value.name.length)
+  }
+
+  @Test
   fun `blank description is saved as null`() {
     val viewModel = createViewModel()
     viewModel.onNameChange("Run")

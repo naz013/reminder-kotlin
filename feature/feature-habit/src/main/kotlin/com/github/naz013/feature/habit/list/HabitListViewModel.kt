@@ -78,7 +78,13 @@ internal class HabitListViewModel(
       streakLabel = "${progress.streak}",
       streakDescription = textProvider.getString(R.string.habit_streak_description, progress.streak),
       isTargetReached = progress.isPeriodTargetReached,
+      checkButtonContainerColor = if (progress.isPeriodTargetReached) contentColor else backgroundColor,
+      checkButtonContentColor = if (progress.isPeriodTargetReached) backgroundColor else contentColor,
     )
+  }
+
+  fun onBackClick() {
+    navigationEvent.emit(NavigationEvent.Back)
   }
 
   fun onAddClick() {
@@ -109,6 +115,8 @@ internal class HabitListViewModel(
   }
 
   sealed interface NavigationEvent {
+    data object Back : NavigationEvent
+
     data class OpenEditor(
       val id: String?
     ) : NavigationEvent

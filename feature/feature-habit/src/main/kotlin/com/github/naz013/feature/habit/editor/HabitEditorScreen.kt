@@ -35,7 +35,6 @@ import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.routine.RoutineColorPicker
 import com.github.naz013.ui.routine.RoutineIconPicker
 
-private const val MAX_NAME_LENGTH = 100
 private val MAX_CONTENT_WIDTH = 600.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -157,7 +156,7 @@ private fun NameRow(
   Row(modifier = modifier, verticalAlignment = Alignment.Top) {
     OutlinedTextField(
       value = state.name,
-      onValueChange = { if (it.length <= MAX_NAME_LENGTH) onNameChange(it) },
+      onValueChange = onNameChange,
       label = { Text(stringResource(R.string.name)) },
       isError = state.nameError != null,
       supportingText = state.nameError?.let { error -> { Text(error) } },
