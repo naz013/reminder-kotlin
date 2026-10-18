@@ -41,6 +41,7 @@ import com.github.naz013.ui.common.R
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -67,6 +68,7 @@ class ScheduleHomeViewModel internal constructor(
   private val proTrialController: ProTrialController,
 ) : ViewModel() {
   private var proTrialJob: Job? = null
+  private var headerItemsJob: Job? = null
 
   private val _state = MutableStateFlow(HomeScreenState())
   private val _selectedEventId = MutableStateFlow<String?>(null)
@@ -247,14 +249,7 @@ class ScheduleHomeViewModel internal constructor(
       )
     }
     observeProTrial()
-    viewModelScope.launch(dispatcherProvider.io()) {
-      val items = getNavigationItemsUseCase(this, LocalDateTime.now())
-      _state.update {
-        it.copy(
-          headerNavigationItems = items,
-        )
-      }
-    }
+    loadHeaderNavigationItems()
     viewModelScope.launch(dispatcherProvider.default()) {
       val loadedToday = observeTodayScheduleUseCase().map { snapshot -> loadToday(snapshot) }
       combine(loadedToday, _isEarlierExpanded, _isOverdueExpanded) { loaded, earlierExpanded, overdueExpanded ->
@@ -269,11 +264,21 @@ class ScheduleHomeViewModel internal constructor(
   private fun observeProTrial() {
     proTrialJob?.cancel()
     proTrialJob = viewModelScope.launch {
-      proTrialController.observeIsActive().collect {
+      proTrialController.observeIsActive().collectIndexed { index, _ ->
         _state.update {
           it.copy(addMenuItems = EventType.entries.filter { type -> isAddMenuItemAvailable(type) })
         }
+        // The first emission is the current status, already covered by loadData's own load.
+        if (index > 0) loadHeaderNavigationItems()
       }
+    }
+  }
+
+  private fun loadHeaderNavigationItems() {
+    headerItemsJob?.cancel()
+    headerItemsJob = viewModelScope.launch(dispatcherProvider.io()) {
+      val items = getNavigationItemsUseCase(this, LocalDateTime.now())
+      _state.update { it.copy(headerNavigationItems = items) }
     }
   }
 

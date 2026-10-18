@@ -66,7 +66,7 @@ class GetNavigationItemsUseCase(
 
   private fun isAvailable(section: HeaderNavigationSection): Boolean = when (section) {
     HeaderNavigationSection.ROUTINES -> routineConfig.isEnabled
-    HeaderNavigationSection.WORKFLOW -> workflowConfig.isEnabled
+    HeaderNavigationSection.WORKFLOW -> workflowConfig.isRunnable
     HeaderNavigationSection.HABITS -> habitConfig.isEnabled
     else -> true
   }

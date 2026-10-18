@@ -29,6 +29,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.LegalDocumentType
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -121,6 +122,34 @@ class ScheduleHomeViewModelTest : BaseTest() {
         proTrialController = proTrialController,
       )
   }
+
+  @Test
+  fun `header navigation items are reloaded when the pro trial starts and ends`() = runTest {
+    val before = listOf(headerItem("before"))
+    val during = listOf(headerItem("during"))
+    val after = listOf(headerItem("after"))
+    coEvery { getNavigationItemsUseCase(any(), any()) } returnsMany listOf(before, during, after)
+    val states = mutableListOf<HomeScreenState>()
+    val job = launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.toList(states) }
+    assertEquals(before, states.last().headerNavigationItems)
+
+    remainingMillis.value = TimeUnit.HOURS.toMillis(1)
+    assertEquals(during, states.last().headerNavigationItems)
+
+    remainingMillis.value = 0L
+    assertEquals(after, states.last().headerNavigationItems)
+    coVerify(exactly = 3) { getNavigationItemsUseCase(any(), any()) }
+    job.cancel()
+  }
+
+  private fun headerItem(subtitle: String) =
+    HeaderNavigationItem(
+      titleRes = 0,
+      iconRes = 0,
+      color = androidx.compose.ui.graphics.Color.Unspecified,
+      navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenCalendar,
+      subtitle = subtitle,
+    )
 
   @Test
   fun `add menu offers quick add once the pro trial makes the user pro`() = runTest {
