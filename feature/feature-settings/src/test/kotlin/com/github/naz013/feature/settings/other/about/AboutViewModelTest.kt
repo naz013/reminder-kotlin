@@ -26,7 +26,7 @@ class AboutViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
-    every { buildInfo.isPro } returns false
+    every { buildInfo.isBuildPro } returns false
     every { textProvider.getString(R.string.app_name) } returns "Reminder"
     every { packageManagerWrapper.getVersionName() } returns "1.2.3"
     every { packageManagerWrapper.getVersionCode() } returns 42L
@@ -50,7 +50,7 @@ class AboutViewModelTest : BaseTest() {
   @Test
   fun `uses the pro app name when the build is pro`() =
     runTest {
-      every { buildInfo.isPro } returns true
+      every { buildInfo.isBuildPro } returns true
       every { textProvider.getString(R.string.app_name_pro) } returns "Reminder PRO"
 
       val state = viewModel.state.first()

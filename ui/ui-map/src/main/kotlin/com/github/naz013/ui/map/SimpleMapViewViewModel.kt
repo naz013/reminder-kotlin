@@ -7,6 +7,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.common.system.ProTrialController
+import com.github.naz013.common.system.observeIsActive
 import com.github.naz013.ui.map.place.UiPlaceList
 import com.github.naz013.ui.map.place.UiPlaceListAdapter
 import com.github.naz013.common.TextProvider
@@ -21,7 +23,9 @@ import com.github.naz013.repository.PlaceRepository
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.MapType
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -38,6 +42,7 @@ class SimpleMapViewViewModel(
   textProvider: TextProvider,
   private val systemServiceProvider: SystemServiceProvider,
   private val mapStyle: MapStyle,
+  private val proTrialController: ProTrialController,
 ) : ViewModel() {
   private val radiusRange = RadiusRangeState(mapPreferences.radius)
   private val radiusFormatter = DefaultRadiusFormatter(textProvider, mapPreferences.useMetric)
@@ -46,7 +51,11 @@ class SimpleMapViewViewModel(
 
   private val _state = MutableStateFlow(MapUiState())
   val state = _state.stateInWhileSubscribed(MapUiState())
-    .onStart { _state.update { loadInitialState(it) } }
+    .onStart {
+      _state.update { loadInitialState(it) }
+      observeProTrial()
+    }
+  private var proTrialJob: Job? = null
 
   val event: LiveData<Event<MapEvent>> field = mutableLiveEventOf()
 
@@ -304,6 +313,21 @@ class SimpleMapViewViewModel(
       return LatLng(fromLocationManager.latitude, fromLocationManager.longitude)
     }
     return null
+  }
+
+  private fun observeProTrial() {
+    proTrialJob?.cancel()
+    proTrialJob = viewModelScope.launch {
+      proTrialController.observeIsActive().drop(1).collect { _ ->
+        val isPro = buildInfo.isPro
+        _state.update {
+          it.copy(
+            isPro = isPro,
+            selectedMarkerStyle = if (isPro) it.selectedMarkerStyle else MapConfig.DEFAULT_MARKER_STYLE,
+          )
+        }
+      }
+    }
   }
 
   private fun loadInitialState(current: MapUiState): MapUiState {

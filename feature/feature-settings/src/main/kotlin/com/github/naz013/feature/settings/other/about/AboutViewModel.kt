@@ -30,7 +30,7 @@ internal class AboutViewModel(
   }
 
   private fun loadState() {
-    val appName = textProvider.getString(if (buildInfo.isPro) R.string.app_name_pro else R.string.app_name)
+    val appName = textProvider.getString(if (buildInfo.isBuildPro) R.string.app_name_pro else R.string.app_name)
     val year = Calendar.getInstance().get(Calendar.YEAR)
     _state.update {
       it.copy(
