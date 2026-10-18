@@ -158,6 +158,23 @@ class RemindersSettingsViewModelTest : BaseTest() {
   }
 
   @Test
+  fun `onWorkflowRulesClick opens workflow rules when pro`() {
+    viewModel.onWorkflowRulesClick()
+
+    assertEquals(RemindersSettingsEvent.OpenWorkflowRules, viewModel.navigationEvent.value?.peekContent())
+  }
+
+  @Test
+  fun `onWorkflowRulesClick opens the pro screen and sends a gate event when not pro`() {
+    every { buildInfo.isPro } returns false
+
+    viewModel.onWorkflowRulesClick()
+
+    assertEquals(RemindersSettingsEvent.OpenProVersion, viewModel.navigationEvent.value?.peekContent())
+    verify { analyticsEventSender.send(FeatureGateTappedEvent(Feature.WORKFLOWS)) }
+  }
+
+  @Test
   fun `onPresetsClick opens the presets screen`() {
     viewModel.onPresetsClick()
 

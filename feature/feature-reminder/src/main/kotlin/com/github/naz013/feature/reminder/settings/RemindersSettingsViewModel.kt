@@ -53,7 +53,12 @@ class RemindersSettingsViewModel(
   }
 
   fun onWorkflowRulesClick() {
-    navigationEvent.value = Event(RemindersSettingsEvent.OpenWorkflowRules)
+    if (buildInfo.isPro) {
+      navigationEvent.value = Event(RemindersSettingsEvent.OpenWorkflowRules)
+    } else {
+      analyticsEventSender.send(FeatureGateTappedEvent(Feature.WORKFLOWS))
+      navigationEvent.value = Event(RemindersSettingsEvent.OpenProVersion)
+    }
   }
 
   fun onInsightsLockedClick() {

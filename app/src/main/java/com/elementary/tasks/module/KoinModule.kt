@@ -34,6 +34,7 @@ import com.elementary.tasks.module.platform.BuildInfoImpl
 import com.elementary.tasks.module.platform.ProTrialAdsUseCase
 import com.elementary.tasks.module.platform.ProTrialControllerImpl
 import com.github.naz013.common.system.ProTrialController
+import com.github.naz013.logic.workflow.WorkflowProAccess
 import com.elementary.tasks.module.platform.ProTrialUseCase
 import com.elementary.tasks.module.platform.RewardedTrialAds
 import com.elementary.tasks.module.platform.RewardedTrialAdsImpl
@@ -92,6 +93,7 @@ import org.koin.dsl.module
 val libModule = module {
   // platform
   factory<BuildInfo> { BuildInfoImpl(get()) }
+  factory { WorkflowProAccess { get<BuildInfo>().isPro } }
   factory { ProTrialUseCase(get()) }
   factory<RewardedTrialAds> { RewardedTrialAdsImpl(get()) }
   single { ProTrialAdsUseCase(get(), get(), get()) }

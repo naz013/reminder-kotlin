@@ -8,7 +8,7 @@ import com.github.naz013.logic.reminder.ReminderWorkflowTrigger
  * it returns via [WorkflowActionDispatcher]. Also implements [ReminderWorkflowTrigger], the seam
  * `logic-reminder` uses to trigger workflow evaluation without depending on `logic-workflow`.
  *
- * Every method is gated on [WorkflowConfig.isEnabled] - this is the *only* place that flag is
+ * Every method is gated on [WorkflowConfig.isRunnable] (feature flag AND PRO, read at call time) - this is the *only* place that flag is
  * checked at the execution layer (UI call sites only use it to hide entry points from the user,
  * see `WorkflowRulesUtil`'s doc comment and `BottomNavInitViewModel.checkDb()`). Existing
  * [com.github.naz013.domain.workflow.WorkflowRule]s aren't deleted when the flag is turned off, and
@@ -22,58 +22,58 @@ class WorkflowTriggerRunner(
   private val workflowConfig: WorkflowConfig
 ) : ReminderWorkflowTrigger {
   suspend fun runDailyPolling() {
-    if (!workflowConfig.isEnabled) return
+    if (!workflowConfig.isRunnable) return
     (workflowEngine.runAgeBasedRules() + workflowEngine.runGroupCompletionRules() + workflowEngine.runScheduleRules())
       .forEach { workflowActionDispatcher.dispatch(it) }
   }
 
   suspend fun runUnacknowledgedPolling() {
-    if (!workflowConfig.isEnabled) return
+    if (!workflowConfig.isRunnable) return
     workflowEngine.runUnacknowledgedRules().forEach { workflowActionDispatcher.dispatch(it) }
   }
 
   suspend fun onReminderCompleted(reminderId: String) {
-    if (!workflowConfig.isEnabled) return
+    if (!workflowConfig.isRunnable) return
     workflowEngine.runReminderCompletedRules(reminderId).forEach { workflowActionDispatcher.dispatch(it) }
   }
 
   override suspend fun onReminderSnoozed(reminderId: String) {
-    if (!workflowConfig.isEnabled) return
+    if (!workflowConfig.isRunnable) return
     workflowEngine.runSnoozeCountRules(reminderId).forEach { workflowActionDispatcher.dispatch(it) }
   }
 
   override suspend fun onReminderCreated(reminderId: String) {
-    if (!workflowConfig.isEnabled) return
+    if (!workflowConfig.isRunnable) return
     workflowEngine.runReminderCreatedRules(reminderId).forEach { workflowActionDispatcher.dispatch(it) }
   }
 
   suspend fun onLocationEntered(reminderId: String) {
-    if (!workflowConfig.isEnabled) return
+    if (!workflowConfig.isRunnable) return
     workflowEngine.runLocationEnteredRules(reminderId).forEach { workflowActionDispatcher.dispatch(it) }
   }
 
   suspend fun onLocationExited(reminderId: String) {
-    if (!workflowConfig.isEnabled) return
+    if (!workflowConfig.isRunnable) return
     workflowEngine.runLocationExitedRules(reminderId).forEach { workflowActionDispatcher.dispatch(it) }
   }
 
   suspend fun onBluetoothConnected(deviceAddress: String) {
-    if (!workflowConfig.isEnabled) return
+    if (!workflowConfig.isRunnable) return
     workflowEngine.runBluetoothConnectedRules(deviceAddress).forEach { workflowActionDispatcher.dispatch(it) }
   }
 
   suspend fun onBluetoothDisconnected(deviceAddress: String) {
-    if (!workflowConfig.isEnabled) return
+    if (!workflowConfig.isRunnable) return
     workflowEngine.runBluetoothDisconnectedRules(deviceAddress).forEach { workflowActionDispatcher.dispatch(it) }
   }
 
   suspend fun onWifiConnected(ssid: String) {
-    if (!workflowConfig.isEnabled) return
+    if (!workflowConfig.isRunnable) return
     workflowEngine.runWifiConnectedRules(ssid).forEach { workflowActionDispatcher.dispatch(it) }
   }
 
   suspend fun onWifiDisconnected(ssid: String) {
-    if (!workflowConfig.isEnabled) return
+    if (!workflowConfig.isRunnable) return
     workflowEngine.runWifiDisconnectedRules(ssid).forEach { workflowActionDispatcher.dispatch(it) }
   }
 }

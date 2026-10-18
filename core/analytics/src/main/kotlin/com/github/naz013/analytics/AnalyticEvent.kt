@@ -186,7 +186,8 @@ enum class Feature(val value: String) {
   BUY_ME_A_COFFEE("buy_me_a_coffee"),
   AI_DIGEST("ai_digest"),
   POMODORO("pomodoro"),
-  QUICK_ADD("quick_add")
+  QUICK_ADD("quick_add"),
+  WORKFLOWS("workflows")
 }
 
 enum class Screen(val value: String) {
