@@ -1251,4 +1251,8 @@
     <string name="day_overview_free_rest_of_day">Libero per il resto della giornata</string>
     <string name="day_overview_largest_free">Blocco libero più lungo: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Occupato in questo momento</string>
+    <string name="widget_todo_description">Visualizza una delle tue liste di attività nella schermata Home</string>
+    <string name="widget_todo_not_available">Lista di attività non disponibile</string>
+    <string name="widget_todo_not_selected">Lista di attività non selezionata</string>
+    <string name="widget_todo_no_lists">Nessuna lista di attività attiva con elementi</string>
 </resources>

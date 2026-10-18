@@ -1246,4 +1246,8 @@
     <string name="day_overview_free_rest_of_day">Ledig resten av dagen</string>
     <string name="day_overview_largest_free">Största lediga block: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Upptagen just nu</string>
+    <string name="widget_todo_description">Se en av dina att göra-listor på startskärmen</string>
+    <string name="widget_todo_not_available">Att göra-listan är inte tillgänglig</string>
+    <string name="widget_todo_not_selected">Att göra-listan är inte vald</string>
+    <string name="widget_todo_no_lists">Inga aktiva att göra-listor med objekt</string>
 </resources>

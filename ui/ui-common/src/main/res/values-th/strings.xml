@@ -1239,4 +1239,8 @@
     <string name="day_overview_free_rest_of_day">ว่างตลอดทั้งวันที่เหลือ</string>
     <string name="day_overview_largest_free">ช่วงเวลาว่างที่ยาวที่สุด: %1$s – %2$s</string>
     <string name="day_overview_busy_now">กำลังไม่ว่างในขณะนี้</string>
+    <string name="widget_todo_description">ดูรายการสิ่งที่ต้องทำรายการหนึ่งบนหน้าจอหลัก</string>
+    <string name="widget_todo_not_available">ไม่พบรายการสิ่งที่ต้องทำ</string>
+    <string name="widget_todo_not_selected">ยังไม่ได้เลือกรายการสิ่งที่ต้องทำ</string>
+    <string name="widget_todo_no_lists">ไม่มีรายการสิ่งที่ต้องทำที่ใช้งานอยู่และมีรายการย่อย</string>
 </resources>

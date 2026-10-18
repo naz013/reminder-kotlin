@@ -1241,4 +1241,8 @@
     <string name="day_overview_free_rest_of_day">今日はこのあとずっと空き</string>
     <string name="day_overview_largest_free">最長の空き時間: %1$s – %2$s</string>
     <string name="day_overview_busy_now">現在予定あり</string>
+    <string name="widget_todo_description">ホーム画面にToDoリストを1つ表示します</string>
+    <string name="widget_todo_not_available">ToDoリストを利用できません</string>
+    <string name="widget_todo_not_selected">ToDoリストが選択されていません</string>
+    <string name="widget_todo_no_lists">項目のあるアクティブなToDoリストはありません</string>
 </resources>

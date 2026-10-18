@@ -1251,4 +1251,8 @@
     <string name="day_overview_free_rest_of_day">Livre pelo resto do dia</string>
     <string name="day_overview_largest_free">Maior bloco livre: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Ocupado agora</string>
+    <string name="widget_todo_description">Veja uma das suas listas de tarefas no ecrã inicial</string>
+    <string name="widget_todo_not_available">Lista de tarefas indisponível</string>
+    <string name="widget_todo_not_selected">Lista de tarefas não selecionada</string>
+    <string name="widget_todo_no_lists">Nenhuma lista de tarefas ativa com itens</string>
 </resources>

@@ -1243,4 +1243,8 @@
     <string name="day_overview_free_rest_of_day">Rảnh trong phần còn lại của ngày</string>
     <string name="day_overview_largest_free">Khoảng trống dài nhất: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Hiện đang bận</string>
+    <string name="widget_todo_description">Xem một danh sách việc cần làm trên màn hình chính</string>
+    <string name="widget_todo_not_available">Danh sách việc cần làm không khả dụng</string>
+    <string name="widget_todo_not_selected">Chưa chọn danh sách việc cần làm</string>
+    <string name="widget_todo_no_lists">Không có danh sách việc cần làm đang hoạt động có mục</string>
 </resources>

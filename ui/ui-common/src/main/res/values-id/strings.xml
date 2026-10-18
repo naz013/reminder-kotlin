@@ -1243,4 +1243,8 @@
     <string name="day_overview_free_rest_of_day">Luang sepanjang sisa hari</string>
     <string name="day_overview_largest_free">Blok waktu luang terbesar: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Sedang sibuk</string>
+    <string name="widget_todo_description">Lihat salah satu daftar tugas Anda di layar utama</string>
+    <string name="widget_todo_not_available">Daftar tugas tidak tersedia</string>
+    <string name="widget_todo_not_selected">Daftar tugas belum dipilih</string>
+    <string name="widget_todo_no_lists">Tidak ada daftar tugas aktif yang berisi item</string>
 </resources>

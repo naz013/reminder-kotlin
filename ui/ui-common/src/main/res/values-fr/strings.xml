@@ -1251,4 +1251,8 @@
     <string name="day_overview_free_rest_of_day">Libre pour le reste de la journée</string>
     <string name="day_overview_largest_free">Plus grand créneau libre : %1$s – %2$s</string>
     <string name="day_overview_busy_now">Occupé en ce moment</string>
+    <string name="widget_todo_description">Affichez l\'une de vos listes de tâches sur l\'écran d\'accueil</string>
+    <string name="widget_todo_not_available">Liste de tâches indisponible</string>
+    <string name="widget_todo_not_selected">Liste de tâches non sélectionnée</string>
+    <string name="widget_todo_no_lists">Aucune liste de tâches active avec des éléments</string>
 </resources>

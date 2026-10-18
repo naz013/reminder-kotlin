@@ -1241,4 +1241,8 @@
     <string name="day_overview_free_rest_of_day">오늘 남은 시간 동안 여유</string>
     <string name="day_overview_largest_free">가장 긴 여유 시간: %1$s – %2$s</string>
     <string name="day_overview_busy_now">지금은 일정이 있음</string>
+    <string name="widget_todo_description">홈 화면에서 할 일 목록 하나를 확인하세요</string>
+    <string name="widget_todo_not_available">할 일 목록을 사용할 수 없음</string>
+    <string name="widget_todo_not_selected">할 일 목록이 선택되지 않음</string>
+    <string name="widget_todo_no_lists">항목이 있는 활성 할 일 목록이 없습니다</string>
 </resources>

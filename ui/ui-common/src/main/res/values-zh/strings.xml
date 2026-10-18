@@ -1241,4 +1241,8 @@
     <string name="day_overview_free_rest_of_day">今天剩余时间都有空</string>
     <string name="day_overview_largest_free">最长空闲时段：%1$s – %2$s</string>
     <string name="day_overview_busy_now">当前有安排</string>
+    <string name="widget_todo_description">在主屏幕上查看您的一个待办列表</string>
+    <string name="widget_todo_not_available">待办列表不可用</string>
+    <string name="widget_todo_not_selected">未选择待办列表</string>
+    <string name="widget_todo_no_lists">没有包含项目的活跃待办列表</string>
 </resources>

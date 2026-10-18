@@ -1244,4 +1244,8 @@
     <string name="day_overview_free_rest_of_day">दिन के बाकी समय खाली</string>
     <string name="day_overview_largest_free">सबसे लंबा खाली समय: %1$s – %2$s</string>
     <string name="day_overview_busy_now">अभी व्यस्त</string>
+    <string name="widget_todo_description">होम स्क्रीन पर अपनी टू-डू सूचियों में से एक देखें</string>
+    <string name="widget_todo_not_available">टू-डू सूची उपलब्ध नहीं है</string>
+    <string name="widget_todo_not_selected">टू-डू सूची चयनित नहीं है</string>
+    <string name="widget_todo_no_lists">आइटम वाली कोई सक्रिय टू-डू सूची नहीं</string>
 </resources>

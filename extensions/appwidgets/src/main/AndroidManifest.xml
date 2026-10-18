@@ -33,6 +33,30 @@
             </intent-filter>
         </activity>
 
+        <receiver
+            android:name=".todo.TodoGlanceAppWidgetReceiver"
+            android:exported="true"
+            android:label="@string/todo">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/todo_widget_metadata" />
+        </receiver>
+
+        <activity
+            android:name="com.github.naz013.appwidgets.todo.TodoWidgetConfigActivity"
+            android:configChanges="keyboardHidden|orientation|keyboard"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name="com.github.naz013.appwidgets.notes.NotesWidgetConfigActivity"
             android:configChanges="keyboardHidden|orientation|keyboard"

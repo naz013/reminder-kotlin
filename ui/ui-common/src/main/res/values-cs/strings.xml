@@ -1254,4 +1254,8 @@
     <string name="day_overview_free_rest_of_day">Volno do konce dne</string>
     <string name="day_overview_largest_free">Nejdelší volný blok: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Právě obsazeno</string>
+    <string name="widget_todo_description">Zobrazte svůj seznam úkolů na domovské obrazovce</string>
+    <string name="widget_todo_not_available">Seznam úkolů není dostupný</string>
+    <string name="widget_todo_not_selected">Seznam úkolů není vybrán</string>
+    <string name="widget_todo_no_lists">Žádné aktivní seznamy úkolů s položkami</string>
 </resources>

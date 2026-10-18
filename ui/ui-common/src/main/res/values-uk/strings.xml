@@ -1254,4 +1254,8 @@
     <string name="day_overview_free_rest_of_day">Вільно до кінця дня</string>
     <string name="day_overview_largest_free">Найбільший вільний проміжок: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Зараз зайнято</string>
+    <string name="widget_todo_description">Показуйте один зі списків справ на головному екрані</string>
+    <string name="widget_todo_not_available">Список справ недоступний</string>
+    <string name="widget_todo_not_selected">Список справ не вибрано</string>
+    <string name="widget_todo_no_lists">Немає активних списків справ з елементами</string>
 </resources>

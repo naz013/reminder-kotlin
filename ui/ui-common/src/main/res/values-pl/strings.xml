@@ -1254,4 +1254,8 @@
     <string name="day_overview_free_rest_of_day">Wolne do końca dnia</string>
     <string name="day_overview_largest_free">Najdłuższy wolny blok: %1$s – %2$s</string>
     <string name="day_overview_busy_now">Zajęte w tej chwili</string>
+    <string name="widget_todo_description">Zobacz jedną ze swoich list zadań na ekranie głównym</string>
+    <string name="widget_todo_not_available">Lista zadań jest niedostępna</string>
+    <string name="widget_todo_not_selected">Nie wybrano listy zadań</string>
+    <string name="widget_todo_no_lists">Brak aktywnych list zadań z elementami</string>
 </resources>
