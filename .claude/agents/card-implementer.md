@@ -1,8 +1,7 @@
 ---
 name: card-implementer
-description: Implements one triaged Trello card on its own branch/worktree following CLAUDE.md. Give it the triage brief and card URL.
+description: Implements one triaged Trello card directly in the current checkout on local master, following CLAUDE.md. Give it the triage brief and card URL.
 model: sonnet
-isolation: worktree
 tools: Read, Grep, Glob, Edit, Write, Bash, PowerShell
 ---
 
@@ -17,5 +16,5 @@ You implement exactly one card from the brief you are given. CLAUDE.md is bindin
 Rules:
 - Stay within the brief's scope. If it turns out wrong or too big, stop and report.
 - Read file ranges, not whole files. Do not run Gradle for the full project; the tester does that.
-- Do not touch master, push, or open PRs. Commit on your branch with a conventional message (`feat:`, `fix:`...).
-- Final reply, at most 10 lines: branch name, files changed, anything the tester must cover, open issues. No diffs.
+- Work in the current checkout on master; do not create branches or worktrees. Commit locally with a conventional message (`feat:`, `fix:`...). Never push or open PRs.
+- Final reply, at most 10 lines: commit hash(es), files changed, anything the tester must cover, open issues. No diffs.
