@@ -32,6 +32,8 @@ import com.elementary.tasks.pomodoro.PomodoroForegroundNotifierImpl
 import com.elementary.tasks.pomodoro.PomodoroPreferencesImpl
 import com.elementary.tasks.module.platform.BuildInfoImpl
 import com.elementary.tasks.module.platform.ProTrialAdsUseCase
+import com.elementary.tasks.module.platform.ProTrialControllerImpl
+import com.github.naz013.common.system.ProTrialController
 import com.elementary.tasks.module.platform.ProTrialUseCase
 import com.elementary.tasks.module.platform.RewardedTrialAds
 import com.elementary.tasks.module.platform.RewardedTrialAdsImpl
@@ -93,6 +95,7 @@ val libModule = module {
   factory { ProTrialUseCase(get()) }
   factory<RewardedTrialAds> { RewardedTrialAdsImpl(get()) }
   single { ProTrialAdsUseCase(get(), get(), get()) }
+  single<ProTrialController> { ProTrialControllerImpl(get(), get()) }
   single { DateTimePreferencesImpl(get()) as DateTimePreferences }
   factoryOf(::InstallReferrerReader)
 
