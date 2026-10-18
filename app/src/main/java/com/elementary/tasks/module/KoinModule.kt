@@ -31,6 +31,7 @@ import com.elementary.tasks.module.logicschedule.SchedulePreferencesImpl
 import com.elementary.tasks.pomodoro.PomodoroForegroundNotifierImpl
 import com.elementary.tasks.pomodoro.PomodoroPreferencesImpl
 import com.elementary.tasks.module.platform.BuildInfoImpl
+import com.elementary.tasks.module.platform.ProTrialUseCase
 import com.elementary.tasks.module.platform.DateTimePreferencesImpl
 import com.elementary.tasks.module.platform.InstallReferrerReader
 import com.elementary.tasks.module.sync.SyncDataConverterImpl
@@ -86,6 +87,7 @@ import org.koin.dsl.module
 val libModule = module {
   // platform
   factoryOf<BuildInfo>(::BuildInfoImpl)
+  factory { ProTrialUseCase(get()) }
   single { DateTimePreferencesImpl(get()) as DateTimePreferences }
   factoryOf(::InstallReferrerReader)
 

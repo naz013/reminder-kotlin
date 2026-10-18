@@ -109,6 +109,7 @@ object PrefsConstants {
   const val GOOGLE_CALENDAR_EVENT_COLOR = "google_calendar_event_color"
 
   const val GENERAL_HAPTICS = "settings.general.haptics"
+  const val PRO_TRIAL_EXPIRY = "pro_trial_expiry_millis"
 
   // ReminderV2 notification-customization defaults (base of the Settings -> Group -> Reminder hierarchy)
   const val DEFAULT_VIBRATE = "default_vibrate"
