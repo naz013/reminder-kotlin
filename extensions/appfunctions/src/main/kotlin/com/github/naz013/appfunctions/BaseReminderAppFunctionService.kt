@@ -32,7 +32,7 @@ import org.koin.core.component.inject
 
 /**
  * Exposes reminder-related capabilities of the app to Gemini and other on-device assistants via
- * the AppFunctions platform API. Only available in the PRO build - see [BuildInfo.isPro].
+ * the AppFunctions platform API. Only available in the PRO build - see [BuildInfo.isBuildPro].
  */
 @RequiresApi(36)
 @AppFunctionServiceEntryPoint(
@@ -179,7 +179,7 @@ abstract class BaseReminderAppFunctionService :
     }
 
   private fun requirePro() {
-    if (!buildInfo.isPro) {
+    if (!buildInfo.isBuildPro) {
       throw AppFunctionPermissionRequiredException(
         "Reminder AppFunctions require the PRO version of the app.",
       )

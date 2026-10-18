@@ -28,7 +28,7 @@ import org.koin.core.component.inject
 
 /**
  * Exposes note-related capabilities of the app to Gemini and other on-device assistants via the
- * AppFunctions platform API. Only available in the PRO build - see [BuildInfo.isPro].
+ * AppFunctions platform API. Only available in the PRO build - see [BuildInfo.isBuildPro].
  */
 @RequiresApi(36)
 @AppFunctionServiceEntryPoint(
@@ -127,7 +127,7 @@ abstract class BaseNoteAppFunctionService :
     }
 
   private fun requirePro() {
-    if (!buildInfo.isPro) {
+    if (!buildInfo.isBuildPro) {
       throw AppFunctionPermissionRequiredException(
         "Note AppFunctions require the PRO version of the app.",
       )

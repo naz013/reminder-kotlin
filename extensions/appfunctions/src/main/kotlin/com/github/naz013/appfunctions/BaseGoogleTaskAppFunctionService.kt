@@ -35,7 +35,7 @@ import org.koin.core.component.inject
 
 /**
  * Exposes Google Tasks capabilities of the app to Gemini and other on-device assistants via the
- * AppFunctions platform API. Only available in the PRO build - see [BuildInfo.isPro] - and only
+ * AppFunctions platform API. Only available in the PRO build - see [BuildInfo.isBuildPro] - and only
  * once a Google account is linked - see [GoogleTasksAuthManager.isAuthorized].
  */
 @RequiresApi(36)
@@ -192,7 +192,7 @@ abstract class BaseGoogleTaskAppFunctionService :
     }
 
   private fun requirePro() {
-    if (!buildInfo.isPro) {
+    if (!buildInfo.isBuildPro) {
       throw AppFunctionPermissionRequiredException(
         "Google Task AppFunctions require the PRO version of the app.",
       )
