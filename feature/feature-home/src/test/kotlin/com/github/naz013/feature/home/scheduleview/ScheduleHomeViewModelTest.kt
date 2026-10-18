@@ -21,6 +21,10 @@ import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.common.system.ProTrialController
+import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.flow.MutableStateFlow
+import org.junit.Assert.assertNull
 import com.github.naz013.ui.common.R
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.LegalDocumentType
@@ -62,6 +66,8 @@ class ScheduleHomeViewModelTest : BaseTest() {
   private val buildInfo = mockk<BuildInfo>(relaxed = true)
   private val textProvider = mockk<TextProvider>()
   private val hasAnyUserContentUseCase = mockk<HasAnyUserContentUseCase>()
+  private val proTrialController = mockk<ProTrialController>()
+  private val remainingMillis = MutableStateFlow(0L)
 
   private lateinit var viewModel: ScheduleHomeViewModel
 
@@ -76,6 +82,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
     // Pro by default so existing menu/gating expectations don't all need to opt in; tests that
     // care about the free-user experience override this locally.
     every { buildInfo.isPro } returns true
+    every { proTrialController.observeRemainingMillis() } returns remainingMillis
     every { observeTodayScheduleUseCase() } returns flowOf(snapshot())
     coEvery { todayItemHomeEventMapper(any(), any()) } returns emptyList()
     every { getTimeSectionsUseCase(any()) } returns emptyList()
@@ -111,7 +118,50 @@ class ScheduleHomeViewModelTest : BaseTest() {
         buildInfo = buildInfo,
         textProvider = textProvider,
         hasAnyUserContentUseCase = hasAnyUserContentUseCase,
+        proTrialController = proTrialController,
       )
+  }
+
+  @Test
+  fun `proTrialRemaining is null when the pro trial is not running`() = runTest {
+    val state = viewModel.state.first()
+
+    assertNull(state.proTrialRemaining)
+  }
+
+  @Test
+  fun `proTrialRemaining shows hours and minutes while the pro trial is running`() = runTest {
+    remainingMillis.value = TimeUnit.HOURS.toMillis(3) + TimeUnit.MINUTES.toMillis(5)
+
+    val state = viewModel.state.first()
+
+    assertEquals("03:05", state.proTrialRemaining)
+  }
+
+  @Test
+  fun `proTrialRemaining is cleared when the pro trial expires`() = runTest {
+    remainingMillis.value = TimeUnit.HOURS.toMillis(1)
+    val states = mutableListOf<HomeScreenState>()
+    val job = launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.toList(states) }
+
+    remainingMillis.value = 0L
+
+    assertNull(states.last().proTrialRemaining)
+    job.cancel()
+  }
+
+  @Test
+  fun `add menu offers quick add once the pro trial makes the user pro`() = runTest {
+    every { buildInfo.isPro } returns false
+    val states = mutableListOf<HomeScreenState>()
+    val job = launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.toList(states) }
+    assertFalse(states.last().addMenuItems.contains(ScheduleHomeViewModel.EventType.QuickAdd))
+
+    every { buildInfo.isPro } returns true
+    remainingMillis.value = TimeUnit.HOURS.toMillis(1)
+
+    assertTrue(states.last().addMenuItems.contains(ScheduleHomeViewModel.EventType.QuickAdd))
+    job.cancel()
   }
 
   @Test

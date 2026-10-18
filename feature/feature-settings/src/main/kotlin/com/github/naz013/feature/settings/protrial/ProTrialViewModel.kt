@@ -6,11 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.naz013.common.system.ProTrialController
 import com.github.naz013.common.system.ProTrialResult
+import com.github.naz013.common.system.formatProTrialRemaining
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
-import java.util.Locale
-import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,7 +29,7 @@ internal class ProTrialViewModel(
     viewModelScope.launch {
       proTrialController.observeRemainingMillis().collect { remaining ->
         _state.update {
-          it.copy(isTrialActive = remaining > 0L, remainingTime = formatRemaining(remaining))
+          it.copy(isTrialActive = remaining > 0L, remainingTime = formatProTrialRemaining(remaining))
         }
       }
     }
@@ -65,16 +64,6 @@ internal class ProTrialViewModel(
     }
   }
 
-  private fun formatRemaining(remainingMillis: Long): String {
-    if (remainingMillis <= 0L) return ""
-    val totalMinutes = TimeUnit.MILLISECONDS.toMinutes(remainingMillis + MILLIS_IN_MINUTE - 1)
-    return String.format(Locale.ROOT, "%02d:%02d", totalMinutes / MINUTES_IN_HOUR, totalMinutes % MINUTES_IN_HOUR)
-  }
-
-  private companion object {
-    const val MILLIS_IN_MINUTE = 60_000L
-    const val MINUTES_IN_HOUR = 60L
-  }
 }
 
 internal sealed interface ProTrialEvent {

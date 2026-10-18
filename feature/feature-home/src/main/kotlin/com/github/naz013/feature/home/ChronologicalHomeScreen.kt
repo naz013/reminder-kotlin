@@ -132,6 +132,12 @@ fun ChronologicalHomeScreen(
         // showing this button too would be a redundant second entry point.
         showSettingsButton = showHeaderNavigation,
       )
+      if (state.proTrialRemaining != null) {
+        ProTrialBanner(
+          modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+          remainingTime = state.proTrialRemaining,
+        )
+      }
     }
     LazyColumn(
       modifier = Modifier.fillMaxSize(),
@@ -549,6 +555,37 @@ private fun AddButton(
       items = menuItems,
       onItemClick = { onItemClick(items[it]) },
     )
+  }
+}
+
+@Composable
+private fun ProTrialBanner(
+  modifier: Modifier = Modifier,
+  remainingTime: String,
+) {
+  Card(
+    colors = CardDefaults.cardColors(
+      containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+      contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+    ),
+    modifier = modifier.fillMaxWidth(),
+  ) {
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 16.dp, vertical = 12.dp),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+      Text(
+        text = stringResource(R.string.pro_trial_active_title),
+        style = MaterialTheme.typography.titleSmall,
+      )
+      Text(
+        text = stringResource(R.string.pro_trial_remaining, remainingTime),
+        style = MaterialTheme.typography.titleSmall,
+      )
+    }
   }
 }
 
