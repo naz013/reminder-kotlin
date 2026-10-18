@@ -7,6 +7,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -174,6 +175,19 @@ class ProTrialAdsUseCaseTest {
 
     assertEquals(ProTrialAdsResult.SUCCESS, result)
     verify(exactly = 1) { proTrialUseCase.activate() }
+  }
+
+  @Test
+  fun `run resets progress when coroutine is cancelled mid-flow`() = runTest {
+    var calls = 0
+    coEvery { rewardedTrialAds.show(any()) } coAnswers {
+      if (++calls < 3) RewardedAdResult.REWARDED else throw CancellationException("cancelled")
+    }
+
+    runCatching { useCase.run(activity) }
+
+    assertEquals(0, useCase.adsWatched.value)
+    verify(exactly = 0) { proTrialUseCase.activate() }
   }
 
   private fun givenAdResults(vararg results: RewardedAdResult) {

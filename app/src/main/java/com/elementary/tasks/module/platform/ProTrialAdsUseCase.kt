@@ -24,21 +24,26 @@ internal class ProTrialAdsUseCase(
 
   suspend fun run(activity: Activity): ProTrialAdsResult {
     _adsWatched.value = 0
+    var result = ProTrialAdsResult.CANCELLED
+    try {
+      result = watchAds(activity)
+      return result
+    } finally {
+      if (result != ProTrialAdsResult.SUCCESS) _adsWatched.value = 0
+    }
+  }
+
+  private suspend fun watchAds(activity: Activity): ProTrialAdsResult {
     repeat(REQUIRED_ADS) {
       when (rewardedTrialAds.show(activity)) {
         RewardedAdResult.REWARDED -> _adsWatched.value += 1
-        RewardedAdResult.UNAVAILABLE -> return abort(ProTrialAdsResult.ADS_UNAVAILABLE)
-        RewardedAdResult.DISMISSED -> return abort(ProTrialAdsResult.CANCELLED)
+        RewardedAdResult.UNAVAILABLE -> return ProTrialAdsResult.ADS_UNAVAILABLE
+        RewardedAdResult.DISMISSED -> return ProTrialAdsResult.CANCELLED
       }
     }
     proTrialUseCase.activate()
     analyticsEventSender.send(ProTrialActivatedEvent)
     return ProTrialAdsResult.SUCCESS
-  }
-
-  private fun abort(result: ProTrialAdsResult): ProTrialAdsResult {
-    _adsWatched.value = 0
-    return result
   }
 
   companion object {

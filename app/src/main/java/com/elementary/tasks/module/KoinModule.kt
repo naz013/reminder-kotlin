@@ -91,8 +91,8 @@ val libModule = module {
   // platform
   factory<BuildInfo> { BuildInfoImpl(get()) }
   factory { ProTrialUseCase(get()) }
-  factory<RewardedTrialAds> { RewardedTrialAdsImpl() }
-  factory { ProTrialAdsUseCase(get(), get(), get()) }
+  factory<RewardedTrialAds> { RewardedTrialAdsImpl(get()) }
+  single { ProTrialAdsUseCase(get(), get(), get()) }
   single { DateTimePreferencesImpl(get()) as DateTimePreferences }
   factoryOf(::InstallReferrerReader)
 
