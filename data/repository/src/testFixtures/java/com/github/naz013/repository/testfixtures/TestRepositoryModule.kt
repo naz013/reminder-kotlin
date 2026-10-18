@@ -8,6 +8,7 @@ import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RoutineExecutionRepository
+import com.github.naz013.repository.HabitRepository
 import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
@@ -17,6 +18,7 @@ import com.github.naz013.repository.impl.GroupV2RepositoryImpl
 import com.github.naz013.repository.impl.NoteRepositoryImpl
 import com.github.naz013.repository.impl.ReminderV2RepositoryImpl
 import com.github.naz013.repository.impl.RoutineExecutionRepositoryImpl
+import com.github.naz013.repository.impl.HabitRepositoryImpl
 import com.github.naz013.repository.impl.RoutineRepositoryImpl
 import com.github.naz013.repository.impl.TagAssignmentRepositoryImpl
 import com.github.naz013.repository.impl.TagRepositoryImpl
@@ -68,6 +70,9 @@ fun testRepositoryModule(context: Context): Module = module {
   }
   factory<RoutineRepository> {
     RoutineRepositoryImpl(get<AppDb>().routineDao(), get())
+  }
+  factory<HabitRepository> {
+    HabitRepositoryImpl(get<AppDb>().habitDao(), get<AppDb>().habitCheckInDao(), get())
   }
   factory<RoutineExecutionRepository> {
     RoutineExecutionRepositoryImpl(get<AppDb>().routineExecutionDao(), get())

@@ -338,6 +338,7 @@ internal class DeveloperViewModel(
       Table.RoutineExecution -> routineExecutionRepository.deleteAll()
       Table.GoogleCalendarEvent -> googleCalendarEventRepository.deleteAll()
       Table.PomodoroSession -> pomodoroSessionRepository.deleteAll()
+      Table.Habit, Table.HabitCheckIn -> { }
     }
   }
 
