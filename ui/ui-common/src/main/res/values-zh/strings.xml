@@ -1263,4 +1263,14 @@
     <string name="habit_target_increase">增加目标</string>
     <string name="delete_habit_title">删除此习惯？</string>
     <string name="delete_habit_message">其打卡记录也将被删除。</string>
+    <string name="pro_trial_banner">免费试用 PRO</string>
+    <string name="pro_trial_title">免费试用 PRO</string>
+    <string name="pro_trial_how_it_works_title">使用方式</string>
+    <string name="pro_trial_how_it_works">观看 3 个简短的视频广告，即可解锁全部 PRO 选项 24 小时。试用结束后可以重复操作。Gemini 应用功能不包含在试用中。</string>
+    <string name="pro_trial_activate">激活 PRO 24 小时</string>
+    <string name="pro_trial_ads_progress">已观看广告：%1$d/%2$d</string>
+    <string name="pro_trial_active_title">PRO 试用已激活</string>
+    <string name="pro_trial_remaining">剩余时间：%1$s</string>
+    <string name="pro_trial_ads_unavailable">广告暂时不可用，请稍后再试。</string>
+    <string name="pro_trial_cancelled">视频在获得奖励前被关闭。请观看全部广告以激活试用。</string>
 </resources>

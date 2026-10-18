@@ -1276,4 +1276,14 @@
     <string name="habit_target_increase">Zvýšit cíl</string>
     <string name="delete_habit_title">Smazat tento návyk?</string>
     <string name="delete_habit_message">Smaže se také historie jeho záznamů.</string>
+    <string name="pro_trial_banner">Vyzkoušejte PRO zdarma</string>
+    <string name="pro_trial_title">Vyzkoušejte PRO zdarma</string>
+    <string name="pro_trial_how_it_works_title">Jak to funguje</string>
+    <string name="pro_trial_how_it_works">Zhlédněte 3 krátké video reklamy a odemkněte všechny možnosti PRO na 24 hodin. Po skončení zkušební doby to můžete opakovat. Funkce aplikace Gemini nejsou součástí zkušební verze.</string>
+    <string name="pro_trial_activate">Aktivovat PRO na 24 hodin</string>
+    <string name="pro_trial_ads_progress">Zhlédnuté reklamy: %1$d/%2$d</string>
+    <string name="pro_trial_active_title">Zkušební verze PRO je aktivní</string>
+    <string name="pro_trial_remaining">Zbývající čas: %1$s</string>
+    <string name="pro_trial_ads_unavailable">Reklamy momentálně nejsou k dispozici. Zkuste to prosím později.</string>
+    <string name="pro_trial_cancelled">Video bylo zavřeno před získáním odměny. Zhlédněte všechny reklamy pro aktivaci zkušební verze.</string>
 </resources>

@@ -1273,4 +1273,14 @@
     <string name="habit_target_increase">Augmenter l\'objectif</string>
     <string name="delete_habit_title">Supprimer cette habitude ?</string>
     <string name="delete_habit_message">Son historique sera aussi supprimé.</string>
+    <string name="pro_trial_banner">Essayer PRO gratuitement</string>
+    <string name="pro_trial_title">Essayer PRO gratuitement</string>
+    <string name="pro_trial_how_it_works_title">Comment ça marche</string>
+    <string name="pro_trial_how_it_works">Regardez 3 courtes publicités vidéo et débloquez toutes les options PRO pendant 24 heures. Vous pouvez recommencer à la fin de l\'essai. Les fonctions de l\'app Gemini ne sont pas incluses dans l\'essai.</string>
+    <string name="pro_trial_activate">Activer PRO pendant 24 heures</string>
+    <string name="pro_trial_ads_progress">Publicités vues : %1$d/%2$d</string>
+    <string name="pro_trial_active_title">L\'essai PRO est actif</string>
+    <string name="pro_trial_remaining">Temps restant : %1$s</string>
+    <string name="pro_trial_ads_unavailable">Les publicités ne sont pas disponibles pour le moment. Réessayez plus tard.</string>
+    <string name="pro_trial_cancelled">La vidéo a été fermée avant la récompense. Regardez toutes les publicités pour activer l\'essai.</string>
 </resources>
