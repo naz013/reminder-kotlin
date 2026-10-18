@@ -112,6 +112,14 @@ data object ProBuyClickedEvent : AnalyticEvent(Event.PRO_BUY_CLICKED) {
   override fun getParams(): Bundle = Bundle()
 }
 
+data object ProTrialPromoClickedEvent : AnalyticEvent(Event.PRO_TRIAL_PROMO_CLICKED) {
+  override fun getParams(): Bundle = Bundle()
+}
+
+data object ProTrialActivatedEvent : AnalyticEvent(Event.PRO_TRIAL_ACTIVATED) {
+  override fun getParams(): Bundle = Bundle()
+}
+
 /** Fired once, from the Pro app's first launch, when an install-referrer value set by the free
  *  app's "Buy PRO" deep link (see GooglePlayMarketLauncher) is read back - the only way to
  *  attribute a Pro install to the free app, since Pro is a separate paid listing rather than an
@@ -230,7 +238,9 @@ enum class Event(val value: String) {
   PRO_SCREEN_VIEWED("pro_screen_viewed"),
   PRO_BUY_CLICKED("pro_buy_clicked"),
   FEATURE_GATE_TAPPED("feature_gate_tapped"),
-  PRO_INSTALL_ATTRIBUTED("pro_install_attributed")
+  PRO_INSTALL_ATTRIBUTED("pro_install_attributed"),
+  PRO_TRIAL_PROMO_CLICKED("pro_trial_promo_clicked"),
+  PRO_TRIAL_ACTIVATED("pro_trial_activated")
 }
 
 enum class PresetAction(val value: String) {
