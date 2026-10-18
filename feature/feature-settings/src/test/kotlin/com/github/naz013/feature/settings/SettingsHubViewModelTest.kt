@@ -2,8 +2,10 @@ package com.github.naz013.feature.settings
 
 import androidx.lifecycle.ViewModelStore
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.ProTrialPromoClickedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.common.system.ProTrialController
 import com.github.naz013.feature.settings.security.SecuritySettingsPreferences
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.testing.BaseTest
@@ -12,7 +14,11 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -29,6 +35,8 @@ class SettingsHubViewModelTest : BaseTest() {
   private val buildInfo = mockk<BuildInfo>()
   private val systemInfo = mockk<SystemInfo>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
+  private val proTrialController = mockk<ProTrialController>()
+  private val remainingMillis = MutableStateFlow(0L)
 
   private lateinit var viewModel: SettingsHubViewModel
 
@@ -40,7 +48,9 @@ class SettingsHubViewModelTest : BaseTest() {
     every { doNotDisturbChecker.removeChangeObserver(any()) } just Runs
     every { doNotDisturbChecker.isActive() } returns false
     every { buildInfo.isPro } returns false
+    every { buildInfo.isBuildPro } returns false
     every { buildInfo.isDebug } returns false
+    every { proTrialController.observeRemainingMillis() } returns remainingMillis
     every { systemInfo.isProAppInstalled } returns false
     every { systemInfo.googlePlayServicesAvailable } returns true
 
@@ -55,8 +65,63 @@ class SettingsHubViewModelTest : BaseTest() {
       textProvider = textProvider,
       buildInfo = buildInfo,
       systemInfo = systemInfo,
+      proTrialController = proTrialController,
       analyticsEventSender = analyticsEventSender,
     )
+
+  @Test
+  fun `shows the trial promo when the build is not pro and the trial is inactive`() =
+    runTest {
+      val state = viewModel.state.first()
+
+      assertTrue(state.isTrialPromoVisible)
+    }
+
+  @Test
+  fun `hides the trial promo when the build is pro`() =
+    runTest {
+      every { buildInfo.isBuildPro } returns true
+
+      val state = newViewModel().state.first()
+
+      assertFalse(state.isTrialPromoVisible)
+    }
+
+  @Test
+  fun `hides the trial promo and the buy pro badge while the trial is active`() =
+    runTest {
+      every { buildInfo.isPro } returns true
+      remainingMillis.value = 1_000L
+
+      val state = newViewModel().state.first()
+
+      assertFalse(state.isTrialPromoVisible)
+      assertFalse(state.isBuyProBadgeVisible)
+    }
+
+  @Test
+  fun `shows the trial promo again when the trial expires`() =
+    runTest {
+      every { buildInfo.isPro } returns true
+      remainingMillis.value = 1_000L
+      val viewModel = newViewModel()
+      val states = mutableListOf<SettingsHubState>()
+      val job = launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.toList(states) }
+
+      every { buildInfo.isPro } returns false
+      remainingMillis.value = 0L
+
+      assertTrue(states.last().isTrialPromoVisible)
+      assertTrue(states.last().isBuyProBadgeVisible)
+      job.cancel()
+    }
+
+  @Test
+  fun `onTrialPromoClick sends the trial promo clicked event`() {
+    viewModel.onTrialPromoClick()
+
+    verify { analyticsEventSender.send(ProTrialPromoClickedEvent) }
+  }
 
   @Test
   fun `sends screen used analytics event on creation`() {

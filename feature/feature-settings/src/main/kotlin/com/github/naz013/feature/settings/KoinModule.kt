@@ -27,6 +27,7 @@ import com.github.naz013.feature.settings.other.PrivacyPolicyViewModel
 import com.github.naz013.feature.settings.other.TermsViewModel
 import com.github.naz013.feature.settings.other.about.AboutViewModel
 import com.github.naz013.feature.settings.other.whatsnew.WhatsNewViewModel
+import com.github.naz013.feature.settings.protrial.ProTrialViewModel
 import com.github.naz013.feature.settings.proversion.ProVersionViewModel
 import com.github.naz013.feature.settings.security.AddPinViewModel
 import com.github.naz013.feature.settings.security.ChangePinViewModel
@@ -44,6 +45,7 @@ val featureSettingsModule = module {
   viewModelOf(::GeneralSettingsViewModel)
   viewModelOf(::HeaderItemsSettingsViewModel)
   viewModelOf(::ProVersionViewModel)
+  viewModelOf(::ProTrialViewModel)
   viewModelOf(::TroubleshootingViewModel)
   viewModelOf(::OtherSettingsViewModel)
   viewModelOf(::PrivacyPolicyViewModel)

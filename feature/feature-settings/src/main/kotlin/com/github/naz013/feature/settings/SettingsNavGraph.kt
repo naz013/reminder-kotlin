@@ -1,6 +1,7 @@
 package com.github.naz013.feature.settings
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
@@ -49,6 +50,9 @@ import com.github.naz013.feature.settings.headeritems.HeaderItemsSettingsScreen
 import com.github.naz013.feature.settings.headeritems.HeaderItemsSettingsViewModel
 import com.github.naz013.feature.settings.location.LocationNavKey
 import com.github.naz013.feature.settings.other.OtherNavKey
+import com.github.naz013.feature.settings.protrial.ProTrialEvent
+import com.github.naz013.feature.settings.protrial.ProTrialScreen
+import com.github.naz013.feature.settings.protrial.ProTrialViewModel
 import com.github.naz013.feature.settings.proversion.ProVersionScreen
 import com.github.naz013.feature.settings.proversion.ProVersionViewModel
 import com.github.naz013.feature.settings.proversion.rememberGooglePlayMarketLauncher
@@ -161,6 +165,10 @@ fun EntryProviderScope<NavKey>.settingsEntries(
     val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.ProVersion) }
     ProVersionEntry(backStack, renderAsDetailPane)
   }
+  entry<SettingsNavKey.ProTrial>(metadata = SettingsDetailPane) {
+    val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.ProTrial) }
+    ProTrialEntry(backStack, renderAsDetailPane)
+  }
   entry<SettingsNavKey.Troubleshooting>(metadata = SettingsDetailPane) {
     val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.Troubleshooting) }
     TroubleshootingEntry(backStack, applicationId, renderAsDetailPane)
@@ -212,6 +220,10 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
         backStack.jumpToSettingsSearchResult(result)
       },
       onBuyProClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.ProVersion) },
+      onTrialPromoClick = {
+        viewModel.onTrialPromoClick()
+        backStack.navigateToSettingsDetailPane(SettingsNavKey.ProTrial)
+      },
       onUpdateClick = { googlePlayMarketLauncher.launchSelf() },
       onGeneralClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.General) },
       onBackupClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.Backup) },
@@ -603,6 +615,26 @@ private fun ProVersionEntry(backStack: MutableList<NavKey>, renderAsDetailPane: 
 }
 
 @Composable
+private fun ProTrialEntry(backStack: MutableList<NavKey>, renderAsDetailPane: Boolean) {
+  val viewModel = koinViewModel<ProTrialViewModel>()
+  val activity = LocalActivity.current
+
+  val state by viewModel.state.collectAsState()
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      ProTrialEvent.RequestActivity -> activity?.let { viewModel.onActivityAvailable(it) }
+    }
+  }
+
+  ProTrialScreen(
+    state = state,
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    onActivateClick = viewModel::onActivateClick,
+    renderAsDetailPane = renderAsDetailPane,
+  )
+}
+
+@Composable
 private fun TroubleshootingEntry(
   backStack: MutableList<NavKey>,
   applicationId: String,
@@ -664,6 +696,7 @@ private fun MutableList<NavKey>.navigateToSettingsDetailPane(key: NavKey) {
     top is SettingsNavKey.Note ||
     top is SettingsNavKey.Developer ||
     top is SettingsNavKey.ProVersion ||
+    top is SettingsNavKey.ProTrial ||
     top is SettingsNavKey.Troubleshooting ||
     top is SecurityNavKey.Security ||
     top is OtherNavKey.Other

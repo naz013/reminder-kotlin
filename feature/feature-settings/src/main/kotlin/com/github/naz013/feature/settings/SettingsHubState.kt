@@ -8,6 +8,7 @@ internal data class SettingsHubState(
   val internalMessage: String? = null,
   val isDoNotDisturbActive: Boolean = false,
   val isBuyProBadgeVisible: Boolean = false,
+  val isTrialPromoVisible: Boolean = false,
   val isPlayServicesWarningVisible: Boolean = false,
   val hasPinCode: Boolean = false,
   val isDeveloperOptionVisible: Boolean = false,
