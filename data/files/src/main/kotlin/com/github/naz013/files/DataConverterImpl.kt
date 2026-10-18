@@ -28,6 +28,9 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
 import com.github.naz013.domain.reminder.v2.SyncMetadata
 import com.github.naz013.domain.reminder.v2.TaskExportSettings
+import com.github.naz013.domain.habit.Habit
+import com.github.naz013.domain.habit.HabitCheckIn
+import com.github.naz013.domain.habit.HabitFrequency
 import com.github.naz013.domain.routine.Routine
 import com.github.naz013.domain.routine.RoutineExecutionRecord
 import com.github.naz013.domain.routine.RoutineStep
@@ -42,6 +45,8 @@ import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 import com.github.naz013.domain.workflow.WorkflowTrigger
 import com.github.naz013.files.model.CalendarExportSettingsJson
 import com.github.naz013.files.model.GroupV2Json
+import com.github.naz013.files.model.HabitCheckInJson
+import com.github.naz013.files.model.HabitJson
 import com.github.naz013.files.model.LocationSettingsJson
 import com.github.naz013.files.model.NoteV3Json
 import com.github.naz013.files.model.NoteV4Json
@@ -63,6 +68,7 @@ import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.io.BufferedReader
@@ -97,6 +103,8 @@ internal class DataConverterImpl : DataConverter {
         is TagAssignment -> object : TypeToken<TagAssignment>() {}.type
         is RoutineJson -> object : TypeToken<RoutineJson>() {}.type
         is RoutineExecutionJson -> object : TypeToken<RoutineExecutionJson>() {}.type
+        is HabitJson -> object : TypeToken<HabitJson>() {}.type
+        is HabitCheckInJson -> object : TypeToken<HabitCheckInJson>() {}.type
         is WorkflowRuleJson -> object : TypeToken<WorkflowRuleJson>() {}.type
         is WorkflowTemplateJson -> object : TypeToken<WorkflowTemplateJson>() {}.type
         else -> null
@@ -148,6 +156,8 @@ private fun Any.toJson(): Any {
     is Tag -> this.toJson()
     is Routine -> this.toJson()
     is RoutineExecutionRecord -> this.toJson()
+    is Habit -> this.toJson()
+    is HabitCheckIn -> this.toJson()
     is WorkflowRule -> this.toJson()
     is WorkflowTemplate -> this.toJson()
     else -> this
@@ -166,6 +176,8 @@ private fun detectClass(json: JsonObject): Class<*> = when {
   json.has("recurrenceType") && json.has("actionType") -> ReminderV2Json::class.java
   json.has("steps") && json.has("recurrenceType") -> RoutineJson::class.java
   json.has("completedStepIds") -> RoutineExecutionJson::class.java
+  json.has("frequency") && json.has("targetCount") -> HabitJson::class.java
+  json.has("habitId") && json.has("date") -> HabitCheckInJson::class.java
   json.has("scopeType") && json.has("triggerType") -> WorkflowRuleJson::class.java
   json.has("category") && json.has("triggerType") -> WorkflowTemplateJson::class.java
   json.has("notification") && json.has("createdAt") -> GroupV2Json::class.java
@@ -192,6 +204,8 @@ internal fun Any.toDomain(): Any {
     is TagJson -> this.toDomain()
     is RoutineJson -> this.toDomain()
     is RoutineExecutionJson -> this.toDomain()
+    is HabitJson -> this.toDomain()
+    is HabitCheckInJson -> this.toDomain()
     is WorkflowRuleJson -> this.toDomain()
     is WorkflowTemplateJson -> this.toDomain()
     is ReminderGroup -> this.toGroupV2()
@@ -224,6 +238,52 @@ private fun TagJson.toDomain(): Tag = Tag(
   color = color,
   version = version,
   syncState = SyncState.Synced
+)
+
+internal fun HabitJson.toDomain(): Habit = Habit(
+  id = id,
+  name = name,
+  description = description,
+  frequency = runCatching { HabitFrequency.valueOf(frequency) }.getOrDefault(HabitFrequency.DAILY),
+  targetCount = targetCount,
+  color = color,
+  icon = icon,
+  isPinned = isPinned,
+  createdAt = LocalDateTime.parse(createdAt, jsonDateTimeFormatter),
+  updatedAt = LocalDateTime.parse(updatedAt, jsonDateTimeFormatter),
+  sync = SyncMetadata(version = version, syncState = SyncState.Synced)
+)
+
+internal fun HabitCheckInJson.toDomain(): HabitCheckIn = HabitCheckIn(
+  habitId = habitId,
+  date = LocalDate.parse(date),
+  count = count,
+  isCompleted = isCompleted,
+  createdAt = LocalDateTime.parse(createdAt, jsonDateTimeFormatter),
+  updatedAt = LocalDateTime.parse(updatedAt, jsonDateTimeFormatter)
+)
+
+internal fun Habit.toJson(): HabitJson = HabitJson(
+  id = id,
+  name = name,
+  description = description,
+  frequency = frequency.name,
+  targetCount = targetCount,
+  color = color,
+  icon = icon,
+  isPinned = isPinned,
+  createdAt = createdAt.format(jsonDateTimeFormatter),
+  updatedAt = updatedAt.format(jsonDateTimeFormatter),
+  version = sync.version
+)
+
+internal fun HabitCheckIn.toJson(): HabitCheckInJson = HabitCheckInJson(
+  habitId = habitId,
+  date = date.toString(),
+  count = count,
+  isCompleted = isCompleted,
+  createdAt = createdAt.format(jsonDateTimeFormatter),
+  updatedAt = updatedAt.format(jsonDateTimeFormatter)
 )
 
 private fun RoutineJson.toDomain(): Routine = Routine(
