@@ -95,9 +95,8 @@ class AdsProvider {
         AdBanner.PinLogin -> "ca-app-pub-5133908997831400/3859996131"
         AdBanner.ActionScreen -> "ca-app-pub-5133908997831400/8797607986"
         AdBanner.Routine -> "ca-app-pub-5133908997831400/8541500221"
-        // Placeholder: Google test banner unit, replace with real AdMob unit IDs.
-        AdBanner.Habit,
-        AdBanner.Workflow -> "ca-app-pub-3940256099942544/6300978111"
+        AdBanner.Habit -> "ca-app-pub-5133908997831400/1574075079"
+        AdBanner.Workflow -> "ca-app-pub-5133908997831400/4232028007"
       }
     }
 
