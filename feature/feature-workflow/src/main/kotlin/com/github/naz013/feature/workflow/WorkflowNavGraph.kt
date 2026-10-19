@@ -36,6 +36,7 @@ private const val WorkflowPaneSceneKey: String = "com.github.naz013.feature.work
 fun EntryProviderScope<NavKey>.workflowEntries(
   backStack: MutableList<NavKey>,
   isRenderedAsDetailPane: (NavKey) -> Boolean,
+  adsContent: @Composable () -> Unit = {},
 ) {
   entry<WorkflowNavKey.Gallery>(
     metadata = ListDetailSceneStrategy.listPane(
@@ -70,7 +71,7 @@ fun EntryProviderScope<NavKey>.workflowEntries(
     // Fixed at first composition, not re-read on every recomposition - see the matching comment
     // in ReminderPreviewNavGraph.kt.
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
-    WorkflowBuilderEntry(key, backStack, renderAsDetailPane)
+    WorkflowBuilderEntry(key, backStack, renderAsDetailPane, adsContent)
   }
 }
 
@@ -144,6 +145,7 @@ private fun WorkflowBuilderEntry(
   key: WorkflowNavKey.Builder,
   backStack: MutableList<NavKey>,
   renderAsDetailPane: Boolean,
+  adsContent: @Composable () -> Unit,
 ) {
   val viewModel = koinViewModel<WorkflowRuleBuilderViewModel> {
     parametersOf(WorkflowScopeType.valueOf(key.scopeType), key.scopeId, key.editingRuleId)
@@ -173,6 +175,7 @@ private fun WorkflowBuilderEntry(
     onActionPickerDismiss = viewModel::onActionPickerDismiss,
     onActionSelected = viewModel::onActionSelected,
     onBluetoothPermissionGranted = viewModel::onBluetoothPermissionGranted,
+    adsContent = adsContent,
   )
 }
 

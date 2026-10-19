@@ -344,7 +344,10 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
           onReminderPreviewClick = { backStack.add(ReminderPreviewNavKey.Preview(it)) },
           onRulesForGroupClick = { backStack.add(WorkflowNavKey.RulesForGroup(it)) }
         )
-        habitEntries(backStack = backStack)
+        habitEntries(
+          backStack = backStack,
+          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Habit) },
+        )
         routineEntries(
           backStack = backStack,
           isRenderedAsDetailPane = isRenderedAsDetailPane,
@@ -490,7 +493,11 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
           onOpenAiDigest = { backStack.add(SettingsNavKey.AiDigest) },
         )
         exportEntries(backStack)
-        workflowEntries(backStack = backStack, isRenderedAsDetailPane = isRenderedAsDetailPane)
+        workflowEntries(
+          backStack = backStack,
+          isRenderedAsDetailPane = isRenderedAsDetailPane,
+          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Workflow) },
+        )
         tagsEntries(
           backStack = backStack,
           isRenderedAsDetailPane = isRenderedAsDetailPane,

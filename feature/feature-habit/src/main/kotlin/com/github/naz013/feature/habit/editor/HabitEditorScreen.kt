@@ -55,6 +55,7 @@ internal fun HabitEditorScreen(
   onDeleteClick: () -> Unit,
   onDeleteConfirmed: () -> Unit,
   onDeleteDismissed: () -> Unit,
+  adsContent: @Composable () -> Unit = {},
 ) {
   Scaffold(
     modifier = modifier,
@@ -124,6 +125,7 @@ internal fun HabitEditorScreen(
           hapticFeedbackEnabled = state.hapticFeedbackEnabled,
           modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
         )
+        adsContent()
       }
     }
   }

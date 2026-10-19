@@ -13,9 +13,12 @@ import com.github.naz013.ui.common.livedata.ObserveEvent
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
-fun EntryProviderScope<NavKey>.habitEntries(backStack: MutableList<NavKey>) {
+fun EntryProviderScope<NavKey>.habitEntries(
+  backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit = {},
+) {
   entry<HabitNavKey.List> { HabitListEntry(backStack) }
-  entry<HabitNavKey.Editor> { key -> HabitEditorEntry(key, backStack) }
+  entry<HabitNavKey.Editor> { key -> HabitEditorEntry(key, backStack, adsContent) }
 }
 
 @Composable
@@ -43,6 +46,7 @@ private fun HabitListEntry(backStack: MutableList<NavKey>) {
 private fun HabitEditorEntry(
   key: HabitNavKey.Editor,
   backStack: MutableList<NavKey>,
+  adsContent: @Composable () -> Unit,
 ) {
   val viewModel = koinViewModel<HabitEditorViewModel> { parametersOf(key.habitId) }
 
@@ -67,6 +71,7 @@ private fun HabitEditorEntry(
     onDeleteClick = viewModel::onDeleteClick,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onDeleteDismissed = viewModel::onDeleteDismissed,
+    adsContent = adsContent,
   )
 }
 

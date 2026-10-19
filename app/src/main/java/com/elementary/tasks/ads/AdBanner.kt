@@ -21,7 +21,9 @@ enum class AdBanner {
   Place,
   PinLogin,
   ActionScreen,
-  Routine
+  Routine,
+  Habit,
+  Workflow
 }
 
 @Composable

@@ -66,7 +66,7 @@ fun EntryProviderScope<NavKey>.routineEntries(
     // Fixed at first composition, not re-read on every recomposition - see the matching comment
     // in ReminderPreviewNavGraph.kt.
     val renderAsDetailPane = remember(key) { isRenderedAsDetailPane(key) }
-    RoutineEditEntry(key, backStack, renderAsDetailPane, onManageTagsClick)
+    RoutineEditEntry(key, backStack, renderAsDetailPane, onManageTagsClick, adsContent)
   }
   entry<RoutineNavKey.Preview>(
     metadata = ListDetailSceneStrategy.detailPane(sceneKey = RoutinePaneSceneKey),
@@ -116,6 +116,7 @@ private fun RoutineEditEntry(
   backStack: MutableList<NavKey>,
   renderAsDetailPane: Boolean,
   onManageTagsClick: () -> Unit,
+  adsContent: @Composable () -> Unit,
 ) {
   val viewModel = koinViewModel<RoutineEditViewModel> { parametersOf(key.id) }
 
@@ -147,6 +148,7 @@ private fun RoutineEditEntry(
     onManageTagsClick = viewModel::onManageTagsClick,
     onSaveClick = viewModel::onSaveClick,
     onDeleteClick = viewModel::onDeleteClick,
+    adsContent = adsContent,
   )
 }
 

@@ -60,6 +60,7 @@ internal fun WorkflowRuleBuilderScreen(
   onActionPickerDismiss: () -> Unit,
   onActionSelected: (WorkflowAction) -> Unit,
   onBluetoothPermissionGranted: () -> Unit,
+  adsContent: @Composable () -> Unit = {},
 ) {
   Scaffold(
     modifier = modifier,
@@ -192,6 +193,8 @@ internal fun WorkflowRuleBuilderScreen(
           }
         }
       }
+
+      item { adsContent() }
     }
   }
 

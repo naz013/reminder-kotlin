@@ -109,6 +109,7 @@ internal fun RoutineEditScreen(
   onManageTagsClick: () -> Unit,
   onSaveClick: () -> Unit,
   onDeleteClick: () -> Unit,
+  adsContent: @Composable () -> Unit = {},
 ) {
   Scaffold(
     modifier = modifier,
@@ -222,6 +223,8 @@ internal fun RoutineEditScreen(
         onManageTagsClick = onManageTagsClick,
         modifier = Modifier.fillMaxWidth(),
       )
+
+      adsContent()
     }
   }
 }
