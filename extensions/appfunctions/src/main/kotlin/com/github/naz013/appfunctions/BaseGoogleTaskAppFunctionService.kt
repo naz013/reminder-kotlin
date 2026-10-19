@@ -25,7 +25,7 @@ import com.github.naz013.appfunctions.googletask.SearchGoogleTasksUseCase
 import com.github.naz013.appfunctions.googletask.UpdateGoogleTaskParams
 import com.github.naz013.appfunctions.googletask.UpdateGoogleTaskUseCase
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.GoogleTask
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +35,7 @@ import org.koin.core.component.inject
 
 /**
  * Exposes Google Tasks capabilities of the app to Gemini and other on-device assistants via the
- * AppFunctions platform API. Only available in the PRO build - see [BuildInfo.isPro] - and only
+ * AppFunctions platform API. Only available in the PRO build - see [com.github.naz013.platform.BuildInfo.isBuildPro] - and only
  * once a Google account is linked - see [GoogleTasksAuthManager.isAuthorized].
  */
 @RequiresApi(36)
@@ -192,7 +192,7 @@ abstract class BaseGoogleTaskAppFunctionService :
     }
 
   private fun requirePro() {
-    if (!buildInfo.isPro) {
+    if (!buildInfo.isBuildPro) {
       throw AppFunctionPermissionRequiredException(
         "Google Task AppFunctions require the PRO version of the app.",
       )

@@ -6,6 +6,7 @@ import com.github.naz013.domain.home.HeaderNavigationSection
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.home.HeaderNavigationItem
 import com.github.naz013.feature.home.HomePreferences
+import com.github.naz013.logging.Logger
 import com.github.naz013.logic.routine.HabitConfig
 import com.github.naz013.logic.routine.RoutineConfig
 import com.github.naz013.logic.workflow.WorkflowConfig
@@ -57,16 +58,25 @@ class GetNavigationItemsUseCase(
     scope: CoroutineScope,
     day: LocalDateTime,
   ): List<HeaderNavigationItem> {
+    return getAllItemsOrdered(scope = scope)
+  }
+
+  private suspend fun getAllItemsOrdered(
+    scope: CoroutineScope,
+  ): List<HeaderNavigationItem> {
     val disabled = homePreferences.disabledHeaderNavigationSections
-    val sections =
-      HeaderNavigationSection.pinned +
-        homePreferences.headerNavigationOrder.filter { it !in disabled && isAvailable(it) }
-    return sections.map { section -> buildItem(section, scope) }
+    Logger.d(TAG, "Get all header items: disabled = $disabled")
+    val all = (HeaderNavigationSection.pinned + homePreferences.headerNavigationOrder).toSet() +
+      HeaderNavigationSection.entries.toSet()
+    Logger.d(TAG, "Get all header items: all = $all")
+    return all.filter { it !in disabled && isAvailable(it) }
+      .also { Logger.d(TAG, "Get all header items: final = $it") }
+      .map { section -> buildItem(section, scope) }
   }
 
   private fun isAvailable(section: HeaderNavigationSection): Boolean = when (section) {
     HeaderNavigationSection.ROUTINES -> routineConfig.isEnabled
-    HeaderNavigationSection.WORKFLOW -> workflowConfig.isEnabled
+    HeaderNavigationSection.WORKFLOW -> workflowConfig.isRunnable
     HeaderNavigationSection.HABITS -> habitConfig.isEnabled
     else -> true
   }
@@ -89,138 +99,131 @@ class GetNavigationItemsUseCase(
   }
 
   private suspend fun getCalendarItem(scope: CoroutineScope): HeaderNavigationItem {
-    return scope
-      .async(dispatcherProvider.io()) {
-        HeaderNavigationItem(
-          titleRes = R.string.calendar,
-          iconRes = DrawableCatalog.Fluent.Calendar,
-          color = sectionColor(AppColorIndex.BLUE),
-          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenCalendar,
-          subtitle = dateTimeManager.formatDayMonth(LocalDate.now()),
-        )
-      }.await()
+    return scope.async(dispatcherProvider.io()) {
+      HeaderNavigationItem(
+        titleRes = R.string.calendar,
+        iconRes = DrawableCatalog.Fluent.Calendar,
+        color = sectionColor(AppColorIndex.BLUE),
+        navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenCalendar,
+        subtitle = dateTimeManager.formatDayMonth(LocalDate.now()),
+      )
+    }.await()
   }
 
   private suspend fun getAgendaItem(scope: CoroutineScope): HeaderNavigationItem =
-    scope
-      .async(dispatcherProvider.io()) {
-        HeaderNavigationItem(
-          titleRes = R.string.agenda,
-          iconRes = DrawableCatalog.Fluent.CalendarAgenda,
-          color = sectionColor(AppColorIndex.DEEP_PURPLE),
-          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenAgenda,
-          subtitle = "${reminderV2Repository.count(active = true, removed = false)}",
-        )
-      }.await()
+    scope.async(dispatcherProvider.io()) {
+      HeaderNavigationItem(
+        titleRes = R.string.agenda,
+        iconRes = DrawableCatalog.Fluent.CalendarAgenda,
+        color = sectionColor(AppColorIndex.DEEP_PURPLE),
+        navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenAgenda,
+        subtitle = "${reminderV2Repository.count(active = true, removed = false)}",
+      )
+    }.await()
 
   private suspend fun getNoteItem(scope: CoroutineScope): HeaderNavigationItem =
-    scope
-      .async(dispatcherProvider.io()) {
-        HeaderNavigationItem(
-          titleRes = R.string.notes,
-          iconRes = DrawableCatalog.Fluent.Note,
-          color = sectionColor(AppColorIndex.AMBER),
-          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
-          subtitle = "${noteRepository.countAll(isArchived = false)}",
-        )
-      }.await()
+    scope.async(dispatcherProvider.io()) {
+      HeaderNavigationItem(
+        titleRes = R.string.notes,
+        iconRes = DrawableCatalog.Fluent.Note,
+        color = sectionColor(AppColorIndex.AMBER),
+        navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenNotes,
+        subtitle = "${noteRepository.countAll(isArchived = false)}",
+      )
+    }.await()
 
   private suspend fun getBirthdayItem(scope: CoroutineScope): HeaderNavigationItem =
-    scope
-      .async(dispatcherProvider.io()) {
-        HeaderNavigationItem(
-          titleRes = R.string.birthdays,
-          iconRes = DrawableCatalog.Fluent.FoodCake,
-          color = sectionColor(AppColorIndex.PINK),
-          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenBirthdays,
-          subtitle = "${birthdayRepository.countAll()}",
-        )
-      }.await()
+    scope.async(dispatcherProvider.io()) {
+      HeaderNavigationItem(
+        titleRes = R.string.birthdays,
+        iconRes = DrawableCatalog.Fluent.FoodCake,
+        color = sectionColor(AppColorIndex.PINK),
+        navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenBirthdays,
+        subtitle = "${birthdayRepository.countAll()}",
+      )
+    }.await()
 
   private suspend fun getGoogleTasksItem(scope: CoroutineScope): HeaderNavigationItem =
-    scope
-      .async(dispatcherProvider.io()) {
-        HeaderNavigationItem(
-          titleRes = R.string.google_tasks,
-          iconRes = DrawableCatalog.Builder.GoogleTaskList,
-          color = sectionColor(AppColorIndex.GREEN),
-          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGoogleTasks,
-          subtitle = "${googleTaskRepository.countAll()}",
-        )
-      }.await()
+    scope.async(dispatcherProvider.io()) {
+      HeaderNavigationItem(
+        titleRes = R.string.google_tasks,
+        iconRes = DrawableCatalog.Builder.GoogleTaskList,
+        color = sectionColor(AppColorIndex.GREEN),
+        navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGoogleTasks,
+        subtitle = "${googleTaskRepository.countAll()}",
+      )
+    }.await()
 
   private suspend fun getWorkflowItem(scope: CoroutineScope): HeaderNavigationItem =
-    scope
-      .async(dispatcherProvider.io()) {
-        HeaderNavigationItem(
-          titleRes = R.string.workflow_automations,
-          iconRes = DrawableCatalog.Fluent.Branch,
-          color = sectionColor(AppColorIndex.INDIGO),
-          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenWorkflowGallery,
-          subtitle = "${workflowRuleRepository.getEnabled().size}",
-        )
-      }.await()
+    scope.async(dispatcherProvider.io()) {
+      HeaderNavigationItem(
+        titleRes = R.string.workflow_automations,
+        iconRes = DrawableCatalog.Fluent.Branch,
+        color = sectionColor(AppColorIndex.INDIGO),
+        navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenWorkflowGallery,
+        subtitle = "${workflowRuleRepository.getEnabled().size}",
+      )
+    }.await()
 
   private suspend fun getPomodoroItem(scope: CoroutineScope): HeaderNavigationItem =
-    scope
-      .async(dispatcherProvider.io()) {
-        val today = LocalDate.now()
-        val completedToday = pomodoroSessionRepository.getByDateRange(today, today)
-          .count { it.wasCompleted }
-        HeaderNavigationItem(
-          titleRes = R.string.pomodoro_focus_timer,
-          iconRes = DrawableCatalog.Fluent.ClockAlarm,
-          color = sectionColor(AppColorIndex.RED),
-          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenPomodoro,
-          subtitle = "$completedToday",
-        )
-      }.await()
+    scope.async(dispatcherProvider.io()) {
+      val today = LocalDate.now()
+      val completedToday = pomodoroSessionRepository.getByDateRange(today, today)
+        .count { it.wasCompleted }
+      HeaderNavigationItem(
+        titleRes = R.string.pomodoro_focus_timer,
+        iconRes = DrawableCatalog.Fluent.ClockAlarm,
+        color = sectionColor(AppColorIndex.RED),
+        navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenPomodoro,
+        subtitle = "$completedToday",
+      )
+    }.await()
 
   private suspend fun getGroupItem(scope: CoroutineScope): HeaderNavigationItem =
-    scope
-      .async(dispatcherProvider.io()) {
-        HeaderNavigationItem(
-          titleRes = R.string.groups,
-          iconRes = DrawableCatalog.Fluent.Group,
-          color = sectionColor(AppColorIndex.TEAL),
-          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGroups,
-          subtitle = "${groupV2Repository.countAll()}",
-        )
-      }.await()
+    scope.async(dispatcherProvider.io()) {
+      HeaderNavigationItem(
+        titleRes = R.string.groups,
+        iconRes = DrawableCatalog.Fluent.Group,
+        color = sectionColor(AppColorIndex.TEAL),
+        navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenGroups,
+        subtitle = "${groupV2Repository.countAll()}",
+      )
+    }.await()
 
   private suspend fun getTagItem(scope: CoroutineScope): HeaderNavigationItem =
-    scope
-      .async(dispatcherProvider.io()) {
-        HeaderNavigationItem(
-          titleRes = R.string.tags,
-          iconRes = DrawableCatalog.Builder.Tag,
-          color = sectionColor(AppColorIndex.CYAN),
-          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenTags,
-          subtitle = "${tagRepository.getAll().size}",
-        )
-      }.await()
+    scope.async(dispatcherProvider.io()) {
+      HeaderNavigationItem(
+        titleRes = R.string.tags,
+        iconRes = DrawableCatalog.Builder.Tag,
+        color = sectionColor(AppColorIndex.CYAN),
+        navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenTags,
+        subtitle = "${tagRepository.getAll().size}",
+      )
+    }.await()
 
   private suspend fun getHabitItem(scope: CoroutineScope): HeaderNavigationItem =
-    scope
-      .async(dispatcherProvider.io()) {
-        HeaderNavigationItem(
-          titleRes = R.string.habits,
-          iconRes = DrawableCatalog.Fluent.CalendarCheckmark,
-          color = sectionColor(AppColorIndex.LIME),
-          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenHabits,
-          subtitle = "${habitRepository.getAll().size}",
-        )
-      }.await()
+    scope.async(dispatcherProvider.io()) {
+      HeaderNavigationItem(
+        titleRes = R.string.habits,
+        iconRes = DrawableCatalog.Fluent.CalendarCheckmark,
+        color = sectionColor(AppColorIndex.LIME),
+        navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenHabits,
+        subtitle = "${habitRepository.getAll().size}",
+      )
+    }.await()
 
   private suspend fun getRoutineItem(scope: CoroutineScope): HeaderNavigationItem =
-    scope
-      .async(dispatcherProvider.io()) {
-        HeaderNavigationItem(
-          titleRes = R.string.routines,
-          iconRes = DrawableCatalog.Builder.Timer,
-          color = sectionColor(AppColorIndex.ORANGE),
-          navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenRoutines,
-          subtitle = "${routineRepository.getAll().size}",
-        )
-      }.await()
+    scope.async(dispatcherProvider.io()) {
+      HeaderNavigationItem(
+        titleRes = R.string.routines,
+        iconRes = DrawableCatalog.Builder.Timer,
+        color = sectionColor(AppColorIndex.ORANGE),
+        navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenRoutines,
+        subtitle = "${routineRepository.getAll().size}",
+      )
+    }.await()
+
+  companion object {
+    private const val TAG = "GetNavigationItemsUseCase"
+  }
 }

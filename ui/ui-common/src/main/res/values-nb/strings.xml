@@ -1268,4 +1268,14 @@
     <string name="habit_target_increase">Øk målet</string>
     <string name="delete_habit_title">Slette denne vanen?</string>
     <string name="delete_habit_message">Historikken slettes også.</string>
+    <string name="pro_trial_banner">Prøv PRO gratis</string>
+    <string name="pro_trial_title">Prøv PRO gratis</string>
+    <string name="pro_trial_how_it_works_title">Slik fungerer det</string>
+    <string name="pro_trial_how_it_works">Se en kort videoannonse og lås opp alle PRO-alternativer i 24 timer. Du kan gjenta det når prøveperioden er over. Gemini-appfunksjoner er ikke inkludert i prøveperioden.</string>
+    <string name="pro_trial_activate">Aktiver PRO i 24 timer</string>
+    <string name="pro_trial_ads_progress">Sette annonser: %1$d/%2$d</string>
+    <string name="pro_trial_active_title">PRO-prøveperioden er aktiv</string>
+    <string name="pro_trial_remaining">Tid igjen: %1$s</string>
+    <string name="pro_trial_ads_unavailable">Annonser er ikke tilgjengelige akkurat nå. Prøv igjen senere.</string>
+    <string name="pro_trial_cancelled">Annonsen ble lukket før belønningen. Se annonsen til slutten for å aktivere prøveperioden.</string>
 </resources>

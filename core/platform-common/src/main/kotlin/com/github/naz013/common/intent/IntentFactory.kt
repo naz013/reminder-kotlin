@@ -2,7 +2,7 @@ package com.github.naz013.common.intent
 
 import android.content.Context
 import android.content.Intent
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.common.uri.UriUtil
 import java.io.File
 

@@ -24,7 +24,9 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.common.system.ProTrialController
+import com.github.naz013.common.system.observeIsActive
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -36,8 +38,9 @@ import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.LegalDocumentType
 import com.github.naz013.logging.Logger
 import com.github.naz013.ui.common.R
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
@@ -61,7 +64,10 @@ class ScheduleHomeViewModel internal constructor(
   private val buildInfo: BuildInfo,
   private val textProvider: TextProvider,
   private val hasAnyUserContentUseCase: HasAnyUserContentUseCase,
+  private val proTrialController: ProTrialController,
 ) : ViewModel() {
+  private var proTrialJob: Job? = null
+  private var headerItemsJob: Job? = null
 
   private val _state = MutableStateFlow(HomeScreenState())
   private val _selectedEventId = MutableStateFlow<String?>(null)
@@ -241,14 +247,8 @@ class ScheduleHomeViewModel internal constructor(
         bannerState = getBannerState(),
       )
     }
-    viewModelScope.launch(dispatcherProvider.io()) {
-      val items = getNavigationItemsUseCase(this, LocalDateTime.now())
-      _state.update {
-        it.copy(
-          headerNavigationItems = items,
-        )
-      }
-    }
+    observeProTrial()
+    loadHeaderNavigationItems()
     viewModelScope.launch(dispatcherProvider.default()) {
       val loadedToday = observeTodayScheduleUseCase().map { snapshot -> loadToday(snapshot) }
       combine(loadedToday, _isEarlierExpanded, _isOverdueExpanded) { loaded, earlierExpanded, overdueExpanded ->
@@ -257,6 +257,27 @@ class ScheduleHomeViewModel internal constructor(
         .collect { rendered ->
           _state.update { it.copy(listState = rendered.listState, daySummary = rendered.daySummary) }
         }
+    }
+  }
+
+  private fun observeProTrial() {
+    proTrialJob?.cancel()
+    proTrialJob = viewModelScope.launch {
+      proTrialController.observeIsActive().collectIndexed { index, _ ->
+        _state.update {
+          it.copy(addMenuItems = EventType.entries.filter { type -> isAddMenuItemAvailable(type) })
+        }
+        // The first emission is the current status, already covered by loadData's own load.
+        if (index > 0) loadHeaderNavigationItems()
+      }
+    }
+  }
+
+  private fun loadHeaderNavigationItems() {
+    headerItemsJob?.cancel()
+    headerItemsJob = viewModelScope.launch(dispatcherProvider.io()) {
+      val items = getNavigationItemsUseCase(this, LocalDateTime.now())
+      _state.update { it.copy(headerNavigationItems = items) }
     }
   }
 

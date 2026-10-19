@@ -1,6 +1,6 @@
 package com.github.naz013.feature.reminder.build.reminder.decompose
 
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.feature.reminder.build.AttachmentsBuilderItem
 import com.github.naz013.feature.reminder.build.BeforeTimeBuilderItem
 import com.github.naz013.feature.reminder.build.BuilderItem

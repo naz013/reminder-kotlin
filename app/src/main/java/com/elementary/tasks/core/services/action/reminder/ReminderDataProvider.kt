@@ -4,7 +4,7 @@ import androidx.core.app.NotificationCompat
 import com.github.naz013.feature.reminder.util.LED
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 
 class ReminderDataProvider(
   private val textProvider: TextProvider,

@@ -1,6 +1,7 @@
 package com.github.naz013.feature.settings
 
 import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
@@ -15,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
@@ -24,7 +24,7 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.github.naz013.common.Permissions
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.featureflags.FeatureFlag
 import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.feature.settings.backup.BackupSettingsScreen
@@ -47,8 +47,10 @@ import com.github.naz013.feature.settings.general.GeneralSettingsViewModel
 import com.github.naz013.feature.settings.general.rememberAppRestartController
 import com.github.naz013.feature.settings.headeritems.HeaderItemsSettingsScreen
 import com.github.naz013.feature.settings.headeritems.HeaderItemsSettingsViewModel
-import com.github.naz013.feature.settings.location.LocationNavKey
 import com.github.naz013.feature.settings.other.OtherNavKey
+import com.github.naz013.feature.settings.protrial.ProTrialEvent
+import com.github.naz013.feature.settings.protrial.ProTrialScreen
+import com.github.naz013.feature.settings.protrial.ProTrialViewModel
 import com.github.naz013.feature.settings.proversion.ProVersionScreen
 import com.github.naz013.feature.settings.proversion.ProVersionViewModel
 import com.github.naz013.feature.settings.proversion.rememberGooglePlayMarketLauncher
@@ -161,6 +163,10 @@ fun EntryProviderScope<NavKey>.settingsEntries(
     val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.ProVersion) }
     ProVersionEntry(backStack, renderAsDetailPane)
   }
+  entry<SettingsNavKey.ProTrial>(metadata = SettingsDetailPane) {
+    val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.ProTrial) }
+    ProTrialEntry(backStack, renderAsDetailPane)
+  }
   entry<SettingsNavKey.Troubleshooting>(metadata = SettingsDetailPane) {
     val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.Troubleshooting) }
     TroubleshootingEntry(backStack, applicationId, renderAsDetailPane)
@@ -212,6 +218,11 @@ private fun HubEntry(backStack: MutableList<NavKey>) {
         backStack.jumpToSettingsSearchResult(result)
       },
       onBuyProClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.ProVersion) },
+      onTrialPromoClick = {
+        viewModel.onTrialPromoClick()
+        backStack.navigateToSettingsDetailPane(SettingsNavKey.ProTrial)
+      },
+      onTrialTimerClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.ProTrial) },
       onUpdateClick = { googlePlayMarketLauncher.launchSelf() },
       onGeneralClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.General) },
       onBackupClick = { backStack.navigateToSettingsDetailPane(SettingsNavKey.Backup) },
@@ -256,8 +267,8 @@ private fun BackupEntry(
     if (uri != null) onOpenLocalBackupImport(uri.toString())
   }
 
-  val counterpartPackage = remember(buildInfo.isPro) {
-    if (buildInfo.isPro) SystemInfo.FREE_PACKAGE_NAME else SystemInfo.PRO_PACKAGE_NAME
+  val counterpartPackage = remember(buildInfo.isBuildPro) {
+    if (buildInfo.isBuildPro) SystemInfo.FREE_PACKAGE_NAME else SystemInfo.PRO_PACKAGE_NAME
   }
   val isTransferVisible = remember(counterpartPackage) { systemInfo.isAppInstalled(counterpartPackage) }
 
@@ -270,7 +281,7 @@ private fun BackupEntry(
     BackupSettingsScreen(
       isLocalBackupLocked = !buildInfo.isPro,
       isTransferVisible = isTransferVisible,
-      transferTitleRes = if (buildInfo.isPro) R.string.backup_transfer_to_free else R.string.backup_transfer_to_pro,
+      transferTitleRes = if (buildInfo.isBuildPro) R.string.backup_transfer_to_free else R.string.backup_transfer_to_pro,
       onCloudBackupClick = { backStack.add(ExportNavKey.CloudBackup) },
       onExportBackupClick = { exportBackupLauncher.launch(BACKUP_FILE_NAME) },
       onImportBackupClick = { importBackupLauncher.launch(arrayOf("*/*")) },
@@ -603,6 +614,26 @@ private fun ProVersionEntry(backStack: MutableList<NavKey>, renderAsDetailPane: 
 }
 
 @Composable
+private fun ProTrialEntry(backStack: MutableList<NavKey>, renderAsDetailPane: Boolean) {
+  val viewModel = koinViewModel<ProTrialViewModel>()
+  val activity = LocalActivity.current
+
+  val state by viewModel.state.collectAsState()
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      ProTrialEvent.RequestActivity -> activity?.let { viewModel.onActivityAvailable(it) }
+    }
+  }
+
+  ProTrialScreen(
+    state = state,
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    onActivateClick = viewModel::onActivateClick,
+    renderAsDetailPane = renderAsDetailPane,
+  )
+}
+
+@Composable
 private fun TroubleshootingEntry(
   backStack: MutableList<NavKey>,
   applicationId: String,
@@ -664,6 +695,7 @@ private fun MutableList<NavKey>.navigateToSettingsDetailPane(key: NavKey) {
     top is SettingsNavKey.Note ||
     top is SettingsNavKey.Developer ||
     top is SettingsNavKey.ProVersion ||
+    top is SettingsNavKey.ProTrial ||
     top is SettingsNavKey.Troubleshooting ||
     top is SecurityNavKey.Security ||
     top is OtherNavKey.Other

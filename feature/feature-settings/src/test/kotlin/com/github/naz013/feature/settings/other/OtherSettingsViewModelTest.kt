@@ -8,7 +8,8 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
+import com.github.naz013.common.system.ProTrialController
 import com.github.naz013.digestapi.DigestCapabilityChecker
 import com.github.naz013.featureflags.FeatureFlag
 import com.github.naz013.featureflags.FeatureFlags
@@ -23,6 +24,7 @@ import io.mockk.mockkObject
 import io.mockk.unmockkObject
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -38,6 +40,7 @@ class OtherSettingsViewModelTest : BaseTest() {
   private val featureFlags = mockk<FeatureFlags>()
   private val buildInfo = mockk<BuildInfo>(relaxed = true)
   private val digestCapabilityChecker = mockk<DigestCapabilityChecker>()
+  private val proTrialController = mockk<ProTrialController>(relaxed = true)
 
   private lateinit var viewModel: OtherSettingsViewModel
 
@@ -46,6 +49,7 @@ class OtherSettingsViewModelTest : BaseTest() {
     super.setUp()
     mockkObject(Permissions)
     every { contextProvider.context } returns mockk(relaxed = true)
+    every { proTrialController.observeRemainingMillis() } returns flowOf(0L)
     every { systemInfo.is15 } returns false
     every { systemInfo.is13 } returns false
     every { systemInfo.is16 } returns true
@@ -65,6 +69,7 @@ class OtherSettingsViewModelTest : BaseTest() {
         featureFlags = featureFlags,
         buildInfo = buildInfo,
         digestCapabilityChecker = digestCapabilityChecker,
+        proTrialController = proTrialController,
       )
   }
 
@@ -252,7 +257,7 @@ class OtherSettingsViewModelTest : BaseTest() {
   @Test
   fun `onFeedbackClicked emits ShowFeedbackDialog with pro app source`() {
     every { featureFlags.isEnabled(FeatureFlag.LOGS_IN_REVIEWS) } returns true
-    every { buildInfo.isPro } returns true
+    every { buildInfo.isBuildPro } returns true
 
     viewModel.onFeedbackClicked()
 

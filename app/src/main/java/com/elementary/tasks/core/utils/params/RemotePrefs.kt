@@ -5,7 +5,7 @@ import com.elementary.tasks.core.utils.params.remote.InternalMessageV1
 import com.elementary.tasks.core.utils.params.remote.SaleMessageV2
 import com.elementary.tasks.core.utils.params.remote.UpdateMessageV2
 import com.github.naz013.common.PackageManagerWrapper
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.featureflags.FeatureFlag
 import com.github.naz013.logging.Logger

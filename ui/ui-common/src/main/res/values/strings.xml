@@ -1286,4 +1286,14 @@
     <string name="habit_target_increase">Increase target</string>
     <string name="delete_habit_title">Delete this habit?</string>
     <string name="delete_habit_message">Its check-in history will be removed too.</string>
+    <string name="pro_trial_banner">Try PRO for free</string>
+    <string name="pro_trial_title">Try PRO for free</string>
+    <string name="pro_trial_how_it_works_title">How it works</string>
+    <string name="pro_trial_how_it_works">Watch a short video ad and unlock all PRO options for 24 hours. You can repeat it whenever the trial ends. Gemini App Functions are not included in the trial.</string>
+    <string name="pro_trial_activate">Activate PRO for 24 hours</string>
+    <string name="pro_trial_ads_progress">Ads watched: %1$d/%2$d</string>
+    <string name="pro_trial_active_title">PRO trial is active</string>
+    <string name="pro_trial_remaining">Time left: %1$s</string>
+    <string name="pro_trial_ads_unavailable">Ads are not available right now. Please try again later.</string>
+    <string name="pro_trial_cancelled">The ad was closed before the reward. Watch the ad to the end to activate the trial.</string>
 </resources>

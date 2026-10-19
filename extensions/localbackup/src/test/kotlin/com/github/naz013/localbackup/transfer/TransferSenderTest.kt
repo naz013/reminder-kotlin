@@ -1,7 +1,7 @@
 package com.github.naz013.localbackup.transfer
 
 import android.content.Context
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.localbackup.BuildBackupEnvelopeUseCase
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.repository.NoteRepository

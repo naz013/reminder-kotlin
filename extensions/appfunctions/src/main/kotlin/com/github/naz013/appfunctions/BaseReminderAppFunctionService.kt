@@ -22,7 +22,7 @@ import com.github.naz013.appfunctions.reminder.SearchRemindersParams
 import com.github.naz013.appfunctions.reminder.SearchRemindersUseCase
 import com.github.naz013.appfunctions.reminder.UpdateReminderParams
 import com.github.naz013.appfunctions.reminder.UpdateReminderUseCase
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +32,7 @@ import org.koin.core.component.inject
 
 /**
  * Exposes reminder-related capabilities of the app to Gemini and other on-device assistants via
- * the AppFunctions platform API. Only available in the PRO build - see [BuildInfo.isPro].
+ * the AppFunctions platform API. Only available in the PRO build - see [com.github.naz013.platform.BuildInfo.isBuildPro].
  */
 @RequiresApi(36)
 @AppFunctionServiceEntryPoint(
@@ -179,7 +179,7 @@ abstract class BaseReminderAppFunctionService :
     }
 
   private fun requirePro() {
-    if (!buildInfo.isPro) {
+    if (!buildInfo.isBuildPro) {
       throw AppFunctionPermissionRequiredException(
         "Reminder AppFunctions require the PRO version of the app.",
       )

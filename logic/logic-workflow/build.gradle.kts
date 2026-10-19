@@ -6,6 +6,7 @@ dependencies {
   implementation(project(":core:logging-api"))
   implementation(project(":core:domain"))
   implementation(project(":core:feature-flags-api"))
+  implementation(project(":core:platform-api"))
   implementation(project(":data:repository-api"))
   implementation(project(":data:files-api"))
   implementation(project(":data:work-api"))

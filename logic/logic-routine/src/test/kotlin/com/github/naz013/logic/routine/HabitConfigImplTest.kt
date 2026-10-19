@@ -2,7 +2,7 @@ package com.github.naz013.logic.routine
 
 import com.github.naz013.featureflags.FeatureFlag
 import com.github.naz013.featureflags.FeatureFlags
-import com.github.naz013.sync.IsProUserUseCase
+import com.github.naz013.platform.BuildInfo
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
@@ -11,12 +11,12 @@ import org.junit.Test
 class HabitConfigImplTest {
 
   private val featureFlags = mockk<FeatureFlags>()
-  private val isProUser = mockk<IsProUserUseCase>()
+  private val buildInfo = mockk<BuildInfo>()
 
   private fun config(flagEnabled: Boolean, pro: Boolean): HabitConfigImpl {
     every { featureFlags.isEnabled(FeatureFlag.HABIT_ENABLED) } returns flagEnabled
-    every { isProUser() } returns pro
-    return HabitConfigImpl(featureFlags, isProUser)
+    every { buildInfo.isPro } returns pro
+    return HabitConfigImpl(featureFlags, buildInfo)
   }
 
   @Test

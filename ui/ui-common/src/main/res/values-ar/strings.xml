@@ -1280,4 +1280,14 @@
     <string name="habit_target_increase">زيادة الهدف</string>
     <string name="delete_habit_title">حذف هذه العادة؟</string>
     <string name="delete_habit_message">سيتم حذف سجل التسجيل الخاص بها أيضًا.</string>
+    <string name="pro_trial_banner">جرّب PRO مجانًا</string>
+    <string name="pro_trial_title">جرّب PRO مجانًا</string>
+    <string name="pro_trial_how_it_works_title">كيف يعمل</string>
+    <string name="pro_trial_how_it_works">شاهد إعلان فيديو قصيرًا لتفتح جميع خيارات PRO لمدة 24 ساعة. يمكنك تكرار ذلك عند انتهاء التجربة. وظائف تطبيق Gemini غير مشمولة في التجربة.</string>
+    <string name="pro_trial_activate">فعّل PRO لمدة 24 ساعة</string>
+    <string name="pro_trial_ads_progress">الإعلانات المُشاهَدة: %1$d/%2$d</string>
+    <string name="pro_trial_active_title">تجربة PRO نشطة</string>
+    <string name="pro_trial_remaining">الوقت المتبقي: %1$s</string>
+    <string name="pro_trial_ads_unavailable">الإعلانات غير متاحة حاليًا. يُرجى المحاولة لاحقًا.</string>
+    <string name="pro_trial_cancelled">تم إغلاق الإعلان قبل الحصول على المكافأة. شاهد الإعلان حتى النهاية لتفعيل التجربة.</string>
 </resources>

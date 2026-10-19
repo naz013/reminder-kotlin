@@ -2,7 +2,7 @@ package com.github.naz013.feature.settings.location
 
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.ui.common.theme.ThemeProvider

@@ -20,17 +20,21 @@ import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.common.system.ProTrialController
+import com.github.naz013.platform.BuildInfo
+import kotlinx.coroutines.flow.MutableStateFlow
 import com.github.naz013.ui.common.R
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.LegalDocumentType
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import java.util.concurrent.TimeUnit
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -62,6 +66,8 @@ class ScheduleHomeViewModelTest : BaseTest() {
   private val buildInfo = mockk<BuildInfo>(relaxed = true)
   private val textProvider = mockk<TextProvider>()
   private val hasAnyUserContentUseCase = mockk<HasAnyUserContentUseCase>()
+  private val proTrialController = mockk<ProTrialController>()
+  private val remainingMillis = MutableStateFlow(0L)
 
   private lateinit var viewModel: ScheduleHomeViewModel
 
@@ -76,6 +82,7 @@ class ScheduleHomeViewModelTest : BaseTest() {
     // Pro by default so existing menu/gating expectations don't all need to opt in; tests that
     // care about the free-user experience override this locally.
     every { buildInfo.isPro } returns true
+    every { proTrialController.observeRemainingMillis() } returns remainingMillis
     every { observeTodayScheduleUseCase() } returns flowOf(snapshot())
     coEvery { todayItemHomeEventMapper(any(), any()) } returns emptyList()
     every { getTimeSectionsUseCase(any()) } returns emptyList()
@@ -111,7 +118,50 @@ class ScheduleHomeViewModelTest : BaseTest() {
         buildInfo = buildInfo,
         textProvider = textProvider,
         hasAnyUserContentUseCase = hasAnyUserContentUseCase,
+        proTrialController = proTrialController,
       )
+  }
+
+  @Test
+  fun `header navigation items are reloaded when the pro trial starts and ends`() = runTest {
+    val before = listOf(headerItem("before"))
+    val during = listOf(headerItem("during"))
+    val after = listOf(headerItem("after"))
+    coEvery { getNavigationItemsUseCase(any(), any()) } returnsMany listOf(before, during, after)
+    val states = mutableListOf<HomeScreenState>()
+    val job = launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.toList(states) }
+    assertEquals(before, states.last().headerNavigationItems)
+
+    remainingMillis.value = TimeUnit.HOURS.toMillis(1)
+    assertEquals(during, states.last().headerNavigationItems)
+
+    remainingMillis.value = 0L
+    assertEquals(after, states.last().headerNavigationItems)
+    coVerify(exactly = 3) { getNavigationItemsUseCase(any(), any()) }
+    job.cancel()
+  }
+
+  private fun headerItem(subtitle: String) =
+    HeaderNavigationItem(
+      titleRes = 0,
+      iconRes = 0,
+      color = androidx.compose.ui.graphics.Color.Unspecified,
+      navigationEvent = ScheduleHomeViewModel.ViewModelEvent.OpenCalendar,
+      subtitle = subtitle,
+    )
+
+  @Test
+  fun `add menu offers quick add once the pro trial makes the user pro`() = runTest {
+    every { buildInfo.isPro } returns false
+    val states = mutableListOf<HomeScreenState>()
+    val job = launch(UnconfinedTestDispatcher(testScheduler)) { viewModel.state.toList(states) }
+    assertFalse(states.last().addMenuItems.contains(ScheduleHomeViewModel.EventType.QuickAdd))
+
+    every { buildInfo.isPro } returns true
+    remainingMillis.value = TimeUnit.HOURS.toMillis(1)
+
+    assertTrue(states.last().addMenuItems.contains(ScheduleHomeViewModel.EventType.QuickAdd))
+    job.cancel()
   }
 
   @Test

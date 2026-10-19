@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.elementary.tasks.AdsProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import org.koin.compose.koinInject
 
 enum class AdBanner {

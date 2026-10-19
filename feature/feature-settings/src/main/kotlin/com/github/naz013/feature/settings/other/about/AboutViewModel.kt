@@ -6,7 +6,7 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.ui.common.R
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +30,7 @@ internal class AboutViewModel(
   }
 
   private fun loadState() {
-    val appName = textProvider.getString(if (buildInfo.isPro) R.string.app_name_pro else R.string.app_name)
+    val appName = textProvider.getString(if (buildInfo.isBuildPro) R.string.app_name_pro else R.string.app_name)
     val year = Calendar.getInstance().get(Calendar.YEAR)
     _state.update {
       it.copy(

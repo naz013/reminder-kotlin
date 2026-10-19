@@ -84,6 +84,7 @@ fun RemindersCrossFeatureEntry(
       RemindersSettingsEvent.OpenPresets -> backStack.add(SettingsNavKey.ManagePresets)
       RemindersSettingsEvent.OpenLocationSettings -> backStack.add(LocationNavKey.Location)
       RemindersSettingsEvent.OpenWorkflowRules -> backStack.add(WorkflowNavKey.Gallery)
+      RemindersSettingsEvent.OpenProVersion -> backStack.add(SettingsNavKey.ProVersion)
       is RemindersSettingsEvent.ShowTimePicker -> {
         dateTimePicker.showTimePicker(
           time = event.time,

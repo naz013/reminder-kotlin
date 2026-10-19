@@ -55,6 +55,9 @@ sealed interface SettingsNavKey : NavKey {
   data object ProVersion : SettingsNavKey
 
   @Serializable
+  data object ProTrial : SettingsNavKey
+
+  @Serializable
   data object Troubleshooting : SettingsNavKey
 
   @Serializable

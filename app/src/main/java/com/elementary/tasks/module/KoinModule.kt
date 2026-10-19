@@ -28,11 +28,14 @@ import com.elementary.tasks.module.logicnotificationaction.WearPreferencesImpl
 import com.elementary.tasks.module.logicreminder.AppReminderNotifier
 import com.elementary.tasks.module.logicreminder.ReminderPreferencesImpl
 import com.elementary.tasks.module.logicschedule.SchedulePreferencesImpl
-import com.elementary.tasks.pomodoro.PomodoroForegroundNotifierImpl
-import com.elementary.tasks.pomodoro.PomodoroPreferencesImpl
 import com.elementary.tasks.module.platform.BuildInfoImpl
 import com.elementary.tasks.module.platform.DateTimePreferencesImpl
 import com.elementary.tasks.module.platform.InstallReferrerReader
+import com.elementary.tasks.module.platform.ProTrialAdsUseCase
+import com.elementary.tasks.module.platform.ProTrialControllerImpl
+import com.elementary.tasks.module.platform.ProTrialUseCase
+import com.elementary.tasks.module.platform.RewardedTrialAds
+import com.elementary.tasks.module.platform.RewardedTrialAdsImpl
 import com.elementary.tasks.module.sync.SyncDataConverterImpl
 import com.elementary.tasks.module.uicommon.AppPreferencesImpl
 import com.elementary.tasks.module.uicommon.AuthPreferencesImpl
@@ -40,13 +43,17 @@ import com.elementary.tasks.module.uicommon.FontApiImpl
 import com.elementary.tasks.module.uicommon.LocalePreferencesImpl
 import com.elementary.tasks.module.uicommon.ThemePreferencesImpl
 import com.elementary.tasks.module.uimap.MapPreferencesImpl
+import com.elementary.tasks.pomodoro.PomodoroForegroundNotifierImpl
+import com.elementary.tasks.pomodoro.PomodoroPreferencesImpl
 import com.github.naz013.analytics.AnalyticsStateProvider
 import com.github.naz013.analytics.initializeAnalytics
 import com.github.naz013.appwidgets.AppWidgetPreferences
 import com.github.naz013.appwidgets.singlenote.NoteWidgetPreferences
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.common.system.ProTrialController
 import com.github.naz013.datecalc.DateTimePreferences
 import com.github.naz013.feature.googletask.GoogleTasksPreferences
+import com.github.naz013.feature.pomodoro.PomodoroForegroundNotifier
+import com.github.naz013.feature.pomodoro.PomodoroPreferences
 import com.github.naz013.feature.settings.NoteSettingsPreferences
 import com.github.naz013.feature.settings.SettingsHubDoNotDisturbChecker
 import com.github.naz013.feature.settings.SettingsHubRemoteMessages
@@ -68,11 +75,10 @@ import com.github.naz013.logic.notificationaction.WearPreferences
 import com.github.naz013.logic.notificationaction.birthday.BirthdayAlertHandlerFactory
 import com.github.naz013.logic.notificationaction.calendarevent.GoogleCalendarEventAlertHandlerFactory
 import com.github.naz013.logic.notificationaction.reminder.ReminderAlertHandlerFactory
-import com.github.naz013.feature.pomodoro.PomodoroForegroundNotifier
-import com.github.naz013.feature.pomodoro.PomodoroPreferences
 import com.github.naz013.logic.reminder.ReminderNotifier
 import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.logic.schedule.SchedulePreferences
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.sync.SyncDataConverter
 import com.github.naz013.ui.common.font.FontApi
 import com.github.naz013.ui.common.locale.LocalePreferences
@@ -85,7 +91,11 @@ import org.koin.dsl.module
 
 val libModule = module {
   // platform
-  factoryOf<BuildInfo>(::BuildInfoImpl)
+  factory<BuildInfo> { BuildInfoImpl(get()) }
+  factory { ProTrialUseCase(get()) }
+  factory<RewardedTrialAds> { RewardedTrialAdsImpl(get()) }
+  single { ProTrialAdsUseCase(get(), get(), get()) }
+  single<ProTrialController> { ProTrialControllerImpl(get(), get()) }
   single { DateTimePreferencesImpl(get()) as DateTimePreferences }
   factoryOf(::InstallReferrerReader)
 

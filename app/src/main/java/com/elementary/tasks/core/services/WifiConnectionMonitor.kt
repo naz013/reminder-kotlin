@@ -9,7 +9,6 @@ import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.workflow.CurrentWifiSsidReader
 import com.github.naz013.feature.workflow.WorkflowWifiPollState
 import com.github.naz013.logging.Logger
-import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.logic.workflow.WorkflowTriggerRunner
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -33,7 +32,6 @@ import kotlinx.coroutines.launch
  */
 class WifiConnectionMonitor(
   private val context: Context,
-  private val workflowConfig: WorkflowConfig,
   private val workflowTriggerRunner: WorkflowTriggerRunner,
   private val dispatcherProvider: DispatcherProvider,
   private val currentWifiSsidReader: CurrentWifiSsidReader,
@@ -56,10 +54,10 @@ class WifiConnectionMonitor(
       }
     }
 
-  /** No-op if [WorkflowConfig.isEnabled] is off or the callback is already registered - safe to
-   * call more than once (e.g. if the workflow feature flag toggle ever calls this reactively). */
+  /** Registers regardless of the workflow gate - [WorkflowTriggerRunner] checks it per event, so a PRO
+   * trial started later works without re-registering. No-op if already registered. */
   fun start() {
-    if (!workflowConfig.isEnabled || registered) return
+    if (registered) return
     val request =
       NetworkRequest.Builder()
         .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)

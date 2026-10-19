@@ -1273,4 +1273,14 @@
     <string name="habit_target_increase">Aumenta obiettivo</string>
     <string name="delete_habit_title">Eliminare questa abitudine?</string>
     <string name="delete_habit_message">Verrà eliminata anche la cronologia delle registrazioni.</string>
+    <string name="pro_trial_banner">Prova PRO gratis</string>
+    <string name="pro_trial_title">Prova PRO gratis</string>
+    <string name="pro_trial_how_it_works_title">Come funziona</string>
+    <string name="pro_trial_how_it_works">Guarda un breve annuncio video e sblocca tutte le opzioni PRO per 24 ore. Puoi ripetere l\'operazione quando la prova termina. Le funzioni dell\'app Gemini non sono incluse nella prova.</string>
+    <string name="pro_trial_activate">Attiva PRO per 24 ore</string>
+    <string name="pro_trial_ads_progress">Annunci visti: %1$d/%2$d</string>
+    <string name="pro_trial_active_title">La prova PRO è attiva</string>
+    <string name="pro_trial_remaining">Tempo rimanente: %1$s</string>
+    <string name="pro_trial_ads_unavailable">Gli annunci non sono disponibili al momento. Riprova più tardi.</string>
+    <string name="pro_trial_cancelled">L\'annuncio è stato chiuso prima della ricompensa. Guarda l\'annuncio fino alla fine per attivare la prova.</string>
 </resources>

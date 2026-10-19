@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Build
 import androidx.biometric.BiometricManager
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.platform.SystemInfo.Companion.FREE_PACKAGE_NAME
 import com.github.naz013.platform.SystemInfo.Companion.PRO_PACKAGE_NAME
@@ -55,7 +56,7 @@ internal class SystemInfoImpl(
     }
 
   override val currentPackageName: String
-    get() = if (buildInfo.isPro) {
+    get() = if (buildInfo.isBuildPro) {
       PRO_PACKAGE_NAME
     } else {
       FREE_PACKAGE_NAME

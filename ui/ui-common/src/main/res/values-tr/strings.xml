@@ -1270,4 +1270,14 @@
     <string name="habit_target_increase">Hedefi artır</string>
     <string name="delete_habit_title">Bu alışkanlık silinsin mi?</string>
     <string name="delete_habit_message">İşaretleme geçmişi de silinecek.</string>
+    <string name="pro_trial_banner">PRO\'yu ücretsiz dene</string>
+    <string name="pro_trial_title">PRO\'yu ücretsiz dene</string>
+    <string name="pro_trial_how_it_works_title">Nasıl çalışır</string>
+    <string name="pro_trial_how_it_works">Kısa bir video reklam izleyin ve tüm PRO seçeneklerinin kilidini 24 saatliğine açın. Deneme bittiğinde bunu tekrarlayabilirsiniz. Gemini uygulama işlevleri denemeye dahil değildir.</string>
+    <string name="pro_trial_activate">PRO\'yu 24 saat etkinleştir</string>
+    <string name="pro_trial_ads_progress">İzlenen reklamlar: %1$d/%2$d</string>
+    <string name="pro_trial_active_title">PRO denemesi etkin</string>
+    <string name="pro_trial_remaining">Kalan süre: %1$s</string>
+    <string name="pro_trial_ads_unavailable">Reklamlar şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin.</string>
+    <string name="pro_trial_cancelled">Reklam, ödül verilmeden önce kapatıldı. Denemeyi etkinleştirmek için reklamı sonuna kadar izleyin.</string>
 </resources>

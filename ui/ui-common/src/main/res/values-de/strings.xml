@@ -1266,4 +1266,14 @@
     <string name="habit_target_increase">Ziel erhöhen</string>
     <string name="delete_habit_title">Diese Gewohnheit löschen?</string>
     <string name="delete_habit_message">Der Verlauf wird ebenfalls gelöscht.</string>
+    <string name="pro_trial_banner">PRO kostenlos testen</string>
+    <string name="pro_trial_title">PRO kostenlos testen</string>
+    <string name="pro_trial_how_it_works_title">So funktioniert es</string>
+    <string name="pro_trial_how_it_works">Sieh dir eine kurze Videoanzeige an und schalte alle PRO-Optionen für 24 Stunden frei. Du kannst das wiederholen, sobald die Testphase endet. Gemini-App-Funktionen sind in der Testphase nicht enthalten.</string>
+    <string name="pro_trial_activate">PRO für 24 Stunden aktivieren</string>
+    <string name="pro_trial_ads_progress">Angesehene Anzeigen: %1$d/%2$d</string>
+    <string name="pro_trial_active_title">PRO-Testphase ist aktiv</string>
+    <string name="pro_trial_remaining">Verbleibende Zeit: %1$s</string>
+    <string name="pro_trial_ads_unavailable">Anzeigen sind derzeit nicht verfügbar. Bitte versuche es später erneut.</string>
+    <string name="pro_trial_cancelled">Die Anzeige wurde vor der Belohnung geschlossen. Sieh dir die Anzeige bis zum Ende an, um die Testphase zu aktivieren.</string>
 </resources>

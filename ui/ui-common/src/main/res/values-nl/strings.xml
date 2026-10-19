@@ -1268,4 +1268,14 @@
     <string name="habit_target_increase">Doel verhogen</string>
     <string name="delete_habit_title">Deze gewoonte verwijderen?</string>
     <string name="delete_habit_message">De bijbehorende geschiedenis wordt ook verwijderd.</string>
+    <string name="pro_trial_banner">PRO gratis proberen</string>
+    <string name="pro_trial_title">PRO gratis proberen</string>
+    <string name="pro_trial_how_it_works_title">Hoe het werkt</string>
+    <string name="pro_trial_how_it_works">Bekijk een korte videoadvertentie en ontgrendel alle PRO-opties voor 24 uur. Je kunt dit herhalen zodra de proefperiode eindigt. Gemini-appfuncties zijn niet inbegrepen in de proefperiode.</string>
+    <string name="pro_trial_activate">PRO activeren voor 24 uur</string>
+    <string name="pro_trial_ads_progress">Bekeken advertenties: %1$d/%2$d</string>
+    <string name="pro_trial_active_title">PRO-proefperiode is actief</string>
+    <string name="pro_trial_remaining">Resterende tijd: %1$s</string>
+    <string name="pro_trial_ads_unavailable">Advertenties zijn momenteel niet beschikbaar. Probeer het later opnieuw.</string>
+    <string name="pro_trial_cancelled">De advertentie is gesloten voordat je de beloning kreeg. Bekijk de advertentie tot het einde om de proefperiode te activeren.</string>
 </resources>

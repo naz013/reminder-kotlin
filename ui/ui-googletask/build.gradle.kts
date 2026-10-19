@@ -9,6 +9,7 @@ android {
 dependencies {
   implementation(project(":core:domain"))
   implementation(project(":core:logging-api"))
+  implementation(project(":core:platform-api"))
   implementation(project(":data:cloud-api"))
   implementation(project(":ui:ui-common"))
   implementation(project(":core:platform-common"))

@@ -15,7 +15,7 @@ class WorkflowTriggerRunnerTest {
 
   private val workflowEngine = mockk<WorkflowEngine>()
   private val workflowActionDispatcher = mockk<WorkflowActionDispatcher>(relaxed = true)
-  private val workflowConfig = mockk<WorkflowConfig> { every { isEnabled } returns true }
+  private val workflowConfig = mockk<WorkflowConfig> { every { isRunnable } returns true }
 
   private lateinit var runner: WorkflowTriggerRunner
 
@@ -153,8 +153,8 @@ class WorkflowTriggerRunnerTest {
   }
 
   @Test
-  fun `every method no-ops without touching the engine when the workflow feature flag is disabled`() = runTest {
-    every { workflowConfig.isEnabled } returns false
+  fun `every method no-ops without touching the engine when workflows are not runnable`() = runTest {
+    every { workflowConfig.isRunnable } returns false
 
     runner.runDailyPolling()
     runner.runUnacknowledgedPolling()

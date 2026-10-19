@@ -1,7 +1,7 @@
 package com.github.naz013.feature.reminder.build.bi
 
 import com.github.naz013.feature.reminder.build.BuilderItem
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.common.system.Module
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.domain.reminder.BiType

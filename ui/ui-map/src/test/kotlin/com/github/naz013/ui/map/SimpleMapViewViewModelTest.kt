@@ -5,7 +5,8 @@ import android.location.Location
 import android.location.LocationManager
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
+import com.github.naz013.common.system.ProTrialController
 import com.github.naz013.ui.map.place.UiPlaceList
 import com.github.naz013.ui.map.place.UiPlaceListAdapter
 import com.github.naz013.common.TextProvider
@@ -19,6 +20,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -36,6 +38,7 @@ class SimpleMapViewViewModelTest : BaseTest() {
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val systemServiceProvider = mockk<SystemServiceProvider>()
   private val mapStyle = mockk<MapStyle>(relaxed = true)
+  private val proTrialController = mockk<ProTrialController>(relaxed = true)
 
   @Before
   override fun setUp() {
@@ -47,6 +50,7 @@ class SimpleMapViewViewModelTest : BaseTest() {
     every { mapPreferences.markerStyle } returns 5
     every { mapPreferences.hapticsEnabled } returns false
     every { buildInfo.isPro } returns true
+    every { proTrialController.observeRemainingMillis() } returns flowOf(0L)
     every { systemServiceProvider.provideLocationManager() } returns null
     coEvery { placeRepository.getAll() } returns emptyList()
   }
@@ -73,6 +77,7 @@ class SimpleMapViewViewModelTest : BaseTest() {
         textProvider = textProvider,
         systemServiceProvider = systemServiceProvider,
         mapStyle = mapStyle,
+        proTrialController = proTrialController,
       )
     val states = mutableListOf<MapUiState>()
     CoroutineScope(Dispatchers.Unconfined).launch { viewModel.state.collect { states.add(it) } }

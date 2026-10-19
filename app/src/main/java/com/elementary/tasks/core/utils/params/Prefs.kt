@@ -64,6 +64,10 @@ class Prefs(
     get() = getBoolean(PrefsConstants.GENERAL_HAPTICS, true)
     set(value) = putBoolean(PrefsConstants.GENERAL_HAPTICS, value)
 
+  var proTrialExpiryMillis: Long
+    get() = getLong(PrefsConstants.PRO_TRIAL_EXPIRY, def = 0L)
+    set(value) = putLong(PrefsConstants.PRO_TRIAL_EXPIRY, value)
+
   var addRemindersToGoogleCalendar: Boolean
     get() = getBoolean(PrefsConstants.GOOGLE_CALENDAR_ADD_REMINDERS, def = false)
     set(value) = putBoolean(PrefsConstants.GOOGLE_CALENDAR_ADD_REMINDERS, value)

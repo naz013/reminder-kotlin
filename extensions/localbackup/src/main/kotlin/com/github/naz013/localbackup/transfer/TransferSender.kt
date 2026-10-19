@@ -3,7 +3,7 @@ package com.github.naz013.localbackup.transfer
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.common.uri.UriUtil
 import com.github.naz013.localbackup.BuildBackupEnvelopeUseCase
 import com.github.naz013.logging.Logger

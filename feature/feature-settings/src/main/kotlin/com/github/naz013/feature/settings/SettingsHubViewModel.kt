@@ -2,10 +2,13 @@ package com.github.naz013.feature.settings
 
 import androidx.lifecycle.ViewModel
 import com.github.naz013.analytics.AnalyticsEventSender
+import com.github.naz013.analytics.ProTrialPromoClickedEvent
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
+import com.github.naz013.common.system.ProTrialController
+import com.github.naz013.common.system.formatProTrialRemaining
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.feature.settings.search.SettingsSearchIndex
 import com.github.naz013.feature.settings.search.SettingsSearchResult
@@ -13,6 +16,7 @@ import com.github.naz013.feature.settings.security.SecuritySettingsPreferences
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.ui.common.R
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 
@@ -23,14 +27,23 @@ internal class SettingsHubViewModel(
   private val textProvider: TextProvider,
   private val buildInfo: BuildInfo,
   private val systemInfo: SystemInfo,
-  analyticsEventSender: AnalyticsEventSender,
+  private val proTrialController: ProTrialController,
+  private val analyticsEventSender: AnalyticsEventSender,
 ) : ViewModel(),
   SettingsHubRemoteMessages.SaleObserver,
   SettingsHubRemoteMessages.UpdateObserver,
   SettingsHubRemoteMessages.MessageObserver {
 
   private val _state = MutableStateFlow(SettingsHubState())
-  val state = _state.stateInWhileSubscribed(SettingsHubState())
+  val state = combine(_state, proTrialController.observeRemainingMillis()) { state, remainingMillis ->
+    val isTrialActive = remainingMillis > 0L
+    state.copy(
+      isBuyProBadgeVisible = !buildInfo.isPro && !systemInfo.isProAppInstalled,
+      isTrialPromoVisible = !buildInfo.isBuildPro && !isTrialActive,
+      proTrialRemaining = if (isTrialActive) formatProTrialRemaining(remainingMillis) else null,
+    )
+  }
+    .stateInWhileSubscribed(SettingsHubState())
     .onStart { addObservers() }
 
   private val doNotDisturbObserver: () -> Unit = { checkDoNotDisturb() }
@@ -39,7 +52,6 @@ internal class SettingsHubViewModel(
     analyticsEventSender.send(ScreenUsedEvent(Screen.SETTINGS))
     _state.update {
       it.copy(
-        isBuyProBadgeVisible = !buildInfo.isPro && !systemInfo.isProAppInstalled,
         isPlayServicesWarningVisible = !systemInfo.googlePlayServicesAvailable,
         hasPinCode = securityPreferences.hasPinCode,
         isDeveloperOptionVisible = buildInfo.isDebug,
@@ -106,6 +118,10 @@ internal class SettingsHubViewModel(
 
   private fun checkDoNotDisturb() {
     _state.update { it.copy(isDoNotDisturbActive = doNotDisturbChecker.isActive()) }
+  }
+
+  fun onTrialPromoClick() {
+    analyticsEventSender.send(ProTrialPromoClickedEvent)
   }
 
   fun onSearchQueryChange(query: String) {

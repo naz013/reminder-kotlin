@@ -4,7 +4,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Notifier
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.logic.reminder.ReminderNotifier
 import com.github.naz013.ui.common.theme.ColorProvider
 

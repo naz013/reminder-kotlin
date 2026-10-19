@@ -7,7 +7,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.fragment.app.Fragment
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.ui.common.theme.ThemeModeHolder
 import org.koin.android.ext.android.inject
 

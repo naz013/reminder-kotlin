@@ -6,7 +6,7 @@ import com.github.naz013.featureflags.FeatureFlag
 import com.github.naz013.featureflags.FeatureFlags
 
 /**
- * Deliberately does not check [com.github.naz013.common.system.BuildInfo.isPro] - that's a
+ * Deliberately does not check [com.github.naz013.platform.BuildInfo.isPro] - that's a
  * separate, purely presentational concern for the settings UI (lock/upsell state). This answers
  * "should background work actually run," which must go false the instant the user's own toggle
  * is off, regardless of flavor - see research/AI_DAILY_DIGEST_PLAN.md ("Gating chain").

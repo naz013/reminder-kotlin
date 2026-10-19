@@ -1,10 +1,17 @@
 package com.elementary.tasks.module.platform
 
 import com.elementary.tasks.BuildConfig
-import com.github.naz013.common.system.BuildInfo
+import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.platform.BuildInfo
 
-class BuildInfoImpl : BuildInfo {
-  override val isPro: Boolean = BuildConfig.IS_PRO
+class BuildInfoImpl(
+  private val prefs: Prefs,
+) : BuildInfo {
+  private val proTrial = ProTrial()
+
+  override val isPro: Boolean
+    get() = isBuildPro || !proTrial.isExpired(prefs.proTrialExpiryMillis)
+  override val isBuildPro: Boolean = BuildConfig.IS_PRO
   override val isDebug: Boolean = BuildConfig.DEBUG
   override val applicationId: String = BuildConfig.APPLICATION_ID
   override val buildDate: String = BuildConfig.BUILD_DATE

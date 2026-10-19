@@ -11,7 +11,7 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.feature.reminder.settings.ChoiceDialogKind
 import com.github.naz013.feature.reminder.settings.DndTimeTarget
 import com.github.naz013.feature.reminder.settings.RemindersSettingsDialog
@@ -155,6 +155,23 @@ class RemindersSettingsViewModelTest : BaseTest() {
     viewModel.onInsightsLockedClick()
 
     verify { analyticsEventSender.send(FeatureGateTappedEvent(Feature.INSIGHTS)) }
+  }
+
+  @Test
+  fun `onWorkflowRulesClick opens workflow rules when pro`() {
+    viewModel.onWorkflowRulesClick()
+
+    assertEquals(RemindersSettingsEvent.OpenWorkflowRules, viewModel.navigationEvent.value?.peekContent())
+  }
+
+  @Test
+  fun `onWorkflowRulesClick opens the pro screen and sends a gate event when not pro`() {
+    every { buildInfo.isPro } returns false
+
+    viewModel.onWorkflowRulesClick()
+
+    assertEquals(RemindersSettingsEvent.OpenProVersion, viewModel.navigationEvent.value?.peekContent())
+    verify { analyticsEventSender.send(FeatureGateTappedEvent(Feature.WORKFLOWS)) }
   }
 
   @Test

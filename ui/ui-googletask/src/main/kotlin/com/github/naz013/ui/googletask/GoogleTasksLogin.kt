@@ -6,7 +6,7 @@ import com.github.naz013.cloudapi.googletasks.GoogleTasksApi
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.googleauth.GoogleAuthorizationState
 import com.github.naz013.common.googleauth.rememberGoogleAuthorization
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import org.koin.compose.koinInject
 
 /**

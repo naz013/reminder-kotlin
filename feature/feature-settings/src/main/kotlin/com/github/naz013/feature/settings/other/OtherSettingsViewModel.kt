@@ -13,7 +13,9 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
+import com.github.naz013.common.system.ProTrialController
+import com.github.naz013.common.system.observeIsActive
 import com.github.naz013.digestapi.DigestCapabilityChecker
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
@@ -25,6 +27,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.reviews.AppSource
 import com.github.naz013.ui.common.R
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
@@ -38,11 +41,13 @@ internal class OtherSettingsViewModel(
   private val featureFlags: FeatureFlags,
   private val buildInfo: BuildInfo,
   private val digestCapabilityChecker: DigestCapabilityChecker,
+  private val proTrialController: ProTrialController,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(OtherSettingsState())
   val state = _state.stateInWhileSubscribed(OtherSettingsState())
     .onStart { loadState() }
+  private var proTrialJob: Job? = null
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
 
@@ -68,7 +73,7 @@ internal class OtherSettingsViewModel(
     event.emit(
       ViewModelEvent.ShowFeedbackDialog(
         title = textProvider.getString(R.string.share_your_experience),
-        appSource = if (buildInfo.isPro) AppSource.PRO else AppSource.FREE,
+        appSource = if (buildInfo.isBuildPro) AppSource.PRO else AppSource.FREE,
         allowLogsAttachment = featureFlags.isEnabled(FeatureFlag.LOGS_IN_REVIEWS),
       )
     )
@@ -113,11 +118,22 @@ internal class OtherSettingsViewModel(
         isDigestLocked = !buildInfo.isPro,
       )
     }
+    observeProTrial()
     // Capability is a genuinely async check (ML Kit model/hardware probe) - the cached read above
     // renders immediately, this refreshes it and re-emits if the live result disagrees.
     viewModelScope.launch {
       val capable = digestCapabilityChecker.refreshCapability()
       _state.update { it.copy(isDigestVisible = isDigestVisible(capable)) }
+    }
+  }
+
+  private fun observeProTrial() {
+    proTrialJob?.cancel()
+    proTrialJob = viewModelScope.launch {
+      proTrialController.observeIsActive().collect {
+        val isLocked = !buildInfo.isPro
+        _state.update { it.copy(isGeminiFunctionsLocked = isLocked, isDigestLocked = isLocked) }
+      }
     }
   }
 

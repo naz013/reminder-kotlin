@@ -6,7 +6,7 @@ import android.provider.Settings
 import androidx.core.net.toUri
 import com.github.naz013.cloudapi.dropbox.DropboxApi
 import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.logic.schedule.WorkType
 import com.github.naz013.platform.SystemInfo
@@ -26,7 +26,7 @@ internal class DropboxLogin(
     onAuthResult: (Boolean) -> Unit,
     onDuplicateFound: () -> Unit = {},
   ) {
-    val hasOtherVariant = if (buildInfo.isPro) {
+    val hasOtherVariant = if (buildInfo.isBuildPro) {
       systemInfo.isAppInstalled(SystemInfo.FREE_PACKAGE_NAME)
     } else {
       systemInfo.isAppInstalled(SystemInfo.PRO_PACKAGE_NAME)
@@ -69,7 +69,7 @@ internal class DropboxLogin(
 
   fun deleteApp() {
     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-    if (buildInfo.isPro) {
+    if (buildInfo.isBuildPro) {
       intent.data = "package:${SystemInfo.FREE_PACKAGE_NAME}".toUri()
     } else {
       intent.data = "package:${SystemInfo.PRO_PACKAGE_NAME}".toUri()
@@ -78,7 +78,7 @@ internal class DropboxLogin(
   }
 
   fun openApp() {
-    val intent = if (buildInfo.isPro) {
+    val intent = if (buildInfo.isBuildPro) {
       context.packageManager.getLaunchIntentForPackage(SystemInfo.FREE_PACKAGE_NAME)
     } else {
       context.packageManager.getLaunchIntentForPackage(SystemInfo.PRO_PACKAGE_NAME)

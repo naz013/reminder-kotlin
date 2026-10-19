@@ -20,4 +20,14 @@ class AnalyticEventTest {
 
     assertEquals(Widget.EVENTS, event.widget)
   }
+
+  @Test
+  fun `pro trial promo clicked event has its own name`() {
+    assertEquals("pro_trial_promo_clicked", ProTrialPromoClickedEvent.getName())
+  }
+
+  @Test
+  fun `pro trial activated event has its own name`() {
+    assertEquals("pro_trial_activated", ProTrialActivatedEvent.getName())
+  }
 }

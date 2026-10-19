@@ -1275,4 +1275,14 @@
     <string name="habit_target_increase">Увеличить цель</string>
     <string name="delete_habit_title">Удалить эту привычку?</string>
     <string name="delete_habit_message">История отметок тоже будет удалена.</string>
+    <string name="pro_trial_banner">Попробуйте PRO бесплатно</string>
+    <string name="pro_trial_title">Попробуйте PRO бесплатно</string>
+    <string name="pro_trial_how_it_works_title">Как это работает</string>
+    <string name="pro_trial_how_it_works">Посмотрите одну короткую видеорекламу и откройте все функции PRO на 24 часа. Это можно повторять после окончания пробного периода. Функции приложения Gemini в пробный период не входят.</string>
+    <string name="pro_trial_activate">Активировать PRO на 24 часа</string>
+    <string name="pro_trial_ads_progress">Просмотрено рекламы: %1$d/%2$d</string>
+    <string name="pro_trial_active_title">Пробный период PRO активен</string>
+    <string name="pro_trial_remaining">Осталось времени: %1$s</string>
+    <string name="pro_trial_ads_unavailable">Реклама сейчас недоступна. Повторите попытку позже.</string>
+    <string name="pro_trial_cancelled">Реклама была закрыта до получения награды. Досмотрите рекламу до конца, чтобы активировать пробный период.</string>
 </resources>

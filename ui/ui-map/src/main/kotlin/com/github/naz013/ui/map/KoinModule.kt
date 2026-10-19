@@ -11,6 +11,6 @@ val uiMapModule = module {
   factoryOf(::UiPlaceListAdapter)
 
   viewModel { (mapParams: MapParams) ->
-    SimpleMapViewViewModel(mapParams, get(), get(), get(), get(), get(), get(), get(), get(), get())
+    SimpleMapViewViewModel(mapParams, get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
   }
 }
