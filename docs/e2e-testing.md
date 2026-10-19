@@ -60,6 +60,12 @@ acceleration.
   calculation, save, and list-display genuinely round-trip through the real repository layer,
   the same way the reminderv2-notification-hierarchy doc's own
   `ResolveReminderV2NotificationSettingsUseCaseTest` does at the unit level, just through the UI.
+  Every Tier B class calls `skipFirstRunSetup()` (`E2ETestSetup.kt`) from its `@BeforeClass`: a
+  fresh CI emulator is a fresh install, so without it the first launch shows Onboarding and slowly
+  inserts demo data instead of reaching Home. Because `BottomNavActivity` is `singleInstance`, a
+  test that starts from Home first calls `ensureOnHomeScreen()` (same file) to pop whatever screen
+  the previous test left behind, and Home header tiles are tapped with `performScrollTo()` first
+  (the tile row scrolls horizontally).
 
 ### 1b. Maestro
 

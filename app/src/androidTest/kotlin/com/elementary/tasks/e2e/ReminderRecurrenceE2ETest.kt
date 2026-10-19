@@ -1379,6 +1379,7 @@ class ReminderRecurrenceE2ETest : KoinTest {
     fun setUpClass() {
       val context = InstrumentationRegistry.getInstrumentation().targetContext
       loadKoinModules(testRepositoryModule(context))
+      skipFirstRunSetup()
       loadKoinModules(testDateTimeModule(fakeNowDateTimeProvider))
     }
   }

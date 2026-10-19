@@ -1,9 +1,9 @@
 package com.elementary.tasks.e2e
 
 import android.os.Build
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.Espresso
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
@@ -24,6 +24,7 @@ import java.util.UUID
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.After
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
@@ -86,6 +87,14 @@ class BirthdayE2ETest : KoinTest {
   private val tagAssignmentRepository: TagAssignmentRepository by inject()
   private val dateTimeManager: DateTimeManager by inject()
 
+  /** The in-memory database is shared by the whole class, and every birthday here is due today, so
+   *  they would otherwise pile up in Home's and the list's lazy columns and push a later test's
+   *  target row off-screen. */
+  @After
+  fun clearBirthdays() {
+    runBlocking { birthdayRepository.deleteAll() }
+  }
+
   private fun r(resId: Int): String = composeRule.activity.getString(resId)
 
   private fun captureExistingBirthdayIds(): Set<String> =
@@ -133,12 +142,14 @@ class BirthdayE2ETest : KoinTest {
    *  [ReminderRecurrenceE2ETest.navigateToNewReminderBuilder] taps into for "Reminder". */
   private fun navigateToNewBirthdayScreen() {
     val addLabel = r(R.string.acc_add)
+    composeRule.ensureOnHomeScreen(r(R.string.action_settings), r(R.string.accept))
     composeRule.waitUntil(timeoutMillis = 15_000) {
       composeRule.onAllNodesWithContentDescription(addLabel).fetchSemanticsNodes().isNotEmpty()
     }
     composeRule.onAllNodesWithContentDescription(addLabel).onFirst().performClick()
     composeRule.waitForIdle()
-    composeRule.onNodeWithText(r(R.string.birthday)).performClick()
+    // Home rows for earlier tests' birthdays also carry a "Birthday" label, so match the menu item exactly.
+    composeRule.onNode(hasTextExactly(r(R.string.birthday)) and hasClickAction()).performClick()
     composeRule.waitForIdle()
   }
 
@@ -167,7 +178,11 @@ class BirthdayE2ETest : KoinTest {
    *  times before giving up, mirroring [ReminderRecurrenceE2ETest.navigateToEditReminderBuilder]'s
    *  documented flakiness mitigation for the identical "tap a Home row" mechanism. */
   private fun navigateToPreviewBirthday(name: String) {
+    // Earlier tests' birthdays pile up in Home's lazy list, so the target row may start off-screen.
     composeRule.waitUntil(timeoutMillis = 10_000) {
+      runCatching {
+        composeRule.onAllNodes(hasScrollToNodeAction()).onFirst().performScrollToNode(hasText(name))
+      }
       composeRule.onAllNodesWithText(name).fetchSemanticsNodes().isNotEmpty()
     }
     val editLabel = r(R.string.edit)
@@ -188,9 +203,27 @@ class BirthdayE2ETest : KoinTest {
     check(reachedPreview) { "Did not land on the birthday preview screen after 3 attempts" }
   }
 
+  /** `BirthdaysScreen` rows merge into one node labelled only by a content description, so the name
+   *  is matchable as text only in the unmerged tree - and not on the search field, which echoes it. */
+  private fun listRowText(name: String): SemanticsMatcher = hasText(name) and !hasSetTextAction()
+
   private fun navigateToEditFromPreview() {
     composeRule.onNodeWithContentDescription(r(R.string.edit)).performClick()
     composeRule.waitForIdle()
+  }
+
+  /** Dismisses the filter bottom sheet via its `Dismiss` semantics action and waits until its own
+   *  window (a second Compose root) is gone. System back (`Espresso.pressBack()` and a raw
+   *  `KEYCODE_BACK` alike) was observed not to dismiss it, and while its window lingers it still
+   *  answers `onNodeWithText` queries and swallows the next test's touches. */
+  private fun closeFilterSheet() {
+    composeRule
+      .onNode(SemanticsMatcher.keyIsDefined(SemanticsActions.Dismiss))
+      .performSemanticsAction(SemanticsActions.Dismiss)
+    composeRule.waitForIdle()
+    composeRule.waitUntil(timeoutMillis = 5_000) {
+      composeRule.onAllNodes(isRoot()).fetchSemanticsNodes().size == 1
+    }
   }
 
   /** Home dashboard tile ("Birthdays", enabled class-wide in [setUpClass]) -> `BirthdaysScreen`.
@@ -198,10 +231,11 @@ class BirthdayE2ETest : KoinTest {
    *  signal, the same role [ReminderRecurrenceE2ETest.navigateToEditReminderBuilder]'s
    *  "more options" wait plays for the reminder preview screen. */
   private fun navigateToBirthdaysList() {
+    composeRule.ensureOnHomeScreen(r(R.string.action_settings), r(R.string.accept))
     composeRule.waitUntil(timeoutMillis = 15_000) {
       composeRule.onAllNodesWithText(r(R.string.birthdays)).fetchSemanticsNodes().isNotEmpty()
     }
-    composeRule.onNodeWithText(r(R.string.birthdays)).performClick()
+    composeRule.onNodeWithText(r(R.string.birthdays)).performScrollTo().performClick()
     composeRule.waitForIdle()
     composeRule.waitUntil(timeoutMillis = 10_000) {
       composeRule.onAllNodesWithContentDescription(r(R.string.filter)).fetchSemanticsNodes().isNotEmpty()
@@ -360,10 +394,18 @@ class BirthdayE2ETest : KoinTest {
     val birthday = seedBirthdayDueToday("Birthday ${UUID.randomUUID()}")
 
     navigateToBirthdaysList()
+    // Search narrows the shared list to this row, which may otherwise start off-screen.
+    composeRule.onNode(hasSetTextAction(), useUnmergedTree = true).performTextInput(birthday.name)
+    composeRule.waitForIdle()
     composeRule.waitUntil(timeoutMillis = 10_000) {
-      composeRule.onAllNodesWithText(birthday.name).fetchSemanticsNodes().isNotEmpty()
+      composeRule.onAllNodes(listRowText(birthday.name), useUnmergedTree = true).fetchSemanticsNodes().isNotEmpty()
     }
-    composeRule.onAllNodesWithContentDescription(r(R.string.more_options)).onFirst().performClick()
+    // Earlier tests' birthdays are still in the shared list, so scope the menu button to this row.
+    composeRule
+      .onNode(
+        hasContentDescription(r(R.string.more_options)) and
+          hasAnyAncestor(hasContentDescription(birthday.name, substring = true)),
+      ).performClick()
     composeRule.waitForIdle()
     composeRule.onNodeWithText(r(R.string.delete)).performClick()
     composeRule.waitForIdle()
@@ -390,10 +432,13 @@ class BirthdayE2ETest : KoinTest {
     composeRule.waitForIdle()
     composeRule.onNodeWithText(r(R.string.smart_list_today)).performClick()
     composeRule.waitForIdle()
-    Espresso.pressBack()
-    composeRule.waitForIdle()
+    closeFilterSheet()
 
-    composeRule.onNodeWithText(birthday.name).assertIsDisplayed()
+    composeRule.waitUntil(timeoutMillis = 5_000) {
+      runCatching {
+        composeRule.onNode(listRowText(birthday.name), useUnmergedTree = true).assertIsDisplayed()
+      }.isSuccess
+    }
   }
 
   /** `BirthdaysScreen`'s tag filter (also in the filter bottom sheet, `TagFilterRow`) narrows the
@@ -410,10 +455,13 @@ class BirthdayE2ETest : KoinTest {
     composeRule.waitForIdle()
     composeRule.onNodeWithText(tag.name).performClick()
     composeRule.waitForIdle()
-    Espresso.pressBack()
-    composeRule.waitForIdle()
+    closeFilterSheet()
 
-    composeRule.onNodeWithText(birthday.name).assertIsDisplayed()
+    composeRule.waitUntil(timeoutMillis = 5_000) {
+      runCatching {
+        composeRule.onNode(listRowText(birthday.name), useUnmergedTree = true).assertIsDisplayed()
+      }.isSuccess
+    }
   }
 
   /** `BirthdaysScreen`'s own `SearchBar` (only rendered `if (state.hasAnyItems)`) filters the
@@ -443,6 +491,7 @@ class BirthdayE2ETest : KoinTest {
     fun setUpClass() {
       val context = InstrumentationRegistry.getInstrumentation().targetContext
       loadKoinModules(testRepositoryModule(context))
+      skipFirstRunSetup()
 
       // BirthdaysScreen is only reachable via this Home dashboard tile, which is disabled by
       // default (HeaderNavigationSection.BIRTHDAYS.isDisabledByDefault) - flipped here, before the

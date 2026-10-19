@@ -195,12 +195,13 @@ jobs:
         disable-animations: true
         script: |
           adb shell pm grant com.cray.software.justreminderpro android.permission.POST_NOTIFICATIONS || true
-          ./gradlew connectedProDebugAndroidTest --continue
+          ./gradlew connectedProDebugAndroidTest --continue || touch connected-tests-failed
           adb logcat -d > "$GITHUB_WORKSPACE/logcat-connected-tests.txt" || true
           adb logcat -c || true
           adb install -r app/build/outputs/apk/pro/debug/app-pro-debug.apk
-          maestro test --include-tags notifications .maestro/
+          maestro test --include-tags notifications .maestro/ || touch maestro-failed
           adb logcat -d > "$GITHUB_WORKSPACE/logcat-maestro.txt" || true
+          test ! -e connected-tests-failed -a ! -e maestro-failed
 
     - name: Publish Compose UI Test Report
       uses: mikepenz/action-junit-report@v6

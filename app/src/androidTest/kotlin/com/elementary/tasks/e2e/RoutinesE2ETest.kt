@@ -147,29 +147,7 @@ class RoutinesE2ETest : KoinTest {
    *  only when [R.string.acc_add] - Home's own "Add" menu, not present on any other Routines/
    *  Settings screen - isn't already visible) until Home is reached, rather than assuming a fresh
    *  Activity always starts there. */
-  private fun ensureOnHomeScreen() {
-    val addLabel = r(R.string.acc_add)
-    fun onHome() = composeRule.onAllNodesWithContentDescription(addLabel).fetchSemanticsNodes().isNotEmpty()
-    repeat(15) {
-      dismissPrivacyBannerIfShown()
-      // Give a loading Home screen a real chance to settle before concluding we're on some other
-      // screen and need to press back - a false negative here would press back on an Activity with
-      // nothing left to pop, which finishes it outright (confirmed live: on a genuinely fresh
-      // launch, Home's own async tile load can transiently leave `addLabel` absent for a moment;
-      // an over-eager first-iteration back-press in that window was exactly what caused a "Cannot
-      // run onActivity since Activity has been destroyed already" failure in a *later*, unrelated
-      // test - `singleInstance` means there's nothing below Home in this task for Back to pop to).
-      val settled = runCatching { composeRule.waitUntil(timeoutMillis = 3_000) { onHome() } }.isSuccess
-      if (settled) return
-      runCatching { Espresso.pressBack() }
-      composeRule.waitForIdle()
-      // A plain waitForIdle() doesn't reliably outlast Nav3's own cross-fade/scale transition
-      // (AppNavGraph.kt's NAV_ANIM_FADE_DURATION_MS) between screens - a short real wait here is
-      // cheap insurance against the next iteration's checks racing that animation.
-      Thread.sleep(300)
-    }
-    check(onHome()) { "Could not get back to Home after 15 back-presses" }
-  }
+  private fun ensureOnHomeScreen() = composeRule.ensureOnHomeScreen(r(R.string.acc_add), r(R.string.accept))
 
   /** Home screen -> "Routines" header tile (`GetNavigationItemsUseCase.getRoutineItem`, only added
    *  to the grid at all when [routineConfig.isEnabled][com.github.naz013.logic.routine.RoutineConfig]
@@ -180,7 +158,7 @@ class RoutinesE2ETest : KoinTest {
     composeRule.waitUntil(timeoutMillis = 15_000) {
       composeRule.onAllNodesWithText(routinesLabel).fetchSemanticsNodes().isNotEmpty()
     }
-    composeRule.onNodeWithText(routinesLabel).performClick()
+    composeRule.onNodeWithText(routinesLabel).performScrollTo().performClick()
     composeRule.waitForIdle()
     // Confirmed live (via a diagnostic node-text dump): this screen's own composition - including
     // its ViewModel's private `selectedTagId`/`searchQuery`/`sortOrder` state - can survive a
@@ -1259,6 +1237,7 @@ class RoutinesE2ETest : KoinTest {
     fun setUpClass() {
       val context = InstrumentationRegistry.getInstrumentation().targetContext
       loadKoinModules(testRepositoryModule(context))
+      skipFirstRunSetup()
       loadKoinModules(testDateTimeModule(fakeNowDateTimeProvider))
       loadKoinModules(testFeatureFlagsModule())
     }
