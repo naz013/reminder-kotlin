@@ -32,8 +32,9 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
+import com.github.naz013.ui.common.compose.foundation.component.IconPicker
 import com.github.naz013.ui.routine.RoutineColorPicker
-import com.github.naz013.ui.routine.RoutineIconPicker
+import com.github.naz013.ui.routine.RoutineIconSet
 
 private val MAX_CONTENT_WIDTH = 600.dp
 
@@ -163,7 +164,8 @@ private fun NameRow(
       singleLine = true,
       modifier = Modifier.weight(1f).testTag("habit_name_field"),
     )
-    RoutineIconPicker(
+    IconPicker(
+      icons = RoutineIconSet.ALL,
       selectedIndex = state.iconIndex,
       onIconSelected = onIconSelected,
       modifier = Modifier.padding(start = 12.dp, top = 8.dp),
