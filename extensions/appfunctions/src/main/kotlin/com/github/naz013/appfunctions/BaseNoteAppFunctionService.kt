@@ -18,7 +18,7 @@ import com.github.naz013.appfunctions.note.NoteIdParams
 import com.github.naz013.appfunctions.note.SearchNotesParams
 import com.github.naz013.appfunctions.note.UpdateNoteParams
 import com.github.naz013.appfunctions.note.UpdateNoteUseCase
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.domain.note.displayTitle
 import com.github.naz013.repository.NoteRepository
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +28,7 @@ import org.koin.core.component.inject
 
 /**
  * Exposes note-related capabilities of the app to Gemini and other on-device assistants via the
- * AppFunctions platform API. Only available in the PRO build - see [BuildInfo.isBuildPro].
+ * AppFunctions platform API. Only available in the PRO build - see [com.github.naz013.platform.BuildInfo.isBuildPro].
  */
 @RequiresApi(36)
 @AppFunctionServiceEntryPoint(

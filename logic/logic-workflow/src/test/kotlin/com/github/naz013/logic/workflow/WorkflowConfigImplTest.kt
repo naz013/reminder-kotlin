@@ -2,21 +2,28 @@ package com.github.naz013.logic.workflow
 
 import com.github.naz013.featureflags.FeatureFlag
 import com.github.naz013.featureflags.FeatureFlags
+import com.github.naz013.platform.BuildInfo
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Test
 
 class WorkflowConfigImplTest {
   private val featureFlags = mockk<FeatureFlags>()
-  private var isPro = true
-  private val config = WorkflowConfigImpl(featureFlags) { isPro }
+  private val buildInfo = mockk<BuildInfo>()
+  private val config = WorkflowConfigImpl(featureFlags, buildInfo)
+
+  @Before
+  fun before() {
+    every { buildInfo.isPro } returns true
+  }
 
   @Test
   fun `isEnabled follows the feature flag regardless of pro`() {
     every { featureFlags.isEnabled(FeatureFlag.WORKFLOW_ENABLED) } returns true
-    isPro = false
+    every { buildInfo.isPro } returns false
 
     assertTrue(config.isEnabled)
   }
@@ -31,7 +38,7 @@ class WorkflowConfigImplTest {
   @Test
   fun `isRunnable is false when the user is not pro`() {
     every { featureFlags.isEnabled(FeatureFlag.WORKFLOW_ENABLED) } returns true
-    isPro = false
+    every { buildInfo.isPro } returns false
 
     assertFalse(config.isRunnable)
   }
@@ -48,9 +55,9 @@ class WorkflowConfigImplTest {
     every { featureFlags.isEnabled(FeatureFlag.WORKFLOW_ENABLED) } returns true
 
     assertTrue(config.isRunnable)
-    isPro = false
+    every { buildInfo.isPro } returns false
     assertFalse(config.isRunnable)
-    isPro = true
+    every { buildInfo.isPro } returns true
     assertTrue(config.isRunnable)
   }
 }

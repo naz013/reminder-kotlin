@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.localbackup.transfer.compose.TransferReceiveScreen
 import com.github.naz013.localbackup.transfer.compose.TransferReceiveState
 import com.github.naz013.localbackup.transfer.compose.TransferReceiverViewModel
@@ -42,7 +42,7 @@ internal class TransferReceiverActivity : ComposeActivity() {
   }
 
   private fun isRequestValid(): Boolean {
-    val expectedCaller = if (buildInfo.isPro) SystemInfo.FREE_PACKAGE_NAME else SystemInfo.PRO_PACKAGE_NAME
+    val expectedCaller = if (buildInfo.isBuildPro) SystemInfo.FREE_PACKAGE_NAME else SystemInfo.PRO_PACKAGE_NAME
     return callingPackage == expectedCaller &&
       intent?.action == TransferContract.ACTION_RECEIVE_TRANSFER &&
       intent?.data != null

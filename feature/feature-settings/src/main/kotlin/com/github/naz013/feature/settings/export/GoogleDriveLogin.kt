@@ -6,7 +6,7 @@ import com.github.naz013.cloudapi.googledrive.GoogleDriveApi
 import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.common.googleauth.GoogleAuthorizationState
 import com.github.naz013.common.googleauth.rememberGoogleAuthorization
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.logic.schedule.WorkType
 import org.koin.compose.koinInject

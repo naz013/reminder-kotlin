@@ -6,7 +6,7 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.ui.common.R
 import kotlinx.coroutines.flow.MutableStateFlow

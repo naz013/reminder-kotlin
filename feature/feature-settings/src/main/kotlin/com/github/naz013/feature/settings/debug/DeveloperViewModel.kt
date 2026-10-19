@@ -3,7 +3,7 @@ package com.github.naz013.feature.settings.debug
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.history.EventHistoricalRecord
@@ -244,7 +244,7 @@ internal class DeveloperViewModel(
   fun onReviewDialogClick() {
     navigationEvent.value = Event(
       DeveloperEvent.OpenReviewDialog(
-        appSource = if (buildInfo.isPro) AppSource.PRO else AppSource.FREE
+        appSource = if (buildInfo.isBuildPro) AppSource.PRO else AppSource.FREE
       )
     )
   }

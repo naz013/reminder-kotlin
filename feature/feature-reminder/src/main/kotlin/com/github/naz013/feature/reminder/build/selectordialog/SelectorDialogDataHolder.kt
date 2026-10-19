@@ -2,7 +2,7 @@ package com.github.naz013.feature.reminder.build.selectordialog
 
 import androidx.compose.runtime.Composable
 import com.github.naz013.feature.reminder.preset.UiPresetList
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.feature.reminder.build.UiSelectorItem
 import org.koin.compose.koinInject
 

@@ -11,7 +11,7 @@ import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.feature.reminder.settings.ChoiceDialogKind
 import com.github.naz013.feature.reminder.settings.DndTimeTarget
 import com.github.naz013.feature.reminder.settings.RemindersSettingsDialog

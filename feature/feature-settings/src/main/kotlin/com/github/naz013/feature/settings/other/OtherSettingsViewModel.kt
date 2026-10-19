@@ -13,7 +13,7 @@ import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.common.system.ProTrialController
 import com.github.naz013.common.system.observeIsActive
 import com.github.naz013.digestapi.DigestCapabilityChecker
@@ -73,7 +73,7 @@ internal class OtherSettingsViewModel(
     event.emit(
       ViewModelEvent.ShowFeedbackDialog(
         title = textProvider.getString(R.string.share_your_experience),
-        appSource = if (buildInfo.isPro) AppSource.PRO else AppSource.FREE,
+        appSource = if (buildInfo.isBuildPro) AppSource.PRO else AppSource.FREE,
         allowLogsAttachment = featureFlags.isEnabled(FeatureFlag.LOGS_IN_REVIEWS),
       )
     )

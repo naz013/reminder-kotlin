@@ -63,7 +63,6 @@ internal class ProTrialViewModel(
       ProTrialResult.CANCELLED -> ProTrialMessage.CANCELLED
     }
   }
-
 }
 
 internal sealed interface ProTrialEvent {

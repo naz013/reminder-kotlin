@@ -8,7 +8,7 @@ import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.Permissions
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.common.system.ProTrialController
 import com.github.naz013.digestapi.DigestCapabilityChecker
 import com.github.naz013.featureflags.FeatureFlag
@@ -257,7 +257,7 @@ class OtherSettingsViewModelTest : BaseTest() {
   @Test
   fun `onFeedbackClicked emits ShowFeedbackDialog with pro app source`() {
     every { featureFlags.isEnabled(FeatureFlag.LOGS_IN_REVIEWS) } returns true
-    every { buildInfo.isPro } returns true
+    every { buildInfo.isBuildPro } returns true
 
     viewModel.onFeedbackClicked()
 

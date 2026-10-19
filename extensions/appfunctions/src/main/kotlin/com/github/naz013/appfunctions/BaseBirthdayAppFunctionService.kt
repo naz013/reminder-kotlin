@@ -22,7 +22,7 @@ import com.github.naz013.appfunctions.birthday.SearchBirthdaysParams
 import com.github.naz013.appfunctions.birthday.SearchBirthdaysUseCase
 import com.github.naz013.appfunctions.birthday.UpdateBirthdayParams
 import com.github.naz013.appfunctions.birthday.UpdateBirthdayUseCase
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +32,7 @@ import org.koin.core.component.inject
 
 /**
  * Exposes birthday-related capabilities of the app to Gemini and other on-device assistants via
- * the AppFunctions platform API. Only available in the PRO build - see [BuildInfo.isBuildPro].
+ * the AppFunctions platform API. Only available in the PRO build - see [com.github.naz013.platform.BuildInfo.isBuildPro].
  */
 @RequiresApi(36)
 @AppFunctionServiceEntryPoint(

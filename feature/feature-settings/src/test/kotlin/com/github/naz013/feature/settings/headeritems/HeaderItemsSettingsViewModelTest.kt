@@ -34,7 +34,7 @@ class HeaderItemsSettingsViewModelTest : BaseTest() {
     every { preferences.disabledSections } answers { disabledSections }
     every { preferences.disabledSections = any() } answers { disabledSections = firstArg() }
     every { routineConfig.isEnabled } answers { isRoutineEnabled }
-    every { workflowConfig.isEnabled } answers { isWorkflowEnabled }
+    every { workflowConfig.isRunnable } answers { isWorkflowEnabled }
     every { habitConfig.isEnabled } answers { isHabitEnabled }
 
     viewModel = HeaderItemsSettingsViewModel(preferences, routineConfig, habitConfig, workflowConfig)

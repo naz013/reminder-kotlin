@@ -6,7 +6,7 @@ import com.github.naz013.analytics.ProTrialPromoClickedEvent
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.common.system.ProTrialController
 import com.github.naz013.common.system.formatProTrialRemaining
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed

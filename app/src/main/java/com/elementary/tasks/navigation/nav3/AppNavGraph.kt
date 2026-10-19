@@ -17,7 +17,6 @@ import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneSt
 import androidx.compose.material3.rememberWideNavigationRailState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -91,7 +90,7 @@ import com.github.naz013.group.groupsEntries
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.insights.insightsEntries
 import com.github.naz013.localbackup.LocalBackupNavKey
 import com.github.naz013.localbackup.localBackupEntries
@@ -177,7 +176,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
         section !in homePreferences.disabledHeaderNavigationSections &&
           when (section) {
             HeaderNavigationSection.ROUTINES -> routineConfig.isEnabled
-            HeaderNavigationSection.WORKFLOW -> workflowConfig.isEnabled
+            HeaderNavigationSection.WORKFLOW -> workflowConfig.isRunnable
             HeaderNavigationSection.HABITS -> habitConfig.isEnabled
             else -> true
           }

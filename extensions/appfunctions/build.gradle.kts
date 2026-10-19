@@ -17,6 +17,7 @@ dependencies {
   implementation(project(":core:logging-api"))
   implementation(project(":core:analytics"))
   implementation(project(":core:platform-common"))
+  implementation(project(":core:platform-api"))
   implementation(project(":core:date-calculations"))
   implementation(project(":data:cloud-api"))
   implementation(project(":data:cloud"))

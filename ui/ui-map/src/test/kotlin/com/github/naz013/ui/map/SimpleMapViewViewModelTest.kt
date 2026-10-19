@@ -5,7 +5,7 @@ import android.location.Location
 import android.location.LocationManager
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.common.system.ProTrialController
 import com.github.naz013.ui.map.place.UiPlaceList
 import com.github.naz013.ui.map.place.UiPlaceListAdapter

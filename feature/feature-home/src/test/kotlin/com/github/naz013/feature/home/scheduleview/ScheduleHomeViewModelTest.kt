@@ -20,11 +20,9 @@ import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
 import com.github.naz013.common.system.ProTrialController
-import java.util.concurrent.TimeUnit
+import com.github.naz013.platform.BuildInfo
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.junit.Assert.assertNull
 import com.github.naz013.ui.common.R
 import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.LegalDocumentType
@@ -36,6 +34,7 @@ import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import java.util.concurrent.TimeUnit
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

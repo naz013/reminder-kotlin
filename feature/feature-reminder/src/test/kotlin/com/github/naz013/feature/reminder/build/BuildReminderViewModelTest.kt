@@ -40,7 +40,7 @@ import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
 import com.github.naz013.cloudapi.googledrive.GoogleDriveAuthManager
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.PresetType
 import com.github.naz013.domain.RecurPreset

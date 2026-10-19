@@ -47,6 +47,7 @@ internal class RewardedTrialAdsImpl(
       ad.adEventCallback = object : RewardedAdEventCallback {
         override fun onAdDismissedFullScreenContent() {
           val result = if (rewarded) RewardedAdResult.REWARDED else RewardedAdResult.DISMISSED
+          Logger.d(TAG, "Rewarded ad dismissed: $result")
           if (continuation.isActive) continuation.resume(result)
         }
 
@@ -56,14 +57,17 @@ internal class RewardedTrialAdsImpl(
           Logger.e(TAG, "Rewarded ad failed to show: $fullScreenContentError")
           if (continuation.isActive) continuation.resume(RewardedAdResult.UNAVAILABLE)
         }
+
+        override fun onAdShowedFullScreenContent() {
+          super.onAdShowedFullScreenContent()
+          Logger.d(TAG, "Rewarded ad showed fullscreen")
+        }
       }
       ad.show(activity) { rewarded = true }
     }
 
   private companion object {
     private const val TAG = "RewardedTrialAds"
-
-    // Placeholder (Google sample rewarded unit); replace with the real unit ID.
-    private const val AD_UNIT_ID = "ca-app-pub-3940256099942544/5224354917"
+    private const val AD_UNIT_ID = "ca-app-pub-5133908997831400/9272356877"
   }
 }

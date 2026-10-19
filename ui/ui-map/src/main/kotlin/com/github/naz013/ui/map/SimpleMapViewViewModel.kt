@@ -6,7 +6,7 @@ import android.location.Criteria
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.common.system.ProTrialController
 import com.github.naz013.common.system.observeIsActive
 import com.github.naz013.ui.map.place.UiPlaceList

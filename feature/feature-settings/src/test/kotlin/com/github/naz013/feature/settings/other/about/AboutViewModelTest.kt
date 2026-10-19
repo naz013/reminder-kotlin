@@ -3,7 +3,7 @@ package com.github.naz013.feature.settings.other.about
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.common.PackageManagerWrapper
 import com.github.naz013.common.TextProvider
-import com.github.naz013.common.system.BuildInfo
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.ui.common.R
 import io.mockk.every
