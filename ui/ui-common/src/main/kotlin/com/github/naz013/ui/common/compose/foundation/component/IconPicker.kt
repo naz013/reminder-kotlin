@@ -1,5 +1,6 @@
-package com.github.naz013.ui.routine
+package com.github.naz013.ui.common.compose.foundation.component
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,8 +29,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppTheme
-import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
-import com.github.naz013.ui.common.compose.foundation.component.BottomSheetHeader
 import com.github.naz013.ui.common.icon.DrawableCatalog
 
 private val BUBBLE_SIZE = 48.dp
@@ -39,24 +38,24 @@ private val OPTION_ICON_SIZE = 22.dp
 private val GRID_MIN_CELL_SIZE = 56.dp
 private val GRID_PADDING = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp)
 
-private val ICON_OPTIONS: List<Int?> = listOf(null) + RoutineIconSet.ALL.indices.toList()
-
 /**
- * Circular "bubble" trigger showing the routine's selected icon (or a generic add-icon placeholder
- * when none is picked) that opens a bottom sheet with a scrollable grid of [RoutineIconSet.ALL] to
- * choose from, plus a "None" tile to clear the selection. [selectedIndex] is the same index
- * [RoutineIconSet.ALL] uses, mirroring how [RoutineColorPicker] takes a plain index rather than a
- * resolved value.
+ * Circular "bubble" trigger showing the selected icon (or a generic add-icon placeholder when none
+ * is picked) that opens a bottom sheet with a scrollable grid of [icons] to choose from, plus a
+ * "None" tile to clear the selection. [selectedIndex] is an index into [icons] rather than a
+ * resolved drawable, so callers can persist it; [icons] must only ever be appended to for that
+ * reason.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RoutineIconPicker(
+fun IconPicker(
+  modifier: Modifier = Modifier,
+  icons: List<Int>,
   selectedIndex: Int?,
   onIconSelected: (Int?) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   var expanded by remember { mutableStateOf(false) }
-  val selectedIconRes = selectedIndex?.let { RoutineIconSet.ALL.getOrNull(it) }
+  val selectedIconRes = selectedIndex?.let { icons.getOrNull(it) }
+  val options = remember(icons) { listOf<Int?>(null) + icons.indices.toList() }
 
   Box(modifier = modifier) {
     Box(
@@ -87,9 +86,9 @@ fun RoutineIconPicker(
         contentPadding = GRID_PADDING,
         modifier = Modifier.fillMaxWidth(),
       ) {
-        items(ICON_OPTIONS) { index ->
+        items(options) { index ->
           IconOption(
-            iconRes = index?.let { RoutineIconSet.ALL[it] },
+            iconRes = index?.let { icons[it] },
             selected = index == selectedIndex,
             onClick = {
               onIconSelected(index)
@@ -104,12 +103,13 @@ fun RoutineIconPicker(
 
 @Composable
 private fun IconOption(
-  iconRes: Int?,
+  modifier: Modifier = Modifier,
+  @DrawableRes iconRes: Int?,
   selected: Boolean,
   onClick: () -> Unit,
 ) {
   Box(
-    modifier = Modifier
+    modifier = modifier
       .fillMaxWidth()
       .padding(vertical = 4.dp),
     contentAlignment = Alignment.Center,
@@ -141,9 +141,15 @@ private fun IconOption(
 
 @Preview(showBackground = true)
 @Composable
-private fun RoutineIconPickerPreview() {
+private fun IconPickerPreview() {
   AppTheme {
-    RoutineIconPicker(
+    IconPicker(
+      icons = listOf(
+        DrawableCatalog.Fluent.Home,
+        DrawableCatalog.Fluent.Heart,
+        DrawableCatalog.Fluent.Star,
+        DrawableCatalog.Fluent.Sleep,
+      ),
       selectedIndex = 3,
       onIconSelected = {},
     )

@@ -281,9 +281,11 @@ for new routines. Habits share the same set and picker, so no habit-specific cha
 
 - **Index, not a drawable resource id**, mirroring `Routine.color`'s existing convention - keeps the domain
   model free of any UI/resource dependency; only `RoutineIconSet`'s fixed order gives the index meaning.
-- **`RoutineIconPicker`** (`ui-routine`): a circular "bubble" trigger next to the title field showing the
-  selected icon (or a generic add-icon placeholder) that opens an `AppModalBottomSheet` with a
-  `LazyVerticalGrid` (adaptive cells) of all icons plus a "None" tile to clear the selection.
+- **`IconPicker`** (`ui-common`, `compose/foundation/component`): a generic circular "bubble" trigger next to
+  the title field showing the selected icon (or a generic add-icon placeholder) that opens an
+  `AppModalBottomSheet` with a `LazyVerticalGrid` (adaptive cells) of the `icons` it is given plus a "None"
+  tile to clear the selection. It knows nothing about routines: the routine and habit editors pass
+  `RoutineIconSet.ALL`, and other features can pass their own list.
 - **Why a bottom sheet, not a `DropdownMenu`.** The grid was first a `LazyVerticalGrid` inside a
   `DropdownMenu`, which crashed on open (`IllegalStateException: Asking for intrinsic measurements of
   SubcomposeLayout layouts is not supported` - `DropdownMenu` measures its content with `IntrinsicSize.Max`,
