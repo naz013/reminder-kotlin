@@ -10,6 +10,7 @@ dependencies {
   implementation(project(":core:domain"))
   implementation(project(":core:logging-api"))
   implementation(project(":ui:ui-common"))
+  implementation(project(":ui:ui-icons-solar"))
 
   implementation(libs.koin.android)
   implementation(libs.koin.androidx.compose)

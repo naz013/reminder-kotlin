@@ -3,15 +3,15 @@ package com.github.naz013.ui.routine
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -28,21 +28,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppTheme
+import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSheet
+import com.github.naz013.ui.common.compose.foundation.component.BottomSheetHeader
 import com.github.naz013.ui.common.icon.DrawableCatalog
 
 private val BUBBLE_SIZE = 48.dp
 private val BUBBLE_ICON_SIZE = 22.dp
-private val OPTION_SIZE = 40.dp
-private val OPTION_ICON_SIZE = 20.dp
-private val GRID_MAX_HEIGHT = 220.dp
-private const val GRID_COLUMNS = 6
+private val OPTION_SIZE = 44.dp
+private val OPTION_ICON_SIZE = 22.dp
+private val GRID_MIN_CELL_SIZE = 56.dp
+private val GRID_PADDING = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp)
+
+private val ICON_OPTIONS: List<Int?> = listOf(null) + RoutineIconSet.ALL.indices.toList()
 
 /**
  * Circular "bubble" trigger showing the routine's selected icon (or a generic add-icon placeholder
- * when none is picked) that opens a grid popup of [RoutineIconSet.ALL] to choose from, plus a
- * "None" tile to clear the selection. [selectedIndex] is the same index [RoutineIconSet.ALL] uses,
- * mirroring how [RoutineColorPicker] takes a plain index rather than a resolved value.
+ * when none is picked) that opens a bottom sheet with a scrollable grid of [RoutineIconSet.ALL] to
+ * choose from, plus a "None" tile to clear the selection. [selectedIndex] is the same index
+ * [RoutineIconSet.ALL] uses, mirroring how [RoutineColorPicker] takes a plain index rather than a
+ * resolved value.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RoutineIconPicker(
   selectedIndex: Int?,
@@ -72,31 +78,24 @@ fun RoutineIconPicker(
         modifier = Modifier.size(BUBBLE_ICON_SIZE),
       )
     }
-    DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-      // A plain Column/Row grid, not LazyVerticalGrid: Material3's DropdownMenu wraps its content
-      // in a Column measured with IntrinsicSize.Max, and a SubcomposeLayout-backed lazy layout
-      // (LazyVerticalGrid included) can't answer an intrinsic-width query, which crashes at
-      // runtime. 33 options is small enough that a non-lazy grid costs nothing.
-      val options: List<Int?> = listOf(null) + RoutineIconSet.ALL.indices.toList()
-      Column(
-        modifier = Modifier
-          .heightIn(max = GRID_MAX_HEIGHT)
-          .verticalScroll(rememberScrollState())
-          .padding(4.dp),
+  }
+  if (expanded) {
+    AppModalBottomSheet(onDismissRequest = { expanded = false }) {
+      BottomSheetHeader(title = stringResource(R.string.routine_icon))
+      LazyVerticalGrid(
+        columns = GridCells.Adaptive(GRID_MIN_CELL_SIZE),
+        contentPadding = GRID_PADDING,
+        modifier = Modifier.fillMaxWidth(),
       ) {
-        options.chunked(GRID_COLUMNS).forEach { rowOptions ->
-          Row {
-            rowOptions.forEach { index ->
-              IconOption(
-                iconRes = index?.let { RoutineIconSet.ALL[it] },
-                selected = index == selectedIndex,
-                onClick = {
-                  onIconSelected(index)
-                  expanded = false
-                },
-              )
-            }
-          }
+        items(ICON_OPTIONS) { index ->
+          IconOption(
+            iconRes = index?.let { RoutineIconSet.ALL[it] },
+            selected = index == selectedIndex,
+            onClick = {
+              onIconSelected(index)
+              expanded = false
+            },
+          )
         }
       }
     }
@@ -111,26 +110,32 @@ private fun IconOption(
 ) {
   Box(
     modifier = Modifier
-      .padding(4.dp)
-      .size(OPTION_SIZE)
-      .clip(CircleShape)
-      .background(
-        if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer,
-      )
-      .clickable(onClick = onClick),
+      .fillMaxWidth()
+      .padding(vertical = 4.dp),
     contentAlignment = Alignment.Center,
   ) {
-    val tint = if (selected) {
-      MaterialTheme.colorScheme.onPrimaryContainer
-    } else {
-      MaterialTheme.colorScheme.onSurfaceVariant
+    Box(
+      modifier = Modifier
+        .size(OPTION_SIZE)
+        .clip(CircleShape)
+        .background(
+          if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainer,
+        )
+        .clickable(onClick = onClick),
+      contentAlignment = Alignment.Center,
+    ) {
+      val tint = if (selected) {
+        MaterialTheme.colorScheme.onPrimaryContainer
+      } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+      }
+      Icon(
+        painter = painterResource(iconRes ?: DrawableCatalog.Fluent.Dismiss),
+        contentDescription = if (iconRes == null) stringResource(R.string.no_icon) else null,
+        tint = tint,
+        modifier = Modifier.size(OPTION_ICON_SIZE),
+      )
     }
-    Icon(
-      painter = painterResource(iconRes ?: DrawableCatalog.Fluent.Dismiss),
-      contentDescription = if (iconRes == null) stringResource(R.string.no_icon) else null,
-      tint = tint,
-      modifier = Modifier.size(OPTION_ICON_SIZE),
-    )
   }
 }
 
