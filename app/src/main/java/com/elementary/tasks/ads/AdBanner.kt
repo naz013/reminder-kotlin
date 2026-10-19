@@ -30,7 +30,7 @@ fun NormalAdBanner(
   adBanner: AdBanner,
 ) {
   val buildInfo = koinInject<BuildInfo>()
-  if (buildInfo.isPro || !AdsProvider.hasAds()) return
+  if (buildInfo.isBuildPro ||!AdsProvider.hasAds()) return
 
   val adsProvider = remember { AdsProvider() }
   val context = LocalContext.current
