@@ -11,6 +11,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -568,14 +570,15 @@ private fun HeaderNavigationCarousel(
   onItemClick: (HeaderNavigationItem) -> Unit,
   onItemLongClick: () -> Unit,
 ) {
-  LazyRow(
+  Row(
     modifier = modifier
       .fillMaxWidth()
-      .height(HEADER_NAV_CAROUSEL_HEIGHT),
+      .height(HEADER_NAV_CAROUSEL_HEIGHT)
+      .horizontalScroll(rememberScrollState())
+      .padding(horizontal = 16.dp),
     horizontalArrangement = Arrangement.spacedBy(HEADER_NAV_ITEM_SPACING),
-    contentPadding = PaddingValues(horizontal = 16.dp),
   ) {
-    itemsIndexed(items) { index, item ->
+    items.forEachIndexed { index, item ->
       HeaderNavigationTile(
         modifier = Modifier
           .width(HEADER_NAV_ITEM_WIDTH)
