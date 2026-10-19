@@ -274,23 +274,23 @@ expected to go from off to on.
 
 ### 4.7 Icon picker
 `Routine.icon` (previously dead - see the now-removed §6.1 note) is now a nullable `Int` index into
-`RoutineIconSet.ALL` (`ui-routine`) - 32 icons hand-picked from `DrawableCatalog.Fluent`, in a fixed order
+`RoutineIconSet.ALL` (`ui-routine`) - the original 32 icons hand-picked from `DrawableCatalog.Fluent`
+followed by 176 curated "Solar Linear" icons from `SolarIcons` (`ui-icons-solar`), in a fixed order
 that's only ever appended to (existing saved routines depend on index stability). Default is `null` (no icon)
-for new routines.
+for new routines. Habits share the same set and picker, so no habit-specific change is needed.
 
 - **Index, not a drawable resource id**, mirroring `Routine.color`'s existing convention - keeps the domain
   model free of any UI/resource dependency; only `RoutineIconSet`'s fixed order gives the index meaning.
-- **`RoutineIconPicker`** (`ui-routine`): a circular "bubble" trigger next to the title field showing the
-  selected icon (or a generic add-icon placeholder) that opens a `DropdownMenu`-hosted grid of all 32 icons
-  plus a "None" tile to clear the selection - reuses `DropdownMenu` for anchored positioning rather than
-  hand-rolling `Popup` offset math.
-- **Fixed: crash on open.** The grid was originally a `LazyVerticalGrid`, which crashed every time
-  (`IllegalStateException: Asking for intrinsic measurements of SubcomposeLayout layouts is not supported`),
-  confirmed via an on-device crash log. Material3's `DropdownMenu` measures its content `Column` with
-  `IntrinsicSize.Max` to shrink-wrap to the widest item, and any `SubcomposeLayout`-backed lazy layout
-  (`LazyColumn`/`LazyRow`/`LazyVerticalGrid`) can't answer an intrinsic-width query - a known Compose
-  Material3 pitfall. Fixed by replacing it with a plain non-lazy `Column` of `Row`s (33 options total, so
-  laziness bought nothing) wrapped in `Modifier.heightIn(max = 220.dp).verticalScroll(...)`.
+- **`IconPicker`** (`ui-common`, `compose/foundation/component`): a generic circular "bubble" trigger next to
+  the title field showing the selected icon (or a generic add-icon placeholder) that opens an
+  `AppModalBottomSheet` with a `LazyVerticalGrid` (adaptive cells) of the `icons` it is given plus a "None"
+  tile to clear the selection. It knows nothing about routines: the routine and habit editors pass
+  `RoutineIconSet.ALL`, and other features can pass their own list.
+- **Why a bottom sheet, not a `DropdownMenu`.** The grid was first a `LazyVerticalGrid` inside a
+  `DropdownMenu`, which crashed on open (`IllegalStateException: Asking for intrinsic measurements of
+  SubcomposeLayout layouts is not supported` - `DropdownMenu` measures its content with `IntrinsicSize.Max`,
+  which lazy layouts can't answer), so it became a non-lazy `Column` of `Row`s. With 200+ icons a lazy grid
+  is wanted again, and a bottom sheet has no intrinsic-size pass, so it hosts `LazyVerticalGrid` safely.
 - **Shown in three places**: the edit screen (same row as the title field, per the request), the preview
   banner, and `RoutineCard` (list screen) - all resolved from the stored index to a drawable id once, in the
   respective ViewModel (`RoutinesListViewModel`/`RoutinePreviewViewModel`), matching how `color`/duration

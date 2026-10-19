@@ -43,12 +43,13 @@ import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.TooltipIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
+import com.github.naz013.ui.common.compose.foundation.component.IconPicker
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.WheelPicker
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.routine.RoutineColorPicker
-import com.github.naz013.ui.routine.RoutineIconPicker
+import com.github.naz013.ui.routine.RoutineIconSet
 import com.github.naz013.ui.tag.TagChipPicker
 import com.github.naz013.ui.tag.TagChipState
 import org.threeten.bp.LocalTime
@@ -155,7 +156,8 @@ internal fun RoutineEditScreen(
           singleLine = true,
           modifier = Modifier.weight(1f),
         )
-        RoutineIconPicker(
+        IconPicker(
+          icons = RoutineIconSet.ALL,
           selectedIndex = state.iconIndex,
           onIconSelected = onIconSelected,
           modifier = Modifier.padding(start = 12.dp),
