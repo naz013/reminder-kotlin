@@ -7,6 +7,8 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.platform.BuildInfo
 import com.github.naz013.common.system.ProTrialController
 import com.github.naz013.feature.settings.security.SecuritySettingsPreferences
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.testing.BaseTest
 import io.mockk.Runs
@@ -36,6 +38,7 @@ class SettingsHubViewModelTest : BaseTest() {
   private val systemInfo = mockk<SystemInfo>()
   private val analyticsEventSender = mockk<AnalyticsEventSender>(relaxed = true)
   private val proTrialController = mockk<ProTrialController>()
+  private val featureFlags = mockk<FeatureFlags>()
   private val remainingMillis = MutableStateFlow(0L)
 
   private lateinit var viewModel: SettingsHubViewModel
@@ -53,6 +56,7 @@ class SettingsHubViewModelTest : BaseTest() {
     every { proTrialController.observeRemainingMillis() } returns remainingMillis
     every { systemInfo.isProAppInstalled } returns false
     every { systemInfo.googlePlayServicesAvailable } returns true
+    every { featureFlags.isEnabled(FeatureFlag.PRO_TRIAL_BANNER) } returns true
 
     viewModel = newViewModel()
   }
@@ -67,6 +71,7 @@ class SettingsHubViewModelTest : BaseTest() {
       systemInfo = systemInfo,
       proTrialController = proTrialController,
       analyticsEventSender = analyticsEventSender,
+      featureFlags = featureFlags,
     )
 
   @Test
@@ -75,6 +80,16 @@ class SettingsHubViewModelTest : BaseTest() {
       val state = viewModel.state.first()
 
       assertTrue(state.isTrialPromoVisible)
+    }
+
+  @Test
+  fun `hides the trial promo when the trial banner flag is disabled`() =
+    runTest {
+      every { featureFlags.isEnabled(FeatureFlag.PRO_TRIAL_BANNER) } returns false
+
+      val state = newViewModel().state.first()
+
+      assertFalse(state.isTrialPromoVisible)
     }
 
   @Test

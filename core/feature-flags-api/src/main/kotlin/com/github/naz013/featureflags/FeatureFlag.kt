@@ -18,4 +18,5 @@ enum class FeatureFlag(
   ROUTINE_ENABLED("feature_routine_enabled", false),
   HABIT_ENABLED("feature_habit_enabled", false),
   AI_DIGEST("feature_ai_digest", false),
+  PRO_TRIAL_BANNER("feature_pro_trial_banner", false),
 }

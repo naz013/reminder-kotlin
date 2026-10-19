@@ -13,6 +13,8 @@ import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.feature.settings.search.SettingsSearchIndex
 import com.github.naz013.feature.settings.search.SettingsSearchResult
 import com.github.naz013.feature.settings.security.SecuritySettingsPreferences
+import com.github.naz013.featureflags.FeatureFlag
+import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.platform.SystemInfo
 import com.github.naz013.ui.common.R
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +31,7 @@ internal class SettingsHubViewModel(
   private val systemInfo: SystemInfo,
   private val proTrialController: ProTrialController,
   private val analyticsEventSender: AnalyticsEventSender,
+  private val featureFlags: FeatureFlags,
 ) : ViewModel(),
   SettingsHubRemoteMessages.SaleObserver,
   SettingsHubRemoteMessages.UpdateObserver,
@@ -39,7 +42,9 @@ internal class SettingsHubViewModel(
     val isTrialActive = remainingMillis > 0L
     state.copy(
       isBuyProBadgeVisible = !buildInfo.isPro && !systemInfo.isProAppInstalled,
-      isTrialPromoVisible = !buildInfo.isBuildPro && !isTrialActive,
+      isTrialPromoVisible = featureFlags.isEnabled(FeatureFlag.PRO_TRIAL_BANNER) &&
+        !buildInfo.isBuildPro &&
+        !isTrialActive,
       proTrialRemaining = if (isTrialActive) formatProTrialRemaining(remainingMillis) else null,
     )
   }
