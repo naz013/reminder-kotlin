@@ -22,7 +22,7 @@ between the actual leaf modules are unchanged from before the reorg.
 |---|---|---|
 | `core/` | `domain`, `logging`, `logging-api`, `feature-common`, `feature-flags-api`, `navigation-api`, `analytics`, `date-calculations`, `platform-common`, `platform-api`, `testing` | Foundation every other layer depends on |
 | `data/` | `repository(-api)`, `cloud(-api)`, `sync`, `files(-api)`, `work(-api)`, `icalendar(-api)`, `holidays(-api)`, `legal(-api)`, `googlecalendar-api`, `location-api`, `notification-api`, `scheduler-api` | Persistence, cloud, sync, and the thin platform-contract `-api` modules `app` implements directly |
-| `ui/` | `ui-common`, `ui-map`, `ui-note`, `ui-reminder`, `ui-tag`, `ui-googletask`, `ui-group`, `ui-notification-settings` | Shared Compose building blocks, no navigation/ViewModels |
+| `ui/` | `ui-common`, `ui-map`, `ui-note`, `ui-reminder`, `ui-tag`, `ui-googletask`, `ui-group`, `ui-notification-settings`, `ui-icons-solar` | Shared Compose building blocks, no navigation/ViewModels |
 | `logic/` | `logic-reminder`, `logic-note`, `logic-tag`, `logic-googletask`, `logic-group`, `logic-schedule`, `logic-workflow`, `logic-habit` | Cross-feature business logic |
 | `feature/` | `feature-note`, `feature-reminder`, `feature-tags`, `feature-googletask`, `feature-group`, `feature-insights`, `feature-workflow` | Vertical feature slices; only `app` depends on these |
 | `extensions/` | `appwidgets(-api)`, `appfunctions`, `localbackup` | Cross-feature, flavor/runtime-gated additions `app` pulls in as a unit |
@@ -67,6 +67,7 @@ readability; prepend the group from the table above to get the full Gradle path 
 | `logic:logic-googletask` | Kotlin library | Scaffolded sibling of `feature-googletask` for cross-feature Google Tasks logic. Currently has no source — not yet populated (see "Feature Modules" below). |
 | `feature:feature-tags` | Android library (Compose) | Fully extracted Tags feature: screens, ViewModels, `TagsNavKey`/`TagsNavGraph`, own `KoinModule`. Tag data now lives in the shared `AppDb` via `repository-api`'s `TagRepository`/`TagAssignmentRepository` — there is no separate `tags_db` any more. Both flavors. |
 | `ui:ui-tag` | Android library (Compose) | Reusable Tags Compose building blocks (chip picker, item styling) usable outside `feature-tags`. |
+| `ui:ui-icons-solar` | Android library (resources only) | The "Solar Linear" icon pack (480 Design, 1246 icons) converted to VectorDrawables (`ic_solar_*`) plus the `SolarIcons` catalog of `@DrawableRes` ids grouped by upstream category. No dependencies. Used by `ui-routine`'s `RoutineIconSet` for routine/habit icons; see the module `README.md` for source and licensing. |
 | `logic:logic-habit` | Android library | Habit Tracker business logic: `ObserveHabitsWithProgressUseCase` (habits + today's count + streak), `Toggle`/`IncrementHabitCheckInUseCase`, `Save`/`Delete`/`GetHabitUseCase`, and the pure `HabitStreakCalculator`. Reads through `HabitRepository`/`HabitCheckInRepository`. Gating (`HabitConfig`) lives in `logic-routine`. |
 | `logic:logic-tag` | Kotlin library | Cross-feature tag logic, e.g. `ToggleTagAssignmentUseCase`, usable by any `feature-*` module that assigns tags. |
 | `feature:feature-insights` | Android library (Compose) | Fully extracted **PRO-only** Streaks & Insights dashboard: screens, ViewModel, `InsightsNavKey`/`InsightsNavGraph`, aggregator classes (`ReminderStreakCalculator`, `CompletionStatsCalculator`), own `KoinModule`. Purely computed from `repository-api` — no schema of its own. Gated at runtime via `BuildInfo.isPro`, not a build-time flavor split. No sibling `ui-*`/`logic-*` module yet (nothing shared elsewhere). |
@@ -159,6 +160,10 @@ app
  │     └── ui-googletask / logic-googletask / logic-reminder
  ├── ui-tag
  │     └── domain / logging-api / ui-common / platform-api / platform-common
+ ├── ui-icons-solar
+ │     └── no dependencies (resources + catalog only)
+ ├── ui-routine
+ │     └── domain / logging-api / ui-common / ui-icons-solar
  ├── logic-tag
  │     └── domain / repository-api / logging-api / files-api / logic-schedule
  ├── feature-tags
