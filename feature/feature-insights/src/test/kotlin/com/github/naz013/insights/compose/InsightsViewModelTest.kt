@@ -3,6 +3,7 @@ package com.github.naz013.insights.compose
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.history.EventHistoricalRecord
 import com.github.naz013.domain.history.EventHistoricalRecordType
+import com.github.naz013.domain.pomodoro.PomodoroSessionRecord
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.routine.Routine
@@ -21,6 +22,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.threeten.bp.LocalDate
@@ -208,4 +210,60 @@ class InsightsViewModelTest {
     assertTrue(result.routineInsights.isEmpty())
     assertEquals(InsightsListState.Empty, result.listState)
   }
+
+  @Test
+  fun `fills the streak milestone on each reminder card from its current streak`() = runTest {
+    coEvery { eventHistoryRepository.getByDateRange(any(), any()) } returns consecutiveDays(7).map { date ->
+      record("r1", date)
+    }
+    coEvery { reminderV2Repository.getById("r1") } returns reminder("r1", "Take pills")
+    coEvery { routineExecutionRepository.getByDateRange(any(), any()) } returns emptyList()
+
+    val result = viewModel().buildState()
+
+    val milestone = (result.listState as InsightsListState.Ready).streaks.single().milestone
+    assertEquals(7, milestone.reachedDays)
+    assertEquals(30, milestone.nextDays)
+    assertEquals(23, milestone.daysToNext)
+  }
+
+  @Test
+  fun `fills the streak milestone on each routine card from its current streak`() = runTest {
+    coEvery { eventHistoryRepository.getByDateRange(any(), any()) } returns emptyList()
+    coEvery { routineExecutionRepository.getByDateRange(any(), any()) } returns consecutiveDays(30).map { date ->
+      executionRecord("o1", date, completedStepIds = listOf("s1"), totalStepsCount = 1)
+    }
+    coEvery { routineRepository.getById("o1") } returns routine("o1", "Morning routine")
+
+    val result = viewModel().buildState()
+
+    val milestone = result.routineInsights.single().milestone
+    assertEquals(30, milestone.reachedDays)
+    assertEquals(100, milestone.nextDays)
+    assertEquals(70, milestone.daysToNext)
+  }
+
+  @Test
+  fun `fills the streak milestone on the pomodoro insight from its focus streak`() = runTest {
+    coEvery { eventHistoryRepository.getByDateRange(any(), any()) } returns emptyList()
+    coEvery { routineExecutionRepository.getByDateRange(any(), any()) } returns emptyList()
+    coEvery { pomodoroSessionRepository.getByDateRange(any(), any()) } returns consecutiveDays(100).map { date ->
+      PomodoroSessionRecord(
+        linkedReminderId = null,
+        startedAt = date.atTime(LocalTime.NOON),
+        plannedFocusSeconds = 1500,
+        actualFocusSeconds = 1500,
+        wasCompleted = true,
+      )
+    }
+
+    val result = viewModel().buildState()
+
+    val milestone = result.pomodoroInsight!!.milestone
+    assertEquals(100, milestone.reachedDays)
+    assertNull(milestone.nextDays)
+    assertEquals(1f, milestone.progress, 1e-6f)
+  }
+
+  private fun consecutiveDays(count: Int): List<LocalDate> = (0 until count).map { today.minusDays(it.toLong()) }
 }
