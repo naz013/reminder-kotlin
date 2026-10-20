@@ -143,7 +143,7 @@ private fun Modifier.colorSliderSemantics(
   this.contentDescription = contentDescription
   if (colors.isNotEmpty()) {
     progressBarRangeInfo = ProgressBarRangeInfo(
-      current = selectedIndex().toFloat(),
+      current = selectedIndex().coerceAtLeast(0).toFloat(),
       range = 0f..(colors.size - 1).coerceAtLeast(0).toFloat(),
       steps = (colors.size - 2).coerceAtLeast(0),
     )

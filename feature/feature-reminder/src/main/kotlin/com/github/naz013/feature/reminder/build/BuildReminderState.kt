@@ -1,8 +1,6 @@
 package com.github.naz013.feature.reminder.build
 
-import androidx.compose.ui.graphics.Color
 import com.github.naz013.feature.reminder.build.logic.builderstate.ReminderPrediction
-import com.github.naz013.ui.routine.RoutineColors
 import com.github.naz013.ui.tag.TagChipState
 
 internal data class BuildReminderState(
@@ -24,7 +22,6 @@ internal data class BuildReminderState(
   val isCriticalChecked: Boolean = false,
   val iconIndex: Int? = null,
   val colorIndex: Int? = null,
-  val tagColors: List<Color> = RoutineColors.ALL,
   val editingItem: Pair<Int, BuilderItem<*>>? = null,
   val isFromFile: Boolean = false,
   val hasSameInDb: Boolean = false,
@@ -32,4 +29,11 @@ internal data class BuildReminderState(
   val hapticFeedbackEnabled: Boolean = true,
   val allTags: List<TagChipState> = emptyList(),
   val selectedTagIds: Set<String> = emptySet(),
-)
+) {
+  val hasColor: Boolean get() = colorIndex != null
+  val colorPickerIndex: Int get() = colorIndex ?: NO_COLOR_SELECTION
+
+  private companion object {
+    const val NO_COLOR_SELECTION = -1
+  }
+}

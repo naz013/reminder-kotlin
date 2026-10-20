@@ -12,12 +12,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.IconPicker
 import com.github.naz013.ui.routine.RoutineColorPicker
+import com.github.naz013.ui.routine.RoutineColors
 import com.github.naz013.ui.routine.RoutineIconSet
 
 /**
@@ -28,8 +28,8 @@ import com.github.naz013.ui.routine.RoutineIconSet
 internal fun AppearanceRow(
   modifier: Modifier = Modifier,
   iconIndex: Int?,
-  colorIndex: Int?,
-  colors: List<Color>,
+  hasColor: Boolean,
+  colorPickerIndex: Int,
   hapticFeedbackEnabled: Boolean,
   onIconSelected: (Int?) -> Unit,
   onColorSelected: (Int) -> Unit,
@@ -49,15 +49,15 @@ internal fun AppearanceRow(
         color = MaterialTheme.colorScheme.onBackground,
         modifier = Modifier.weight(1f),
       )
-      if (colorIndex != null) {
+      if (hasColor) {
         TextButton(onClick = onColorCleared) {
           Text(text = stringResource(R.string.remove_color))
         }
       }
     }
     RoutineColorPicker(
-      colors = colors,
-      selectedIndex = colorIndex ?: 0,
+      colors = RoutineColors.ALL,
+      selectedIndex = colorPickerIndex,
       onColorSelected = onColorSelected,
       hapticFeedbackEnabled = hapticFeedbackEnabled,
       modifier = Modifier.fillMaxWidth().padding(top = 8.dp),

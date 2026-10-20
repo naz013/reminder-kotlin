@@ -32,7 +32,8 @@ private val SelectedColorDotSize = 16.dp
  * Labeled, card-wrapped [ColorSlider] - the "surfaceContainer card + title label + slider" shell
  * previously duplicated inline by every solid-color-picking edit screen (group, tag, Google Task
  * list, routine). A small dot showing the currently selected color sits next to [title] so the
- * choice reads at a glance without scanning the slider strip for the outlined swatch.
+ * choice reads at a glance without scanning the slider strip for the outlined swatch. An
+ * out-of-range [selectedIndex] (e.g. -1) means nothing is selected.
  */
 @Composable
 fun ColorPickerCard(

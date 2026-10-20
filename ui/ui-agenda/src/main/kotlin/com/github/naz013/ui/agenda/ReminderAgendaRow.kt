@@ -35,7 +35,7 @@ fun ReminderAgendaRow(
     statusChips = statusChips(item),
     badge = if (item.state.isCritical) { { CriticalBadgeChip() } } else null,
     badgeContentDescription = if (item.state.isCritical) stringResource(R.string.critical) else null,
-    leading = if (item.state.iconRes != null || item.state.tagColor != null) {
+    leading = if (item.state.hasTag) {
       { ReminderTagBadge(iconRes = item.state.iconRes, tagColor = item.state.tagColor) }
     } else {
       null

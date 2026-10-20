@@ -30,7 +30,9 @@ data class UiReminderListState(
   val iconRes: Int? = null,
   /** ARGB of the reminder's chosen tag color, or null when none. */
   val tagColor: Int? = null,
-)
+) {
+  val hasTag: Boolean get() = iconRes != null || tagColor != null
+}
 
 data class UiReminderListActions(
   val canToggle: Boolean = false,
