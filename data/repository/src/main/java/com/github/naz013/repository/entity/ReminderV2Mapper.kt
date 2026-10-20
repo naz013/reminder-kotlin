@@ -56,7 +56,9 @@ internal fun ReminderV2.toEntity(): ReminderV2Entity {
     version = sync.version,
     syncState = sync.syncState.name,
     offlineOnly = offlineOnly,
-    isCritical = isCritical
+    isCritical = isCritical,
+    iconIndex = iconIndex,
+    colorIndex = colorIndex
   )
 }
 
@@ -87,7 +89,9 @@ internal fun ReminderV2Entity.toDomain(): ReminderV2 {
     lastShownAt = lastShownAt?.toLocalDateTimeUtc(),
     sync = SyncMetadata(version = version, syncState = SyncState.valueOf(syncState)),
     offlineOnly = offlineOnly,
-    isCritical = isCritical
+    isCritical = isCritical,
+    iconIndex = iconIndex,
+    colorIndex = colorIndex
   )
 }
 

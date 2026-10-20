@@ -40,7 +40,12 @@ data class ReminderV2(
   /** Opt-in alarm-clock-style escalation: forces max-priority, DND-bypassing, screen-waking
    * delivery on an immediate, short-interval repeat cadence, regardless of the resolved
    * notification hierarchy or global repeat settings. See [ReminderActionProcessor]. */
-  val isCritical: Boolean = false
+  val isCritical: Boolean = false,
+  /** Index into the shared routine icon set; null = no icon. Append-only, so indices stay stable. */
+  val iconIndex: Int? = null,
+  /** Index into the shared routine color palette used to tag this reminder in lists; null = no
+   * color. Unrelated to [NotificationSettings.color]. */
+  val colorIndex: Int? = null
 ) {
 
   fun isLimited(): Boolean = recurrence.repeatLimitOrDefault() > 0

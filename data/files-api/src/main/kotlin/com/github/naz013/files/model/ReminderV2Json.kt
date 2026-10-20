@@ -64,7 +64,11 @@ data class ReminderV2Json(
   @SerializedName("offlineOnly")
   val offlineOnly: Boolean = false,
   @SerializedName("isCritical")
-  val isCritical: Boolean = false
+  val isCritical: Boolean = false,
+  @SerializedName("iconIndex")
+  val iconIndex: Int? = null,
+  @SerializedName("colorIndex")
+  val colorIndex: Int? = null
 )
 
 /** Wire shape for [com.github.naz013.domain.reminder.v2.NotificationSettingsOverride] вЂ” every field optional. */

@@ -79,7 +79,10 @@ internal data class ReminderV2Entity(
 
   val offlineOnly: Boolean = false,
 
-  val isCritical: Boolean = false
+  val isCritical: Boolean = false,
+
+  val iconIndex: Int? = null,
+  val colorIndex: Int? = null
 )
 
 data class ReminderScheduleColumns(
