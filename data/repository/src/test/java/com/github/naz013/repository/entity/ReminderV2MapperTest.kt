@@ -14,6 +14,7 @@ import com.github.naz013.domain.reminder.v2.SyncMetadata
 import com.github.naz013.domain.reminder.v2.TaskExportSettings
 import com.github.naz013.domain.sync.SyncState
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 import org.threeten.bp.LocalDateTime
 
@@ -251,6 +252,41 @@ class ReminderV2MapperTest {
     val domain = entity.toDomain()
 
     assertEquals(RecurrenceRule.Once, domain.recurrence)
+  }
+
+  @Test
+  fun `toEntity then toDomain round trips a reminder with an icon and tag color index`() {
+    val reminder = ReminderV2(
+      uuId = "id-tagged",
+      summary = "Water plants",
+      recurrence = RecurrenceRule.Once,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 22, 9, 0)),
+      action = ReminderAction.None,
+      iconIndex = 3,
+      colorIndex = 0
+    )
+
+    val roundTripped = reminder.toEntity().toDomain()
+
+    assertEquals(reminder, roundTripped)
+    assertEquals(3, roundTripped.iconIndex)
+    assertEquals(0, roundTripped.colorIndex)
+  }
+
+  @Test
+  fun `toEntity then toDomain keeps icon and tag color null when neither is set`() {
+    val reminder = ReminderV2(
+      uuId = "id-untagged",
+      summary = "No tag",
+      recurrence = RecurrenceRule.Once,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 22, 9, 0)),
+      action = ReminderAction.None
+    )
+
+    val roundTripped = reminder.toEntity().toDomain()
+
+    assertNull(roundTripped.iconIndex)
+    assertNull(roundTripped.colorIndex)
   }
 
   private fun legacyEntity(recurrenceType: String, recurrencePayload: String) = ReminderV2Entity(

@@ -1030,4 +1030,115 @@ class BuildReminderViewModelTest : BaseTest() {
 
       coVerify { toggleTagAssignmentUseCase.invoke(any(), any(), "tag-1", false) }
     }
+
+  @Test
+  fun `onIconSelected stores the chosen icon index in state`() {
+    val viewModel = createViewModel()
+
+    viewModel.onIconSelected(4)
+
+    assertEquals(4, viewModel.state.value.iconIndex)
+  }
+
+  @Test
+  fun `onIconSelected with null clears the chosen icon`() {
+    val viewModel = createViewModel()
+    viewModel.onIconSelected(4)
+
+    viewModel.onIconSelected(null)
+
+    assertNull(viewModel.state.value.iconIndex)
+  }
+
+  @Test
+  fun `onColorSelected stores the chosen color index in state`() {
+    val viewModel = createViewModel()
+
+    viewModel.onColorSelected(6)
+
+    assertEquals(6, viewModel.state.value.colorIndex)
+  }
+
+  @Test
+  fun `onColorCleared resets the color index to null without touching the icon`() {
+    val viewModel = createViewModel()
+    viewModel.onIconSelected(4)
+    viewModel.onColorSelected(6)
+
+    viewModel.onColorCleared()
+
+    assertNull(viewModel.state.value.colorIndex)
+    assertEquals(4, viewModel.state.value.iconIndex)
+  }
+
+  @Test
+  fun `saveReminder saves the chosen icon and color indices with a new reminder`() =
+    runTest {
+      every { biToReminderAdapter(any(), any(), any()) } returns
+        BiToReminderAdapter.BuildResult.Success(reminderV2Fixture(uuId = "new"))
+      val viewModel = createViewModel()
+      viewModel.onIconSelected(3)
+      viewModel.onColorSelected(7)
+
+      viewModel.saveReminder(newId = false)
+
+      coVerify(exactly = 1) {
+        activateReminderUseCase(match { it.iconIndex == 3 && it.colorIndex == 7 }, startAnyway = true)
+      }
+    }
+
+  @Test
+  fun `saveReminder saves a cleared color as null`() =
+    runTest {
+      every { biToReminderAdapter(any(), any(), any()) } returns
+        BiToReminderAdapter.BuildResult.Success(reminderV2Fixture(uuId = "new"))
+      val viewModel = createViewModel()
+      viewModel.onColorSelected(7)
+      viewModel.onColorCleared()
+
+      viewModel.saveReminder(newId = false)
+
+      coVerify(exactly = 1) { activateReminderUseCase(match { it.colorIndex == null }, startAnyway = true) }
+    }
+
+  @Test
+  fun `editing an existing reminder loads its icon and color indices into state`() {
+    val reminder = reminderV2Fixture(uuId = "42").copy(iconIndex = 1, colorIndex = 2)
+    coEvery { reminderV2Repository.getById("42") } returns reminder
+    coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
+
+    val viewModel = createViewModel(initialId = "42")
+
+    assertEquals(1, viewModel.state.value.iconIndex)
+    assertEquals(2, viewModel.state.value.colorIndex)
+  }
+
+  @Test
+  fun `saving an edited reminder keeps the loaded icon and color indices`() =
+    runTest {
+      val reminder = reminderV2Fixture(uuId = "42").copy(iconIndex = 1, colorIndex = 2)
+      coEvery { reminderV2Repository.getById("42") } returns reminder
+      coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
+      every { biToReminderAdapter(any(), any(), any()) } returns
+        BiToReminderAdapter.BuildResult.Success(reminderV2Fixture(uuId = "42"))
+      val viewModel = createViewModel(initialId = "42")
+
+      viewModel.saveReminder(newId = false)
+
+      coVerify(exactly = 1) {
+        activateReminderUseCase(match { it.iconIndex == 1 && it.colorIndex == 2 }, startAnyway = true)
+      }
+    }
+
+  @Test
+  fun `extending a todo seed carries its icon and color indices into state`() {
+    val seed = reminderV2Fixture(uuId = "todo-1").copy(iconIndex = 5, colorIndex = 9)
+    todoSeedHolder.pendingSeed = seed
+    coEvery { reminderToBiDecomposer(seed) } returns listOf(summaryItem())
+
+    val viewModel = createViewModel(initialId = "todo-1", seedFromTodoEdit = true, isEditingExtend = true)
+
+    assertEquals(5, viewModel.state.value.iconIndex)
+    assertEquals(9, viewModel.state.value.colorIndex)
+  }
 }
