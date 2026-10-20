@@ -55,6 +55,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.github.naz013.feature.reminder.build.logic.builderstate.ReminderPrediction
 import com.github.naz013.feature.reminder.build.quickstart.QuickStartOption
+import com.github.naz013.feature.reminder.compose.AppearanceRow
 import com.github.naz013.feature.reminder.compose.CriticalRow
 import com.github.naz013.feature.reminder.compose.OfflineOnlyRow
 import com.github.naz013.feature.reminder.note.UiNoteList
@@ -101,6 +102,10 @@ internal fun BuildReminderScreen(
   canSetOfflineOnly: Boolean,
   offlineOnlyChecked: Boolean,
   isCriticalChecked: Boolean,
+  iconIndex: Int?,
+  colorIndex: Int?,
+  tagColors: List<Color>,
+  hapticFeedbackEnabled: Boolean,
   quickStartOptions: List<QuickStartOption>,
   allTags: List<TagChipState>,
   selectedTagIds: Set<String>,
@@ -113,6 +118,9 @@ internal fun BuildReminderScreen(
   onPresetNameChange: (String) -> Unit,
   onOfflineOnlyChange: (Boolean) -> Unit,
   onCriticalChange: (Boolean) -> Unit,
+  onIconSelected: (Int?) -> Unit,
+  onColorSelected: (Int) -> Unit,
+  onColorCleared: () -> Unit,
   onItemClick: (Int, BuilderItem<*>) -> Unit,
   onItemRemove: (Int, BuilderItem<*>) -> Unit,
   onAddClick: () -> Unit,
@@ -238,6 +246,18 @@ internal fun BuildReminderScreen(
 
         if (prediction != null) {
           item(key = "forecast") { ForecastRow(prediction) }
+        }
+
+        item(key = "appearance") {
+          AppearanceRow(
+            iconIndex = iconIndex,
+            colorIndex = colorIndex,
+            colors = tagColors,
+            hapticFeedbackEnabled = hapticFeedbackEnabled,
+            onIconSelected = onIconSelected,
+            onColorSelected = onColorSelected,
+            onColorCleared = onColorCleared,
+          )
         }
 
         item(key = "critical") {
@@ -577,6 +597,10 @@ private fun PreviewBuildReminderScreenEmpty() {
       canSetOfflineOnly = false,
       offlineOnlyChecked = false,
       isCriticalChecked = false,
+      iconIndex = null,
+      colorIndex = null,
+      tagColors = emptyList(),
+      hapticFeedbackEnabled = true,
       quickStartOptions = QuickStartOption.entries,
       allTags = emptyList(),
       selectedTagIds = emptySet(),
@@ -589,6 +613,9 @@ private fun PreviewBuildReminderScreenEmpty() {
       onPresetNameChange = {},
       onOfflineOnlyChange = {},
       onCriticalChange = {},
+      onIconSelected = {},
+      onColorSelected = {},
+      onColorCleared = {},
       onItemClick = { _, _ -> },
       onItemRemove = { _, _ -> },
       onAddClick = {},

@@ -35,6 +35,7 @@ dependencies {
   implementation(project(":admin:reviews"))
   implementation(project(":ui:ui-common"))
   implementation(project(":ui:ui-reminder"))
+  implementation(project(":ui:ui-routine"))
   implementation(project(":ui:ui-note"))
   implementation(project(":ui:ui-tag"))
   implementation(project(":ui:ui-group"))

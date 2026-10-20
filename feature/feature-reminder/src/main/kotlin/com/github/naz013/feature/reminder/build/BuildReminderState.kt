@@ -1,6 +1,8 @@
 package com.github.naz013.feature.reminder.build
 
+import androidx.compose.ui.graphics.Color
 import com.github.naz013.feature.reminder.build.logic.builderstate.ReminderPrediction
+import com.github.naz013.ui.routine.RoutineColors
 import com.github.naz013.ui.tag.TagChipState
 
 internal data class BuildReminderState(
@@ -20,6 +22,9 @@ internal data class BuildReminderState(
   /** Opt-in alarm-clock-style escalation: repeats, bypasses Do Not Disturb, wakes the screen.
    * See [com.github.naz013.domain.reminder.v2.ReminderV2.isCritical]. */
   val isCriticalChecked: Boolean = false,
+  val iconIndex: Int? = null,
+  val colorIndex: Int? = null,
+  val tagColors: List<Color> = RoutineColors.ALL,
   val editingItem: Pair<Int, BuilderItem<*>>? = null,
   val isFromFile: Boolean = false,
   val hasSameInDb: Boolean = false,

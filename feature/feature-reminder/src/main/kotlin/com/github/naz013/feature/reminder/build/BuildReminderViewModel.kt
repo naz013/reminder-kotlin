@@ -292,6 +292,18 @@ internal class BuildReminderViewModel(
     _state.update { it.copy(isCriticalChecked = checked) }
   }
 
+  fun onIconSelected(index: Int?) {
+    _state.update { it.copy(iconIndex = index) }
+  }
+
+  fun onColorSelected(index: Int) {
+    _state.update { it.copy(colorIndex = index) }
+  }
+
+  fun onColorCleared() {
+    _state.update { it.copy(colorIndex = null) }
+  }
+
   /** Re-checks cloud login state on every ON_RESUME (see [BuildReminderNavGraph]) - this
    *  Composable entry isn't necessarily recreated after a trip to the Cloud Services screen (e.g.
    *  reached via Settings without popping this entry off the backstack), so [isCloudLoggedIn],
@@ -359,7 +371,11 @@ internal class BuildReminderViewModel(
             } else {
               withNewId
             }
-          val finalV2 = withOfflineOnly.copy(isCritical = _state.value.isCriticalChecked)
+          val finalV2 = withOfflineOnly.copy(
+            isCritical = _state.value.isCriticalChecked,
+            iconIndex = _state.value.iconIndex,
+            colorIndex = _state.value.colorIndex
+          )
 
           isSaving = true
           val reviewDialogShown = saveAndStartReminder(finalV2, isEdit = isEdited)
@@ -603,6 +619,8 @@ internal class BuildReminderViewModel(
           isRemoved = seed.isRemoved,
           canSetOfflineOnly = false,
           isCriticalChecked = seed.isCritical,
+          iconIndex = seed.iconIndex,
+          colorIndex = seed.colorIndex,
         )
       }
       pauseReminder(seed)
@@ -838,6 +856,8 @@ internal class BuildReminderViewModel(
         isLoadingForEdit = false,
         canSetOfflineOnly = false,
         isCriticalChecked = reminderV2.isCritical,
+        iconIndex = reminderV2.iconIndex,
+        colorIndex = reminderV2.colorIndex,
       )
     }
 
