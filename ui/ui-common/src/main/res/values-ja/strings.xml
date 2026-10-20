@@ -1273,4 +1273,6 @@
     <string name="pro_trial_remaining">残り時間: %1$s</string>
     <string name="pro_trial_ads_unavailable">現在、広告を利用できません。しばらくしてからもう一度お試しください。</string>
     <string name="pro_trial_cancelled">報酬を受け取る前に広告が閉じられました。お試しを有効にするには、広告を最後まで視聴してください。</string>
+    <string name="reminder_icon_and_color">アイコンと色</string>
+    <string name="remove_color">色を削除</string>
 </resources>

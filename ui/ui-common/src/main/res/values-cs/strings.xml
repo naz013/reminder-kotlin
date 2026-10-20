@@ -1286,4 +1286,6 @@
     <string name="pro_trial_remaining">Zbývající čas: %1$s</string>
     <string name="pro_trial_ads_unavailable">Reklamy momentálně nejsou k dispozici. Zkuste to prosím později.</string>
     <string name="pro_trial_cancelled">Reklama byla zavřena před získáním odměny. Zhlédněte reklamu až do konce pro aktivaci zkušební verze.</string>
+    <string name="reminder_icon_and_color">Ikona a barva</string>
+    <string name="remove_color">Odebrat barvu</string>
 </resources>

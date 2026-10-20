@@ -52,6 +52,7 @@ import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.ui.agenda.UiAgendaReminder
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.component.CloudBubble
+import com.github.naz013.ui.common.compose.foundation.component.ReminderTagBadge
 import com.github.naz013.domain.PublicHoliday
 import kotlinx.coroutines.delay
 import org.threeten.bp.LocalDate
@@ -60,6 +61,7 @@ import org.threeten.bp.LocalTime
 private val HOUR_HEIGHT = 56.dp
 private val AXIS_WIDTH = 52.dp
 private val EVENT_BLOCK_MIN_HEIGHT = 26.dp
+private val TAG_BADGE_SIZE = 18.dp
 private val NOW_LINE_DOT_RADIUS = 4.dp
 private val NOW_LINE_STROKE_WIDTH = 2.dp
 private const val INITIAL_SCROLL_LEAD_HOURS = 2f
@@ -477,13 +479,23 @@ private fun TimelineEventBlock(
       .clickable { expanded = true }
       .padding(horizontal = 6.dp, vertical = 3.dp),
   ) {
-    Text(
-      text = title,
-      style = MaterialTheme.typography.labelSmall,
-      color = content,
-      maxLines = 2,
-      overflow = TextOverflow.Ellipsis,
-    )
+    Row(verticalAlignment = Alignment.CenterVertically) {
+      if (item is UiAgendaReminder) {
+        ReminderTagBadge(
+          iconRes = item.state.iconRes,
+          tagColor = item.state.tagColor,
+          size = TAG_BADGE_SIZE,
+          modifier = Modifier.padding(end = 4.dp),
+        )
+      }
+      Text(
+        text = title,
+        style = MaterialTheme.typography.labelSmall,
+        color = content,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis,
+      )
+    }
 
     if (expanded) {
       CloudBubble(

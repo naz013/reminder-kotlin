@@ -1296,4 +1296,6 @@
     <string name="pro_trial_remaining">Time left: %1$s</string>
     <string name="pro_trial_ads_unavailable">Ads are not available right now. Please try again later.</string>
     <string name="pro_trial_cancelled">The ad was closed before the reward. Watch the ad to the end to activate the trial.</string>
+    <string name="reminder_icon_and_color">Icon and color</string>
+    <string name="remove_color">Remove color</string>
 </resources>

@@ -1286,4 +1286,6 @@
     <string name="pro_trial_remaining">Pozostały czas: %1$s</string>
     <string name="pro_trial_ads_unavailable">Reklamy są teraz niedostępne. Spróbuj ponownie później.</string>
     <string name="pro_trial_cancelled">Reklama została zamknięta przed przyznaniem nagrody. Obejrzyj reklamę do końca, aby aktywować okres próbny.</string>
+    <string name="reminder_icon_and_color">Ikona i kolor</string>
+    <string name="remove_color">Usuń kolor</string>
 </resources>

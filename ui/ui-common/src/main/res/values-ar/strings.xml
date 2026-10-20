@@ -1290,4 +1290,6 @@
     <string name="pro_trial_remaining">الوقت المتبقي: %1$s</string>
     <string name="pro_trial_ads_unavailable">الإعلانات غير متاحة حاليًا. يُرجى المحاولة لاحقًا.</string>
     <string name="pro_trial_cancelled">تم إغلاق الإعلان قبل الحصول على المكافأة. شاهد الإعلان حتى النهاية لتفعيل التجربة.</string>
+    <string name="reminder_icon_and_color">الأيقونة واللون</string>
+    <string name="remove_color">إزالة اللون</string>
 </resources>

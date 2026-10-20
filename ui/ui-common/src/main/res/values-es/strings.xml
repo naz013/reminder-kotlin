@@ -1283,4 +1283,6 @@
     <string name="pro_trial_remaining">Tiempo restante: %1$s</string>
     <string name="pro_trial_ads_unavailable">Los anuncios no están disponibles ahora. Inténtalo de nuevo más tarde.</string>
     <string name="pro_trial_cancelled">El anuncio se cerró antes de recibir la recompensa. Mira el anuncio hasta el final para activar la prueba.</string>
+    <string name="reminder_icon_and_color">Icono y color</string>
+    <string name="remove_color">Quitar color</string>
 </resources>

@@ -7,6 +7,7 @@ import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.AgendaListItem
 import com.github.naz013.ui.common.compose.foundation.component.CriticalBadgeChip
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.compose.foundation.component.ReminderTagBadge
 import com.github.naz013.ui.common.icon.DrawableCatalog
 
 /**
@@ -34,6 +35,11 @@ fun ReminderAgendaRow(
     statusChips = statusChips(item),
     badge = if (item.state.isCritical) { { CriticalBadgeChip() } } else null,
     badgeContentDescription = if (item.state.isCritical) stringResource(R.string.critical) else null,
+    leading = if (item.state.iconRes != null || item.state.tagColor != null) {
+      { ReminderTagBadge(iconRes = item.state.iconRes, tagColor = item.state.tagColor) }
+    } else {
+      null
+    },
     onClick = onClick,
     menuItems = if (onMenuAction != null) reminderMenuItems(item) else emptyList(),
     onMenuItemClick = { id -> onMenuAction?.invoke(AgendaMenuAction.entries[id]) },

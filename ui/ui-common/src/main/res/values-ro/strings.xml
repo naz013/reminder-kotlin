@@ -1283,4 +1283,6 @@
     <string name="pro_trial_remaining">Timp rămas: %1$s</string>
     <string name="pro_trial_ads_unavailable">Reclamele nu sunt disponibile momentan. Încearcă din nou mai târziu.</string>
     <string name="pro_trial_cancelled">Reclama a fost închisă înainte de recompensă. Vizionează reclama până la capăt pentru a activa perioada de probă.</string>
+    <string name="reminder_icon_and_color">Pictogramă și culoare</string>
+    <string name="remove_color">Elimină culoarea</string>
 </resources>

@@ -1286,4 +1286,6 @@
     <string name="pro_trial_remaining">Залишилось часу: %1$s</string>
     <string name="pro_trial_ads_unavailable">Реклама зараз недоступна. Спробуйте пізніше.</string>
     <string name="pro_trial_cancelled">Рекламу закрили до отримання нагороди. Передивіться рекламу до кінця, щоб активувати пробний період.</string>
+    <string name="reminder_icon_and_color">Значок і колір</string>
+    <string name="remove_color">Прибрати колір</string>
 </resources>

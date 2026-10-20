@@ -1276,4 +1276,6 @@
     <string name="pro_trial_remaining">Verbleibende Zeit: %1$s</string>
     <string name="pro_trial_ads_unavailable">Anzeigen sind derzeit nicht verfügbar. Bitte versuche es später erneut.</string>
     <string name="pro_trial_cancelled">Die Anzeige wurde vor der Belohnung geschlossen. Sieh dir die Anzeige bis zum Ende an, um die Testphase zu aktivieren.</string>
+    <string name="reminder_icon_and_color">Symbol und Farbe</string>
+    <string name="remove_color">Farbe entfernen</string>
 </resources>

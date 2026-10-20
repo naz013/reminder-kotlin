@@ -1278,4 +1278,6 @@
     <string name="pro_trial_remaining">Resterende tijd: %1$s</string>
     <string name="pro_trial_ads_unavailable">Advertenties zijn momenteel niet beschikbaar. Probeer het later opnieuw.</string>
     <string name="pro_trial_cancelled">De advertentie is gesloten voordat je de beloning kreeg. Bekijk de advertentie tot het einde om de proefperiode te activeren.</string>
+    <string name="reminder_icon_and_color">Pictogram en kleur</string>
+    <string name="remove_color">Kleur verwijderen</string>
 </resources>

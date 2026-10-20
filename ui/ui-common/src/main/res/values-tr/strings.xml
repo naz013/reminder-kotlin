@@ -1280,4 +1280,6 @@
     <string name="pro_trial_remaining">Kalan süre: %1$s</string>
     <string name="pro_trial_ads_unavailable">Reklamlar şu anda kullanılamıyor. Lütfen daha sonra tekrar deneyin.</string>
     <string name="pro_trial_cancelled">Reklam, ödül verilmeden önce kapatıldı. Denemeyi etkinleştirmek için reklamı sonuna kadar izleyin.</string>
+    <string name="reminder_icon_and_color">Simge ve renk</string>
+    <string name="remove_color">Rengi kaldır</string>
 </resources>

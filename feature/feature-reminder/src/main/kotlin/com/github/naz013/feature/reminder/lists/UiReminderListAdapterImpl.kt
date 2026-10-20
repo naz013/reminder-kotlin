@@ -1,5 +1,6 @@
 package com.github.naz013.feature.reminder.lists
 
+import androidx.compose.ui.graphics.toArgb
 import com.github.naz013.common.TextProvider
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.GroupV2
@@ -21,6 +22,8 @@ import com.github.naz013.ui.common.theme.ColorProvider
 import com.github.naz013.ui.group.UiGroupListAdapter
 import com.github.naz013.ui.reminder.UiReminderDueData
 import com.github.naz013.ui.reminder.UiReminderList
+import com.github.naz013.ui.routine.RoutineColors
+import com.github.naz013.ui.routine.RoutineIconSet
 import com.github.naz013.ui.reminder.UiReminderListActions
 import com.github.naz013.ui.reminder.UiReminderListAdapter
 import com.github.naz013.ui.reminder.UiReminderListState
@@ -73,6 +76,8 @@ internal class UiReminderListAdapterImpl(
           isGps = data.location != null,
           isPinned = data.isPinned,
           isCritical = data.isCritical,
+          iconRes = data.iconIndex?.let { RoutineIconSet.ALL.getOrNull(it) },
+          tagColor = data.colorIndex?.let { RoutineColors.ALL.getOrNull(it)?.toArgb() },
         ),
     )
   }

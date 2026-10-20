@@ -26,6 +26,10 @@ data class UiReminderListState(
   val isGps: Boolean = false,
   val isPinned: Boolean = false,
   val isCritical: Boolean = false,
+  /** Resolved drawable of the reminder's chosen icon, or null when none. */
+  val iconRes: Int? = null,
+  /** ARGB of the reminder's chosen tag color, or null when none. */
+  val tagColor: Int? = null,
 )
 
 data class UiReminderListActions(

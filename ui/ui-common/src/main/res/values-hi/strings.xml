@@ -1276,4 +1276,6 @@
     <string name="pro_trial_remaining">शेष समय: %1$s</string>
     <string name="pro_trial_ads_unavailable">विज्ञापन अभी उपलब्ध नहीं हैं। कृपया बाद में पुनः प्रयास करें।</string>
     <string name="pro_trial_cancelled">इनाम मिलने से पहले विज्ञापन बंद कर दिया गया। ट्रायल सक्रिय करने के लिए विज्ञापन को अंत तक देखें।</string>
+    <string name="reminder_icon_and_color">आइकन और रंग</string>
+    <string name="remove_color">रंग हटाएं</string>
 </resources>

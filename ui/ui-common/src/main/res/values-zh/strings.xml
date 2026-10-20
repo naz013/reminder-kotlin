@@ -1273,4 +1273,6 @@
     <string name="pro_trial_remaining">剩余时间：%1$s</string>
     <string name="pro_trial_ads_unavailable">广告暂时不可用，请稍后再试。</string>
     <string name="pro_trial_cancelled">广告在获得奖励前被关闭。请观看完整广告以激活试用。</string>
+    <string name="reminder_icon_and_color">图标和颜色</string>
+    <string name="remove_color">移除颜色</string>
 </resources>

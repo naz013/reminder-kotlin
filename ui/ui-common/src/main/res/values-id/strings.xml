@@ -1275,4 +1275,6 @@
     <string name="pro_trial_remaining">Sisa waktu: %1$s</string>
     <string name="pro_trial_ads_unavailable">Iklan tidak tersedia saat ini. Silakan coba lagi nanti.</string>
     <string name="pro_trial_cancelled">Iklan ditutup sebelum hadiah diberikan. Tonton iklan sampai selesai untuk mengaktifkan uji coba.</string>
+    <string name="reminder_icon_and_color">Ikon dan warna</string>
+    <string name="remove_color">Hapus warna</string>
 </resources>
