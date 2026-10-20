@@ -1278,4 +1278,6 @@
     <string name="pro_trial_cancelled">Die Anzeige wurde vor der Belohnung geschlossen. Sieh dir die Anzeige bis zum Ende an, um die Testphase zu aktivieren.</string>
     <string name="reminder_icon_and_color">Symbol und Farbe</string>
     <string name="remove_color">Farbe entfernen</string>
+    <string name="streak_milestone_reached">Meilenstein von %1$d Tagen erreicht!</string>
+    <string name="streak_milestone_next">Noch %1$d Tage bis zum Meilenstein von %2$d Tagen</string>
 </resources>

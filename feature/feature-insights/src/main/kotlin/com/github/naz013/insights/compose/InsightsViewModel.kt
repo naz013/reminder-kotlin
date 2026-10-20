@@ -11,6 +11,7 @@ import com.github.naz013.insights.aggregator.PomodoroFocusCalculator
 import com.github.naz013.insights.aggregator.ReminderStreakCalculator
 import com.github.naz013.insights.aggregator.RoutineStepDropoffCalculator
 import com.github.naz013.insights.aggregator.RoutineStreakCalculator
+import com.github.naz013.insights.aggregator.StreakMilestoneCalculator
 import com.github.naz013.logic.routine.RoutineDurationCalculator
 import com.github.naz013.repository.EventHistoryRepository
 import com.github.naz013.repository.PomodoroSessionRepository
@@ -65,7 +66,8 @@ internal class InsightsViewModel(
           currentStreakDays = streak.currentStreakDays,
           longestStreakDays = streak.longestStreakDays,
           lastFiredDate = streak.lastFiredDate,
-          firedCount = firedCounts[streak.eventId]?.count ?: 0
+          firedCount = firedCounts[streak.eventId]?.count ?: 0,
+          milestone = StreakMilestoneCalculator.calculate(streak.currentStreakDays)
         )
       }
 
@@ -93,6 +95,7 @@ internal class InsightsViewModel(
       totalFocusTimeLabel = routineDurationCalculator.formatDuration(summary.totalFocusSeconds),
       currentStreakDays = summary.currentStreakDays,
       longestStreakDays = summary.longestStreakDays,
+      milestone = StreakMilestoneCalculator.calculate(summary.currentStreakDays),
     )
   }
 
@@ -124,6 +127,7 @@ internal class InsightsViewModel(
           totalFocusTimeLabel = routineDurationCalculator.formatDuration(totalFocusSeconds),
           mostSkippedStepTitle = mostSkippedStep?.title,
           mostSkippedCompletionPercent = mostSkipped?.let { (it.completionRate * PERCENT).toInt() },
+          milestone = StreakMilestoneCalculator.calculate(streak.currentStreakDays),
         )
       }
   }

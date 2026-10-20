@@ -1273,4 +1273,6 @@
     <string name="pro_trial_cancelled">โฆษณาถูกปิดก่อนได้รับรางวัล ดูโฆษณาให้จบเพื่อเปิดใช้งานช่วงทดลอง</string>
     <string name="reminder_icon_and_color">ไอคอนและสี</string>
     <string name="remove_color">ลบสี</string>
+    <string name="streak_milestone_reached">ถึงเป้าหมาย %1$d วันแล้ว!</string>
+    <string name="streak_milestone_next">อีก %1$d วันถึงเป้าหมาย %2$d วัน</string>
 </resources>

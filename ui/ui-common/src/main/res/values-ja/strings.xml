@@ -1275,4 +1275,6 @@
     <string name="pro_trial_cancelled">報酬を受け取る前に広告が閉じられました。お試しを有効にするには、広告を最後まで視聴してください。</string>
     <string name="reminder_icon_and_color">アイコンと色</string>
     <string name="remove_color">色を削除</string>
+    <string name="streak_milestone_reached">%1$d日のマイルストーンを達成しました！</string>
+    <string name="streak_milestone_next">%2$d日のマイルストーンまであと%1$d日</string>
 </resources>

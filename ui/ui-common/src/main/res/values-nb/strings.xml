@@ -1280,4 +1280,6 @@
     <string name="pro_trial_cancelled">Annonsen ble lukket før belønningen. Se annonsen til slutten for å aktivere prøveperioden.</string>
     <string name="reminder_icon_and_color">Ikon og farge</string>
     <string name="remove_color">Fjern farge</string>
+    <string name="streak_milestone_reached">Milepæl på %1$d dager nådd!</string>
+    <string name="streak_milestone_next">%1$d dager igjen til milepælen på %2$d dager</string>
 </resources>

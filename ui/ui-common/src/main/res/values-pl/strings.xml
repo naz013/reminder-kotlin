@@ -1288,4 +1288,6 @@
     <string name="pro_trial_cancelled">Reklama została zamknięta przed przyznaniem nagrody. Obejrzyj reklamę do końca, aby aktywować okres próbny.</string>
     <string name="reminder_icon_and_color">Ikona i kolor</string>
     <string name="remove_color">Usuń kolor</string>
+    <string name="streak_milestone_reached">Osiągnięto kamień milowy: %1$d dni!</string>
+    <string name="streak_milestone_next">Jeszcze %1$d dni do kamienia milowego: %2$d dni</string>
 </resources>

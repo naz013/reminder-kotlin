@@ -1287,4 +1287,6 @@
     <string name="pro_trial_cancelled">Реклама была закрыта до получения награды. Досмотрите рекламу до конца, чтобы активировать пробный период.</string>
     <string name="reminder_icon_and_color">Значок и цвет</string>
     <string name="remove_color">Убрать цвет</string>
+    <string name="streak_milestone_reached">Достигнута веха в %1$d дн.!</string>
+    <string name="streak_milestone_next">Ещё %1$d дн. до вехи в %2$d дн.</string>
 </resources>

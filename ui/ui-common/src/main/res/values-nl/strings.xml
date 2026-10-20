@@ -1280,4 +1280,6 @@
     <string name="pro_trial_cancelled">De advertentie is gesloten voordat je de beloning kreeg. Bekijk de advertentie tot het einde om de proefperiode te activeren.</string>
     <string name="reminder_icon_and_color">Pictogram en kleur</string>
     <string name="remove_color">Kleur verwijderen</string>
+    <string name="streak_milestone_reached">Mijlpaal van %1$d dagen bereikt!</string>
+    <string name="streak_milestone_next">Nog %1$d dagen tot de mijlpaal van %2$d dagen</string>
 </resources>

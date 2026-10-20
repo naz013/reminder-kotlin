@@ -1,5 +1,6 @@
 package com.github.naz013.insights.compose
 
+import com.github.naz013.insights.aggregator.StreakMilestone
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 
@@ -27,7 +28,8 @@ internal data class UiStreak(
   val currentStreakDays: Int,
   val longestStreakDays: Int,
   val lastFiredDate: LocalDate,
-  val firedCount: Int
+  val firedCount: Int,
+  val milestone: StreakMilestone = StreakMilestone(null, null, 0, 0f)
 )
 
 internal data class WeeklyTrendUi(
@@ -42,11 +44,13 @@ internal data class UiRoutineInsight(
   val longestStreakDays: Int,
   val totalFocusTimeLabel: String,
   val mostSkippedStepTitle: String?,
-  val mostSkippedCompletionPercent: Int?
+  val mostSkippedCompletionPercent: Int?,
+  val milestone: StreakMilestone = StreakMilestone(null, null, 0, 0f)
 )
 
 internal data class UiPomodoroInsight(
   val totalFocusTimeLabel: String,
   val currentStreakDays: Int,
   val longestStreakDays: Int,
+  val milestone: StreakMilestone = StreakMilestone(null, null, 0, 0f)
 )

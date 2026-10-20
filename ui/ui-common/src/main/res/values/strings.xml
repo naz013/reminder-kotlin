@@ -1298,4 +1298,6 @@
     <string name="pro_trial_cancelled">The ad was closed before the reward. Watch the ad to the end to activate the trial.</string>
     <string name="reminder_icon_and_color">Icon and color</string>
     <string name="remove_color">Remove color</string>
+    <string name="streak_milestone_reached">%1$d-day milestone reached!</string>
+    <string name="streak_milestone_next">%1$d more days to the %2$d-day milestone</string>
 </resources>

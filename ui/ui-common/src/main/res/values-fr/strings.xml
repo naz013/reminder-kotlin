@@ -1285,4 +1285,6 @@
     <string name="pro_trial_cancelled">La publicité a été fermée avant la récompense. Regardez la publicité jusqu\'à la fin pour activer l\'essai.</string>
     <string name="reminder_icon_and_color">Icône et couleur</string>
     <string name="remove_color">Supprimer la couleur</string>
+    <string name="streak_milestone_reached">Étape de %1$d jours atteinte !</string>
+    <string name="streak_milestone_next">Encore %1$d jours avant l\'étape de %2$d jours</string>
 </resources>

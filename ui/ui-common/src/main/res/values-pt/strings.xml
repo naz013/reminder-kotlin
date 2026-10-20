@@ -1285,4 +1285,6 @@
     <string name="pro_trial_cancelled">O anúncio foi fechado antes da recompensa. Assista ao anúncio até o fim para ativar o teste.</string>
     <string name="reminder_icon_and_color">Ícone e cor</string>
     <string name="remove_color">Remover cor</string>
+    <string name="streak_milestone_reached">Marco de %1$d dias alcançado!</string>
+    <string name="streak_milestone_next">Faltam %1$d dias para o marco de %2$d dias</string>
 </resources>

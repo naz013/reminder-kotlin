@@ -1277,4 +1277,6 @@
     <string name="pro_trial_cancelled">Iklan ditutup sebelum hadiah diberikan. Tonton iklan sampai selesai untuk mengaktifkan uji coba.</string>
     <string name="reminder_icon_and_color">Ikon dan warna</string>
     <string name="remove_color">Hapus warna</string>
+    <string name="streak_milestone_reached">Pencapaian %1$d hari tercapai!</string>
+    <string name="streak_milestone_next">%1$d hari lagi menuju pencapaian %2$d hari</string>
 </resources>
