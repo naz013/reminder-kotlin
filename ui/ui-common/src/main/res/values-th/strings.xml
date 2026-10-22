@@ -1275,4 +1275,7 @@
     <string name="remove_color">ลบสี</string>
     <string name="streak_milestone_reached">ถึงเป้าหมาย %1$d วันแล้ว!</string>
     <string name="streak_milestone_next">อีก %1$d วันถึงเป้าหมาย %2$d วัน</string>
+    <string name="reminder_archived">ย้ายการเตือนไปยังที่เก็บถาวรแล้ว</string>
+    <string name="reminders_archived_count">ย้ายการเตือน %1$d รายการไปยังที่เก็บถาวรแล้ว</string>
+    <string name="agenda_items_deleted_count">ลบ %1$d รายการแล้ว</string>
 </resources>

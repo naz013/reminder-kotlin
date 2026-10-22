@@ -1277,4 +1277,7 @@
     <string name="remove_color">移除颜色</string>
     <string name="streak_milestone_reached">已达成 %1$d 天里程碑！</string>
     <string name="streak_milestone_next">距离 %2$d 天里程碑还有 %1$d 天</string>
+    <string name="reminder_archived">提醒已移至归档</string>
+    <string name="reminders_archived_count">%1$d 个提醒已移至归档</string>
+    <string name="agenda_items_deleted_count">已删除 %1$d 项</string>
 </resources>

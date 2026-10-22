@@ -1282,4 +1282,7 @@
     <string name="remove_color">Fjern farge</string>
     <string name="streak_milestone_reached">Milepæl på %1$d dager nådd!</string>
     <string name="streak_milestone_next">%1$d dager igjen til milepælen på %2$d dager</string>
+    <string name="reminder_archived">Påminnelsen er flyttet til arkivet</string>
+    <string name="reminders_archived_count">%1$d påminnelser flyttet til arkivet</string>
+    <string name="agenda_items_deleted_count">%1$d elementer slettet</string>
 </resources>

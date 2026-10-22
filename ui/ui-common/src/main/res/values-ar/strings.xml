@@ -1294,4 +1294,7 @@
     <string name="remove_color">إزالة اللون</string>
     <string name="streak_milestone_reached">تم بلوغ إنجاز %1$d يومًا!</string>
     <string name="streak_milestone_next">تبقى %1$d يومًا لبلوغ إنجاز %2$d يومًا</string>
+    <string name="reminder_archived">تم نقل التذكير إلى الأرشيف</string>
+    <string name="reminders_archived_count">تم نقل %1$d تذكيرات إلى الأرشيف</string>
+    <string name="agenda_items_deleted_count">تم حذف %1$d عناصر</string>
 </resources>

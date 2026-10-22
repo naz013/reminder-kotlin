@@ -6,6 +6,7 @@ import com.github.naz013.logic.reminder.AgendaViewMode
 import com.github.naz013.logic.reminder.smartlist.SmartListFilter
 import com.github.naz013.ui.agenda.AgendaCategory
 import com.github.naz013.ui.agenda.UiAgendaBirthday
+import com.github.naz013.ui.agenda.UiAgendaHeader
 import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.ui.agenda.UiAgendaReminder
 
@@ -38,6 +39,19 @@ internal fun AgendaScreenState.withSelectedItem(selectedItemId: String?): Agenda
     ),
   )
 }
+
+internal fun AgendaScreenState.withoutItems(hiddenIds: Set<String>): AgendaScreenState {
+  if (hiddenIds.isEmpty()) return this
+  val ready = listState as? ListState.Ready ?: return this
+  val remaining = ready.items.filterNot { it.id in hiddenIds }.dropOrphanHeaders()
+  if (remaining.none { it !is UiAgendaHeader }) return copy(listState = ListState.Empty)
+  return copy(listState = ListState.Ready(remaining))
+}
+
+private fun List<UiAgendaItem>.dropOrphanHeaders(): List<UiAgendaItem> =
+  filterIndexed { index, item ->
+    item !is UiAgendaHeader || getOrNull(index + 1).let { it != null && it !is UiAgendaHeader }
+  }
 
 /**
  * [UiAgendaItem] is heterogeneous (headers/calendar events aren't selectable), so it can't satisfy

@@ -33,6 +33,7 @@ import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.agenda.AgendaCategory
+import com.github.naz013.ui.agenda.AgendaMenuAction
 import com.github.naz013.ui.agenda.UiAgendaBirthday
 import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.ui.agenda.UiAgendaItemAdapter
@@ -541,26 +542,6 @@ class AgendaViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onDeleteSelectedClick posts ConfirmDeleteSelected with the selected reminder and birthday ids`() =
-    runTest {
-      every {
-        textProvider.getText(R.string.agenda_delete_selected_permanently, 2)
-      } returns "Delete 2 items permanently?"
-      val vm = readyViewModelWithReminderAndBirthday()
-      vm.onItemLongClick("r1")
-      val birthdayItem = (vm.agendaScreenState.first().listState as ListState.Ready)
-        .items.first { it.id == "b1" } as UiAgendaBirthday
-      vm.onItemClick(birthdayItem)
-
-      vm.onDeleteSelectedClick()
-
-      assertEquals(
-        AgendaViewModel.NavigationEvent.ConfirmDeleteSelected(setOf("r1"), setOf("b1"), "Delete 2 items permanently?"),
-        vm.navigationEvent.value?.peekContent(),
-      )
-    }
-
-  @Test
   fun `onDeleteSelectedClick does nothing when nothing is selected`() =
     runTest {
       val vm = readyViewModelWithReminderAndBirthday()
@@ -571,43 +552,62 @@ class AgendaViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `deleteSelected deletes the selected reminders and birthdays by type and clears selection`() =
+  fun `onDeleteSelectedClick hides selected items and clears selection without deleting yet`() =
+    runTest {
+      every { textProvider.getText(R.string.agenda_items_deleted_count, 2) } returns "2 items deleted"
+      val vm = readyViewModelWithReminderAndBirthday()
+      selectReminderAndBirthday(vm)
+
+      vm.onDeleteSelectedClick()
+
+      val state = vm.agendaScreenState.first()
+      assertEquals(ListState.Empty, state.listState)
+      assertEquals(0, state.selectedCount)
+      val event = vm.navigationEvent.value?.peekContent() as AgendaViewModel.NavigationEvent.ShowUndoAction
+      assertEquals("2 items deleted", event.message)
+      coVerify(exactly = 0) { deleteReminderUseCase(any()) }
+      coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
+    }
+
+  @Test
+  fun `undoPendingAction after bulk delete restores the items and never runs the use cases`() =
+    runTest {
+      val vm = readyViewModelWithReminderAndBirthday()
+      selectReminderAndBirthday(vm)
+      vm.onDeleteSelectedClick()
+
+      vm.undoPendingAction(lastBatchKey(vm))
+
+      val items = (vm.agendaScreenState.first().listState as ListState.Ready).items
+      assertEquals(setOf("r1", "b1"), items.map { it.id }.toSet())
+      coVerify(exactly = 0) { deleteReminderUseCase(any()) }
+      coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
+    }
+
+  @Test
+  fun `commitPendingAction after bulk delete deletes reminders and birthdays once`() =
     runTest {
       val reminder = reminderV2(id = "r1")
       coEvery { reminderV2Repository.getById("r1") } returns reminder
       coEvery { deleteReminderUseCase(reminder) } just Runs
       coEvery { deleteBirthdayUseCase("b1") } just Runs
       val vm = readyViewModelWithReminderAndBirthday()
-      vm.onItemLongClick("r1")
+      selectReminderAndBirthday(vm)
+      vm.onDeleteSelectedClick()
+      val batchKey = lastBatchKey(vm)
 
-      vm.deleteSelected(reminderIds = setOf("r1"), birthdayIds = setOf("b1"))
+      vm.commitPendingAction(batchKey)
+      vm.commitPendingAction(batchKey)
 
       coVerify(exactly = 1) { deleteReminderUseCase(reminder) }
       coVerify(exactly = 1) { deleteBirthdayUseCase("b1") }
-      assertEquals(0, vm.agendaScreenState.first().selectedCount)
-    }
-
-  @Test
-  fun `onArchiveSelectedClick posts ConfirmArchiveSelectedReminders for only the selected reminders`() =
-    runTest {
-      val vm = readyViewModelWithReminderAndBirthday()
-      vm.onItemLongClick("r1")
-
-      vm.onArchiveSelectedClick()
-
-      assertEquals(
-        AgendaViewModel.NavigationEvent.ConfirmArchiveSelectedReminders(setOf("r1")),
-        vm.navigationEvent.value?.peekContent(),
-      )
     }
 
   @Test
   fun `onArchiveSelectedClick does nothing when only birthdays are selected`() =
     runTest {
       val vm = readyViewModelWithReminderAndBirthday()
-      val birthdayItem = (vm.agendaScreenState.first().listState as ListState.Ready)
-        .items.first { it.id == "b1" } as UiAgendaBirthday
-      vm.onItemLongClick(birthdayItem.id)
+      vm.onItemLongClick("b1")
 
       vm.onArchiveSelectedClick()
 
@@ -615,17 +615,149 @@ class AgendaViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `archiveSelectedReminders archives each selected reminder and clears selection`() =
+  fun `onArchiveSelectedClick hides selected reminders and clears selection without archiving yet`() =
+    runTest {
+      every { textProvider.getText(R.string.reminders_archived_count, 1) } returns "1 reminders archived"
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onItemLongClick("r1")
+
+      vm.onArchiveSelectedClick()
+
+      val state = vm.agendaScreenState.first()
+      assertEquals(listOf("b1"), (state.listState as ListState.Ready).items.map { it.id })
+      assertEquals(0, state.selectedCount)
+      val event = vm.navigationEvent.value?.peekContent() as AgendaViewModel.NavigationEvent.ShowUndoAction
+      assertEquals("1 reminders archived", event.message)
+      coVerify(exactly = 0) { moveReminderToArchiveUseCase(any()) }
+    }
+
+  @Test
+  fun `commitPendingAction after bulk archive archives each reminder once`() =
     runTest {
       coEvery { moveReminderToArchiveUseCase("r1") } just Runs
       val vm = readyViewModelWithReminderAndBirthday()
       vm.onItemLongClick("r1")
+      vm.onArchiveSelectedClick()
+      val batchKey = lastBatchKey(vm)
 
-      vm.archiveSelectedReminders(setOf("r1"))
+      vm.commitPendingAction(batchKey)
+      vm.commitPendingAction(batchKey)
 
       coVerify(exactly = 1) { moveReminderToArchiveUseCase("r1") }
-      assertEquals(0, vm.agendaScreenState.first().selectedCount)
     }
+
+  @Test
+  fun `delete menu action on a reminder hides it immediately and posts undo without deleting yet`() =
+    runTest {
+      every { textProvider.getText(R.string.reminder_deleted) } returns "Reminder deleted"
+      val vm = readyViewModelWithReminderAndBirthday()
+
+      vm.onAgendaMenuAction(fakeReminderItem("r1"), AgendaMenuAction.DELETE)
+
+      val items = (vm.agendaScreenState.first().listState as ListState.Ready).items
+      assertEquals(listOf("b1"), items.map { it.id })
+      assertEquals(
+        AgendaViewModel.NavigationEvent.ShowUndoAction(batchKey = "r1", message = "Reminder deleted"),
+        vm.navigationEvent.value?.peekContent(),
+      )
+      coVerify(exactly = 0) { deleteReminderUseCase(any()) }
+    }
+
+  @Test
+  fun `undoPendingAction after reminder delete restores it and double undo is a no-op`() =
+    runTest {
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onAgendaMenuAction(fakeReminderItem("r1"), AgendaMenuAction.DELETE)
+
+      vm.undoPendingAction("r1")
+      vm.undoPendingAction("r1")
+
+      val items = (vm.agendaScreenState.first().listState as ListState.Ready).items
+      assertEquals(setOf("r1", "b1"), items.map { it.id }.toSet())
+      coVerify(exactly = 0) { deleteReminderUseCase(any()) }
+    }
+
+  @Test
+  fun `commitPendingAction after reminder delete runs the use case once and ignores undo afterwards`() =
+    runTest {
+      val reminder = reminderV2(id = "r1")
+      coEvery { reminderV2Repository.getById("r1") } returns reminder
+      coEvery { deleteReminderUseCase(reminder) } just Runs
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onAgendaMenuAction(fakeReminderItem("r1"), AgendaMenuAction.DELETE)
+
+      vm.commitPendingAction("r1")
+      vm.commitPendingAction("r1")
+      vm.undoPendingAction("r1")
+
+      coVerify(exactly = 1) { deleteReminderUseCase(reminder) }
+    }
+
+  @Test
+  fun `archive menu action on a reminder hides it and archives only after commit`() =
+    runTest {
+      every { textProvider.getText(R.string.reminder_archived) } returns "Reminder archived"
+      coEvery { moveReminderToArchiveUseCase("r1") } just Runs
+      val vm = readyViewModelWithReminderAndBirthday()
+
+      vm.onAgendaMenuAction(fakeReminderItem("r1"), AgendaMenuAction.ARCHIVE)
+
+      assertEquals(listOf("b1"), (vm.agendaScreenState.first().listState as ListState.Ready).items.map { it.id })
+      assertEquals(
+        AgendaViewModel.NavigationEvent.ShowUndoAction(batchKey = "r1", message = "Reminder archived"),
+        vm.navigationEvent.value?.peekContent(),
+      )
+      coVerify(exactly = 0) { moveReminderToArchiveUseCase(any()) }
+
+      vm.commitPendingAction("r1")
+
+      coVerify(exactly = 1) { moveReminderToArchiveUseCase("r1") }
+    }
+
+  @Test
+  fun `delete menu action on a birthday defers the use case and undo skips it`() =
+    runTest {
+      every { textProvider.getText(R.string.birthday_deleted) } returns "Birthday deleted"
+      coEvery { deleteBirthdayUseCase("b1") } just Runs
+      val vm = readyViewModelWithReminderAndBirthday()
+
+      vm.onAgendaMenuAction(fakeBirthdayItem("b1"), AgendaMenuAction.DELETE)
+
+      assertEquals(listOf("r1"), (vm.agendaScreenState.first().listState as ListState.Ready).items.map { it.id })
+      coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
+
+      vm.undoPendingAction("b1")
+      vm.commitPendingAction("b1")
+
+      assertEquals(
+        setOf("r1", "b1"),
+        (vm.agendaScreenState.first().listState as ListState.Ready).items.map { it.id }.toSet(),
+      )
+      coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
+    }
+
+  @Test
+  fun `commitPendingAction after birthday delete runs the use case once`() =
+    runTest {
+      coEvery { deleteBirthdayUseCase("b1") } just Runs
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onAgendaMenuAction(fakeBirthdayItem("b1"), AgendaMenuAction.DELETE)
+
+      vm.commitPendingAction("b1")
+      vm.commitPendingAction("b1")
+
+      coVerify(exactly = 1) { deleteBirthdayUseCase("b1") }
+    }
+
+  private suspend fun selectReminderAndBirthday(vm: AgendaViewModel) {
+    vm.onItemLongClick("r1")
+    val birthdayItem = (vm.agendaScreenState.first().listState as ListState.Ready)
+      .items.first { it.id == "b1" } as UiAgendaBirthday
+    vm.onItemClick(birthdayItem)
+  }
+
+  private fun lastBatchKey(vm: AgendaViewModel): String =
+    (vm.navigationEvent.value?.peekContent() as AgendaViewModel.NavigationEvent.ShowUndoAction).batchKey
 
   private fun reminderV2(
     id: String,

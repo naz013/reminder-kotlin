@@ -3,9 +3,11 @@ package com.github.naz013.feature.agenda
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
@@ -15,7 +17,7 @@ import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlace
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberUndoSnackbarDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -77,7 +79,9 @@ private fun AgendaEntry(
 ) {
   val viewModel = koinViewModel<AgendaViewModel>()
   val permissionRequester = rememberPermissionRequesterRationale()
-  val dialogDispatcher = rememberDialogDispatcher()
+  val snackbarHostState = remember { SnackbarHostState() }
+  val undoSnackbarDispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
+  val undoActionLabel = stringResource(R.string.undo)
 
   LaunchedEffect(selectedItemId) { viewModel.onSelectedItemIdChanged(selectedItemId) }
 
@@ -130,52 +134,12 @@ private fun AgendaEntry(
         )
       }
 
-      is AgendaViewModel.NavigationEvent.ConfirmArchiveReminder -> {
-        dialogDispatcher.showDialog(
-          titleRes = R.string.move_to_archive,
-          positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.cancel,
-          onPositive = {
-            viewModel.moveReminderToArchive(event.id)
-          }
-        )
-      }
-
-      is AgendaViewModel.NavigationEvent.ConfirmDeleteReminder -> {
-        dialogDispatcher.showDialog(
-          textRes = R.string.delete_reminder_permanently,
-          positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.cancel,
-          onPositive = {
-            viewModel.deleteReminder(event.id)
-          }
-        )
-      }
-
-      is AgendaViewModel.NavigationEvent.ConfirmDeleteBirthday -> {
-        dialogDispatcher.showDialog(
-          textRes = R.string.delete_birthday_permanently,
-          positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.cancel,
-          onPositive = { viewModel.deleteBirthday(event.id) }
-        )
-      }
-
-      is AgendaViewModel.NavigationEvent.ConfirmDeleteSelected -> {
-        dialogDispatcher.showDialog(
-          text = event.title,
-          positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.cancel,
-          onPositive = { viewModel.deleteSelected(event.reminderIds, event.birthdayIds) },
-        )
-      }
-
-      is AgendaViewModel.NavigationEvent.ConfirmArchiveSelectedReminders -> {
-        dialogDispatcher.showDialog(
-          titleRes = R.string.move_to_archive,
-          positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.cancel,
-          onPositive = { viewModel.archiveSelectedReminders(event.ids) },
+      is AgendaViewModel.NavigationEvent.ShowUndoAction -> {
+        undoSnackbarDispatcher.showUndoSnackbar(
+          message = event.message,
+          actionLabel = undoActionLabel,
+          onUndo = { viewModel.undoPendingAction(event.batchKey) },
+          onTimeout = { viewModel.commitPendingAction(event.batchKey) },
         )
       }
     }
@@ -184,6 +148,7 @@ private fun AgendaEntry(
   val state by viewModel.agendaScreenState.collectAsState(AgendaScreenState())
   AgendaScreen(
     state = state,
+    snackbarHostState = snackbarHostState,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onCategoryToggle = viewModel::onCategoryToggle,

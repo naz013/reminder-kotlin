@@ -1287,4 +1287,7 @@
     <string name="remove_color">Elimină culoarea</string>
     <string name="streak_milestone_reached">Etapă de %1$d zile atinsă!</string>
     <string name="streak_milestone_next">Încă %1$d zile până la etapa de %2$d zile</string>
+    <string name="reminder_archived">Memento mutat în arhivă</string>
+    <string name="reminders_archived_count">%1$d mementouri mutate în arhivă</string>
+    <string name="agenda_items_deleted_count">%1$d elemente șterse</string>
 </resources>

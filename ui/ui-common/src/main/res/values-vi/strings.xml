@@ -1279,4 +1279,7 @@
     <string name="remove_color">Xóa màu</string>
     <string name="streak_milestone_reached">Đã đạt cột mốc %1$d ngày!</string>
     <string name="streak_milestone_next">Còn %1$d ngày nữa đến cột mốc %2$d ngày</string>
+    <string name="reminder_archived">Đã chuyển lời nhắc vào kho lưu trữ</string>
+    <string name="reminders_archived_count">Đã chuyển %1$d lời nhắc vào kho lưu trữ</string>
+    <string name="agenda_items_deleted_count">Đã xóa %1$d mục</string>
 </resources>

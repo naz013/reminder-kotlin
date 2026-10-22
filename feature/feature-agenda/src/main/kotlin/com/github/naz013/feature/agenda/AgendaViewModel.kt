@@ -23,6 +23,7 @@ import com.github.naz013.logic.reminder.AgendaViewMode
 import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.viewmodel.PendingDeleteTracker
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logic.reminder.smartlist.ReminderSmartListPredicate
@@ -54,7 +55,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import java.util.UUID
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 internal class AgendaViewModel(
@@ -79,8 +80,11 @@ internal class AgendaViewModel(
 
   private val _agendaScreenState = MutableStateFlow(AgendaScreenState(viewMode = reminderPreferences.agendaViewMode))
   private val _selectedItemId = MutableStateFlow<String?>(null)
-  val agendaScreenState = combine(_agendaScreenState, _selectedItemId, AgendaScreenState::withSelectedItem)
-    .stateInWhileSubscribed(AgendaScreenState())
+  private val pendingDeleteTracker = PendingDeleteTracker()
+  val agendaScreenState =
+    combine(_agendaScreenState, _selectedItemId, pendingDeleteTracker.pendingIds) { state, selectedItemId, pendingIds ->
+      state.withSelectedItem(selectedItemId).withoutItems(pendingIds)
+    }.stateInWhileSubscribed(AgendaScreenState())
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   /** Whether the initial auto-scroll-to-today has already run this ViewModel instance's
@@ -334,43 +338,46 @@ internal class AgendaViewModel(
     val reminderIds = selectedReminderIds()
     val birthdayIds = selectedBirthdayIds()
     if (reminderIds.isEmpty() && birthdayIds.isEmpty()) return
-    navigationEvent.value = Event(
-      NavigationEvent.ConfirmDeleteSelected(
-        reminderIds = reminderIds,
-        birthdayIds = birthdayIds,
-        title = textProvider.getText(R.string.agenda_delete_selected_permanently, reminderIds.size + birthdayIds.size),
-      ),
-    )
-  }
-
-  fun deleteSelected(
-    reminderIds: Set<String>,
-    birthdayIds: Set<String>,
-  ) {
-    // Clear selection before the deletes run: the reactive list-refresh coroutine can
-    // synchronously empty listState, and updateSelection is a no-op once listState is no
-    // longer Ready - clearing first avoids a stuck selectedCount.
+    // Clear selection before marking pending: markPending's pendingIds update can synchronously
+    // empty listState, and updateSelection is a no-op once listState is no longer Ready.
     onSelectionCancel()
-    viewModelScope.launch(dispatcherProvider.io()) {
-      reminderIds.forEach { id -> reminderV2Repository.getById(id)?.let { deleteReminderUseCase(it) } }
+    val batchKey = UUID.randomUUID().toString()
+    pendingDeleteTracker.markPending(batchKey = batchKey, ids = reminderIds + birthdayIds) {
+      deleteReminders(reminderIds)
       birthdayIds.forEach { deleteBirthdayUseCase(it) }
     }
+    navigationEvent.value = Event(
+      NavigationEvent.ShowUndoAction(batchKey = batchKey, message = bulkDeleteMessage(reminderIds, birthdayIds)),
+    )
   }
 
   fun onArchiveSelectedClick() {
     val ids = selectedReminderIds()
     if (ids.isEmpty()) return
-    navigationEvent.value = Event(NavigationEvent.ConfirmArchiveSelectedReminders(ids))
+    onSelectionCancel()
+    val batchKey = UUID.randomUUID().toString()
+    pendingDeleteTracker.markPending(batchKey = batchKey, ids = ids) {
+      ids.forEach { moveReminderToArchiveUseCase(it) }
+    }
+    navigationEvent.value = Event(
+      NavigationEvent.ShowUndoAction(
+        batchKey = batchKey,
+        message = textProvider.getText(R.string.reminders_archived_count, ids.size),
+      ),
+    )
   }
 
-  fun archiveSelectedReminders(ids: Set<String>) {
-    viewModelScope.launch(dispatcherProvider.io()) {
-      ids.forEach { moveReminderToArchiveUseCase(it) }
+  private fun bulkDeleteMessage(
+    reminderIds: Set<String>,
+    birthdayIds: Set<String>,
+  ): String = when {
+    birthdayIds.isEmpty() -> textProvider.getText(R.string.reminders_deleted_count, reminderIds.size)
+    reminderIds.isEmpty() -> textProvider.getText(R.string.birthdays_deleted_count, birthdayIds.size)
+    else -> textProvider.getText(R.string.agenda_items_deleted_count, reminderIds.size + birthdayIds.size)
+  }
 
-      withContext(dispatcherProvider.main()) {
-        onSelectionCancel()
-      }
-    }
+  private suspend fun deleteReminders(ids: Set<String>) {
+    ids.forEach { id -> reminderV2Repository.getById(id)?.let { deleteReminderUseCase(it) } }
   }
 
   private fun onToggleReminder(item: UiAgendaReminder) {
@@ -407,11 +414,11 @@ internal class AgendaViewModel(
     when (action) {
       AgendaMenuAction.OPEN -> navigationEvent.value = Event(NavigationEvent.OpenReminderPreview(item.id))
       AgendaMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenReminderEdit(item.id))
-      AgendaMenuAction.ARCHIVE -> navigationEvent.value = Event(NavigationEvent.ConfirmArchiveReminder(item.id))
+      AgendaMenuAction.ARCHIVE -> moveReminderToArchive(item.id)
       AgendaMenuAction.SKIP -> skipReminder(item.id)
       AgendaMenuAction.TURN_OFF -> onToggleReminder(item)
       AgendaMenuAction.PIN, AgendaMenuAction.UNPIN -> togglePinned(item.id)
-      AgendaMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDeleteReminder(item.id))
+      AgendaMenuAction.DELETE -> deleteReminder(item.id)
     }
   }
 
@@ -422,7 +429,7 @@ internal class AgendaViewModel(
     when (action) {
       AgendaMenuAction.OPEN -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayPreview(item.id))
       AgendaMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenBirthdayEdit(item.id))
-      AgendaMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDeleteBirthday(item.id))
+      AgendaMenuAction.DELETE -> deleteBirthday(item.id)
       AgendaMenuAction.ARCHIVE, AgendaMenuAction.SKIP, AgendaMenuAction.TURN_OFF,
       AgendaMenuAction.PIN, AgendaMenuAction.UNPIN,
       -> Unit
@@ -445,24 +452,40 @@ internal class AgendaViewModel(
     }
   }
 
-  fun moveReminderToArchive(id: String) {
-    viewModelScope.launch(dispatcherProvider.io()) {
+  private fun moveReminderToArchive(id: String) {
+    pendingDeleteTracker.markPending(batchKey = id, ids = setOf(id)) {
       moveReminderToArchiveUseCase(id)
     }
+    navigationEvent.value = Event(
+      NavigationEvent.ShowUndoAction(batchKey = id, message = textProvider.getText(R.string.reminder_archived)),
+    )
   }
 
-  fun deleteReminder(id: String) {
-    viewModelScope.launch(dispatcherProvider.io()) {
-      val fromDb = reminderV2Repository.getById(id)
-      if (fromDb != null) {
-        deleteReminderUseCase(fromDb)
-      }
+  private fun deleteReminder(id: String) {
+    pendingDeleteTracker.markPending(batchKey = id, ids = setOf(id)) {
+      deleteReminders(setOf(id))
     }
+    navigationEvent.value = Event(
+      NavigationEvent.ShowUndoAction(batchKey = id, message = textProvider.getText(R.string.reminder_deleted)),
+    )
   }
 
-  fun deleteBirthday(id: String) {
-    viewModelScope.launch(dispatcherProvider.default()) {
+  private fun deleteBirthday(id: String) {
+    pendingDeleteTracker.markPending(batchKey = id, ids = setOf(id)) {
       deleteBirthdayUseCase(id)
+    }
+    navigationEvent.value = Event(
+      NavigationEvent.ShowUndoAction(batchKey = id, message = textProvider.getText(R.string.birthday_deleted)),
+    )
+  }
+
+  fun undoPendingAction(batchKey: String) {
+    pendingDeleteTracker.undo(batchKey)
+  }
+
+  fun commitPendingAction(batchKey: String) {
+    viewModelScope.launch(dispatcherProvider.io()) {
+      pendingDeleteTracker.commit(batchKey)
     }
   }
 
@@ -537,26 +560,9 @@ internal class AgendaViewModel(
       val id: String,
     ) : NavigationEvent
 
-    data class ConfirmArchiveReminder(
-      val id: String,
-    ) : NavigationEvent
-
-    data class ConfirmDeleteReminder(
-      val id: String,
-    ) : NavigationEvent
-
-    data class ConfirmDeleteBirthday(
-      val id: String,
-    ) : NavigationEvent
-
-    data class ConfirmDeleteSelected(
-      val reminderIds: Set<String>,
-      val birthdayIds: Set<String>,
-      val title: String,
-    ) : NavigationEvent
-
-    data class ConfirmArchiveSelectedReminders(
-      val ids: Set<String>,
+    data class ShowUndoAction(
+      val batchKey: String,
+      val message: String,
     ) : NavigationEvent
   }
 

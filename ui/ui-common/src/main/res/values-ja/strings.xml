@@ -1277,4 +1277,7 @@
     <string name="remove_color">色を削除</string>
     <string name="streak_milestone_reached">%1$d日のマイルストーンを達成しました！</string>
     <string name="streak_milestone_next">%2$d日のマイルストーンまであと%1$d日</string>
+    <string name="reminder_archived">リマインダーをアーカイブに移動しました</string>
+    <string name="reminders_archived_count">%1$d 件のリマインダーをアーカイブに移動しました</string>
+    <string name="agenda_items_deleted_count">%1$d 件の項目を削除しました</string>
 </resources>

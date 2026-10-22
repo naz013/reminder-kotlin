@@ -1290,4 +1290,7 @@
     <string name="remove_color">Прибрати колір</string>
     <string name="streak_milestone_reached">Досягнуто віху в %1$d дн.!</string>
     <string name="streak_milestone_next">Ще %1$d дн. до віхи в %2$d дн.</string>
+    <string name="reminder_archived">Нагадування переміщено до архіву</string>
+    <string name="reminders_archived_count">Нагадувань переміщено до архіву: %1$d</string>
+    <string name="agenda_items_deleted_count">Видалено елементів: %1$d</string>
 </resources>

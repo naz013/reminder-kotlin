@@ -1282,4 +1282,7 @@
     <string name="remove_color">Kleur verwijderen</string>
     <string name="streak_milestone_reached">Mijlpaal van %1$d dagen bereikt!</string>
     <string name="streak_milestone_next">Nog %1$d dagen tot de mijlpaal van %2$d dagen</string>
+    <string name="reminder_archived">Herinnering naar archief verplaatst</string>
+    <string name="reminders_archived_count">%1$d herinneringen naar archief verplaatst</string>
+    <string name="agenda_items_deleted_count">%1$d items verwijderd</string>
 </resources>

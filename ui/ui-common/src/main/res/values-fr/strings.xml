@@ -1287,4 +1287,7 @@
     <string name="remove_color">Supprimer la couleur</string>
     <string name="streak_milestone_reached">Étape de %1$d jours atteinte !</string>
     <string name="streak_milestone_next">Encore %1$d jours avant l\'étape de %2$d jours</string>
+    <string name="reminder_archived">Rappel déplacé vers les archives</string>
+    <string name="reminders_archived_count">%1$d rappels déplacés vers les archives</string>
+    <string name="agenda_items_deleted_count">%1$d éléments supprimés</string>
 </resources>
