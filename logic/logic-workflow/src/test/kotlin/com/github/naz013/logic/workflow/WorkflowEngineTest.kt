@@ -1243,6 +1243,7 @@ private class FakeReminderV2Repository(
   override suspend fun countActiveByGroupId(groupId: String): Int =
     reminders.values.count { it.groupId == groupId && it.isActive && !it.isRemoved }
   override suspend fun getByNoteId(noteId: String): List<ReminderV2> = emptyList()
+  override suspend fun getByStartAfterReminderId(predecessorId: String): List<ReminderV2> = emptyList()
   override suspend fun search(query: String): List<ReminderV2> = emptyList()
   override suspend fun delete(id: String) {
     reminders.remove(id)
