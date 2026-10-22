@@ -23,7 +23,8 @@ import java.util.UUID
     Index(value = ["recurrenceType"]),
     Index(value = ["groupId"]),
     Index(value = ["noteId"]),
-    Index(value = ["syncState"])
+    Index(value = ["syncState"]),
+    Index(value = ["startAfterReminderId"])
   ]
 )
 @TypeConverters(
@@ -82,7 +83,9 @@ internal data class ReminderV2Entity(
   val isCritical: Boolean = false,
 
   val iconIndex: Int? = null,
-  val colorIndex: Int? = null
+  val colorIndex: Int? = null,
+
+  val startAfterReminderId: String? = null
 )
 
 data class ReminderScheduleColumns(

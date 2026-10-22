@@ -289,6 +289,37 @@ class ReminderV2MapperTest {
     assertNull(roundTripped.colorIndex)
   }
 
+  @Test
+  fun `toEntity then toDomain round trips the start after reminder link`() {
+    val reminder = ReminderV2(
+      uuId = "id-waiting",
+      summary = "Second step",
+      recurrence = RecurrenceRule.Once,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 22, 9, 0)),
+      action = ReminderAction.None,
+      isActive = false,
+      startAfterReminderId = "id-first"
+    )
+
+    val roundTripped = reminder.toEntity().toDomain()
+
+    assertEquals(reminder, roundTripped)
+    assertEquals("id-first", roundTripped.startAfterReminderId)
+  }
+
+  @Test
+  fun `toEntity then toDomain keeps start after reminder link null when not chained`() {
+    val reminder = ReminderV2(
+      uuId = "id-plain",
+      summary = "Plain",
+      recurrence = RecurrenceRule.Once,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 22, 9, 0)),
+      action = ReminderAction.None
+    )
+
+    assertNull(reminder.toEntity().toDomain().startAfterReminderId)
+  }
+
   private fun legacyEntity(recurrenceType: String, recurrencePayload: String) = ReminderV2Entity(
     uuId = "id-legacy",
     recurrenceType = recurrenceType,

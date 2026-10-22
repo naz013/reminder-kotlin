@@ -73,6 +73,9 @@ internal interface ReminderV2Dao {
   @Query("UPDATE ReminderV2 SET groupId = NULL WHERE groupId=:groupId")
   fun clearGroupId(groupId: String)
 
+  @Query("SELECT * FROM ReminderV2 WHERE startAfterReminderId=:predecessorId")
+  fun getByStartAfterReminderId(predecessorId: String): List<ReminderV2Entity>
+
   @Query("SELECT * FROM ReminderV2 WHERE noteId=:noteId")
   fun getByNoteId(noteId: String): List<ReminderV2Entity>
 

@@ -45,7 +45,10 @@ data class ReminderV2(
   val iconIndex: Int? = null,
   /** Index into the shared routine color palette used to tag this reminder in lists; null = no
    * color. Unrelated to [NotificationSettings.color]. */
-  val colorIndex: Int? = null
+  val colorIndex: Int? = null,
+  /** Id of the reminder this one waits for. While set, this reminder is saved inactive; completing,
+   * deleting or archiving the predecessor activates it and clears the link. */
+  val startAfterReminderId: String? = null
 ) {
 
   fun isLimited(): Boolean = recurrence.repeatLimitOrDefault() > 0

@@ -102,6 +102,11 @@ internal class ReminderV2RepositoryImpl(
     tableChangeNotifier.notify(table)
   }
 
+  override suspend fun getByStartAfterReminderId(predecessorId: String): List<ReminderV2> {
+    Logger.d(TAG, "Get reminders waiting for: $predecessorId")
+    return dao.getByStartAfterReminderId(predecessorId).map { it.toDomain() }
+  }
+
   override suspend fun getByNoteId(noteId: String): List<ReminderV2> {
     Logger.d(TAG, "Get reminders by note id: $noteId")
     return dao.getByNoteId(noteId).map { it.toDomain() }

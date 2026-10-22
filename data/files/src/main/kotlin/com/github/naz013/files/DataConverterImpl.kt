@@ -535,7 +535,8 @@ private fun ReminderV2Json.toDomain(): ReminderV2 = ReminderV2(
   offlineOnly = offlineOnly,
   isCritical = isCritical,
   iconIndex = iconIndex,
-  colorIndex = colorIndex
+  colorIndex = colorIndex,
+  startAfterReminderId = startAfterReminderId
 )
 
 private fun NotificationSettingsOverrideJson.toDomain(): NotificationSettingsOverride =
@@ -764,7 +765,8 @@ private fun ReminderV2.toJson(): ReminderV2Json {
     offlineOnly = offlineOnly,
     isCritical = isCritical,
     iconIndex = iconIndex,
-    colorIndex = colorIndex
+    colorIndex = colorIndex,
+    startAfterReminderId = startAfterReminderId
   )
 }
 

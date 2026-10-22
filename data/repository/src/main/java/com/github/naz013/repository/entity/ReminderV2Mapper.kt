@@ -58,7 +58,8 @@ internal fun ReminderV2.toEntity(): ReminderV2Entity {
     offlineOnly = offlineOnly,
     isCritical = isCritical,
     iconIndex = iconIndex,
-    colorIndex = colorIndex
+    colorIndex = colorIndex,
+    startAfterReminderId = startAfterReminderId
   )
 }
 
@@ -91,7 +92,8 @@ internal fun ReminderV2Entity.toDomain(): ReminderV2 {
     offlineOnly = offlineOnly,
     isCritical = isCritical,
     iconIndex = iconIndex,
-    colorIndex = colorIndex
+    colorIndex = colorIndex,
+    startAfterReminderId = startAfterReminderId
   )
 }
 
