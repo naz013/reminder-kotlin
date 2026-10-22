@@ -10,6 +10,7 @@ import com.github.naz013.repository.impl.GoogleTaskRepositoryImpl
 import com.github.naz013.repository.impl.GroupV2RepositoryImpl
 import com.github.naz013.repository.impl.HabitCheckInRepositoryImpl
 import com.github.naz013.repository.impl.HabitRepositoryImpl
+import com.github.naz013.repository.impl.NoteVersionRepositoryImpl
 import com.github.naz013.repository.impl.HolidayRepositoryImpl
 import com.github.naz013.repository.impl.NoteRepositoryImpl
 import com.github.naz013.repository.impl.PlaceRepositoryImpl
@@ -111,5 +112,8 @@ val repositoryModule = module {
   }
   factory {
     HabitCheckInRepositoryImpl(get<AppDb>().habitCheckInDao(), get()) as HabitCheckInRepository
+  }
+  factory {
+    NoteVersionRepositoryImpl(get<AppDb>().noteVersionDao()) as NoteVersionRepository
   }
 }

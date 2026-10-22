@@ -15,6 +15,7 @@ import com.github.naz013.repository.dao.GroupV2Dao
 import com.github.naz013.repository.dao.HabitCheckInDao
 import com.github.naz013.repository.dao.HabitDao
 import com.github.naz013.repository.dao.HolidayDao
+import com.github.naz013.repository.dao.NoteVersionDao
 import com.github.naz013.repository.dao.NotesDao
 import com.github.naz013.repository.dao.PlacesDao
 import com.github.naz013.repository.dao.PomodoroSessionDao
@@ -44,6 +45,7 @@ import com.github.naz013.repository.entity.HabitEntity
 import com.github.naz013.repository.entity.HolidayEntity
 import com.github.naz013.repository.entity.ImageFileEntity
 import com.github.naz013.repository.entity.NoteEntity
+import com.github.naz013.repository.entity.NoteVersionEntity
 import com.github.naz013.repository.entity.PlaceEntity
 import com.github.naz013.repository.entity.PomodoroSessionEntity
 import com.github.naz013.repository.entity.RecentQueryEntity
@@ -97,6 +99,7 @@ import com.github.naz013.repository.migrations.MIGRATION_41_42
 import com.github.naz013.repository.migrations.MIGRATION_42_43
 import com.github.naz013.repository.migrations.MIGRATION_43_44
 import com.github.naz013.repository.migrations.MIGRATION_44_45
+import com.github.naz013.repository.migrations.MIGRATION_45_46
 import com.github.naz013.repository.migrations.MIGRATION_4_5
 import com.github.naz013.repository.migrations.MIGRATION_5_6
 import com.github.naz013.repository.migrations.MIGRATION_6_7
@@ -133,9 +136,10 @@ import com.github.naz013.repository.migrations.MIGRATION_9_10
     GoogleCalendarEventEntity::class,
     PomodoroSessionEntity::class,
     HabitEntity::class,
-    HabitCheckInEntity::class
+    HabitCheckInEntity::class,
+    NoteVersionEntity::class
   ],
-  version = 45,
+  version = 46,
   exportSchema = false
 )
 @Suppress("TooManyFunctions") // one DAO accessor per entity - inherent to this class, not a smell
@@ -168,6 +172,7 @@ internal abstract class AppDb : RoomDatabase() {
   abstract fun pomodoroSessionDao(): PomodoroSessionDao
   abstract fun habitDao(): HabitDao
   abstract fun habitCheckInDao(): HabitCheckInDao
+  abstract fun noteVersionDao(): NoteVersionDao
 
   companion object {
 
@@ -221,7 +226,8 @@ internal abstract class AppDb : RoomDatabase() {
             MIGRATION_41_42,
             MIGRATION_42_43,
             MIGRATION_43_44,
-            MIGRATION_44_45
+            MIGRATION_44_45,
+            MIGRATION_45_46
           )
           .allowMainThreadQueries()
           .build()

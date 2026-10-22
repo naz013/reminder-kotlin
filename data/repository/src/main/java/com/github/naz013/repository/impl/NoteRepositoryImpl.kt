@@ -98,6 +98,7 @@ internal class NoteRepositoryImpl(
   override suspend fun delete(id: String) {
     Logger.d(TAG, "Delete note by id: $id")
     dao.delete(id)
+    dao.deleteVersionsForNote(id)
     tableChangeNotifier.notify(Table.Note)
   }
 
@@ -116,6 +117,7 @@ internal class NoteRepositoryImpl(
   override suspend fun deleteAllNotes() {
     Logger.d(TAG, "Delete all notes")
     dao.deleteAllNotes()
+    dao.deleteAllVersions()
     tableChangeNotifier.notify(Table.Note)
   }
 

@@ -10,6 +10,7 @@ import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.RoutineExecutionRepository
 import com.github.naz013.repository.HabitCheckInRepository
 import com.github.naz013.repository.HabitRepository
+import com.github.naz013.repository.NoteVersionRepository
 import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
@@ -21,6 +22,7 @@ import com.github.naz013.repository.impl.ReminderV2RepositoryImpl
 import com.github.naz013.repository.impl.RoutineExecutionRepositoryImpl
 import com.github.naz013.repository.impl.HabitCheckInRepositoryImpl
 import com.github.naz013.repository.impl.HabitRepositoryImpl
+import com.github.naz013.repository.impl.NoteVersionRepositoryImpl
 import com.github.naz013.repository.impl.RoutineRepositoryImpl
 import com.github.naz013.repository.impl.TagAssignmentRepositoryImpl
 import com.github.naz013.repository.impl.TagRepositoryImpl
@@ -78,6 +80,9 @@ fun testRepositoryModule(context: Context): Module = module {
   }
   factory<HabitCheckInRepository> {
     HabitCheckInRepositoryImpl(get<AppDb>().habitCheckInDao(), get())
+  }
+  factory<NoteVersionRepository> {
+    NoteVersionRepositoryImpl(get<AppDb>().noteVersionDao())
   }
   factory<RoutineExecutionRepository> {
     RoutineExecutionRepositoryImpl(get<AppDb>().routineExecutionDao(), get())
