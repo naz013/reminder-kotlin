@@ -270,6 +270,13 @@ Don't assume every `feature-*` module owns a full vertical slice — check wheth
 6. **Tests.** Unit tests under `src/test/kotlin`, JUnit4 + MockK, following the existing
    `*ViewModelTest.kt` naming next to the class under test.
 
+### Chained reminders
+
+`ReminderV2.startAfterReminderId` makes a reminder wait for another one. The shared logic lives in
+`logic:logic-reminder` (`ActivateChainedRemindersUseCase`, `ResolveChainedStartUseCase`,
+`ReminderChainValidator`) and is called by every complete, delete and archive path, including
+`extensions:appfunctions`. See [chained-reminders.md](chained-reminders.md).
+
 ---
 
 ## Dependency Injection (Koin)

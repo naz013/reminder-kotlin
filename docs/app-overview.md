@@ -37,6 +37,8 @@ Remote Config.
 - **Actions:** call, SMS, open a URL or app, send e-mail, or show a shopping sub-task list.
 - **Organization:** groups, priority, tags, a reminder icon and color shown in lists and the calendar, and
   Smart Lists on the home list (Today, Overdue, This week, No group).
+- **Chained reminders:** start a reminder only after another one is completed; it waits inactive and starts
+  automatically (or when the predecessor is deleted or archived). See [chained-reminders.md](chained-reminders.md).
 - **Quick add:** type a phrase and the on-device parser (`logic-quickadd`) builds the reminder.
 - **Notification customization:** every notification parameter (sound, vibration, priority, category, DND bypass,
   wake screen, lock-screen visibility, repeat) resolves Reminder, then Group, then global default. An opt-in
