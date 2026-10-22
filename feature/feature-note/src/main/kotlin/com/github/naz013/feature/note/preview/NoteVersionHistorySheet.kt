@@ -36,6 +36,7 @@ internal fun NoteVersionHistorySheet(
   onVersionClick: (Long) -> Unit,
   onBackToListClick: () -> Unit,
   onRestoreClick: () -> Unit,
+  onCompareClick: () -> Unit,
 ) {
   AppModalBottomSheet(onDismissRequest = onDismissRequest, modifier = modifier) {
     val selected = state.selectedVersion
@@ -50,6 +51,7 @@ internal fun NoteVersionHistorySheet(
         version = selected,
         onBackToListClick = onBackToListClick,
         onRestoreClick = onRestoreClick,
+        onCompareClick = onCompareClick,
       )
 
       state.versions.isEmpty() -> Text(
@@ -101,6 +103,7 @@ private fun NoteVersionDetail(
   version: UiNoteVersion,
   onBackToListClick: () -> Unit,
   onRestoreClick: () -> Unit,
+  onCompareClick: () -> Unit,
 ) {
   Column(modifier = modifier.fillMaxWidth()) {
     Text(
@@ -119,6 +122,9 @@ private fun NoteVersionDetail(
     ) {
       TextButton(onClick = onBackToListClick) {
         Text(text = stringResource(R.string.cd_back))
+      }
+      TextButton(onClick = onCompareClick) {
+        Text(text = stringResource(R.string.note_version_compare))
       }
       Button(onClick = onRestoreClick) {
         Text(text = stringResource(R.string.note_version_restore))

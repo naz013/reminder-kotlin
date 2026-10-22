@@ -202,6 +202,7 @@ internal fun PreviewNoteScreen(
       onVersionClick = actions.onVersionClick,
       onBackToListClick = actions.onVersionBackClick,
       onRestoreClick = actions.onVersionRestoreClick,
+      onCompareClick = actions.onVersionCompareClick,
     )
   }
 }

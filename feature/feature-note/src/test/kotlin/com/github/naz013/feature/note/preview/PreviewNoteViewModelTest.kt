@@ -578,6 +578,35 @@ class PreviewNoteViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `onVersionCompareClick closes history and opens the compare screen for the selected version`() =
+    runTest {
+      coEvery { noteVersionRepository.getByNoteKey(key) } returns listOf(version(1, "Old"))
+      every { dateTimeManager.getFullDateTime(any<Long>()) } returns "when"
+      val viewModel = createViewModel()
+      val latest = collectLatest(viewModel)
+      viewModel.onHistoryClick()
+      viewModel.onVersionClick(1L)
+
+      viewModel.onVersionCompareClick()
+
+      assertNull(latest().history)
+      assertEquals(
+        PreviewNoteViewModel.ViewModelEvent.OpenVersionCompare(noteKey = key, versionId = 1L),
+        viewModel.event.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `onVersionCompareClick does nothing when no version is selected`() =
+    runTest {
+      val viewModel = createViewModel()
+
+      viewModel.onVersionCompareClick()
+
+      assertNull(viewModel.event.value)
+    }
+
+  @Test
   fun `onVersionRestoreClick does nothing when no version is selected`() =
     runTest {
       val viewModel = createViewModel()

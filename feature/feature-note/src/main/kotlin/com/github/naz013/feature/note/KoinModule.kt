@@ -1,5 +1,6 @@
 package com.github.naz013.feature.note
 
+import com.github.naz013.feature.note.compare.CompareNoteVersionViewModel
 import com.github.naz013.feature.note.create.ImageLoader
 import com.github.naz013.feature.note.create.NoteEditViewModel
 import com.github.naz013.feature.note.create.drop.DroppedContentParser
@@ -109,6 +110,9 @@ val featureNoteModule = module {
       get(),
       get(),
     )
+  }
+  viewModel { (noteKey: String, versionId: Long) ->
+    CompareNoteVersionViewModel(noteKey, versionId, get(), get(), get(), get(), get(), get())
   }
   viewModel { (id: String) ->
     PreviewNoteViewModel(

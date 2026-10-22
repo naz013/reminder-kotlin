@@ -21,4 +21,5 @@ internal data class PreviewNoteActions(
   val onVersionClick: (Long) -> Unit = {},
   val onVersionBackClick: () -> Unit = {},
   val onVersionRestoreClick: () -> Unit = {},
+  val onVersionCompareClick: () -> Unit = {},
 )

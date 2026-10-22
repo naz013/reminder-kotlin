@@ -249,6 +249,12 @@ internal class PreviewNoteViewModel(
     }
   }
 
+  fun onVersionCompareClick() {
+    val versionId = _state.value.history?.selectedVersion?.id ?: return
+    _state.update { it.copy(history = null) }
+    event.emit(ViewModelEvent.OpenVersionCompare(noteKey = key, versionId = versionId))
+  }
+
   fun onVersionRestoreClick() {
     val versionId = _state.value.history?.selectedVersion?.id ?: return
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -293,6 +299,11 @@ internal class PreviewNoteViewModel(
 
     data class Message(
       val message: String,
+    ) : ViewModelEvent
+
+    data class OpenVersionCompare(
+      val noteKey: String,
+      val versionId: Long,
     ) : ViewModelEvent
 
     data object MoveBack : ViewModelEvent

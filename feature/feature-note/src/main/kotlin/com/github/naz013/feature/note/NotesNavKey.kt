@@ -24,6 +24,12 @@ sealed interface NotesNavKey : NavKey {
   ) : NotesNavKey
 
   @Serializable
+  data class CompareVersion(
+    val noteKey: String,
+    val versionId: Long,
+  ) : NotesNavKey
+
+  @Serializable
   data class ImagePreview(
     val position: Int,
   ) : NotesNavKey

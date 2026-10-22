@@ -19,6 +19,8 @@ import com.github.naz013.common.speech.SpeechEngine
 import com.github.naz013.common.speech.SpeechEngineCallback
 import com.github.naz013.common.speech.SpeechError
 import com.github.naz013.common.speech.SpeechText
+import com.github.naz013.feature.note.compare.CompareNoteVersionScreen
+import com.github.naz013.feature.note.compare.CompareNoteVersionViewModel
 import com.github.naz013.feature.note.create.EditTab
 import com.github.naz013.feature.note.create.NoteEditActions
 import com.github.naz013.feature.note.create.NoteEditScreen
@@ -64,6 +66,7 @@ fun EntryProviderScope<NavKey>.notesEntries(
   entry<NotesNavKey.Preview> { key -> NotePreviewEntry(key, backStack, applicationId, onEditReminder, adsContent) }
   entry<NotesNavKey.Edit> { key -> NoteEditEntry(key, backStack, applicationId) }
   entry<NotesNavKey.ImagePreview> { key -> NoteImagePreviewEntry(key, backStack) }
+  entry<NotesNavKey.CompareVersion> { key -> NoteCompareVersionEntry(key, backStack) }
 }
 
 /** Bundles [NotesListEntry]/[NotesArchiveEntry]'s shared navigation-event handler dependencies,
@@ -316,6 +319,10 @@ private fun NotePreviewEntry(
         toastDispatcher.showToast(message = event.message)
       }
 
+      is PreviewNoteViewModel.ViewModelEvent.OpenVersionCompare -> {
+        backStack.add(NotesNavKey.CompareVersion(event.noteKey, event.versionId))
+      }
+
       is PreviewNoteViewModel.ViewModelEvent.MoveBack -> {
         if (backStack.size > 1) backStack.removeLastOrNull()
       }
@@ -356,6 +363,7 @@ private fun NotePreviewEntry(
       onVersionClick = viewModel::onVersionClick,
       onVersionBackClick = viewModel::onVersionBackClick,
       onVersionRestoreClick = viewModel::onVersionRestoreClick,
+      onVersionCompareClick = viewModel::onVersionCompareClick,
     ),
     adsBanner = adsContent,
   )
@@ -521,6 +529,35 @@ private fun NoteEditEntry(
       onApplySolidColor = viewModel::onApplySolidColor,
       onApplyGradient = viewModel::onApplyGradient,
     ),
+  )
+}
+
+@Composable
+private fun NoteCompareVersionEntry(
+  key: NotesNavKey.CompareVersion,
+  backStack: MutableList<NavKey>,
+) {
+  val viewModel = koinViewModel<CompareNoteVersionViewModel> { parametersOf(key.noteKey, key.versionId) }
+  val toastDispatcher = rememberToastDispatcher()
+
+  viewModel.event.ObserveEvent { event ->
+    when (event) {
+      is CompareNoteVersionViewModel.ViewModelEvent.Message -> {
+        toastDispatcher.showToast(message = event.message)
+      }
+
+      is CompareNoteVersionViewModel.ViewModelEvent.Restored -> {
+        toastDispatcher.showToast(message = event.message)
+        if (backStack.size > 1) backStack.removeLastOrNull()
+      }
+    }
+  }
+
+  val state by viewModel.state.collectAsState()
+  CompareNoteVersionScreen(
+    state = state,
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+    onRestoreClick = viewModel::onRestoreClick,
   )
 }
 
