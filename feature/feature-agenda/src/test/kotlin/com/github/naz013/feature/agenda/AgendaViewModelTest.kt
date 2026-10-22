@@ -749,6 +749,61 @@ class AgendaViewModelTest : BaseTest() {
       coVerify(exactly = 1) { deleteBirthdayUseCase("b1") }
     }
 
+  @Test
+  fun `bulk delete of reminders only uses the reminders deleted message`() =
+    runTest {
+      every { textProvider.getText(R.string.reminders_deleted_count, 1) } returns "1 reminders deleted"
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onItemLongClick("r1")
+
+      vm.onDeleteSelectedClick()
+
+      val event = vm.navigationEvent.value?.peekContent() as AgendaViewModel.NavigationEvent.ShowUndoAction
+      assertEquals("1 reminders deleted", event.message)
+    }
+
+  @Test
+  fun `bulk delete of birthdays only uses the birthdays deleted message`() =
+    runTest {
+      every { textProvider.getText(R.string.birthdays_deleted_count, 1) } returns "1 birthdays deleted"
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onItemLongClick("b1")
+
+      vm.onDeleteSelectedClick()
+
+      val event = vm.navigationEvent.value?.peekContent() as AgendaViewModel.NavigationEvent.ShowUndoAction
+      assertEquals("1 birthdays deleted", event.message)
+    }
+
+  @Test
+  fun `undoPendingAction after bulk archive restores the reminder and never archives it`() =
+    runTest {
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onItemLongClick("r1")
+      vm.onArchiveSelectedClick()
+
+      vm.undoPendingAction(lastBatchKey(vm))
+
+      val items = (vm.agendaScreenState.first().listState as ListState.Ready).items
+      assertEquals(setOf("r1", "b1"), items.map { it.id }.toSet())
+      coVerify(exactly = 0) { moveReminderToArchiveUseCase(any()) }
+    }
+
+  @Test
+  fun `undoPendingAction after reminder archive restores it and never archives it`() =
+    runTest {
+      every { textProvider.getText(R.string.reminder_archived) } returns "Reminder archived"
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onAgendaMenuAction(fakeReminderItem("r1"), AgendaMenuAction.ARCHIVE)
+
+      vm.undoPendingAction("r1")
+      vm.commitPendingAction("r1")
+
+      val items = (vm.agendaScreenState.first().listState as ListState.Ready).items
+      assertEquals(setOf("r1", "b1"), items.map { it.id }.toSet())
+      coVerify(exactly = 0) { moveReminderToArchiveUseCase(any()) }
+    }
+
   private suspend fun selectReminderAndBirthday(vm: AgendaViewModel) {
     vm.onItemLongClick("r1")
     val birthdayItem = (vm.agendaScreenState.first().listState as ListState.Ready)
