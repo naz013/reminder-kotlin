@@ -1,275 +1,113 @@
 package com.github.naz013.feature.routine.execution
 
-import android.media.AudioManager
-import android.media.ToneGenerator
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.naz013.domain.routine.Routine
-import com.github.naz013.domain.routine.RoutineStep
-import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
-import com.github.naz013.logging.Logger
+import com.github.naz013.feature.routine.run.RoutineRunEngine
+import com.github.naz013.feature.routine.run.RoutineRunState
+import com.github.naz013.feature.routine.run.routineIdOrNull
 import com.github.naz013.logic.routine.RoutineDurationCalculator
-import com.github.naz013.logic.routine.usecase.RecordRoutineExecutionUseCase
-import com.github.naz013.repository.RoutineRepository
-import com.github.naz013.ui.common.preferences.AppPreferences
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
- * Drives the focus runner: a per-step countdown that survives backgrounding by tracking an
- * absolute wall-clock deadline ([stepDeadlineAtMillis]) rather than decrementing a counter each
- * tick, so the displayed time stays correct even if the process is merely backgrounded for a
- * while (see the design doc's backgrounding note). Auto-advancing when a timed step's countdown
- * reaches zero counts that step as completed - the allotted time ran out and the runner moved on,
- * matching typical habit/Pomodoro-timer UX.
+ * Renders [RoutineRunEngine] state for the focus screen and forwards user actions to it. The run
+ * itself lives in the engine so it survives this screen and the app being backgrounded.
  */
 internal class RoutineExecutionViewModel(
   private val id: String,
-  private val dispatcherProvider: DispatcherProvider,
-  private val routineRepository: RoutineRepository,
-  private val recordRoutineExecutionUseCase: RecordRoutineExecutionUseCase,
+  private val engine: RoutineRunEngine,
   private val routineDurationCalculator: RoutineDurationCalculator,
-  private val appPreferences: AppPreferences,
-  private val currentTimeMillis: () -> Long = System::currentTimeMillis,
 ) : ViewModel() {
 
-  private val _state = MutableStateFlow<RoutineExecutionState>(RoutineExecutionState.Loading)
-  val state = _state.stateInWhileSubscribed(RoutineExecutionState.Loading)
+  val state = engine.state
+    .filter { it !is RoutineRunState.Idle }
+    .map(::toUiState)
+    .stateInWhileSubscribed(RoutineExecutionState.Loading)
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
   val stepTransitionEvent: LiveData<Event<Unit>> field = mutableLiveEventOf()
 
-  private var routine: Routine? = null
-  private var steps: List<RoutineStep> = emptyList()
-  private var stepIndex = 0
-  private val completedStepIds = mutableSetOf<String>()
-
-  private var stepDeadlineAtMillis = 0L
-  private var pausedRemainingMillis: Long? = null
-  private var hasAutoAdvancedForStep = false
-  private var sessionStartedAtMillis = 0L
-  private var pauseStartedAtMillis: Long? = null
-  private var totalPausedMillis = 0L
-  private var hasRecorded = false
-
-  private val toneGenerator: ToneGenerator? by lazy {
-    runCatching { ToneGenerator(AudioManager.STREAM_NOTIFICATION, TONE_VOLUME) }.getOrNull()
-  }
-
   init {
-    load()
-  }
-
-  private fun load() {
-    viewModelScope.launch(dispatcherProvider.io()) {
-      val loaded = routineRepository.getById(id)
-      if (loaded == null || loaded.sortedSteps.isEmpty()) {
-        Logger.w(TAG, "Routine not found or has no steps, id: $id")
-        withContext(dispatcherProvider.main()) { navigationEvent.emit(NavigationEvent.Back) }
-        return@launch
-      }
-      routine = loaded
-      steps = loaded.sortedSteps
-      sessionStartedAtMillis = currentTimeMillis()
-      startStep(0)
-      startTicker()
-    }
-  }
-
-  private fun startTicker() {
-    viewModelScope.launch(dispatcherProvider.main()) {
-      while (isActive) {
-        delay(TICK_MS)
-        tick()
+    engine.start(id)
+    viewModelScope.launch {
+      engine.state.collect { runState ->
+        if (runState is RoutineRunState.NotFound && runState.routineId == id) {
+          engine.stop()
+          navigationEvent.emit(NavigationEvent.Back)
+        }
       }
     }
-  }
-
-  private fun startStep(index: Int) {
-    stepIndex = index
-    hasAutoAdvancedForStep = false
-    pausedRemainingMillis = null
-    val step = steps[index]
-    if (step.durationSeconds > 0) {
-      stepDeadlineAtMillis = currentTimeMillis() + step.durationSeconds * 1000L
+    viewModelScope.launch {
+      engine.stepTransitions.collect { stepTransitionEvent.emit(Unit) }
     }
-    publishRunningState()
   }
 
-  private fun currentRemainingMillis(): Long {
-    val step = steps.getOrNull(stepIndex)
-    if (step == null || step.durationSeconds <= 0) return 0L
-    return pausedRemainingMillis ?: (stepDeadlineAtMillis - currentTimeMillis()).coerceAtLeast(0L)
-  }
-
-  private fun publishRunningState() {
-    val loadedRoutine = routine ?: return
-    val step = steps.getOrNull(stepIndex) ?: return
-    val remainingSeconds = (currentRemainingMillis() / 1000L).toInt()
-    _state.update {
-      RoutineExecutionState.Running(
-        routineTitle = loadedRoutine.title,
-        stepIndex = stepIndex,
-        stepCount = steps.size,
-        stepTitle = step.title,
-        scheduledTimeLabel = step.scheduledTime,
-        isTimed = step.durationSeconds > 0,
-        remainingSeconds = remainingSeconds,
-        timeLabel = formatCountdown(remainingSeconds),
-        progress = if (step.durationSeconds > 0) remainingSeconds / step.durationSeconds.toFloat() else 0f,
-        isPaused = pausedRemainingMillis != null,
-        isFirstStep = stepIndex == 0,
+  private fun toUiState(runState: RoutineRunState): RoutineExecutionState {
+    return when (runState) {
+      is RoutineRunState.Running -> RoutineExecutionState.Running(
+        routineTitle = runState.routineTitle,
+        stepIndex = runState.stepIndex,
+        stepCount = runState.stepCount,
+        stepTitle = runState.stepTitle,
+        scheduledTimeLabel = runState.scheduledTimeLabel,
+        isTimed = runState.isTimed,
+        remainingSeconds = runState.remainingSeconds,
+        timeLabel = formatCountdown(runState.remainingSeconds),
+        progress = if (runState.isTimed) runState.remainingSeconds / runState.stepTotalSeconds.toFloat() else 0f,
+        isPaused = runState.isPaused,
+        isFirstStep = runState.stepIndex == 0,
       )
-    }
-  }
 
-  private fun tick() {
-    val running = _state.value as? RoutineExecutionState.Running ?: return
-    if (running.isPaused || !running.isTimed) return
-    publishRunningState()
-    val remainingMillis = stepDeadlineAtMillis - currentTimeMillis()
-    if (remainingMillis <= 0 && !hasAutoAdvancedForStep) {
-      hasAutoAdvancedForStep = true
-      if (routine?.autoAdvance == true) {
-        advance(markCompleted = true)
-      }
+      is RoutineRunState.Finished -> RoutineExecutionState.Finished(
+        totalTimeLabel = routineDurationCalculator.formatDuration(runState.totalTimeSeconds),
+        completedCount = runState.completedCount,
+        totalCount = runState.totalCount,
+      )
+
+      else -> RoutineExecutionState.Loading
     }
   }
 
   fun onPlayPauseClick() {
-    val step = steps.getOrNull(stepIndex) ?: return
-    if (step.durationSeconds <= 0) return
-    val remaining = pausedRemainingMillis
-    if (remaining != null) {
-      stepDeadlineAtMillis = currentTimeMillis() + remaining
-      pausedRemainingMillis = null
-      pauseStartedAtMillis?.let { totalPausedMillis += currentTimeMillis() - it }
-      pauseStartedAtMillis = null
-    } else {
-      pausedRemainingMillis = currentRemainingMillis()
-      pauseStartedAtMillis = currentTimeMillis()
-    }
-    publishRunningState()
+    val running = engine.state.value as? RoutineRunState.Running ?: return
+    if (running.isPaused) engine.resume() else engine.pause()
   }
 
   fun onAddMinuteClick() {
-    val step = steps.getOrNull(stepIndex) ?: return
-    if (step.durationSeconds <= 0) return
-    val remaining = pausedRemainingMillis
-    if (remaining != null) {
-      pausedRemainingMillis = remaining + ADD_MINUTE_MILLIS
-    } else {
-      stepDeadlineAtMillis += ADD_MINUTE_MILLIS
-    }
-    publishRunningState()
+    engine.addMinute()
   }
 
   fun onSkipClick() {
-    advance(markCompleted = false)
+    engine.skip()
   }
 
   fun onCompleteStepClick() {
-    advance(markCompleted = true)
+    engine.completeStep()
   }
 
   fun onPreviousStepClick() {
-    if (stepIndex == 0) return
-    startStep(stepIndex - 1)
-  }
-
-  private fun advance(markCompleted: Boolean) {
-    val step = steps.getOrNull(stepIndex) ?: return
-    if (markCompleted) completedStepIds += step.id
-    notifyStepTransition()
-    if (stepIndex >= steps.lastIndex) {
-      finishNaturally()
-    } else {
-      startStep(stepIndex + 1)
-    }
-  }
-
-  private fun notifyStepTransition() {
-    if (appPreferences.hapticsEnabled) {
-      stepTransitionEvent.emit(Unit)
-    }
-    if (routine?.soundAlertsEnabled == true) {
-      runCatching { toneGenerator?.startTone(ToneGenerator.TONE_PROP_BEEP, TONE_DURATION_MS) }
-    }
-  }
-
-  private fun elapsedActiveSeconds(): Int {
-    val activeMillis = (currentTimeMillis() - sessionStartedAtMillis - totalPausedMillis).coerceAtLeast(0L)
-    return (activeMillis / 1000L).toInt()
-  }
-
-  private fun finishNaturally() {
-    if (hasRecorded) return
-    hasRecorded = true
-    val totalSeconds = elapsedActiveSeconds()
-    val totalStepsCount = steps.size
-    viewModelScope.launch(dispatcherProvider.io()) {
-      recordRoutineExecutionUseCase(
-        routineId = id,
-        completedStepIds = completedStepIds.toList(),
-        totalTimeSpentSeconds = totalSeconds,
-        totalStepsCount = totalStepsCount,
-      )
-      withContext(dispatcherProvider.main()) {
-        _state.update {
-          RoutineExecutionState.Finished(
-            totalTimeLabel = routineDurationCalculator.formatDuration(totalSeconds),
-            completedCount = completedStepIds.size,
-            totalCount = totalStepsCount,
-          )
-        }
-      }
-    }
+    engine.previous()
   }
 
   fun onBackClick() {
-    // routine == null covers the race where back is pressed before load() finishes - there is
-    // no session to record yet (sessionStartedAtMillis is still unset), so just navigate away.
-    if (_state.value is RoutineExecutionState.Finished || hasRecorded || routine == null) {
-      navigationEvent.emit(NavigationEvent.Back)
-      return
-    }
-    hasRecorded = true
-    val totalSeconds = elapsedActiveSeconds()
-    val totalStepsCount = steps.size
-    viewModelScope.launch(dispatcherProvider.io()) {
-      recordRoutineExecutionUseCase(
-        routineId = id,
-        completedStepIds = completedStepIds.toList(),
-        totalTimeSpentSeconds = totalSeconds,
-        totalStepsCount = totalStepsCount,
-      )
-      withContext(dispatcherProvider.main()) { navigationEvent.emit(NavigationEvent.Back) }
-    }
+    engine.stop()
+    navigationEvent.emit(NavigationEvent.Back)
   }
 
   override fun onCleared() {
     super.onCleared()
-    toneGenerator?.release()
+    if (engine.state.value.routineIdOrNull == id) {
+      engine.stop()
+    }
   }
 
   sealed interface NavigationEvent {
     data object Back : NavigationEvent
-  }
-
-  companion object {
-    private const val TAG = "RoutineExecutionViewModel"
-    private const val TICK_MS = 1000L
-    private const val ADD_MINUTE_MILLIS = 60_000L
-    private const val TONE_VOLUME = 80
-    private const val TONE_DURATION_MS = 150
   }
 }
 

@@ -4,6 +4,8 @@ import com.github.naz013.feature.routine.edit.RoutineEditViewModel
 import com.github.naz013.feature.routine.execution.RoutineExecutionViewModel
 import com.github.naz013.feature.routine.list.RoutinesListViewModel
 import com.github.naz013.feature.routine.preview.RoutinePreviewViewModel
+import com.github.naz013.feature.routine.run.RoutineRunEngine
+import com.github.naz013.feature.routine.run.RoutineRunEngineImpl
 import com.github.naz013.workapi.BackgroundTask
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -14,6 +16,8 @@ val routineModule = module {
   factory<BackgroundTask>(named(RoutineRecurrenceResetTask.TASK_KEY)) {
     RoutineRecurrenceResetTask(get(), get())
   }
+
+  single<RoutineRunEngine> { RoutineRunEngineImpl(get(), get(), get(), get(), get()) }
 
   viewModelOf(::RoutinesListViewModel)
 
@@ -26,6 +30,6 @@ val routineModule = module {
   }
 
   viewModel { (id: String) ->
-    RoutineExecutionViewModel(id, get(), get(), get(), get(), get())
+    RoutineExecutionViewModel(id, get(), get())
   }
 }
