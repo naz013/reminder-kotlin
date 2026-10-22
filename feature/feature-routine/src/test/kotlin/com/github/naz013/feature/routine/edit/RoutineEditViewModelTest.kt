@@ -276,6 +276,78 @@ class RoutineEditViewModelTest : BaseTest() {
   }
 
   @Test
+  fun `pin toggle is persisted on save`() = runTest {
+    val viewModel = createViewModel()
+    viewModel.onTitleChange("Morning routine")
+    viewModel.onAddStepClick()
+
+    viewModel.onPinToggleClick()
+    assertTrue(viewModel.state.first().isPinned)
+    viewModel.onSaveClick()
+
+    coVerify(exactly = 1) { saveRoutineUseCase(match { it.isPinned }) }
+  }
+
+  @Test
+  fun `pin toggle twice returns to unpinned`() = runTest {
+    val viewModel = createViewModel()
+
+    viewModel.onPinToggleClick()
+    viewModel.onPinToggleClick()
+
+    assertFalse(viewModel.state.first().isPinned)
+  }
+
+  private suspend fun RoutineEditViewModel.addSteps(count: Int): List<String> {
+    repeat(count) { onAddStepClick() }
+    val ids = state.first().steps.map { it.id }
+    ids.forEachIndexed { index, id -> onStepTitleChange(id, "step $index") }
+    return ids
+  }
+
+  @Test
+  fun `step moved reorders steps and save assigns the new order`() = runTest {
+    val viewModel = createViewModel()
+    viewModel.onTitleChange("Morning routine")
+    val ids = viewModel.addSteps(3)
+
+    viewModel.onStepMoved(0, 2)
+
+    assertEquals(listOf(ids[1], ids[2], ids[0]), viewModel.state.first().steps.map { it.id })
+    viewModel.onSaveClick()
+    coVerify(exactly = 1) {
+      saveRoutineUseCase(
+        match { routine -> routine.steps.map { it.id to it.order } == listOf(ids[1] to 0, ids[2] to 1, ids[0] to 2) }
+      )
+    }
+  }
+
+  @Test
+  fun `step moved clamps target index and ignores invalid source`() = runTest {
+    val viewModel = createViewModel()
+    val ids = viewModel.addSteps(3)
+
+    viewModel.onStepMoved(2, 10)
+    assertEquals(ids, viewModel.state.first().steps.map { it.id })
+
+    viewModel.onStepMoved(5, 0)
+    assertEquals(ids, viewModel.state.first().steps.map { it.id })
+
+    viewModel.onStepMoved(1, -4)
+    assertEquals(listOf(ids[1], ids[0], ids[2]), viewModel.state.first().steps.map { it.id })
+  }
+
+  @Test
+  fun `move step down shifts the step one position`() = runTest {
+    val viewModel = createViewModel()
+    val ids = viewModel.addSteps(2)
+
+    viewModel.onMoveStepDown(ids[0])
+
+    assertEquals(listOf(ids[1], ids[0]), viewModel.state.first().steps.map { it.id })
+  }
+
+  @Test
   fun `load populates canSave from the persisted routine's title and steps`() = runTest {
     val existing = Routine(
       id = "id-4",

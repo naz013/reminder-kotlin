@@ -29,6 +29,7 @@ import com.github.naz013.ui.routine.RoutineIconSet
 import com.github.naz013.ui.tag.TagChipState
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -51,6 +52,8 @@ internal class RoutinePreviewViewModel(
 
   private val _state = MutableStateFlow<RoutinePreviewState>(RoutinePreviewState.Loading)
   val state = _state.stateInWhileSubscribed(RoutinePreviewState.Loading)
+  private val _showResetConfirmation = MutableStateFlow(false)
+  val showResetConfirmation: StateFlow<Boolean> = _showResetConfirmation
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   init {
@@ -128,9 +131,18 @@ internal class RoutinePreviewViewModel(
   }
 
   fun onResetStepsClick() {
+    _showResetConfirmation.value = true
+  }
+
+  fun onResetStepsConfirmed() {
+    _showResetConfirmation.value = false
     viewModelScope.launch(dispatcherProvider.io()) {
       resetRoutineStepsUseCase(id)
     }
+  }
+
+  fun onResetStepsDismissed() {
+    _showResetConfirmation.value = false
   }
 
   fun onEditClick() {

@@ -144,6 +144,8 @@ private fun RoutineEditEntry(
     onRemoveStepClick = viewModel::onRemoveStepClick,
     onMoveStepUp = viewModel::onMoveStepUp,
     onMoveStepDown = viewModel::onMoveStepDown,
+    onStepMoved = viewModel::onStepMoved,
+    onPinToggleClick = viewModel::onPinToggleClick,
     onTagToggle = viewModel::onTagToggle,
     onManageTagsClick = viewModel::onManageTagsClick,
     onSaveClick = viewModel::onSaveClick,
@@ -170,6 +172,7 @@ private fun RoutinePreviewEntry(
   }
 
   val state by viewModel.state.collectAsState(RoutinePreviewState.Loading)
+  val showResetConfirmation by viewModel.showResetConfirmation.collectAsState()
   RoutinePreviewScreen(
     state = state,
     renderAsDetailPane = renderAsDetailPane,
@@ -177,6 +180,9 @@ private fun RoutinePreviewEntry(
     onEditClick = viewModel::onEditClick,
     onPinToggleClick = viewModel::onPinToggleClick,
     onResetStepsClick = viewModel::onResetStepsClick,
+    showResetConfirmation = showResetConfirmation,
+    onResetStepsConfirmed = viewModel::onResetStepsConfirmed,
+    onResetStepsDismissed = viewModel::onResetStepsDismissed,
     onDeleteClick = viewModel::onDeleteClick,
     onStepCheckToggle = viewModel::onStepCheckToggle,
     onStartClick = viewModel::onStartClick,

@@ -340,15 +340,16 @@ computed from `RoutineExecutionRecord` history over the same 90-day lookback win
 ## 6. What's left: smaller gaps, localization, tests, open decisions
 
 ### 6.1 Gaps in the already-shipped screens
-- **Step reordering is up/down buttons, not drag gesture.** `feature-reminder`'s `SubTasksValueEditor.kt` has
-  a working `detectDragGesturesAfterLongPress`-based implementation that could be adapted for
-  `RoutineStepUiState` rows in `RoutineEditScreen.kt` if the buttons prove clunky in practice - not worth
-  doing preemptively.
+- **Done**: `RoutineEditScreen` has a pin toggle in the top bar (`RoutineEditViewModel.onPinToggleClick`, persisted
+  on save via `RoutineEditState.isPinned`).
+- **Done**: step rows can be reordered by long-press dragging the handle (`detectDragGesturesAfterLongPress`,
+  adapted from `SubTasksValueEditor.kt`); index math lives in `RoutineEditViewModel.onStepMoved(from, to)`. The
+  up/down buttons stay as the accessibility path.
 
 ### 6.2 Localization
-Done: the routine and habit strings exist in every shipped `values-*/strings.xml`. Still open:
-`reset_steps_confirmation` isn't wired to a dialog (`onResetStepsClick` in `RoutinePreviewViewModel` resets
-immediately); either wire it up or drop the string.
+Done: the routine and habit strings exist in every shipped `values-*/strings.xml`, including
+`reset_steps_confirmation`, which now backs a yes/no dialog in the Preview screen
+(`RoutinePreviewViewModel.showResetConfirmation` / `onResetStepsConfirmed` / `onResetStepsDismissed`).
 
 ### 6.3 Test coverage
 - **E2E suite**: **done** - all 22 of §3's cases are written and passing

@@ -1,5 +1,6 @@
 package com.github.naz013.feature.routine.edit
 
+import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,15 +28,22 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.TopAppbarColor
@@ -58,6 +66,7 @@ private val DURATION_PRESETS_SECONDS = listOf(0, 300, 600, 900, 1800)
 private const val MIN_DAY_OF_MONTH = 1
 private const val MAX_DAY_OF_MONTH = 28
 private const val MAX_TITLE_LENGTH = 100
+private val STEP_ROW_SPACING = 8.dp
 private val DAY_OF_MONTH_LABELS = (MIN_DAY_OF_MONTH..MAX_DAY_OF_MONTH).map { it.toString() }
 
 /** [step.id][RoutineStepUiState.id] is only ever known once a step has already been added (it's a
@@ -105,6 +114,8 @@ internal fun RoutineEditScreen(
   onRemoveStepClick: (stepId: String) -> Unit,
   onMoveStepUp: (stepId: String) -> Unit,
   onMoveStepDown: (stepId: String) -> Unit,
+  onStepMoved: (fromIndex: Int, toIndex: Int) -> Unit,
+  onPinToggleClick: () -> Unit,
   onTagToggle: (TagChipState) -> Unit,
   onManageTagsClick: () -> Unit,
   onSaveClick: () -> Unit,
@@ -128,6 +139,11 @@ internal fun RoutineEditScreen(
           )
         },
         actions = {
+          MenuIconButton(
+            icon = if (state.isPinned) AppIcons.Fluent.PinOff else AppIcons.Fluent.Pin,
+            contentDescription = stringResource(if (state.isPinned) R.string.unpin else R.string.pin),
+            onClick = onPinToggleClick,
+          )
           MenuTextButton(
             text = stringResource(R.string.save),
             enabled = state.canSave,
@@ -189,19 +205,59 @@ internal fun RoutineEditScreen(
         )
       }
 
+      val latestSteps by rememberUpdatedState(state.steps)
+      val rowHeights = remember { mutableMapOf<String, Int>() }
+      var draggedStepId by remember { mutableStateOf<String?>(null) }
+      var dragOffset by remember { mutableFloatStateOf(0f) }
+      val rowSpacingPx = with(LocalDensity.current) { STEP_ROW_SPACING.toPx() }
+
       state.steps.forEachIndexed { index, step ->
-        RoutineStepRow(
-          step = step,
-          isFirst = index == 0,
-          isLast = index == state.steps.lastIndex,
-          onTitleChange = { onStepTitleChange(step.id, it) },
-          onDurationSelected = { onStepDurationSelected(step.id, it) },
-          onTimeSelected = { onStepTimeSelected(step.id, it) },
-          onRemoveClick = { onRemoveStepClick(step.id) },
-          onMoveUpClick = { onMoveStepUp(step.id) },
-          onMoveDownClick = { onMoveStepDown(step.id) },
-          modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-        )
+        key(step.id) {
+          RoutineStepRow(
+            step = step,
+            isFirst = index == 0,
+            isLast = index == state.steps.lastIndex,
+            onTitleChange = { onStepTitleChange(step.id, it) },
+            onDurationSelected = { onStepDurationSelected(step.id, it) },
+            onTimeSelected = { onStepTimeSelected(step.id, it) },
+            onRemoveClick = { onRemoveStepClick(step.id) },
+            onMoveUpClick = { onMoveStepUp(step.id) },
+            onMoveDownClick = { onMoveStepDown(step.id) },
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(top = STEP_ROW_SPACING)
+              .onSizeChanged { rowHeights[step.id] = it.height }
+              .zIndex(if (draggedStepId == step.id) 1f else 0f)
+              .graphicsLayer { translationY = if (draggedStepId == step.id) dragOffset else 0f },
+            dragHandleModifier = Modifier.pointerInput(step.id) {
+              detectDragGesturesAfterLongPress(
+                onDragStart = {
+                  draggedStepId = step.id
+                  dragOffset = 0f
+                },
+                onDragEnd = {
+                  draggedStepId = null
+                  dragOffset = 0f
+                },
+                onDragCancel = {
+                  draggedStepId = null
+                  dragOffset = 0f
+                },
+                onDrag = { change, dragAmount ->
+                  change.consume()
+                  dragOffset += dragAmount.y
+                  val stride = (rowHeights[step.id] ?: 0) + rowSpacingPx
+                  val shift = if (stride > 0f) (dragOffset / stride).toInt() else 0
+                  if (shift != 0) {
+                    val from = latestSteps.indexOfFirst { it.id == step.id }
+                    if (from != -1) onStepMoved(from, from + shift)
+                    dragOffset -= shift * stride
+                  }
+                },
+              )
+            },
+          )
+        }
       }
       TextButton(onClick = onAddStepClick, modifier = Modifier.padding(top = 4.dp)) {
         Icon(AppIcons.Fluent.Add, contentDescription = null)
@@ -373,6 +429,7 @@ private fun RoutineStepRow(
   onRemoveClick: () -> Unit,
   onMoveUpClick: () -> Unit,
   onMoveDownClick: () -> Unit,
+  dragHandleModifier: Modifier,
 ) {
   val dateTimePicker = rememberDateTimePicker()
   val timeLabel = step.scheduledTime ?: stringResource(R.string.no_time)
@@ -383,6 +440,11 @@ private fun RoutineStepRow(
   ) {
     Column(modifier = Modifier.padding(12.dp)) {
       Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+          AppIcons.Fluent.ReOrderDots,
+          contentDescription = stringResource(R.string.todo_drag_to_reorder),
+          modifier = dragHandleModifier.padding(end = 8.dp).size(24.dp),
+        )
         OutlinedTextField(
           value = step.title,
           onValueChange = onTitleChange,

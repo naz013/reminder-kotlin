@@ -1280,4 +1280,5 @@
     <string name="reminder_archived">Erinnerung ins Archiv verschoben</string>
     <string name="reminders_archived_count">%1$d Erinnerungen ins Archiv verschoben</string>
     <string name="agenda_items_deleted_count">%1$d Elemente gelöscht</string>
+    <string name="reset_steps_confirmation">Alle Schritte auf nicht erledigt zurücksetzen?</string>
 </resources>

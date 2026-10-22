@@ -1290,4 +1290,5 @@
     <string name="reminder_archived">Нагадування переміщено до архіву</string>
     <string name="reminders_archived_count">Нагадувань переміщено до архіву: %1$d</string>
     <string name="agenda_items_deleted_count">Видалено елементів: %1$d</string>
+    <string name="reset_steps_confirmation">Скинути всі кроки як невиконані?</string>
 </resources>

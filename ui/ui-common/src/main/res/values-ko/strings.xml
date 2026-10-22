@@ -1277,4 +1277,5 @@
     <string name="reminder_archived">알림이 보관함으로 이동되었습니다</string>
     <string name="reminders_archived_count">알림 %1$d개가 보관함으로 이동되었습니다</string>
     <string name="agenda_items_deleted_count">항목 %1$d개가 삭제되었습니다</string>
+    <string name="reset_steps_confirmation">모든 단계를 미완료로 초기화할까요?</string>
 </resources>

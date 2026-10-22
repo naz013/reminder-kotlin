@@ -166,17 +166,25 @@ internal class RoutineEditViewModel(
     moveStep(stepId, offset = 1)
   }
 
-  private fun moveStep(stepId: String, offset: Int) {
+  fun onStepMoved(fromIndex: Int, toIndex: Int) {
     _state.update { state ->
       val steps = state.steps.toMutableList()
-      val fromIndex = steps.indexOfFirst { it.id == stepId }
-      if (fromIndex == -1) return@update state
-      val toIndex = (fromIndex + offset).coerceIn(0, steps.size - 1)
-      if (toIndex == fromIndex) return@update state
-      val step = steps.removeAt(fromIndex)
-      steps.add(toIndex, step)
+      if (fromIndex !in steps.indices) return@update state
+      val target = toIndex.coerceIn(0, steps.size - 1)
+      if (target == fromIndex) return@update state
+      steps.add(target, steps.removeAt(fromIndex))
       state.copy(steps = steps)
     }
+  }
+
+  fun onPinToggleClick() {
+    _state.update { it.copy(isPinned = !it.isPinned) }
+  }
+
+  private fun moveStep(stepId: String, offset: Int) {
+    val fromIndex = _state.value.steps.indexOfFirst { it.id == stepId }
+    if (fromIndex == -1) return
+    onStepMoved(fromIndex, fromIndex + offset)
   }
 
   private fun updateStep(stepId: String, transform: (RoutineStepUiState) -> RoutineStepUiState) {

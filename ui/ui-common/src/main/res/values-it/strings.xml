@@ -1287,4 +1287,5 @@
     <string name="reminder_archived">Promemoria spostato nell\'archivio</string>
     <string name="reminders_archived_count">%1$d promemoria spostati nell\'archivio</string>
     <string name="agenda_items_deleted_count">%1$d elementi eliminati</string>
+    <string name="reset_steps_confirmation">Reimpostare tutti i passaggi come non completati?</string>
 </resources>

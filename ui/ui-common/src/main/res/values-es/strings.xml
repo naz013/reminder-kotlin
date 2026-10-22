@@ -1287,4 +1287,5 @@
     <string name="reminder_archived">Recordatorio movido al archivo</string>
     <string name="reminders_archived_count">%1$d recordatorios movidos al archivo</string>
     <string name="agenda_items_deleted_count">%1$d elementos eliminados</string>
+    <string name="reset_steps_confirmation">¿Restablecer todos los pasos como no completados?</string>
 </resources>

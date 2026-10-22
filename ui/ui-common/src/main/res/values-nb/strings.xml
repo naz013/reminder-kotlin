@@ -1282,4 +1282,5 @@
     <string name="reminder_archived">Påminnelsen er flyttet til arkivet</string>
     <string name="reminders_archived_count">%1$d påminnelser flyttet til arkivet</string>
     <string name="agenda_items_deleted_count">%1$d elementer slettet</string>
+    <string name="reset_steps_confirmation">Tilbakestille alle trinn til ikke utført?</string>
 </resources>

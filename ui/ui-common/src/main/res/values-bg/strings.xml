@@ -1284,4 +1284,5 @@
     <string name="reminder_archived">Напомнянето е преместено в архива</string>
     <string name="reminders_archived_count">%1$d напомняния са преместени в архива</string>
     <string name="agenda_items_deleted_count">%1$d елемента са изтрити</string>
+    <string name="reset_steps_confirmation">Да се нулират ли всички стъпки като неизпълнени?</string>
 </resources>

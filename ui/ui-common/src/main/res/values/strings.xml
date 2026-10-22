@@ -1300,4 +1300,5 @@
     <string name="reminder_archived">Reminder moved to archive</string>
     <string name="reminders_archived_count">%1$d reminders moved to archive</string>
     <string name="agenda_items_deleted_count">%1$d items deleted</string>
+    <string name="reset_steps_confirmation">Reset all steps to not done?</string>
 </resources>

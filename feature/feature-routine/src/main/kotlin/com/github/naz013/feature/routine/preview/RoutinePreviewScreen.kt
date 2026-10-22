@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -26,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SmallExtendedFloatingActionButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -62,11 +64,26 @@ internal fun RoutinePreviewScreen(
   onEditClick: () -> Unit,
   onPinToggleClick: () -> Unit,
   onResetStepsClick: () -> Unit,
+  showResetConfirmation: Boolean,
+  onResetStepsConfirmed: () -> Unit,
+  onResetStepsDismissed: () -> Unit,
   onDeleteClick: () -> Unit,
   onStepCheckToggle: (stepId: String) -> Unit,
   onStartClick: () -> Unit,
   adsContent: @Composable () -> Unit,
 ) {
+  if (showResetConfirmation) {
+    AlertDialog(
+      onDismissRequest = onResetStepsDismissed,
+      text = { Text(stringResource(R.string.reset_steps_confirmation)) },
+      confirmButton = {
+        TextButton(onClick = onResetStepsConfirmed) { Text(stringResource(R.string.yes)) }
+      },
+      dismissButton = {
+        TextButton(onClick = onResetStepsDismissed) { Text(stringResource(R.string.no)) }
+      },
+    )
+  }
   Scaffold(
     modifier = modifier,
     floatingActionButton = {

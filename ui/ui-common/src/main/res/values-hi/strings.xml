@@ -1280,4 +1280,5 @@
     <string name="reminder_archived">रिमाइंडर आर्काइव में ले जाया गया</string>
     <string name="reminders_archived_count">%1$d रिमाइंडर आर्काइव में ले जाए गए</string>
     <string name="agenda_items_deleted_count">%1$d आइटम हटाए गए</string>
+    <string name="reset_steps_confirmation">क्या सभी चरणों को अपूर्ण पर रीसेट करें?</string>
 </resources>

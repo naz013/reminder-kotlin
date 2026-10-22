@@ -1277,4 +1277,5 @@
     <string name="reminder_archived">提醒已移至归档</string>
     <string name="reminders_archived_count">%1$d 个提醒已移至归档</string>
     <string name="agenda_items_deleted_count">已删除 %1$d 项</string>
+    <string name="reset_steps_confirmation">将所有步骤重置为未完成？</string>
 </resources>

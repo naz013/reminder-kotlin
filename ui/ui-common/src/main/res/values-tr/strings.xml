@@ -1284,4 +1284,5 @@
     <string name="reminder_archived">Hatırlatıcı arşive taşındı</string>
     <string name="reminders_archived_count">%1$d hatırlatıcı arşive taşındı</string>
     <string name="agenda_items_deleted_count">%1$d öğe silindi</string>
+    <string name="reset_steps_confirmation">Tüm adımlar tamamlanmadı olarak sıfırlansın mı?</string>
 </resources>

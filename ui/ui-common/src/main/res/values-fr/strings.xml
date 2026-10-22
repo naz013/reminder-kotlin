@@ -1287,4 +1287,5 @@
     <string name="reminder_archived">Rappel déplacé vers les archives</string>
     <string name="reminders_archived_count">%1$d rappels déplacés vers les archives</string>
     <string name="agenda_items_deleted_count">%1$d éléments supprimés</string>
+    <string name="reset_steps_confirmation">Réinitialiser toutes les étapes comme non terminées ?</string>
 </resources>

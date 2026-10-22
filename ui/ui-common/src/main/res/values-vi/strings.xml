@@ -1279,4 +1279,5 @@
     <string name="reminder_archived">Đã chuyển lời nhắc vào kho lưu trữ</string>
     <string name="reminders_archived_count">Đã chuyển %1$d lời nhắc vào kho lưu trữ</string>
     <string name="agenda_items_deleted_count">Đã xóa %1$d mục</string>
+    <string name="reset_steps_confirmation">Đặt lại tất cả các bước thành chưa hoàn thành?</string>
 </resources>

@@ -1287,4 +1287,5 @@
     <string name="reminder_archived">Lembrete movido para o arquivo</string>
     <string name="reminders_archived_count">%1$d lembretes movidos para o arquivo</string>
     <string name="agenda_items_deleted_count">%1$d itens excluídos</string>
+    <string name="reset_steps_confirmation">Redefinir todas as etapas como não concluídas?</string>
 </resources>

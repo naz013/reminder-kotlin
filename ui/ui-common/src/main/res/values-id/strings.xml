@@ -1279,4 +1279,5 @@
     <string name="reminder_archived">Pengingat dipindahkan ke arsip</string>
     <string name="reminders_archived_count">%1$d pengingat dipindahkan ke arsip</string>
     <string name="agenda_items_deleted_count">%1$d item dihapus</string>
+    <string name="reset_steps_confirmation">Setel ulang semua langkah menjadi belum selesai?</string>
 </resources>

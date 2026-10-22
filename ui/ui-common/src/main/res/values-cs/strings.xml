@@ -1290,4 +1290,5 @@
     <string name="reminder_archived">Připomínka přesunuta do archivu</string>
     <string name="reminders_archived_count">%1$d připomínek přesunuto do archivu</string>
     <string name="agenda_items_deleted_count">%1$d položek smazáno</string>
+    <string name="reset_steps_confirmation">Resetovat všechny kroky jako nesplněné?</string>
 </resources>

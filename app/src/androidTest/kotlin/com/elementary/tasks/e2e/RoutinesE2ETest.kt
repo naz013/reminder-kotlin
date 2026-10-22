@@ -567,12 +567,8 @@ class RoutinesE2ETest : KoinTest {
     composeRule.onNodeWithText(tagB.name).assertIsDisplayed()
   }
 
-  /** The 22-case plan's literal description ("Pin from the editor") doesn't match the shipped
-   *  screen - `RoutineEditScreen.kt` has no pin control anywhere (`RoutineEditState.isPinned`
-   *  exists but nothing in the composable reads or toggles it). The only reachable pin control is
-   *  the Preview screen's overflow menu (`RoutinePreviewViewModel.onPinToggleClick`,
-   *  `OverflowAction.TOGGLE_PIN`) - this test uses that real path instead, the same kind of
-   *  "corrected against the actual screen" note `docs/e2e-testing.md` already carries for A11/D9/G9. */
+  /** Exercises pinning through the Preview screen's overflow menu (`OverflowAction.TOGGLE_PIN`);
+   *  the editor's own pin toggle is covered by `RoutineEditViewModelTest`. */
   @Test
   fun routineEditor_pinToggling() {
     val title = "Pin routine ${UUID.randomUUID()}"
@@ -828,6 +824,7 @@ class RoutinesE2ETest : KoinTest {
 
     openPreviewOverflowMenu()
     clickText(r(R.string.reset_steps))
+    clickText(r(R.string.yes))
 
     composeRule.waitUntil(timeoutMillis = 5_000) {
       runBlocking { routineRepository.getById(created.id)?.steps?.none { it.isCompleted } == true }

@@ -1294,4 +1294,5 @@
     <string name="reminder_archived">تم نقل التذكير إلى الأرشيف</string>
     <string name="reminders_archived_count">تم نقل %1$d تذكيرات إلى الأرشيف</string>
     <string name="agenda_items_deleted_count">تم حذف %1$d عناصر</string>
+    <string name="reset_steps_confirmation">هل تريد إعادة تعيين جميع الخطوات إلى غير مكتملة؟</string>
 </resources>
