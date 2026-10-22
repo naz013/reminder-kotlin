@@ -17,6 +17,7 @@ class RoutineRunNotificationPlannerTest {
     isPaused: Boolean = false,
     completedCount: Int = 1,
     stepCount: Int = 4,
+    endsAt: Long? = if (isTimed && !isPaused) 100_000L else null,
   ) = RoutineRunState.Running(
     routineId = "r1",
     routineTitle = "Morning",
@@ -28,15 +29,16 @@ class RoutineRunNotificationPlannerTest {
     remainingSeconds = remaining,
     stepTotalSeconds = if (isTimed) 120 else 0,
     isPaused = isPaused,
+    stepEndsAtMillis = endsAt,
     completedCount = completedCount,
   )
 
   @Test
-  fun `running timed step uses chronometer ending at now plus remaining`() {
-    val plan = RoutineRunNotificationPlanner.plan(state(remaining = 90), nowMillis = 10_000L, sdkInt = 35)
+  fun `running timed step uses chronometer ending at the exact step deadline`() {
+    val plan = RoutineRunNotificationPlanner.plan(state(remaining = 90, endsAt = 123_456L), nowMillis = 10_000L, sdkInt = 35)
 
     assertTrue(plan.useChronometer)
-    assertEquals(100_000L, plan.endTimeMillis)
+    assertEquals(123_456L, plan.endTimeMillis)
     assertNull(plan.pausedTimeLabel)
     assertTrue(plan.showToggleAction)
     assertEquals(2, plan.stepNumber)
@@ -122,7 +124,7 @@ class RoutineRunNotificationPlannerTest {
   @Test
   fun `reposts when a minute is added to a running step`() {
     val last = RoutineRunNotificationPlanner.snapshot(state(remaining = 80), 0L)
-    val current = RoutineRunNotificationPlanner.snapshot(state(remaining = 139), 1_000L)
+    val current = RoutineRunNotificationPlanner.snapshot(state(remaining = 139, endsAt = 160_000L), 1_000L)
 
     assertTrue(RoutineRunNotificationPlanner.shouldRepost(last, current))
   }

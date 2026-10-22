@@ -13,8 +13,14 @@ interface RoutineRunEngine {
   /** Emits once per step transition when haptic feedback is enabled. */
   val stepTransitions: Flow<Unit>
 
-  /** Starts a run; no-op when that routine is already running, replaces any other active run. */
-  fun start(routineId: String)
+  /**
+   * Starts a run; no-op when that routine is already running, replaces any other active run.
+   * Returns an attach token for [release].
+   */
+  fun start(routineId: String): Long
+
+  /** Stops the run only if [token] belongs to the latest [start] call, so a stale owner cannot end a newer attach. */
+  fun release(token: Long)
 
   fun pause()
 

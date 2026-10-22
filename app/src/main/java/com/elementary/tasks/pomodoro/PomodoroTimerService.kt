@@ -52,8 +52,24 @@ class PomodoroTimerService : LifecycleService() {
     val state = pomodoroTimerEngine.state.value
     if (state.isRunning) {
       startAsForeground(state)
+    } else {
+      startPlaceholderAndStop()
     }
     return START_NOT_STICKY
+  }
+
+  private fun startPlaceholderAndStop() {
+    val placeholder = notifier.getNotificationBuilder(Notifier.CHANNEL_FOCUS_TIMER)
+      .setSmallIcon(R.drawable.ic_fluent_clock_alarm)
+      .setContentTitle(getString(R.string.pomodoro_focus_timer))
+      .build()
+    try {
+      startForeground(NOTIFICATION_ID, placeholder)
+    } catch (e: IllegalStateException) {
+      Logger.i(TAG, "Start foreground: not allowed, ${e.message}")
+    }
+    stopForeground(STOP_FOREGROUND_REMOVE)
+    stopSelf()
   }
 
   private fun showNotification(state: PomodoroEngineState) {

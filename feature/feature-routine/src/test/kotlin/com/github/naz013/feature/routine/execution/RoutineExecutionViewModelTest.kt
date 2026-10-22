@@ -1,5 +1,8 @@
 package com.github.naz013.feature.routine.execution
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStore
 import com.github.naz013.feature.routine.run.RoutineRunEngine
 import com.github.naz013.feature.routine.run.RoutineRunState
 import com.github.naz013.logic.routine.RoutineDurationCalculator
@@ -22,6 +25,7 @@ class RoutineExecutionViewModelTest : BaseTest() {
   private val engineState = MutableStateFlow<RoutineRunState>(RoutineRunState.Idle)
   private val transitions = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
   private val engine = mockk<RoutineRunEngine>(relaxed = true) {
+    every { start(any()) } returns ATTACH_TOKEN
     every { state } returns engineState
     every { stepTransitions } returns transitions
   }
@@ -46,6 +50,7 @@ class RoutineExecutionViewModelTest : BaseTest() {
     remainingSeconds = remaining,
     stepTotalSeconds = 60,
     isPaused = isPaused,
+    stepEndsAtMillis = null,
     completedCount = 0,
   )
 
@@ -158,7 +163,22 @@ class RoutineExecutionViewModelTest : BaseTest() {
     assertEquals(1, handled)
   }
 
+  @Test
+  fun `releases the run with its own attach token when cleared`() {
+    val store = ViewModelStore()
+    val factory = object : ViewModelProvider.Factory {
+      @Suppress("UNCHECKED_CAST")
+      override fun <T : ViewModel> create(modelClass: Class<T>): T = createViewModel() as T
+    }
+    ViewModelProvider(store, factory)[RoutineExecutionViewModel::class.java]
+
+    store.clear()
+
+    verify(exactly = 1) { engine.release(ATTACH_TOKEN) }
+  }
+
   private companion object {
     const val ROUTINE_ID = "routine-1"
+    const val ATTACH_TOKEN = 7L
   }
 }

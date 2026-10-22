@@ -9,7 +9,6 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.feature.routine.run.RoutineRunEngine
 import com.github.naz013.feature.routine.run.RoutineRunState
-import com.github.naz013.feature.routine.run.routineIdOrNull
 import com.github.naz013.logic.routine.RoutineDurationCalculator
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -32,8 +31,9 @@ internal class RoutineExecutionViewModel(
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
   val stepTransitionEvent: LiveData<Event<Unit>> field = mutableLiveEventOf()
 
+  private val attachToken: Long = engine.start(id)
+
   init {
-    engine.start(id)
     viewModelScope.launch {
       engine.state.collect { runState ->
         if (runState is RoutineRunState.NotFound && runState.routineId == id) {
@@ -101,9 +101,7 @@ internal class RoutineExecutionViewModel(
 
   override fun onCleared() {
     super.onCleared()
-    if (engine.state.value.routineIdOrNull == id) {
-      engine.stop()
-    }
+    engine.release(attachToken)
   }
 
   sealed interface NavigationEvent {

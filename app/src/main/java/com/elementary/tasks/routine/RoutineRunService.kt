@@ -1,6 +1,5 @@
 package com.elementary.tasks.routine
 
-import android.app.ForegroundServiceStartNotAllowedException
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
@@ -12,6 +11,7 @@ import com.elementary.tasks.core.utils.Notifier
 import com.github.naz013.feature.routine.run.RoutineRunEngine
 import com.github.naz013.feature.routine.run.RoutineRunState
 import com.github.naz013.logging.Logger
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.android.ext.android.inject
@@ -48,7 +48,12 @@ internal class RoutineRunService : LifecycleService() {
       ACTION_STOP -> engine.stop()
       else -> Unit
     }
-    (engine.state.value as? RoutineRunState.Running)?.let(::startAsForeground)
+    val running = engine.state.value as? RoutineRunState.Running
+    if (running != null) {
+      startAsForeground(running)
+    } else {
+      startPlaceholderAndStop()
+    }
     return START_NOT_STICKY
   }
 
@@ -65,10 +70,24 @@ internal class RoutineRunService : LifecycleService() {
     val notification = buildNotification(state)
     try {
       startForeground(NOTIFICATION_ID, notification)
-    } catch (e: ForegroundServiceStartNotAllowedException) {
+    } catch (e: IllegalStateException) {
       Logger.i(TAG, "Start foreground: not allowed, ${e.message}")
       stopSelf()
     }
+  }
+
+  private fun startPlaceholderAndStop() {
+    val placeholder = notifier.getNotificationBuilder(Notifier.CHANNEL_ROUTINE_RUN)
+      .setSmallIcon(DrawableCatalog.Builder.Timer)
+      .setContentTitle(getString(R.string.app_name))
+      .build()
+    try {
+      startForeground(NOTIFICATION_ID, placeholder)
+    } catch (e: IllegalStateException) {
+      Logger.i(TAG, "Start foreground: not allowed, ${e.message}")
+    }
+    stopForeground(STOP_FOREGROUND_REMOVE)
+    stopSelf()
   }
 
   private fun buildNotification(state: RoutineRunState.Running): Notification {
@@ -117,10 +136,10 @@ internal class RoutineRunService : LifecycleService() {
   companion object {
     private const val TAG = "RoutineRunService"
     private const val NOTIFICATION_ID = 1247
-    const val ACTION_START = "com.elementary.tasks.routine.action.START"
-    const val ACTION_PAUSE = "com.elementary.tasks.routine.action.PAUSE"
-    const val ACTION_RESUME = "com.elementary.tasks.routine.action.RESUME"
-    const val ACTION_SKIP = "com.elementary.tasks.routine.action.SKIP"
-    const val ACTION_STOP = "com.elementary.tasks.routine.action.STOP"
+    internal const val ACTION_START = "com.elementary.tasks.routine.action.START"
+    private const val ACTION_PAUSE = "com.elementary.tasks.routine.action.PAUSE"
+    private const val ACTION_RESUME = "com.elementary.tasks.routine.action.RESUME"
+    private const val ACTION_SKIP = "com.elementary.tasks.routine.action.SKIP"
+    private const val ACTION_STOP = "com.elementary.tasks.routine.action.STOP"
   }
 }

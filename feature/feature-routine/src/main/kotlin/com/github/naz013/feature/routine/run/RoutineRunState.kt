@@ -18,6 +18,8 @@ sealed interface RoutineRunState {
     val remainingSeconds: Int,
     val stepTotalSeconds: Int,
     val isPaused: Boolean,
+    /** Wall-clock end of the step countdown; null when paused or untimed. */
+    val stepEndsAtMillis: Long?,
     val completedCount: Int,
   ) : RoutineRunState
 
@@ -28,12 +30,3 @@ sealed interface RoutineRunState {
     val totalCount: Int,
   ) : RoutineRunState
 }
-
-internal val RoutineRunState.routineIdOrNull: String?
-  get() = when (this) {
-    RoutineRunState.Idle -> null
-    is RoutineRunState.Loading -> routineId
-    is RoutineRunState.NotFound -> routineId
-    is RoutineRunState.Running -> routineId
-    is RoutineRunState.Finished -> routineId
-  }

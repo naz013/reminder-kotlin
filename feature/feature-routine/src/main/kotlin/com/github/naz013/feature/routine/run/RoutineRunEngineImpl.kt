@@ -1,7 +1,5 @@
 package com.github.naz013.feature.routine.run
 
-import android.media.AudioManager
-import android.media.ToneGenerator
 import com.github.naz013.domain.routine.Routine
 import com.github.naz013.domain.routine.RoutineStep
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -34,6 +32,7 @@ internal class RoutineRunEngineImpl(
   private val recordRoutineExecutionUseCase: RecordRoutineExecutionUseCase,
   private val appPreferences: AppPreferences,
   private val foregroundNotifier: RoutineRunForegroundNotifier,
+  private val tonePlayer: StepTonePlayer = ToneGeneratorStepTonePlayer(),
   private val currentTimeMillis: () -> Long = System::currentTimeMillis,
 ) : RoutineRunEngine {
 
@@ -59,13 +58,14 @@ internal class RoutineRunEngineImpl(
   private var pauseStartedAtMillis: Long? = null
   private var totalPausedMillis = 0L
   private var hasRecorded = false
-  private var toneGenerator: ToneGenerator? = null
+  private var latestAttachToken = 0L
 
-  override fun start(routineId: String) {
+  override fun start(routineId: String): Long {
+    val token = ++latestAttachToken
     val current = _state.value
     val isSameActiveRun = (current is RoutineRunState.Loading && current.routineId == routineId) ||
       (current is RoutineRunState.Running && current.routineId == routineId)
-    if (isSameActiveRun) return
+    if (isSameActiveRun) return token
     if (current !is RoutineRunState.Idle) stop()
     Logger.d(TAG, "Start run, routineId=$routineId")
     this.routineId = routineId
@@ -81,12 +81,18 @@ internal class RoutineRunEngineImpl(
       steps = loaded.sortedSteps
       sessionStartedAtMillis = currentTimeMillis()
       startStep(0)
-      foregroundNotifier.start()
+      runCatching { foregroundNotifier.start() }
+        .onFailure { Logger.w(TAG, "Foreground notifier failed to start: ${it.message}") }
       while (isActive) {
         delay(TICK_MS)
         tick()
       }
     }
+    return token
+  }
+
+  override fun release(token: Long) {
+    if (token == latestAttachToken) stop()
   }
 
   override fun pause() {
@@ -141,7 +147,12 @@ internal class RoutineRunEngineImpl(
     }
     resetRun()
     _state.value = RoutineRunState.Idle
-    foregroundNotifier.stop()
+    stopForegroundNotifier()
+  }
+
+  private fun stopForegroundNotifier() {
+    runCatching { foregroundNotifier.stop() }
+      .onFailure { Logger.w(TAG, "Foreground notifier failed to stop: ${it.message}") }
   }
 
   private fun isCurrentStepTimed(): Boolean {
@@ -186,8 +197,13 @@ internal class RoutineRunEngineImpl(
       remainingSeconds = (currentRemainingMillis() / 1000L).toInt(),
       stepTotalSeconds = step.durationSeconds,
       isPaused = pausedRemainingMillis != null,
+      stepEndsAtMillis = stepEndsAtMillis(step),
       completedCount = completedStepIds.size,
     )
+  }
+
+  private fun stepEndsAtMillis(step: RoutineStep): Long? {
+    return if (step.durationSeconds > 0 && pausedRemainingMillis == null) stepDeadlineAtMillis else null
   }
 
   private fun tick() {
@@ -220,15 +236,8 @@ internal class RoutineRunEngineImpl(
       _stepTransitions.tryEmit(Unit)
     }
     if (routine?.soundAlertsEnabled == true) {
-      runCatching { obtainToneGenerator()?.startTone(ToneGenerator.TONE_PROP_BEEP, TONE_DURATION_MS) }
+      tonePlayer.play()
     }
-  }
-
-  private fun obtainToneGenerator(): ToneGenerator? {
-    if (toneGenerator == null) {
-      toneGenerator = runCatching { ToneGenerator(AudioManager.STREAM_NOTIFICATION, TONE_VOLUME) }.getOrNull()
-    }
-    return toneGenerator
   }
 
   private fun elapsedActiveSeconds(): Int {
@@ -250,8 +259,8 @@ internal class RoutineRunEngineImpl(
       completedCount = completedCount,
       totalCount = totalCount,
     )
-    releaseTone()
-    foregroundNotifier.stop()
+    tonePlayer.release()
+    stopForegroundNotifier()
   }
 
   private fun record() {
@@ -282,19 +291,12 @@ internal class RoutineRunEngineImpl(
     totalPausedMillis = 0L
     hasAutoAdvancedForStep = false
     hasRecorded = false
-    releaseTone()
-  }
-
-  private fun releaseTone() {
-    toneGenerator?.release()
-    toneGenerator = null
+    tonePlayer.release()
   }
 
   private companion object {
     private const val TAG = "RoutineRunEngine"
     private const val TICK_MS = 1000L
     private const val ADD_MINUTE_MILLIS = 60_000L
-    private const val TONE_VOLUME = 80
-    private const val TONE_DURATION_MS = 150
   }
 }

@@ -49,7 +49,7 @@ internal object RoutineRunNotificationPlanner {
       isPaused = state.isPaused,
       showToggleAction = state.isTimed,
       useChronometer = state.isTimed && !state.isPaused,
-      endTimeMillis = nowMillis + remaining * MILLIS_PER_SECOND,
+      endTimeMillis = state.stepEndsAtMillis ?: (nowMillis + remaining * MILLIS_PER_SECOND),
       pausedTimeLabel = if (state.isTimed && state.isPaused) formatTime(remaining) else null,
       showProgress = supportsLiveUpdate && state.stepCount > 0,
       completedCount = state.completedCount.coerceIn(0, state.stepCount),
@@ -67,7 +67,7 @@ internal object RoutineRunNotificationPlanner {
       isPaused = state.isPaused,
       remainingSeconds = state.remainingSeconds,
       completedCount = state.completedCount,
-      endTimeMillis = nowMillis + state.remainingSeconds * MILLIS_PER_SECOND,
+      endTimeMillis = state.stepEndsAtMillis ?: (nowMillis + state.remainingSeconds * MILLIS_PER_SECOND),
     )
   }
 

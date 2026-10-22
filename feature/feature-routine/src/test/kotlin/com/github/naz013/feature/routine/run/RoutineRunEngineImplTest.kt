@@ -34,18 +34,20 @@ class RoutineRunEngineImplTest : BaseTest() {
   private val recordUseCase = mockk<RecordRoutineExecutionUseCase>()
   private val appPreferences = mockk<AppPreferences>()
   private val foregroundNotifier = mockk<RoutineRunForegroundNotifier>(relaxed = true)
+  private val tonePlayer = mockk<StepTonePlayer>(relaxed = true)
 
   private fun TestScope.createEngine(
     steps: List<RoutineStep>,
     autoAdvance: Boolean = true,
     hapticsEnabled: Boolean = false,
+    soundAlerts: Boolean = false,
   ): RoutineRunEngineImpl {
     val routine = Routine(
       id = ROUTINE_ID,
       title = "Morning",
       steps = steps,
       autoAdvance = autoAdvance,
-      soundAlertsEnabled = false,
+      soundAlertsEnabled = soundAlerts,
       createdAt = LocalDateTime.of(2026, 1, 1, 0, 0),
       updatedAt = LocalDateTime.of(2026, 1, 1, 0, 0),
     )
@@ -66,6 +68,7 @@ class RoutineRunEngineImplTest : BaseTest() {
       recordRoutineExecutionUseCase = recordUseCase,
       appPreferences = appPreferences,
       foregroundNotifier = foregroundNotifier,
+      tonePlayer = tonePlayer,
       currentTimeMillis = { testScheduler.currentTime },
     )
     backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
@@ -310,6 +313,95 @@ class RoutineRunEngineImplTest : BaseTest() {
     engine.completeStep()
 
     assertEquals(0, transitions)
+  }
+
+  @Test
+  fun `previous step moves back and re-anchors the countdown`() = runTest {
+    val engine = startedEngine(listOf(step("a", 60, 0), step("b", 60, 1)))
+    engine.completeStep()
+    advanceSeconds(20)
+    assertEquals(40, engine.running().remainingSeconds)
+
+    engine.previous()
+    assertEquals(0, engine.running().stepIndex)
+    assertEquals(60, engine.running().remainingSeconds)
+    advanceSeconds(10)
+
+    assertEquals(50, engine.running().remainingSeconds)
+  }
+
+  @Test
+  fun `sound alert plays on a step transition only when enabled`() = runTest {
+    val enabled = createEngine(listOf(step("a", 60, 0), step("b", 60, 1)), soundAlerts = true)
+    enabled.start(ROUTINE_ID)
+    runCurrent()
+    enabled.completeStep()
+    verify(exactly = 1) { tonePlayer.play() }
+  }
+
+  @Test
+  fun `sound alert does not play when disabled`() = runTest {
+    val engine = startedEngine(listOf(step("a", 60, 0), step("b", 60, 1)))
+
+    engine.completeStep()
+
+    verify(exactly = 0) { tonePlayer.play() }
+  }
+
+  @Test
+  fun `paused time is excluded from the total when skipping while paused`() = runTest {
+    val engine = startedEngine(listOf(step("a", 60, 0), step("b", 60, 1)))
+    advanceSeconds(10)
+    engine.pause()
+    advanceSeconds(30)
+
+    engine.skip()
+    advanceSeconds(5)
+    engine.completeStep()
+
+    val finished = engine.state.value as RoutineRunState.Finished
+    assertEquals(15, finished.totalTimeSeconds)
+  }
+
+  @Test
+  fun `paused time is excluded from the total when going back while paused`() = runTest {
+    val engine = startedEngine(listOf(step("a", 60, 0), step("b", 60, 1)))
+    engine.completeStep()
+    advanceSeconds(10)
+    engine.pause()
+    advanceSeconds(20)
+
+    engine.previous()
+    advanceSeconds(5)
+    engine.completeStep()
+    engine.completeStep()
+
+    val finished = engine.state.value as RoutineRunState.Finished
+    assertEquals(15, finished.totalTimeSeconds)
+  }
+
+  @Test
+  fun `a stale owner releasing does not stop a run re-attached by a newer owner`() = runTest {
+    val engine = createEngine(listOf(step("a", 60, 0)))
+    val oldToken = engine.start(ROUTINE_ID)
+    runCurrent()
+    val newToken = engine.start(ROUTINE_ID)
+
+    engine.release(oldToken)
+    assertTrue(engine.state.value is RoutineRunState.Running)
+
+    engine.release(newToken)
+    assertEquals(RoutineRunState.Idle, engine.state.value)
+  }
+
+  @Test
+  fun `a notifier that fails to start the service does not stop the run`() = runTest {
+    every { foregroundNotifier.start() } throws IllegalStateException("not allowed")
+    val engine = startedEngine(listOf(step("a", 60, 0)))
+
+    advanceSeconds(10)
+
+    assertEquals(50, engine.running().remainingSeconds)
   }
 
   private companion object {
