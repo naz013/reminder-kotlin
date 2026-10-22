@@ -346,22 +346,9 @@ computed from `RoutineExecutionRecord` history over the same 90-day lookback win
   doing preemptively.
 
 ### 6.2 Localization
-New strings were added **only** to `ui/ui-common/src/main/res/values/strings.xml` (English) - the other 26
-`values-*/strings.xml` files are untranslated. `CLAUDE.md` requires translating every new string into every
-shipped locale; deliberately deferred rather than bulk-machine-translating without review. Search for these
-keys to find what needs translating: `routines`, `new_routine`, `no_routines`, `routine_description_hint`,
-`routine_steps`, `add_step`, `step_title_hint`, `duration_none`, `repeat_daily`, `repeat_none`,
-`repeat_weekly`, `repeat_monthly`, `repeat_weekly_days`, `repeat_monthly_day`, `repeat_weekdays_required`,
-`decrease_day_of_month`, `increase_day_of_month`, `start_routine`, `reset_steps`, `reset_steps_confirmation`,
-`routine_step_count`, `delete_routine_confirmation`, `move_step_up`, `move_step_down`, `sort`, `sort_by_date`,
-`sort_by_name`, `routine_on_demand`, `routine_steps_required`, `step_of_count`, `pause`, `resume`,
-`skip_step`, `complete_step`, `previous_step`, `add_one_minute`, `routine_finished_title`,
-`routine_execution_total_time`, `routine_execution_steps_completed`, `routine_insights_section`,
-`routine_focus_time_total`, `routine_insight_most_skipped`.
-(`reset_steps_confirmation` isn't wired to any confirmation dialog yet either - `onResetStepsClick` in
-`RoutinePreviewViewModel` fires immediately with no "are you sure"; either wire the string up or drop it.)
-`no_insights_yet`'s English wording was also changed (§5) - the other 26 locales still say the old
-reminder-specific wording and need a refresh, not just a first translation.
+Done: the routine and habit strings exist in every shipped `values-*/strings.xml`. Still open:
+`reset_steps_confirmation` isn't wired to a dialog (`onResetStepsClick` in `RoutinePreviewViewModel` resets
+immediately); either wire it up or drop the string.
 
 ### 6.3 Test coverage
 - **E2E suite**: **done** - all 22 of §3's cases are written and passing
@@ -410,5 +397,5 @@ reminder-specific wording and need a refresh, not just a first translation.
 ## Suggested sequencing
 
 1. Resolve §6.4 #1 (PRO gate).
-2. §6.2 (localization) - ideally batched once the string set stabilizes rather than repeated per-PR.
+2. §6.2 (reset confirmation).
 3. §6.3 (tests) - `RoutineExecutionViewModel`'s ticker needs a testing-approach decision first (§6.3).
