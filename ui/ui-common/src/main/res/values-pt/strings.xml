@@ -1302,4 +1302,9 @@
     <string name="note_version_restore">Restaurar</string>
     <string name="note_version_restored">Versão restaurada</string>
     <string name="note_version_restore_failed">Não foi possível restaurar esta versão</string>
+    <string name="note_version_compare">Comparar com a atual</string>
+    <string name="note_version_compare_title">Comparar versões</string>
+    <string name="note_version_current">Atual</string>
+    <string name="note_version_identical">Esta versão é idêntica à nota atual</string>
+    <string name="note_version_compare_unavailable">Esta versão ou nota já não está disponível</string>
 </resources>

@@ -1297,4 +1297,9 @@
     <string name="note_version_restore">Återställ</string>
     <string name="note_version_restored">Versionen har återställts</string>
     <string name="note_version_restore_failed">Det gick inte att återställa versionen</string>
+    <string name="note_version_compare">Jämför med nuvarande</string>
+    <string name="note_version_compare_title">Jämför versioner</string>
+    <string name="note_version_current">Nuvarande</string>
+    <string name="note_version_identical">Den här versionen är identisk med den nuvarande anteckningen</string>
+    <string name="note_version_compare_unavailable">Den här versionen eller anteckningen är inte längre tillgänglig</string>
 </resources>

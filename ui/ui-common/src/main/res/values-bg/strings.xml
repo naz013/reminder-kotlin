@@ -1299,4 +1299,9 @@
     <string name="note_version_restore">Възстановяване</string>
     <string name="note_version_restored">Версията е възстановена</string>
     <string name="note_version_restore_failed">Версията не можа да бъде възстановена</string>
+    <string name="note_version_compare">Сравни с текущата</string>
+    <string name="note_version_compare_title">Сравняване на версии</string>
+    <string name="note_version_current">Текуща</string>
+    <string name="note_version_identical">Тази версия е идентична с текущата бележка</string>
+    <string name="note_version_compare_unavailable">Тази версия или бележка вече не е налична</string>
 </resources>

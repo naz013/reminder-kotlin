@@ -1297,4 +1297,9 @@
     <string name="note_version_restore">Gjenopprett</string>
     <string name="note_version_restored">Versjonen er gjenopprettet</string>
     <string name="note_version_restore_failed">Kunne ikke gjenopprette versjonen</string>
+    <string name="note_version_compare">Sammenlign med gjeldende</string>
+    <string name="note_version_compare_title">Sammenlign versjoner</string>
+    <string name="note_version_current">Gjeldende</string>
+    <string name="note_version_identical">Denne versjonen er identisk med det gjeldende notatet</string>
+    <string name="note_version_compare_unavailable">Denne versjonen eller dette notatet er ikke lenger tilgjengelig</string>
 </resources>

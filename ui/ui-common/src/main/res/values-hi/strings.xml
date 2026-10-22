@@ -1295,4 +1295,9 @@
     <string name="note_version_restore">पुनर्स्थापित करें</string>
     <string name="note_version_restored">संस्करण पुनर्स्थापित किया गया</string>
     <string name="note_version_restore_failed">इस संस्करण को पुनर्स्थापित नहीं किया जा सका</string>
+    <string name="note_version_compare">वर्तमान से तुलना करें</string>
+    <string name="note_version_compare_title">संस्करणों की तुलना</string>
+    <string name="note_version_current">वर्तमान</string>
+    <string name="note_version_identical">यह संस्करण वर्तमान नोट के समान है</string>
+    <string name="note_version_compare_unavailable">यह संस्करण या नोट अब उपलब्ध नहीं है</string>
 </resources>

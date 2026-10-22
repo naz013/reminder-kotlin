@@ -1305,4 +1305,9 @@
     <string name="note_version_restore">Відновити</string>
     <string name="note_version_restored">Версію відновлено</string>
     <string name="note_version_restore_failed">Не вдалося відновити цю версію</string>
+    <string name="note_version_compare">Порівняти з поточною</string>
+    <string name="note_version_compare_title">Порівняння версій</string>
+    <string name="note_version_current">Поточна</string>
+    <string name="note_version_identical">Ця версія ідентична поточній нотатці</string>
+    <string name="note_version_compare_unavailable">Ця версія або нотатка більше недоступна</string>
 </resources>

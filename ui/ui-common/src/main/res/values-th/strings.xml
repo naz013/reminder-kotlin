@@ -1290,4 +1290,9 @@
     <string name="note_version_restore">กู้คืน</string>
     <string name="note_version_restored">กู้คืนเวอร์ชันแล้ว</string>
     <string name="note_version_restore_failed">ไม่สามารถกู้คืนเวอร์ชันนี้ได้</string>
+    <string name="note_version_compare">เปรียบเทียบกับปัจจุบัน</string>
+    <string name="note_version_compare_title">เปรียบเทียบเวอร์ชัน</string>
+    <string name="note_version_current">ปัจจุบัน</string>
+    <string name="note_version_identical">เวอร์ชันนี้เหมือนกับบันทึกปัจจุบัน</string>
+    <string name="note_version_compare_unavailable">เวอร์ชันหรือบันทึกนี้ไม่พร้อมใช้งานอีกต่อไป</string>
 </resources>

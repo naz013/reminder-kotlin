@@ -1292,4 +1292,9 @@
     <string name="note_version_restore">復元</string>
     <string name="note_version_restored">バージョンを復元しました</string>
     <string name="note_version_restore_failed">このバージョンを復元できませんでした</string>
+    <string name="note_version_compare">現在と比較</string>
+    <string name="note_version_compare_title">バージョンを比較</string>
+    <string name="note_version_current">現在</string>
+    <string name="note_version_identical">このバージョンは現在のノートと同一です</string>
+    <string name="note_version_compare_unavailable">このバージョンまたはノートは利用できなくなりました</string>
 </resources>

@@ -1302,4 +1302,9 @@
     <string name="note_version_restore">Restaurează</string>
     <string name="note_version_restored">Versiune restaurată</string>
     <string name="note_version_restore_failed">Versiunea nu a putut fi restaurată</string>
+    <string name="note_version_compare">Compară cu cea curentă</string>
+    <string name="note_version_compare_title">Compară versiunile</string>
+    <string name="note_version_current">Curentă</string>
+    <string name="note_version_identical">Această versiune este identică cu nota curentă</string>
+    <string name="note_version_compare_unavailable">Această versiune sau notă nu mai este disponibilă</string>
 </resources>

@@ -1309,4 +1309,9 @@
     <string name="note_version_restore">استعادة</string>
     <string name="note_version_restored">تمت استعادة الإصدار</string>
     <string name="note_version_restore_failed">تعذرت استعادة هذا الإصدار</string>
+    <string name="note_version_compare">قارن مع الحالي</string>
+    <string name="note_version_compare_title">مقارنة النسخ</string>
+    <string name="note_version_current">الحالي</string>
+    <string name="note_version_identical">هذه النسخة مطابقة للملاحظة الحالية</string>
+    <string name="note_version_compare_unavailable">هذه النسخة أو الملاحظة لم تعد متاحة</string>
 </resources>

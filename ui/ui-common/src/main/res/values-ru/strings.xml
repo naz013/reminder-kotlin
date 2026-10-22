@@ -1304,4 +1304,9 @@
     <string name="note_version_restore">Восстановить</string>
     <string name="note_version_restored">Версия восстановлена</string>
     <string name="note_version_restore_failed">Не удалось восстановить эту версию</string>
+    <string name="note_version_compare">Сравнить с текущей</string>
+    <string name="note_version_compare_title">Сравнение версий</string>
+    <string name="note_version_current">Текущая</string>
+    <string name="note_version_identical">Эта версия идентична текущей заметке</string>
+    <string name="note_version_compare_unavailable">Эта версия или заметка больше недоступна</string>
 </resources>

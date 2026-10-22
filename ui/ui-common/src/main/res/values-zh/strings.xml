@@ -1292,4 +1292,9 @@
     <string name="note_version_restore">恢复</string>
     <string name="note_version_restored">版本已恢复</string>
     <string name="note_version_restore_failed">无法恢复此版本</string>
+    <string name="note_version_compare">与当前版本比较</string>
+    <string name="note_version_compare_title">比较版本</string>
+    <string name="note_version_current">当前</string>
+    <string name="note_version_identical">此版本与当前笔记相同</string>
+    <string name="note_version_compare_unavailable">此版本或笔记已不可用</string>
 </resources>

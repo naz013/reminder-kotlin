@@ -1305,4 +1305,9 @@
     <string name="note_version_restore">Obnovit</string>
     <string name="note_version_restored">Verze byla obnovena</string>
     <string name="note_version_restore_failed">Tuto verzi se nepodařilo obnovit</string>
+    <string name="note_version_compare">Porovnat se současnou</string>
+    <string name="note_version_compare_title">Porovnání verzí</string>
+    <string name="note_version_current">Současná</string>
+    <string name="note_version_identical">Tato verze je shodná se současnou poznámkou</string>
+    <string name="note_version_compare_unavailable">Tato verze nebo poznámka již není k dispozici</string>
 </resources>

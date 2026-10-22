@@ -1295,4 +1295,9 @@
     <string name="note_version_restore">Wiederherstellen</string>
     <string name="note_version_restored">Version wiederhergestellt</string>
     <string name="note_version_restore_failed">Version konnte nicht wiederhergestellt werden</string>
+    <string name="note_version_compare">Mit aktueller vergleichen</string>
+    <string name="note_version_compare_title">Versionen vergleichen</string>
+    <string name="note_version_current">Aktuell</string>
+    <string name="note_version_identical">Diese Version ist identisch mit der aktuellen Notiz</string>
+    <string name="note_version_compare_unavailable">Diese Version oder Notiz ist nicht mehr verfügbar</string>
 </resources>

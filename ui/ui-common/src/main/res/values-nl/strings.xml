@@ -1297,4 +1297,9 @@
     <string name="note_version_restore">Herstellen</string>
     <string name="note_version_restored">Versie hersteld</string>
     <string name="note_version_restore_failed">Deze versie kon niet worden hersteld</string>
+    <string name="note_version_compare">Vergelijk met huidige</string>
+    <string name="note_version_compare_title">Versies vergelijken</string>
+    <string name="note_version_current">Huidig</string>
+    <string name="note_version_identical">Deze versie is identiek aan de huidige notitie</string>
+    <string name="note_version_compare_unavailable">Deze versie of notitie is niet meer beschikbaar</string>
 </resources>

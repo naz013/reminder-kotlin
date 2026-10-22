@@ -1299,4 +1299,9 @@
     <string name="note_version_restore">Geri yükle</string>
     <string name="note_version_restored">Sürüm geri yüklendi</string>
     <string name="note_version_restore_failed">Bu sürüm geri yüklenemedi</string>
+    <string name="note_version_compare">Güncel olanla karşılaştır</string>
+    <string name="note_version_compare_title">Sürümleri karşılaştır</string>
+    <string name="note_version_current">Güncel</string>
+    <string name="note_version_identical">Bu sürüm güncel notla aynı</string>
+    <string name="note_version_compare_unavailable">Bu sürüm veya not artık mevcut değil</string>
 </resources>

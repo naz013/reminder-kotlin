@@ -1305,4 +1305,9 @@
     <string name="note_version_restore">Przywróć</string>
     <string name="note_version_restored">Przywrócono wersję</string>
     <string name="note_version_restore_failed">Nie udało się przywrócić tej wersji</string>
+    <string name="note_version_compare">Porównaj z bieżącą</string>
+    <string name="note_version_compare_title">Porównanie wersji</string>
+    <string name="note_version_current">Bieżąca</string>
+    <string name="note_version_identical">Ta wersja jest identyczna z bieżącą notatką</string>
+    <string name="note_version_compare_unavailable">Ta wersja lub notatka nie jest już dostępna</string>
 </resources>

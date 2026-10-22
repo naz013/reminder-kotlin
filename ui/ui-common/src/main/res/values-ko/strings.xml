@@ -1292,4 +1292,9 @@
     <string name="note_version_restore">복원</string>
     <string name="note_version_restored">버전을 복원했습니다</string>
     <string name="note_version_restore_failed">이 버전을 복원하지 못했습니다</string>
+    <string name="note_version_compare">현재와 비교</string>
+    <string name="note_version_compare_title">버전 비교</string>
+    <string name="note_version_current">현재</string>
+    <string name="note_version_identical">이 버전은 현재 노트와 동일합니다</string>
+    <string name="note_version_compare_unavailable">이 버전 또는 노트를 더 이상 사용할 수 없습니다</string>
 </resources>

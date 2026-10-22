@@ -1294,4 +1294,9 @@
     <string name="note_version_restore">Pulihkan</string>
     <string name="note_version_restored">Versi dipulihkan</string>
     <string name="note_version_restore_failed">Gagal memulihkan versi ini</string>
+    <string name="note_version_compare">Bandingkan dengan saat ini</string>
+    <string name="note_version_compare_title">Bandingkan versi</string>
+    <string name="note_version_current">Saat ini</string>
+    <string name="note_version_identical">Versi ini identik dengan catatan saat ini</string>
+    <string name="note_version_compare_unavailable">Versi atau catatan ini tidak lagi tersedia</string>
 </resources>

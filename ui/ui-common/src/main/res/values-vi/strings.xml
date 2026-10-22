@@ -1294,4 +1294,9 @@
     <string name="note_version_restore">Khôi phục</string>
     <string name="note_version_restored">Đã khôi phục phiên bản</string>
     <string name="note_version_restore_failed">Không thể khôi phục phiên bản này</string>
+    <string name="note_version_compare">So sánh với bản hiện tại</string>
+    <string name="note_version_compare_title">So sánh các phiên bản</string>
+    <string name="note_version_current">Hiện tại</string>
+    <string name="note_version_identical">Phiên bản này giống với ghi chú hiện tại</string>
+    <string name="note_version_compare_unavailable">Phiên bản hoặc ghi chú này không còn khả dụng</string>
 </resources>
