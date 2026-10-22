@@ -20,4 +20,5 @@ internal data class PreviewNoteState(
   val isLoading: Boolean = false,
   val background: Color = Color.Transparent,
   val content: Color = Color.Unspecified,
+  val history: NoteHistoryState? = null,
 )

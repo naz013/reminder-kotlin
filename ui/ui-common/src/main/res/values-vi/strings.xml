@@ -1289,4 +1289,9 @@
     <string name="start_after_clear">Xóa</string>
     <string name="builder_error_start_after_cycle">Các lời nhắc này sẽ chờ lẫn nhau. Hãy chọn lời nhắc khác.</string>
     <string name="reminder_waiting_for">Đang chờ %1$s</string>
+    <string name="note_version_history">Lịch sử phiên bản</string>
+    <string name="note_version_history_empty">Chưa có phiên bản trước đó. Một phiên bản được lưu mỗi khi bạn chỉnh sửa ghi chú này.</string>
+    <string name="note_version_restore">Khôi phục</string>
+    <string name="note_version_restored">Đã khôi phục phiên bản</string>
+    <string name="note_version_restore_failed">Không thể khôi phục phiên bản này</string>
 </resources>

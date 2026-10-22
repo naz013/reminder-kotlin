@@ -1297,4 +1297,9 @@
     <string name="start_after_clear">Rimuovi</string>
     <string name="builder_error_start_after_cycle">Questi promemoria si aspetterebbero a vicenda. Scegli un altro promemoria.</string>
     <string name="reminder_waiting_for">In attesa di %1$s</string>
+    <string name="note_version_history">Cronologia delle versioni</string>
+    <string name="note_version_history_empty">Nessuna versione precedente per ora. Una versione viene salvata ogni volta che modifichi questa nota.</string>
+    <string name="note_version_restore">Ripristina</string>
+    <string name="note_version_restored">Versione ripristinata</string>
+    <string name="note_version_restore_failed">Impossibile ripristinare questa versione</string>
 </resources>

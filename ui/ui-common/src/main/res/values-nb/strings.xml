@@ -1292,4 +1292,9 @@
     <string name="start_after_clear">Fjern</string>
     <string name="builder_error_start_after_cycle">Disse påminnelsene ville ventet på hverandre. Velg en annen påminnelse.</string>
     <string name="reminder_waiting_for">Venter på %1$s</string>
+    <string name="note_version_history">Versjonshistorikk</string>
+    <string name="note_version_history_empty">Ingen tidligere versjoner ennå. En versjon lagres hver gang du redigerer dette notatet.</string>
+    <string name="note_version_restore">Gjenopprett</string>
+    <string name="note_version_restored">Versjonen er gjenopprettet</string>
+    <string name="note_version_restore_failed">Kunne ikke gjenopprette versjonen</string>
 </resources>

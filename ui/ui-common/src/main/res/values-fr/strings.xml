@@ -1297,4 +1297,9 @@
     <string name="start_after_clear">Retirer</string>
     <string name="builder_error_start_after_cycle">Ces rappels s\'attendraient mutuellement. Choisissez un autre rappel.</string>
     <string name="reminder_waiting_for">En attente de %1$s</string>
+    <string name="note_version_history">Historique des versions</string>
+    <string name="note_version_history_empty">Aucune version antérieure pour le moment. Une version est enregistrée chaque fois que vous modifiez cette note.</string>
+    <string name="note_version_restore">Restaurer</string>
+    <string name="note_version_restored">Version restaurée</string>
+    <string name="note_version_restore_failed">Impossible de restaurer cette version</string>
 </resources>

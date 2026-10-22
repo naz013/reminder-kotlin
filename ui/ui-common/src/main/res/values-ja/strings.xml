@@ -1287,4 +1287,9 @@
     <string name="start_after_clear">削除</string>
     <string name="builder_error_start_after_cycle">これらのリマインダーは互いに待ち合うことになります。別のリマインダーを選んでください。</string>
     <string name="reminder_waiting_for">%1$s を待機中</string>
+    <string name="note_version_history">バージョン履歴</string>
+    <string name="note_version_history_empty">以前のバージョンはまだありません。このメモを編集するたびにバージョンが保存されます。</string>
+    <string name="note_version_restore">復元</string>
+    <string name="note_version_restored">バージョンを復元しました</string>
+    <string name="note_version_restore_failed">このバージョンを復元できませんでした</string>
 </resources>

@@ -1287,4 +1287,9 @@
     <string name="start_after_clear">移除</string>
     <string name="builder_error_start_after_cycle">这些提醒会互相等待。请选择其他提醒。</string>
     <string name="reminder_waiting_for">等待 %1$s</string>
+    <string name="note_version_history">版本历史</string>
+    <string name="note_version_history_empty">暂无更早的版本。每次编辑此笔记时都会保存一个版本。</string>
+    <string name="note_version_restore">恢复</string>
+    <string name="note_version_restored">版本已恢复</string>
+    <string name="note_version_restore_failed">无法恢复此版本</string>
 </resources>

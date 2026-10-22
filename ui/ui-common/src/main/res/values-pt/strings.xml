@@ -1297,4 +1297,9 @@
     <string name="start_after_clear">Remover</string>
     <string name="builder_error_start_after_cycle">Estes lembretes ficariam à espera um do outro. Escolha outro lembrete.</string>
     <string name="reminder_waiting_for">Aguardando %1$s</string>
+    <string name="note_version_history">Histórico de versões</string>
+    <string name="note_version_history_empty">Ainda não há versões anteriores. Uma versão é guardada sempre que edita esta nota.</string>
+    <string name="note_version_restore">Restaurar</string>
+    <string name="note_version_restored">Versão restaurada</string>
+    <string name="note_version_restore_failed">Não foi possível restaurar esta versão</string>
 </resources>

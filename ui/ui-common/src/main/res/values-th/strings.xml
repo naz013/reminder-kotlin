@@ -1285,4 +1285,9 @@
     <string name="start_after_clear">ลบ</string>
     <string name="builder_error_start_after_cycle">การเตือนเหล่านี้จะรอซึ่งกันและกัน โปรดเลือกการเตือนอื่น</string>
     <string name="reminder_waiting_for">กำลังรอ %1$s</string>
+    <string name="note_version_history">ประวัติเวอร์ชัน</string>
+    <string name="note_version_history_empty">ยังไม่มีเวอร์ชันก่อนหน้า ระบบจะบันทึกเวอร์ชันทุกครั้งที่คุณแก้ไขโน้ตนี้</string>
+    <string name="note_version_restore">กู้คืน</string>
+    <string name="note_version_restored">กู้คืนเวอร์ชันแล้ว</string>
+    <string name="note_version_restore_failed">ไม่สามารถกู้คืนเวอร์ชันนี้ได้</string>
 </resources>

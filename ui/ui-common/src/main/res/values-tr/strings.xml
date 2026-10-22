@@ -1294,4 +1294,9 @@
     <string name="start_after_clear">Kaldır</string>
     <string name="builder_error_start_after_cycle">Bu hatırlatıcılar birbirini bekler. Başka bir hatırlatıcı seçin.</string>
     <string name="reminder_waiting_for">%1$s bekleniyor</string>
+    <string name="note_version_history">Sürüm geçmişi</string>
+    <string name="note_version_history_empty">Henüz önceki sürüm yok. Bu notu her düzenlediğinizde bir sürüm kaydedilir.</string>
+    <string name="note_version_restore">Geri yükle</string>
+    <string name="note_version_restored">Sürüm geri yüklendi</string>
+    <string name="note_version_restore_failed">Bu sürüm geri yüklenemedi</string>
 </resources>

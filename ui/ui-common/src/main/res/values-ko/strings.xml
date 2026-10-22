@@ -1287,4 +1287,9 @@
     <string name="start_after_clear">삭제</string>
     <string name="builder_error_start_after_cycle">이 알림들은 서로를 기다리게 됩니다. 다른 알림을 선택하세요.</string>
     <string name="reminder_waiting_for">%1$s 대기 중</string>
+    <string name="note_version_history">버전 기록</string>
+    <string name="note_version_history_empty">이전 버전이 아직 없습니다. 이 메모를 편집할 때마다 버전이 저장됩니다.</string>
+    <string name="note_version_restore">복원</string>
+    <string name="note_version_restored">버전을 복원했습니다</string>
+    <string name="note_version_restore_failed">이 버전을 복원하지 못했습니다</string>
 </resources>

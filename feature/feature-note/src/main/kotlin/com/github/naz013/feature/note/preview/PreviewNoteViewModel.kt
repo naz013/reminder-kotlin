@@ -7,7 +7,9 @@ import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Screen
 import com.github.naz013.analytics.ScreenUsedEvent
 import com.github.naz013.common.TextProvider
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.TaggedItemType
+import com.github.naz013.domain.note.NoteVersion
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -21,10 +23,12 @@ import com.github.naz013.feature.note.preview.reminders.ReminderToUiNoteAttached
 import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.feature.note.usecase.RestoreNoteVersionUseCase
 import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.NoteVersionRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.ui.note.NoteColorEngine
@@ -57,6 +61,9 @@ internal class PreviewNoteViewModel(
   private val noteColorEngine: NoteColorEngine,
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val tagChipStateAdapter: TagChipStateAdapter,
+  private val noteVersionRepository: NoteVersionRepository,
+  private val restoreNoteVersionUseCase: RestoreNoteVersionUseCase,
+  private val dateTimeManager: DateTimeManager,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewNoteState(id = key))
@@ -216,6 +223,56 @@ internal class PreviewNoteViewModel(
     }
   }
 
+  fun onHistoryClick() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val versions = noteVersionRepository.getByNoteKey(key).map { it.toUi() }
+      withContext(dispatcherProvider.main()) {
+        _state.update { it.copy(history = NoteHistoryState(versions = versions)) }
+      }
+    }
+  }
+
+  fun onHistoryDismiss() {
+    _state.update { it.copy(history = null) }
+  }
+
+  fun onVersionClick(id: Long) {
+    _state.update { state ->
+      val history = state.history ?: return@update state
+      state.copy(history = history.copy(selectedVersion = history.versions.firstOrNull { it.id == id }))
+    }
+  }
+
+  fun onVersionBackClick() {
+    _state.update { state ->
+      state.copy(history = state.history?.copy(selectedVersion = null))
+    }
+  }
+
+  fun onVersionRestoreClick() {
+    val versionId = _state.value.history?.selectedVersion?.id ?: return
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val restored = restoreNoteVersionUseCase(versionId)
+      val message = textProvider.getText(
+        if (restored) R.string.note_version_restored else R.string.note_version_restore_failed
+      )
+      withContext(dispatcherProvider.main()) {
+        _state.update { it.copy(history = null) }
+        event.emit(ViewModelEvent.Message(message))
+      }
+    }
+  }
+
+  private fun NoteVersion.toUi(): UiNoteVersion {
+    val text = content.text
+    return UiNoteVersion(
+      id = id,
+      savedAtFormatted = dateTimeManager.getFullDateTime(savedAt),
+      preview = text.lines().filter { it.isNotBlank() }.take(PREVIEW_LINES).joinToString("\n"),
+      fullText = text,
+    )
+  }
+
   sealed interface ViewModelEvent {
     data class EditNote(
       val id: String,
@@ -245,5 +302,6 @@ internal class PreviewNoteViewModel(
 
   companion object {
     private const val TAG = "PreviewNoteViewModel"
+    private const val PREVIEW_LINES = 2
   }
 }

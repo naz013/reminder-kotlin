@@ -1290,4 +1290,9 @@
     <string name="start_after_clear">Entfernen</string>
     <string name="builder_error_start_after_cycle">Diese Erinnerungen würden aufeinander warten. Wähle eine andere Erinnerung.</string>
     <string name="reminder_waiting_for">Wartet auf %1$s</string>
+    <string name="note_version_history">Versionsverlauf</string>
+    <string name="note_version_history_empty">Noch keine früheren Versionen. Bei jeder Bearbeitung dieser Notiz wird eine Version gespeichert.</string>
+    <string name="note_version_restore">Wiederherstellen</string>
+    <string name="note_version_restored">Version wiederhergestellt</string>
+    <string name="note_version_restore_failed">Version konnte nicht wiederhergestellt werden</string>
 </resources>

@@ -1300,4 +1300,9 @@
     <string name="start_after_clear">Прибрати</string>
     <string name="builder_error_start_after_cycle">Ці нагадування чекали б одне на одного. Виберіть інше нагадування.</string>
     <string name="reminder_waiting_for">Очікує: %1$s</string>
+    <string name="note_version_history">Історія версій</string>
+    <string name="note_version_history_empty">Попередніх версій поки немає. Версія зберігається щоразу, коли ви редагуєте цю нотатку.</string>
+    <string name="note_version_restore">Відновити</string>
+    <string name="note_version_restored">Версію відновлено</string>
+    <string name="note_version_restore_failed">Не вдалося відновити цю версію</string>
 </resources>

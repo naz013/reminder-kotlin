@@ -1297,4 +1297,9 @@
     <string name="start_after_clear">Elimină</string>
     <string name="builder_error_start_after_cycle">Aceste mementouri s-ar aștepta unul pe altul. Alege alt memento.</string>
     <string name="reminder_waiting_for">Așteaptă %1$s</string>
+    <string name="note_version_history">Istoricul versiunilor</string>
+    <string name="note_version_history_empty">Încă nu există versiuni anterioare. O versiune este salvată de fiecare dată când editezi această notă.</string>
+    <string name="note_version_restore">Restaurează</string>
+    <string name="note_version_restored">Versiune restaurată</string>
+    <string name="note_version_restore_failed">Versiunea nu a putut fi restaurată</string>
 </resources>

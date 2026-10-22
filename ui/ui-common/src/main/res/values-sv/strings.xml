@@ -1292,4 +1292,9 @@
     <string name="start_after_clear">Ta bort</string>
     <string name="builder_error_start_after_cycle">Dessa påminnelser skulle vänta på varandra. Välj en annan påminnelse.</string>
     <string name="reminder_waiting_for">Väntar på %1$s</string>
+    <string name="note_version_history">Versionshistorik</string>
+    <string name="note_version_history_empty">Inga tidigare versioner än. En version sparas varje gång du redigerar den här anteckningen.</string>
+    <string name="note_version_restore">Återställ</string>
+    <string name="note_version_restored">Versionen har återställts</string>
+    <string name="note_version_restore_failed">Det gick inte att återställa versionen</string>
 </resources>

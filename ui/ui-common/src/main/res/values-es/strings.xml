@@ -1297,4 +1297,9 @@
     <string name="start_after_clear">Quitar</string>
     <string name="builder_error_start_after_cycle">Estos recordatorios se esperarían entre sí. Elige otro recordatorio.</string>
     <string name="reminder_waiting_for">Esperando a %1$s</string>
+    <string name="note_version_history">Historial de versiones</string>
+    <string name="note_version_history_empty">Aún no hay versiones anteriores. Se guarda una versión cada vez que editas esta nota.</string>
+    <string name="note_version_restore">Restaurar</string>
+    <string name="note_version_restored">Versión restaurada</string>
+    <string name="note_version_restore_failed">No se pudo restaurar esta versión</string>
 </resources>

@@ -42,6 +42,7 @@ private const val OVERFLOW_ITEM_SHARE = 0
 private const val OVERFLOW_ITEM_ARCHIVE = 1
 private const val OVERFLOW_ITEM_PIN = 2
 private const val OVERFLOW_ITEM_DELETE = 3
+private const val OVERFLOW_ITEM_HISTORY = 4
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -115,6 +116,11 @@ internal fun PreviewNoteScreen(
               iconRes = if (state.isPinned) DrawableCatalog.Fluent.PinOff else DrawableCatalog.Fluent.Pin,
             ),
             PopupMenuItem(
+              id = OVERFLOW_ITEM_HISTORY,
+              title = stringResource(R.string.note_version_history),
+              iconRes = DrawableCatalog.Fluent.History,
+            ),
+            PopupMenuItem(
               id = OVERFLOW_ITEM_DELETE,
               title = stringResource(R.string.delete),
               iconRes = DrawableCatalog.Fluent.Delete,
@@ -125,6 +131,7 @@ internal fun PreviewNoteScreen(
               OVERFLOW_ITEM_SHARE -> actions.onShareClick()
               OVERFLOW_ITEM_ARCHIVE -> actions.onArchiveClick()
               OVERFLOW_ITEM_PIN -> actions.onPinClick()
+              OVERFLOW_ITEM_HISTORY -> actions.onHistoryClick()
               OVERFLOW_ITEM_DELETE -> actions.onDeleteClick()
             }
           },
@@ -186,5 +193,15 @@ internal fun PreviewNoteScreen(
         modifier = Modifier.padding(top = 16.dp),
       )
     }
+  }
+
+  state.history?.let { history ->
+    NoteVersionHistorySheet(
+      state = history,
+      onDismissRequest = actions.onHistoryDismiss,
+      onVersionClick = actions.onVersionClick,
+      onBackToListClick = actions.onVersionBackClick,
+      onRestoreClick = actions.onVersionRestoreClick,
+    )
   }
 }

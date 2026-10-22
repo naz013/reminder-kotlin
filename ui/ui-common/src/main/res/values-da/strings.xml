@@ -1292,4 +1292,9 @@
     <string name="start_after_clear">Fjern</string>
     <string name="builder_error_start_after_cycle">Disse påmindelser ville vente på hinanden. Vælg en anden påmindelse.</string>
     <string name="reminder_waiting_for">Venter på %1$s</string>
+    <string name="note_version_history">Versionshistorik</string>
+    <string name="note_version_history_empty">Ingen tidligere versioner endnu. En version gemmes, hver gang du redigerer denne note.</string>
+    <string name="note_version_restore">Gendan</string>
+    <string name="note_version_restored">Version gendannet</string>
+    <string name="note_version_restore_failed">Versionen kunne ikke gendannes</string>
 </resources>

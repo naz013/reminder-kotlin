@@ -1304,4 +1304,9 @@
     <string name="start_after_clear">إزالة</string>
     <string name="builder_error_start_after_cycle">ستنتظر هذه التذكيرات بعضها البعض. اختر تذكيرًا آخر.</string>
     <string name="reminder_waiting_for">في انتظار %1$s</string>
+    <string name="note_version_history">سجل الإصدارات</string>
+    <string name="note_version_history_empty">لا توجد إصدارات سابقة بعد. يتم حفظ إصدار في كل مرة تعدّل فيها هذه الملاحظة.</string>
+    <string name="note_version_restore">استعادة</string>
+    <string name="note_version_restored">تمت استعادة الإصدار</string>
+    <string name="note_version_restore_failed">تعذرت استعادة هذا الإصدار</string>
 </resources>

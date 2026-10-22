@@ -1300,4 +1300,9 @@
     <string name="start_after_clear">Usuń</string>
     <string name="builder_error_start_after_cycle">Te przypomnienia czekałyby na siebie nawzajem. Wybierz inne przypomnienie.</string>
     <string name="reminder_waiting_for">Oczekuje na %1$s</string>
+    <string name="note_version_history">Historia wersji</string>
+    <string name="note_version_history_empty">Brak wcześniejszych wersji. Wersja jest zapisywana przy każdej edycji tej notatki.</string>
+    <string name="note_version_restore">Przywróć</string>
+    <string name="note_version_restored">Przywrócono wersję</string>
+    <string name="note_version_restore_failed">Nie udało się przywrócić tej wersji</string>
 </resources>

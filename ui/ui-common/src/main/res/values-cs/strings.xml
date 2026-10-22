@@ -1300,4 +1300,9 @@
     <string name="start_after_clear">Odebrat</string>
     <string name="builder_error_start_after_cycle">Tyto připomínky by na sebe navzájem čekaly. Vyberte jinou připomínku.</string>
     <string name="reminder_waiting_for">Čeká na %1$s</string>
+    <string name="note_version_history">Historie verzí</string>
+    <string name="note_version_history_empty">Zatím žádné dřívější verze. Verze se uloží při každé úpravě této poznámky.</string>
+    <string name="note_version_restore">Obnovit</string>
+    <string name="note_version_restored">Verze byla obnovena</string>
+    <string name="note_version_restore_failed">Tuto verzi se nepodařilo obnovit</string>
 </resources>

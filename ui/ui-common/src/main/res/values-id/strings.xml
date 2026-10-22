@@ -1289,4 +1289,9 @@
     <string name="start_after_clear">Hapus</string>
     <string name="builder_error_start_after_cycle">Pengingat ini akan saling menunggu. Pilih pengingat lain.</string>
     <string name="reminder_waiting_for">Menunggu %1$s</string>
+    <string name="note_version_history">Riwayat versi</string>
+    <string name="note_version_history_empty">Belum ada versi sebelumnya. Satu versi disimpan setiap kali Anda mengedit catatan ini.</string>
+    <string name="note_version_restore">Pulihkan</string>
+    <string name="note_version_restored">Versi dipulihkan</string>
+    <string name="note_version_restore_failed">Gagal memulihkan versi ini</string>
 </resources>

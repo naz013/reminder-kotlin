@@ -1294,4 +1294,9 @@
     <string name="start_after_clear">Премахни</string>
     <string name="builder_error_start_after_cycle">Тези напомняния ще чакат едно друго. Изберете друго напомняне.</string>
     <string name="reminder_waiting_for">Чака за %1$s</string>
+    <string name="note_version_history">История на версиите</string>
+    <string name="note_version_history_empty">Все още няма по-ранни версии. Версия се запазва всеки път, когато редактирате тази бележка.</string>
+    <string name="note_version_restore">Възстановяване</string>
+    <string name="note_version_restored">Версията е възстановена</string>
+    <string name="note_version_restore_failed">Версията не можа да бъде възстановена</string>
 </resources>

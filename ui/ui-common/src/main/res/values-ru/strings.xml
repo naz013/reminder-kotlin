@@ -1299,4 +1299,9 @@
     <string name="start_after_clear">Убрать</string>
     <string name="builder_error_start_after_cycle">Эти напоминания ждали бы друг друга. Выберите другое напоминание.</string>
     <string name="reminder_waiting_for">Ожидает: %1$s</string>
+    <string name="note_version_history">История версий</string>
+    <string name="note_version_history_empty">Предыдущих версий пока нет. Версия сохраняется при каждом редактировании этой заметки.</string>
+    <string name="note_version_restore">Восстановить</string>
+    <string name="note_version_restored">Версия восстановлена</string>
+    <string name="note_version_restore_failed">Не удалось восстановить эту версию</string>
 </resources>

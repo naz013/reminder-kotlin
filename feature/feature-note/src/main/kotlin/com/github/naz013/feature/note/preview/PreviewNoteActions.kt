@@ -16,4 +16,9 @@ internal data class PreviewNoteActions(
   val onImageOpen: (Int) -> Unit = {},
   val onReminderEditClick: (String) -> Unit = {},
   val onReminderDetachClick: (String) -> Unit = {},
+  val onHistoryClick: () -> Unit = {},
+  val onHistoryDismiss: () -> Unit = {},
+  val onVersionClick: (Long) -> Unit = {},
+  val onVersionBackClick: () -> Unit = {},
+  val onVersionRestoreClick: () -> Unit = {},
 )

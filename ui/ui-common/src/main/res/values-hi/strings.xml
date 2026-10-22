@@ -1290,4 +1290,9 @@
     <string name="start_after_clear">हटाएं</string>
     <string name="builder_error_start_after_cycle">ये रिमाइंडर एक-दूसरे की प्रतीक्षा करेंगे। कोई दूसरा रिमाइंडर चुनें।</string>
     <string name="reminder_waiting_for">%1$s की प्रतीक्षा में</string>
+    <string name="note_version_history">संस्करण इतिहास</string>
+    <string name="note_version_history_empty">अभी तक कोई पुराना संस्करण नहीं है। इस नोट को संपादित करने पर हर बार एक संस्करण सहेजा जाता है।</string>
+    <string name="note_version_restore">पुनर्स्थापित करें</string>
+    <string name="note_version_restored">संस्करण पुनर्स्थापित किया गया</string>
+    <string name="note_version_restore_failed">इस संस्करण को पुनर्स्थापित नहीं किया जा सका</string>
 </resources>

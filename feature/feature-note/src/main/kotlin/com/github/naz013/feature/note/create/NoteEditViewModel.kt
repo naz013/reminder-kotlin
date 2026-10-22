@@ -46,6 +46,7 @@ import com.github.naz013.feature.note.create.images.ImageDecoder
 import com.github.naz013.feature.note.preview.ImagesSingleton
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.feature.note.usecase.SaveNoteVersionUseCase
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.note.NoteImageRepository
 import com.github.naz013.logic.note.SaveNoteUseCase
@@ -115,6 +116,7 @@ internal class NoteEditViewModel(
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val toggleTagAssignmentUseCase: ToggleTagAssignmentUseCase,
   private val tagChipStateAdapter: TagChipStateAdapter,
+  private val saveNoteVersionUseCase: SaveNoteVersionUseCase,
 ) : ViewModel() {
 
   val is24HourFormat: Boolean = notePreferences.is24HourFormat
@@ -727,6 +729,7 @@ internal class NoteEditViewModel(
     _state.update { it.copy(activeDialog = null) }
 
     viewModelScope.launch(dispatcherProvider.main()) {
+      val previousContent = if (newId) null else getStoredContent()
       val noteWithImages = createObject()
       val hasReminder = _state.value.isReminderAttached
       var reminder: ReminderV2? = null
@@ -752,18 +755,25 @@ internal class NoteEditViewModel(
       noteWithImages.note?.archived = false
       analyticsEventSender.send(FeatureUsedEvent(Feature.CREATE_NOTE))
       Logger.logEvent("Note saved")
-      saveNote(noteWithImages, reminder, reminderToDelete)
+      saveNote(noteWithImages, reminder, reminderToDelete, previousContent)
     }
   }
+
+  private suspend fun getStoredContent(): NoteDocument? =
+    withContext(dispatcherProvider.io()) {
+      noteRepository.getById(_state.value.noteId)?.note?.content
+    }
 
   private suspend fun saveNote(
     note: NoteWithImages,
     reminder: ReminderV2?,
     reminderToDelete: ReminderV2?,
+    previousContent: NoteDocument?,
   ) {
     val v = note.note ?: return
     withContext(dispatcherProvider.default()) {
       v.updatedAt = DateTimeManager.gmtDateTime
+      previousContent?.let { saveVersionSafely(v.key, it, v.content) }
       saveNoteUseCase(note)
       Logger.i(TAG, "Note saved with id: ${v.key}")
       if (reminder != null) {
@@ -777,6 +787,14 @@ internal class NoteEditViewModel(
         appWidgetUpdater.updateAllWidgets()
         event.value = Event(ViewModelEvent.MoveBack)
       }
+    }
+  }
+
+  private suspend fun saveVersionSafely(noteKey: String, previous: NoteDocument, updated: NoteDocument) {
+    try {
+      saveNoteVersionUseCase(noteKey, previous, updated)
+    } catch (e: Exception) {
+      Logger.e(TAG, "Failed to save note version", e)
     }
   }
 

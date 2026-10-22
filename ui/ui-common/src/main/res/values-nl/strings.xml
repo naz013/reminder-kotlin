@@ -1292,4 +1292,9 @@
     <string name="start_after_clear">Verwijderen</string>
     <string name="builder_error_start_after_cycle">Deze herinneringen zouden op elkaar wachten. Kies een andere herinnering.</string>
     <string name="reminder_waiting_for">Wacht op %1$s</string>
+    <string name="note_version_history">Versiegeschiedenis</string>
+    <string name="note_version_history_empty">Nog geen eerdere versies. Er wordt een versie opgeslagen telkens wanneer je deze notitie bewerkt.</string>
+    <string name="note_version_restore">Herstellen</string>
+    <string name="note_version_restored">Versie hersteld</string>
+    <string name="note_version_restore_failed">Deze versie kon niet worden hersteld</string>
 </resources>

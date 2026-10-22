@@ -351,6 +351,11 @@ private fun NotePreviewEntry(
       onImageOpen = viewModel::onImageOpen,
       onReminderEditClick = viewModel::onReminderEditClick,
       onReminderDetachClick = viewModel::onReminderDetachClick,
+      onHistoryClick = viewModel::onHistoryClick,
+      onHistoryDismiss = viewModel::onHistoryDismiss,
+      onVersionClick = viewModel::onVersionClick,
+      onVersionBackClick = viewModel::onVersionBackClick,
+      onVersionRestoreClick = viewModel::onVersionRestoreClick,
     ),
     adsBanner = adsContent,
   )

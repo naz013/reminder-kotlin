@@ -15,6 +15,8 @@ import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
 import com.github.naz013.feature.note.usecase.MergeNotesUseCase
+import com.github.naz013.feature.note.usecase.RestoreNoteVersionUseCase
+import com.github.naz013.feature.note.usecase.SaveNoteVersionUseCase
 import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
 import com.github.naz013.logic.note.NoteImageRepository
 import org.koin.core.module.dsl.factoryOf
@@ -27,6 +29,8 @@ val featureNoteModule = module {
   factoryOf(::MergeNotesUseCase)
   factoryOf(::ChangeNoteArchiveStateUseCase)
   factoryOf(::TogglePinnedNoteUseCase)
+  factory { SaveNoteVersionUseCase(get(), System::currentTimeMillis) }
+  factoryOf(::RestoreNoteVersionUseCase)
 
   factoryOf(::CreateSharedNoteFileUseCase)
 
@@ -50,6 +54,7 @@ val featureNoteModule = module {
       sharedText,
       sharedImageUris,
       fromIntentData,
+      get(),
       get(),
       get(),
       get(),
@@ -108,6 +113,9 @@ val featureNoteModule = module {
   viewModel { (id: String) ->
     PreviewNoteViewModel(
       id,
+      get(),
+      get(),
+      get(),
       get(),
       get(),
       get(),
