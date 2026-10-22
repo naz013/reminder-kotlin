@@ -33,18 +33,35 @@ internal class RoutineExecutionViewModel(
 
   private val attachToken: Long = engine.start(id)
 
+  private var hasShownRunning = false
+  private var isExiting = false
+
   init {
     viewModelScope.launch {
-      engine.state.collect { runState ->
-        if (runState is RoutineRunState.NotFound && runState.routineId == id) {
-          engine.stop()
-          navigationEvent.emit(NavigationEvent.Back)
-        }
-      }
+      engine.state.collect(::onEngineState)
     }
     viewModelScope.launch {
       engine.stepTransitions.collect { stepTransitionEvent.emit(Unit) }
     }
+  }
+
+  private fun onEngineState(runState: RoutineRunState) {
+    when (runState) {
+      is RoutineRunState.Running -> hasShownRunning = true
+      is RoutineRunState.Finished -> hasShownRunning = false
+      is RoutineRunState.NotFound -> if (runState.routineId == id) {
+        engine.stop()
+        exit()
+      }
+      is RoutineRunState.Idle -> if (hasShownRunning) exit()
+      else -> Unit
+    }
+  }
+
+  private fun exit() {
+    if (isExiting) return
+    isExiting = true
+    navigationEvent.emit(NavigationEvent.Back)
   }
 
   private fun toUiState(runState: RoutineRunState): RoutineExecutionState {
@@ -95,6 +112,7 @@ internal class RoutineExecutionViewModel(
   }
 
   fun onBackClick() {
+    isExiting = true
     engine.stop()
     navigationEvent.emit(NavigationEvent.Back)
   }

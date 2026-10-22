@@ -153,6 +153,45 @@ class RoutineExecutionViewModelTest : BaseTest() {
   }
 
   @Test
+  fun `external stop after running emits exit once`() {
+    val viewModel = createViewModel()
+    val events = mutableListOf<RoutineExecutionViewModel.NavigationEvent>()
+    viewModel.navigationEvent.observeForever { event -> event.getContentIfNotHandled()?.let(events::add) }
+    engineState.value = running()
+
+    engineState.value = RoutineRunState.Idle
+    engineState.value = RoutineRunState.Idle
+
+    assertEquals(backNavigation(), events)
+  }
+
+  @Test
+  fun `normal finish does not emit exit`() {
+    val viewModel = createViewModel()
+    val events = mutableListOf<RoutineExecutionViewModel.NavigationEvent>()
+    viewModel.navigationEvent.observeForever { event -> event.getContentIfNotHandled()?.let(events::add) }
+    engineState.value = running()
+
+    engineState.value = RoutineRunState.Finished(ROUTINE_ID, totalTimeSeconds = 5, completedCount = 1, totalCount = 1)
+
+    assertTrue(events.isEmpty())
+  }
+
+  @Test
+  fun `own back press does not emit exit twice`() {
+    every { engine.stop() } answers { engineState.value = RoutineRunState.Idle }
+    val viewModel = createViewModel()
+    val events = mutableListOf<RoutineExecutionViewModel.NavigationEvent>()
+    viewModel.navigationEvent.observeForever { event -> event.getContentIfNotHandled()?.let(events::add) }
+    engineState.value = running()
+
+    viewModel.onBackClick()
+
+    assertEquals(backNavigation(), events)
+    verify(exactly = 1) { engine.stop() }
+  }
+
+  @Test
   fun `forwards step transitions as haptic events`() {
     val viewModel = createViewModel()
     var handled = 0
