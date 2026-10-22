@@ -41,6 +41,10 @@ class PendingDeleteTracker {
     batch.onCommit()
   }
 
+  suspend fun commitAll() {
+    pendingBatches.keys.toList().forEach { commit(it) }
+  }
+
   private class PendingBatch(
     val ids: Set<String>,
     val onCommit: suspend () -> Unit,

@@ -43,7 +43,9 @@ import com.github.naz013.ui.agenda.UiAgendaHeader
 import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.ui.agenda.UiAgendaItemAdapter
 import com.github.naz013.ui.agenda.UiAgendaReminder
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -81,6 +83,10 @@ internal class AgendaViewModel(
   private val _agendaScreenState = MutableStateFlow(AgendaScreenState(viewMode = reminderPreferences.agendaViewMode))
   private val _selectedItemId = MutableStateFlow<String?>(null)
   private val pendingDeleteTracker = PendingDeleteTracker()
+
+  /** onCleared() runs after viewModelScope is cancelled, so committing pending deletes there
+   *  needs a scope that outlives it. */
+  private val cleanupScope = CoroutineScope(SupervisorJob() + dispatcherProvider.io())
   val agendaScreenState =
     combine(_agendaScreenState, _selectedItemId, pendingDeleteTracker.pendingIds) { state, selectedItemId, pendingIds ->
       state.withSelectedItem(selectedItemId).withoutItems(pendingIds)
@@ -487,6 +493,11 @@ internal class AgendaViewModel(
     viewModelScope.launch(dispatcherProvider.io()) {
       pendingDeleteTracker.commit(batchKey)
     }
+  }
+
+  public override fun onCleared() {
+    super.onCleared()
+    cleanupScope.launch { pendingDeleteTracker.commitAll() }
   }
 
   fun onAddReminderClick() {

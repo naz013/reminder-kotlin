@@ -740,8 +740,6 @@
 
     <string name="turn_off">Éteindre</string>
 
-    <string name="delete_reminder_permanently">Supprimer le rappel définitivement ?</string>
-    <string name="delete_birthday_permanently">Supprimer l\'anniversaire définitivement ?</string>
     <string name="delete_note_permanently">Supprimer la note définitivement ?</string>
     <string name="delete_group_permanently">Supprimer le groupe définitivement ?</string>
 
@@ -1156,7 +1154,6 @@
     <string name="birthday_selected_count_one">%1$d anniversaire sélectionné</string>
     <string name="birthday_selected_count_other">%1$d anniversaires sélectionnés</string>
     <string name="birthdays_delete_selected_permanently">Supprimer %1$d anniversaires définitivement ?</string>
-    <string name="agenda_delete_selected_permanently">Supprimer %1$d éléments définitivement ?</string>
     <string name="selected_count">%1$d sélectionné(s)</string>
     <string name="undo">Annuler</string>
     <string name="note_deleted">Note supprimée</string>

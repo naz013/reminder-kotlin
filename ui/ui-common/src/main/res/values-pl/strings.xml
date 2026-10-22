@@ -740,8 +740,6 @@
 
     <string name="turn_off">Wyłącz</string>
 
-    <string name="delete_reminder_permanently">Usunąć przypomnienie na stałe?</string>
-    <string name="delete_birthday_permanently">Usunąć urodziny na stałe?</string>
     <string name="delete_note_permanently">Usunąć notatkę na stałe?</string>
     <string name="delete_group_permanently">Usunąć grupę na stałe?</string>
 
@@ -1156,7 +1154,6 @@
     <string name="birthday_selected_count_one">Zaznaczono %1$d urodziny</string>
     <string name="birthday_selected_count_other">Zaznaczono %1$d urodzin</string>
     <string name="birthdays_delete_selected_permanently">Usunąć %1$d urodzin na stałe?</string>
-    <string name="agenda_delete_selected_permanently">Usunąć %1$d elementów na stałe?</string>
     <string name="selected_count">Zaznaczono %1$d</string>
     <string name="undo">Cofnij</string>
     <string name="note_deleted">Notatka usunięta</string>

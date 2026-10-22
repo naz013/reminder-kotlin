@@ -740,8 +740,6 @@
 
     <string name="turn_off">Ausschalten</string>
 
-    <string name="delete_reminder_permanently">Erinnerung dauerhaft löschen?</string>
-    <string name="delete_birthday_permanently">Geburtstag dauerhaft löschen?</string>
     <string name="delete_note_permanently">Notiz dauerhaft löschen?</string>
     <string name="delete_group_permanently">Gruppe dauerhaft löschen?</string>
 
@@ -1152,7 +1150,6 @@
     <string name="birthday_selected_count_one">%1$d Geburtstag ausgewählt</string>
     <string name="birthday_selected_count_other">%1$d Geburtstage ausgewählt</string>
     <string name="birthdays_delete_selected_permanently">%1$d Geburtstage dauerhaft löschen?</string>
-    <string name="agenda_delete_selected_permanently">%1$d Elemente dauerhaft löschen?</string>
     <string name="selected_count">%1$d ausgewählt</string>
     <string name="undo">Rückgängig</string>
     <string name="note_deleted">Notiz gelöscht</string>

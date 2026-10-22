@@ -740,8 +740,6 @@
 
     <string name="turn_off">Вимкнути</string>
 
-    <string name="delete_reminder_permanently">Видалити нагадування назавжди?</string>
-    <string name="delete_birthday_permanently">Видалити день народження назавжди?</string>
     <string name="delete_note_permanently">Видалити нотатку назавжди?</string>
     <string name="delete_group_permanently">Видалити групу назавжди?</string>
 
@@ -1156,7 +1154,6 @@
     <string name="birthday_selected_count_one">Вибрано %1$d день народження</string>
     <string name="birthday_selected_count_other">Вибрано %1$d днів народження</string>
     <string name="birthdays_delete_selected_permanently">Видалити %1$d днів народження назавжди?</string>
-    <string name="agenda_delete_selected_permanently">Видалити %1$d елементів назавжди?</string>
     <string name="selected_count">Вибрано %1$d</string>
     <string name="undo">Скасувати</string>
     <string name="note_deleted">Нотатку видалено</string>

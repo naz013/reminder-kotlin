@@ -740,8 +740,6 @@
 
     <string name="turn_off">끄기</string>
 
-    <string name="delete_reminder_permanently">미리 알림을 영구 삭제하시겠습니까?</string>
-    <string name="delete_birthday_permanently">생일을 영구 삭제하시겠습니까?</string>
     <string name="delete_note_permanently">메모를 영구 삭제하시겠습니까?</string>
     <string name="delete_group_permanently">그룹을 영구 삭제하시겠습니까?</string>
 
@@ -1156,7 +1154,6 @@
     <string name="birthday_selected_count_one">생일 %1$d개 선택됨</string>
     <string name="birthday_selected_count_other">생일 %1$d개 선택됨</string>
     <string name="birthdays_delete_selected_permanently">%1$d개의 생일을 영구 삭제하시겠습니까?</string>
-    <string name="agenda_delete_selected_permanently">%1$d개의 항목을 영구 삭제하시겠습니까?</string>
     <string name="selected_count">%1$d개 선택됨</string>
     <string name="undo">실행 취소</string>
     <string name="note_deleted">메모가 삭제되었습니다</string>

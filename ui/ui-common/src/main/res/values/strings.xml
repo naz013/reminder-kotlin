@@ -738,8 +738,6 @@
 
     <string name="turn_off">Turn off</string>
 
-    <string name="delete_reminder_permanently">Delete reminder permanently?</string>
-    <string name="delete_birthday_permanently">Delete birthday permanently?</string>
     <string name="delete_note_permanently">Delete note permanently?</string>
     <string name="delete_group_permanently">Delete group permanently?</string>
 
@@ -1160,7 +1158,6 @@
     <string name="birthday_selected_count_one">%1$d birthday selected</string>
     <string name="birthday_selected_count_other">%1$d birthdays selected</string>
     <string name="birthdays_delete_selected_permanently">Delete %1$d birthdays permanently?</string>
-    <string name="agenda_delete_selected_permanently">Delete %1$d items permanently?</string>
     <string name="selected_count">%1$d selected</string>
     <string name="undo">Undo</string>
     <string name="note_deleted">Note deleted</string>

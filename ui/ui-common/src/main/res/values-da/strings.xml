@@ -737,8 +737,6 @@
 
     <string name="turn_off">Sluk</string>
 
-    <string name="delete_reminder_permanently">Slet påmindelsen permanent?</string>
-    <string name="delete_birthday_permanently">Slet fødselsdagen permanent?</string>
     <string name="delete_note_permanently">Slet noten permanent?</string>
     <string name="delete_group_permanently">Slet gruppen permanent?</string>
 
@@ -1154,7 +1152,6 @@
     <string name="birthday_selected_count_one">%1$d fødselsdag valgt</string>
     <string name="birthday_selected_count_other">%1$d fødselsdage valgt</string>
     <string name="birthdays_delete_selected_permanently">Slet %1$d fødselsdage permanent?</string>
-    <string name="agenda_delete_selected_permanently">Slet %1$d emner permanent?</string>
     <string name="selected_count">%1$d valgt</string>
     <string name="undo">Fortryd</string>
     <string name="note_deleted">Note slettet</string>

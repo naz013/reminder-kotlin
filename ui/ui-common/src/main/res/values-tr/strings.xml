@@ -740,8 +740,6 @@
 
     <string name="turn_off">Kapat</string>
 
-    <string name="delete_reminder_permanently">Hatırlatıcıyı kalıcı olarak sil?</string>
-    <string name="delete_birthday_permanently">Doğum gününü kalıcı olarak sil?</string>
     <string name="delete_note_permanently">Notu kalıcı olarak sil?</string>
     <string name="delete_group_permanently">Grubu kalıcı olarak sil?</string>
 
@@ -1156,7 +1154,6 @@
     <string name="birthday_selected_count_one">%1$d doğum günü seçildi</string>
     <string name="birthday_selected_count_other">%1$d doğum günü seçildi</string>
     <string name="birthdays_delete_selected_permanently">%1$d doğum günü kalıcı olarak silinsin mi?</string>
-    <string name="agenda_delete_selected_permanently">%1$d öğe kalıcı olarak silinsin mi?</string>
     <string name="selected_count">%1$d seçildi</string>
     <string name="undo">Geri al</string>
     <string name="note_deleted">Not silindi</string>

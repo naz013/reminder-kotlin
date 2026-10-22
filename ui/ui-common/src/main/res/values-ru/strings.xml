@@ -739,8 +739,6 @@
 
     <string name="turn_off">Выключить</string>
 
-    <string name="delete_reminder_permanently">Удалить напоминание навсегда?</string>
-    <string name="delete_birthday_permanently">Удалить день рождения навсегда?</string>
     <string name="delete_note_permanently">Удалить заметку навсегда?</string>
     <string name="delete_group_permanently">Удалить группу навсегда?</string>
 
@@ -1155,7 +1153,6 @@
     <string name="birthday_selected_count_one">Выбран %1$d день рождения</string>
     <string name="birthday_selected_count_other">Выбрано %1$d дней рождения</string>
     <string name="birthdays_delete_selected_permanently">Удалить %1$d дней рождения навсегда?</string>
-    <string name="agenda_delete_selected_permanently">Удалить %1$d элементов навсегда?</string>
     <string name="selected_count">Выбрано %1$d</string>
     <string name="undo">Отменить</string>
     <string name="note_deleted">Заметка удалена</string>

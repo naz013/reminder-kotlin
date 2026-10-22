@@ -740,8 +740,6 @@
 
     <string name="turn_off">Spegni</string>
 
-    <string name="delete_reminder_permanently">Eliminare promemoria definitivamente?</string>
-    <string name="delete_birthday_permanently">Eliminare compleanno definitivamente?</string>
     <string name="delete_note_permanently">Eliminare nota definitivamente?</string>
     <string name="delete_group_permanently">Eliminare gruppo definitivamente?</string>
 
@@ -1156,7 +1154,6 @@
     <string name="birthday_selected_count_one">%1$d compleanno selezionato</string>
     <string name="birthday_selected_count_other">%1$d compleanni selezionati</string>
     <string name="birthdays_delete_selected_permanently">Eliminare %1$d compleanni definitivamente?</string>
-    <string name="agenda_delete_selected_permanently">Eliminare %1$d elementi definitivamente?</string>
     <string name="selected_count">%1$d selezionati</string>
     <string name="undo">Annulla</string>
     <string name="note_deleted">Nota eliminata</string>

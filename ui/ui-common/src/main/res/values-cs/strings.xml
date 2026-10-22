@@ -740,8 +740,6 @@
 
     <string name="turn_off">Vypnout</string>
 
-    <string name="delete_reminder_permanently">Smazat připomínku trvale?</string>
-    <string name="delete_birthday_permanently">Smazat narozeniny trvale?</string>
     <string name="delete_note_permanently">Smazat poznámku trvale?</string>
     <string name="delete_group_permanently">Smazat skupinu trvale?</string>
 
@@ -1156,7 +1154,6 @@
     <string name="birthday_selected_count_one">Vybrány %1$d narozeniny</string>
     <string name="birthday_selected_count_other">Vybráno %1$d narozenin</string>
     <string name="birthdays_delete_selected_permanently">Trvale smazat %1$d narozenin?</string>
-    <string name="agenda_delete_selected_permanently">Trvale smazat %1$d položek?</string>
     <string name="selected_count">Vybráno %1$d</string>
     <string name="undo">Zpět</string>
     <string name="note_deleted">Poznámka smazána</string>

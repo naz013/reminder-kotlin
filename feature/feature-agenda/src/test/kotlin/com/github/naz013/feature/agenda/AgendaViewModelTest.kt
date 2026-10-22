@@ -804,6 +804,37 @@ class AgendaViewModelTest : BaseTest() {
       coVerify(exactly = 0) { moveReminderToArchiveUseCase(any()) }
     }
 
+  @Test
+  fun `onCleared commits pending deletes once so leaving the screen does not lose them`() =
+    runTest {
+      val reminder = reminderV2(id = "r1")
+      coEvery { reminderV2Repository.getById("r1") } returns reminder
+      coEvery { deleteReminderUseCase(reminder) } just Runs
+      coEvery { deleteBirthdayUseCase("b1") } just Runs
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onAgendaMenuAction(fakeReminderItem("r1"), AgendaMenuAction.DELETE)
+      vm.onAgendaMenuAction(fakeBirthdayItem("b1"), AgendaMenuAction.DELETE)
+
+      vm.onCleared()
+      vm.commitPendingAction("r1")
+      vm.onCleared()
+
+      coVerify(exactly = 1) { deleteReminderUseCase(reminder) }
+      coVerify(exactly = 1) { deleteBirthdayUseCase("b1") }
+    }
+
+  @Test
+  fun `onCleared does not run pending deletes that were undone`() =
+    runTest {
+      val vm = readyViewModelWithReminderAndBirthday()
+      vm.onAgendaMenuAction(fakeReminderItem("r1"), AgendaMenuAction.DELETE)
+      vm.undoPendingAction("r1")
+
+      vm.onCleared()
+
+      coVerify(exactly = 0) { deleteReminderUseCase(any()) }
+    }
+
   private suspend fun selectReminderAndBirthday(vm: AgendaViewModel) {
     vm.onItemLongClick("r1")
     val birthdayItem = (vm.agendaScreenState.first().listState as ListState.Ready)

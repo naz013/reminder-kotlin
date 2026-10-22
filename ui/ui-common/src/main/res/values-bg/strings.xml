@@ -740,8 +740,6 @@
 
     <string name="turn_off">Изключване</string>
 
-    <string name="delete_reminder_permanently">Изтриване на напомняне окончателно?</string>
-    <string name="delete_birthday_permanently">Изтриване на роден ден окончателно?</string>
     <string name="delete_note_permanently">Изтриване на бележка окончателно?</string>
     <string name="delete_group_permanently">Изтриване на група окончателно?</string>
 
@@ -1156,7 +1154,6 @@
     <string name="birthday_selected_count_one">Избран е %1$d роден ден</string>
     <string name="birthday_selected_count_other">Избрани са %1$d рождени дни</string>
     <string name="birthdays_delete_selected_permanently">Изтриване на %1$d рождени дни окончателно?</string>
-    <string name="agenda_delete_selected_permanently">Изтриване на %1$d елемента окончателно?</string>
     <string name="selected_count">Избрани %1$d</string>
     <string name="undo">Отмяна</string>
     <string name="note_deleted">Бележката е изтрита</string>

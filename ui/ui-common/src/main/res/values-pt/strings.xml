@@ -740,8 +740,6 @@
 
     <string name="turn_off">Desligar</string>
 
-    <string name="delete_reminder_permanently">Excluir lembrete permanentemente?</string>
-    <string name="delete_birthday_permanently">Excluir aniversário permanentemente?</string>
     <string name="delete_note_permanently">Excluir nota permanentemente?</string>
     <string name="delete_group_permanently">Excluir grupo permanentemente?</string>
 
@@ -1156,7 +1154,6 @@
     <string name="birthday_selected_count_one">%1$d aniversário selecionado</string>
     <string name="birthday_selected_count_other">%1$d aniversários selecionados</string>
     <string name="birthdays_delete_selected_permanently">Excluir %1$d aniversários permanentemente?</string>
-    <string name="agenda_delete_selected_permanently">Excluir %1$d itens permanentemente?</string>
     <string name="selected_count">%1$d selecionados</string>
     <string name="undo">Desfazer</string>
     <string name="note_deleted">Nota excluída</string>

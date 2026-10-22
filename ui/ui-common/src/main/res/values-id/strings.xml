@@ -737,8 +737,6 @@
 
     <string name="turn_off">Matikan</string>
 
-    <string name="delete_reminder_permanently">Hapus pengingat secara permanen?</string>
-    <string name="delete_birthday_permanently">Hapus ulang tahun secara permanen?</string>
     <string name="delete_note_permanently">Hapus catatan secara permanen?</string>
     <string name="delete_group_permanently">Hapus grup secara permanen?</string>
 
@@ -1154,7 +1152,6 @@
     <string name="birthday_selected_count_one">%1$d ulang tahun dipilih</string>
     <string name="birthday_selected_count_other">%1$d ulang tahun dipilih</string>
     <string name="birthdays_delete_selected_permanently">Hapus %1$d ulang tahun secara permanen?</string>
-    <string name="agenda_delete_selected_permanently">Hapus %1$d item secara permanen?</string>
     <string name="selected_count">%1$d dipilih</string>
     <string name="undo">Urungkan</string>
     <string name="note_deleted">Catatan dihapus</string>

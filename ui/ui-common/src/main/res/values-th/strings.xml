@@ -737,8 +737,6 @@
 
     <string name="turn_off">ปิด</string>
 
-    <string name="delete_reminder_permanently">ลบการเตือนความจำอย่างถาวร?</string>
-    <string name="delete_birthday_permanently">ลบวันเกิดอย่างถาวร?</string>
     <string name="delete_note_permanently">ลบโน้ตอย่างถาวร?</string>
     <string name="delete_group_permanently">ลบกลุ่มอย่างถาวร?</string>
 
@@ -1154,7 +1152,6 @@
     <string name="birthday_selected_count_one">เลือก %1$d วันเกิดแล้ว</string>
     <string name="birthday_selected_count_other">เลือก %1$d วันเกิดแล้ว</string>
     <string name="birthdays_delete_selected_permanently">ลบ %1$d วันเกิดอย่างถาวร?</string>
-    <string name="agenda_delete_selected_permanently">ลบ %1$d รายการอย่างถาวร?</string>
     <string name="selected_count">เลือก %1$d รายการแล้ว</string>
     <string name="undo">เลิกทำ</string>
     <string name="note_deleted">ลบโน้ตแล้ว</string>
