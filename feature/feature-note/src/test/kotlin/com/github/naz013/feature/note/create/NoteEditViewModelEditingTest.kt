@@ -34,6 +34,42 @@ internal class NoteEditViewModelEditingTest : NoteEditViewModelTestSupport() {
   }
 
   @Test
+  fun `typing a space after a hash applies Heading1 and removes the marker`() {
+    val viewModel = buildViewModel()
+    viewModel.onTextFieldValueChange(TextFieldValue("#", selection = TextRange(1)))
+
+    viewModel.onTextFieldValueChange(TextFieldValue("# ", selection = TextRange(2)))
+
+    val state = viewModel.state.value
+    assertEquals("", state.textFieldValue.text)
+    assertEquals(TextRange(0), state.textFieldValue.selection)
+    assertEquals(listOf(NoteTextSpan(0, 0, NoteSpanAttribute.Heading1)), state.spans)
+  }
+
+  @Test
+  fun `typing a space after a dash on the second line applies a bullet`() {
+    val viewModel = buildViewModel()
+    viewModel.onTextFieldValueChange(TextFieldValue("a\n-b", selection = TextRange(3)))
+
+    viewModel.onTextFieldValueChange(TextFieldValue("a\n- b", selection = TextRange(4)))
+
+    val state = viewModel.state.value
+    assertEquals("a\nb", state.textFieldValue.text)
+    assertEquals(TextRange(2), state.textFieldValue.selection)
+    assertEquals(listOf(NoteTextSpan(2, 3, NoteSpanAttribute.BulletItem)), state.spans)
+  }
+
+  @Test
+  fun `pasting a marker with a space does not trigger the shortcut`() {
+    val viewModel = buildViewModel()
+
+    viewModel.onTextFieldValueChange(TextFieldValue("# ", selection = TextRange(2)))
+
+    assertEquals("# ", viewModel.state.value.textFieldValue.text)
+    assertEquals(emptyList<NoteTextSpan>(), viewModel.state.value.spans)
+  }
+
+  @Test
   fun `onFontSizeChanged updates the whole-note default size when nothing is selected`() {
     val viewModel = buildViewModel()
 

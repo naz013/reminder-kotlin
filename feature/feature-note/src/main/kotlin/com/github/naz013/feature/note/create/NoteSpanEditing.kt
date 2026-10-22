@@ -185,3 +185,31 @@ internal fun linesTouched(text: String, lo: Int, hi: Int): List<IntRange> {
   }
   return result
 }
+
+/** Shifts/clips [spans] after the `[start, end)` range of the text was deleted. */
+internal fun removeRangeFromSpans(spans: List<NoteTextSpan>, start: Int, end: Int): List<NoteTextSpan> {
+  val length = end - start
+  return spans.mapNotNull { span ->
+    when {
+      span.end <= start -> span
+      span.start >= end -> span.copy(start = span.start - length, end = span.end - length)
+      else -> {
+        val newStart = minOf(span.start, start)
+        val newEnd = if (span.end >= end) span.end - length else start
+        if (newEnd <= newStart) null else span.copy(start = newStart, end = newEnd)
+      }
+    }
+  }
+}
+
+/** Replaces the line format on every line touched by `[lo, hi]` with [attribute] (cleared if null). */
+internal fun applyLineFormat(text: String, spans: List<NoteTextSpan>, lo: Int, hi: Int, attribute: NoteSpanAttribute?): List<NoteTextSpan> {
+  var result = spans
+  for (line in linesTouched(text, lo, hi)) {
+    result = clearAxis(result, NoteSpanAxis.LINE_FORMAT, line.first, line.last + 1)
+    if (attribute != null) {
+      result = result + NoteTextSpan(line.first, line.last + 1, attribute)
+    }
+  }
+  return result.sortedBy { it.start }
+}

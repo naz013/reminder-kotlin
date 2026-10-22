@@ -293,16 +293,9 @@ internal class NoteEditViewModel(
    * line format on those lines ("Paragraph"). */
   fun onApplyLineFormat(attribute: NoteSpanAttribute?) {
     val s = _state.value
-    val text = s.textFieldValue.text
     val selection = s.textFieldValue.selection
-    var spans = s.spans
-    for (line in linesTouched(text, selection.min, selection.max)) {
-      spans = clearAxis(spans, NoteSpanAxis.LINE_FORMAT, line.first, line.last + 1)
-      if (attribute != null) {
-        spans = spans + NoteTextSpan(line.first, line.last + 1, attribute)
-      }
-    }
-    _state.update { it.copy(spans = spans.sortedBy { span -> span.start }) }
+    val spans = applyLineFormat(s.textFieldValue.text, s.spans, selection.min, selection.max, attribute)
+    _state.update { it.copy(spans = spans) }
   }
 
   private fun toggleCharacterAttribute(attribute: NoteSpanAttribute) {
@@ -342,7 +335,23 @@ internal class NoteEditViewModel(
   fun onTextFieldValueChange(value: TextFieldValue) {
     val s = _state.value
     val newSpans = shiftSpans(s.textFieldValue.text, value.text, s.spans)
-    _state.update { it.copy(textFieldValue = value, spans = newSpans) }
+    val shortcut = value.selection.takeIf { it.collapsed }
+      ?.let { detectMarkdownShortcut(s.textFieldValue.text, value.text, it.start) }
+    if (shortcut == null) {
+      _state.update { it.copy(textFieldValue = value, spans = newSpans) }
+      return
+    }
+    val text = value.text.removeRange(shortcut.markerStart, shortcut.markerEnd)
+    val spans = applyLineFormat(
+      text = text,
+      spans = removeRangeFromSpans(newSpans, shortcut.markerStart, shortcut.markerEnd),
+      lo = shortcut.markerStart,
+      hi = shortcut.markerStart,
+      attribute = shortcut.attribute,
+    )
+    _state.update {
+      it.copy(textFieldValue = TextFieldValue(text = text, selection = TextRange(shortcut.markerStart)), spans = spans)
+    }
   }
 
   fun onSpeechStarted() {
