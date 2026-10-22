@@ -20,6 +20,7 @@ class DeleteReminderUseCase(
   private val eventOccurrenceRepository: EventOccurrenceRepository,
   private val eventHistoryRepository: EventHistoryRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
+  private val activateChainedRemindersUseCase: Lazy<ActivateChainedRemindersUseCase>,
 ) {
   suspend operator fun invoke(reminder: ReminderV2) {
     deactivateReminderUseCase(reminder)
@@ -33,6 +34,7 @@ class DeleteReminderUseCase(
       dataType = DataType.RemindersV2,
       id = reminder.uuId,
     )
+    activateChainedRemindersUseCase.value(reminder.uuId)
     Logger.i(TAG, "Deleted reminder with id = ${reminder.uuId}")
   }
 

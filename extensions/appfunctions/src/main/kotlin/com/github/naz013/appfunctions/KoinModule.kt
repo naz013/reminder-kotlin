@@ -26,8 +26,8 @@ val appFunctionsModule =
   module {
     factory { CreateSimpleReminderUseCase(get(), get()) }
     factory { ListUpcomingRemindersUseCase(get(), get()) }
-    factory { CompleteReminderUseCase(get()) }
-    factory { DeleteReminderUseCase(get()) }
+    factory { CompleteReminderUseCase(get(), get()) }
+    factory { DeleteReminderUseCase(get(), get()) }
     factory { UpdateReminderUseCase(get(), get()) }
     factory { SearchRemindersUseCase(get()) }
 

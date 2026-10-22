@@ -12,8 +12,10 @@ class SaveReminderUseCase(
   private val appWidgetUpdater: AppWidgetUpdater,
   private val scheduleReminderUploadUseCase: ScheduleReminderUploadUseCase,
   private val reminderWorkflowTrigger: Lazy<ReminderWorkflowTrigger>,
+  private val resolveChainedStartUseCase: ResolveChainedStartUseCase,
 ) {
-  suspend operator fun invoke(reminder: ReminderV2) {
+  suspend operator fun invoke(requested: ReminderV2) {
+    val reminder = resolveChainedStartUseCase(requested)
     val isNew = reminderV2Repository.getById(reminder.uuId) == null
     reminderV2Repository.save(reminder)
     appWidgetUpdater.updateScheduleWidget()

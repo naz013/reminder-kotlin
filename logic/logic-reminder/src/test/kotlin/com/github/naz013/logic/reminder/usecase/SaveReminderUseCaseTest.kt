@@ -5,6 +5,7 @@ import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logic.reminder.ReminderWorkflowTrigger
 import com.github.naz013.logic.reminder.ScheduleReminderUploadUseCase
+import com.github.naz013.logic.reminder.chain.ReminderChainValidator
 import com.github.naz013.repository.ReminderV2Repository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -29,6 +30,7 @@ class SaveReminderUseCaseTest {
       appWidgetUpdater,
       scheduleReminderUploadUseCase,
       lazy { reminderWorkflowTrigger },
+      ResolveChainedStartUseCase(reminderV2Repository, ReminderChainValidator()),
     )
   }
 
@@ -67,5 +69,73 @@ class SaveReminderUseCaseTest {
     useCase(reminder)
 
     coVerify(exactly = 1) { scheduleReminderUploadUseCase("r1") }
+  }
+
+  @Test
+  fun `saves a reminder inactive while it waits for an active predecessor`() = runTest {
+    val waiting = reminder("second").copy(startAfterReminderId = "first")
+    coEvery { reminderV2Repository.getById("second") } returns null
+    coEvery { reminderV2Repository.getById("first") } returns reminder("first").copy(isActive = true)
+
+    useCase(waiting)
+
+    coVerify(exactly = 1) {
+      reminderV2Repository.save(match { it.uuId == "second" && !it.isActive && it.startAfterReminderId == "first" })
+    }
+  }
+
+  @Test
+  fun `drops the link and keeps the reminder active when the predecessor no longer exists`() = runTest {
+    val waiting = reminder("second").copy(startAfterReminderId = "gone")
+    coEvery { reminderV2Repository.getById("gone") } returns null
+
+    useCase(waiting)
+
+    coVerify(exactly = 1) {
+      reminderV2Repository.save(match { it.uuId == "second" && it.isActive && it.startAfterReminderId == null })
+    }
+  }
+
+  @Test
+  fun `drops the link when the predecessor is already finished`() = runTest {
+    val waiting = reminder("second").copy(startAfterReminderId = "done")
+    coEvery { reminderV2Repository.getById("done") } returns reminder("done").copy(isActive = false)
+
+    useCase(waiting)
+
+    coVerify(exactly = 1) { reminderV2Repository.save(match { it.startAfterReminderId == null && it.isActive }) }
+  }
+
+  @Test
+  fun `drops the link when the predecessor is archived`() = runTest {
+    val waiting = reminder("second").copy(startAfterReminderId = "old")
+    coEvery { reminderV2Repository.getById("old") } returns reminder("old").copy(isActive = true, isRemoved = true)
+
+    useCase(waiting)
+
+    coVerify(exactly = 1) { reminderV2Repository.save(match { it.startAfterReminderId == null }) }
+  }
+
+  @Test
+  fun `rejects a link that points to the reminder itself`() = runTest {
+    val selfLinked = reminder("same").copy(startAfterReminderId = "same")
+
+    useCase(selfLinked)
+
+    coVerify(exactly = 1) { reminderV2Repository.save(match { it.startAfterReminderId == null }) }
+  }
+
+  @Test
+  fun `rejects a link that closes a cycle through a waiting predecessor`() = runTest {
+    val second = reminder("second").copy(startAfterReminderId = "first")
+    val first = reminder("first").copy(isActive = false, startAfterReminderId = "second")
+    coEvery { reminderV2Repository.getById("first") } returns first
+    coEvery { reminderV2Repository.getById("second") } returns second
+
+    useCase(second)
+
+    coVerify(exactly = 1) {
+      reminderV2Repository.save(match { it.uuId == "second" && it.startAfterReminderId == null })
+    }
   }
 }

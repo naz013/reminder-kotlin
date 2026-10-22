@@ -20,6 +20,7 @@ class DeleteAllReminderUseCase(
   private val eventOccurrenceRepository: EventOccurrenceRepository,
   private val eventHistoryRepository: EventHistoryRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
+  private val activateChainedRemindersUseCase: ActivateChainedRemindersUseCase,
 ) {
   suspend operator fun invoke(reminders: List<ReminderV2>) {
     reminders.forEach { deactivateReminderUseCase(it) }
@@ -36,6 +37,7 @@ class DeleteAllReminderUseCase(
       eventOccurrenceRepository.deleteByEventId(id)
       tagAssignmentRepository.detachAll(id, TaggedItemType.REMINDER)
     }
+    ids.forEach { activateChainedRemindersUseCase(it) }
     Logger.i(TAG, "Deleted all reminders, count = ${ids.size}")
   }
 

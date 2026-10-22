@@ -26,6 +26,8 @@ class ActivateReminderUseCase(
   private val saveReminderToGoogleCalendarUseCase: SaveReminderToGoogleCalendarUseCase,
   private val workScheduler: WorkScheduler,
   private val systemInfo: SystemInfo,
+  private val resolveChainedStartUseCase: ResolveChainedStartUseCase,
+  private val deactivateReminderUseCase: DeactivateReminderUseCase,
 ) {
 
   @IgnorableReturnValue
@@ -33,6 +35,19 @@ class ActivateReminderUseCase(
     reminder: ReminderV2,
     startAnyway: Boolean = false,
     skipGoogleTaskExport: Boolean = false,
+  ): ReminderV2 {
+    val resolved = resolveChainedStartUseCase(reminder)
+    if (resolved.startAfterReminderId != null) {
+      Logger.i(TAG, "Reminder id=${resolved.uuId} waits for id=${resolved.startAfterReminderId}, not scheduling.")
+      return deactivateReminderUseCase(resolved)
+    }
+    return activate(resolved, startAnyway, skipGoogleTaskExport)
+  }
+
+  private suspend fun activate(
+    reminder: ReminderV2,
+    startAnyway: Boolean,
+    skipGoogleTaskExport: Boolean,
   ): ReminderV2 {
     val strategy = behaviorStrategyResolver.resolve(reminder)
 

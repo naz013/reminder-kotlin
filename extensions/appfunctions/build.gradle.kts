@@ -14,6 +14,7 @@ ksp {
 dependencies {
   implementation(project(":core:domain"))
   implementation(project(":data:repository-api"))
+  implementation(project(":logic:logic-reminder"))
   implementation(project(":core:logging-api"))
   implementation(project(":core:analytics"))
   implementation(project(":core:platform-common"))

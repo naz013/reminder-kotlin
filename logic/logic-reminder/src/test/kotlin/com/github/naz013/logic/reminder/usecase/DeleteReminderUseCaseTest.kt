@@ -34,6 +34,7 @@ class DeleteReminderUseCaseTest {
   private lateinit var eventOccurrenceRepository: EventOccurrenceRepository
   private lateinit var eventHistoryRepository: EventHistoryRepository
   private lateinit var tagAssignmentRepository: TagAssignmentRepository
+  private lateinit var activateChainedRemindersUseCase: ActivateChainedRemindersUseCase
 
   private lateinit var useCase: DeleteReminderUseCase
 
@@ -46,6 +47,7 @@ class DeleteReminderUseCaseTest {
     eventOccurrenceRepository = mockk(relaxed = true)
     eventHistoryRepository = mockk(relaxed = true)
     tagAssignmentRepository = mockk(relaxed = true)
+    activateChainedRemindersUseCase = mockk(relaxed = true)
 
     useCase =
       DeleteReminderUseCase(
@@ -56,6 +58,7 @@ class DeleteReminderUseCaseTest {
         eventOccurrenceRepository = eventOccurrenceRepository,
         eventHistoryRepository = eventHistoryRepository,
         tagAssignmentRepository = tagAssignmentRepository,
+        activateChainedRemindersUseCase = lazy { activateChainedRemindersUseCase },
       )
   }
 
@@ -210,6 +213,19 @@ class DeleteReminderUseCaseTest {
       coVerifyOrder {
         deactivateReminderUseCase(match { it.uuId == reminder.uuId })
         reminderV2Repository.delete("seq-002")
+      }
+    }
+
+  @Test
+  fun `invoke starts reminders waiting for the deleted one after it is removed`() =
+    runTest {
+      val reminder = ReminderV2(uuId = "pred", schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
+
+      useCase.invoke(reminder)
+
+      coVerifyOrder {
+        reminderV2Repository.delete("pred")
+        activateChainedRemindersUseCase("pred")
       }
     }
 }

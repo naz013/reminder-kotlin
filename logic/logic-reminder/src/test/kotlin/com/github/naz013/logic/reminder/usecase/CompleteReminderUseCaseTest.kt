@@ -23,6 +23,7 @@ class CompleteReminderUseCaseTest {
   private val activateReminderUseCase = mockk<ActivateReminderUseCase>(relaxed = true)
   private val addReminderToHistoryUseCase = mockk<AddReminderToHistoryUseCase>(relaxed = true)
   private val jobScheduler = mockk<JobSchedulerApi>(relaxed = true)
+  private val activateChainedRemindersUseCase = mockk<ActivateChainedRemindersUseCase>(relaxed = true)
 
   private lateinit var useCase: CompleteReminderUseCase
 
@@ -40,6 +41,7 @@ class CompleteReminderUseCaseTest {
       activateReminderUseCase = activateReminderUseCase,
       addReminderToHistoryUseCase = addReminderToHistoryUseCase,
       jobScheduler = jobScheduler,
+      activateChainedRemindersUseCase = activateChainedRemindersUseCase,
     )
   }
 
@@ -63,5 +65,27 @@ class CompleteReminderUseCaseTest {
       useCase(reminder)
 
       coVerify(exactly = 1) { jobScheduler.cancelReminder(reminder.uniqueId) }
+    }
+
+  @Test
+  fun `invoke starts chained reminders when a one-time reminder is completed`() =
+    runTest {
+      every { strategy.canSkip(any()) } returns false
+
+      useCase(reminder)
+
+      coVerify(exactly = 1) { activateChainedRemindersUseCase(reminder.uuId) }
+    }
+
+  @Test
+  fun `invoke starts chained reminders on the first completion of a recurring reminder`() =
+    runTest {
+      every { strategy.canSkip(any()) } returns true
+      every { strategy.calculateNextOccurrence(any(), any()) } returns LocalDateTime.now().plusDays(1)
+      coEvery { activateReminderUseCase(any(), any(), any()) } returns reminder
+
+      useCase(reminder)
+
+      coVerify(exactly = 1) { activateChainedRemindersUseCase(reminder.uuId) }
     }
 }

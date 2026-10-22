@@ -34,6 +34,7 @@ class DeleteAllReminderUseCaseTest {
   private lateinit var eventOccurrenceRepository: EventOccurrenceRepository
   private lateinit var eventHistoryRepository: EventHistoryRepository
   private lateinit var tagAssignmentRepository: TagAssignmentRepository
+  private lateinit var activateChainedRemindersUseCase: ActivateChainedRemindersUseCase
 
   private lateinit var useCase: DeleteAllReminderUseCase
 
@@ -49,6 +50,7 @@ class DeleteAllReminderUseCaseTest {
     eventOccurrenceRepository = mockk(relaxed = true)
     eventHistoryRepository = mockk(relaxed = true)
     tagAssignmentRepository = mockk(relaxed = true)
+    activateChainedRemindersUseCase = mockk(relaxed = true)
 
     useCase =
       DeleteAllReminderUseCase(
@@ -59,6 +61,7 @@ class DeleteAllReminderUseCaseTest {
         eventOccurrenceRepository = eventOccurrenceRepository,
         eventHistoryRepository = eventHistoryRepository,
         tagAssignmentRepository = tagAssignmentRepository,
+        activateChainedRemindersUseCase = activateChainedRemindersUseCase,
       )
   }
 
@@ -334,5 +337,18 @@ class DeleteAllReminderUseCaseTest {
       coVerify(exactly = 1) { eventHistoryRepository.deleteByEventId("special-@#\$%") }
       coVerify(exactly = 1) { eventHistoryRepository.deleteByEventId("unicode-日本語") }
       coVerify(exactly = 1) { eventHistoryRepository.deleteByEventId("spaces in id") }
+    }
+
+  @Test
+  fun `invoke starts reminders waiting for each deleted one`() =
+    runTest {
+      val reminders = listOf("a", "b").map {
+        ReminderV2(uuId = it, schedule = ReminderSchedule(startDateTime = LocalDateTime.now()))
+      }
+
+      useCase.invoke(reminders)
+
+      coVerify(exactly = 1) { activateChainedRemindersUseCase("a") }
+      coVerify(exactly = 1) { activateChainedRemindersUseCase("b") }
     }
 }

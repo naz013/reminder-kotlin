@@ -6,6 +6,7 @@ import com.github.naz013.repository.ReminderV2Repository
 class MoveReminderToArchiveUseCase(
   private val reminderV2Repository: ReminderV2Repository,
   private val deactivateReminderUseCase: DeactivateReminderUseCase,
+  private val activateChainedRemindersUseCase: ActivateChainedRemindersUseCase,
 ) {
   suspend operator fun invoke(id: String) {
     val reminder =
@@ -14,6 +15,7 @@ class MoveReminderToArchiveUseCase(
         return
       }
     deactivateReminderUseCase(reminder.copy(isRemoved = true))
+    activateChainedRemindersUseCase(id)
     Logger.i(TAG, "Moved reminder with id = $id to archive")
   }
 

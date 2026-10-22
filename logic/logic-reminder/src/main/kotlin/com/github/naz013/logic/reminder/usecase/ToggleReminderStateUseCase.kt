@@ -38,7 +38,7 @@ class ToggleReminderStateUseCase(
       )
     } else {
       Logger.i(TAG, "Activating reminder id=${reminder.uuId}")
-      val newReminder = activateReminderUseCase(reminder)
+      val newReminder = activateReminderUseCase(reminder.copy(startAfterReminderId = null))
       Result(
         success = newReminder.isActive,
         newReminder = newReminder

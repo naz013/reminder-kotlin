@@ -16,6 +16,7 @@ class CompleteReminderUseCase(
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val addReminderToHistoryUseCase: AddReminderToHistoryUseCase,
   private val jobScheduler: JobSchedulerApi,
+  private val activateChainedRemindersUseCase: ActivateChainedRemindersUseCase,
 ) {
   @IgnorableReturnValue
   suspend operator fun invoke(reminder: ReminderV2): ReminderV2 {
@@ -28,7 +29,7 @@ class CompleteReminderUseCase(
     val strategy = strategyResolver.resolve(reminder)
     Logger.v(TAG, "Completing reminder id=${reminder.uuId} with strategy=$strategy")
     addReminderToHistoryUseCase(reminder)
-    return if (strategy.canSkip(reminder)) {
+    val completed = if (strategy.canSkip(reminder)) {
       val fromDateTime =
         reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }
           ?: dateTimeManager.getCurrentDateTime()
@@ -49,6 +50,8 @@ class CompleteReminderUseCase(
       Logger.i(TAG, "Going to deactivate reminder id=${reminder.uuId}")
       deactivateReminderUseCase(reminder)
     }
+    activateChainedRemindersUseCase(reminder.uuId)
+    return completed
   }
 
   companion object {

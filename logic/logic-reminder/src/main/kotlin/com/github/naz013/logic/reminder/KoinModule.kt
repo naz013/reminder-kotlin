@@ -5,7 +5,10 @@ import com.github.naz013.logic.reminder.occurrence.CalculateReminderOccurrencesU
 import com.github.naz013.logic.reminder.occurrence.ReminderOccurrenceCalculatorFactoryV2
 import com.github.naz013.logic.reminder.query.ResolveReminderV2NotificationSettingsUseCase
 import com.github.naz013.logic.reminder.scheduling.EventDateTimeCalculatorV2
+import com.github.naz013.logic.reminder.chain.ReminderChainValidator
+import com.github.naz013.logic.reminder.usecase.ActivateChainedRemindersUseCase
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.ResolveChainedStartUseCase
 import com.github.naz013.logic.reminder.usecase.CompleteReminderUseCase
 import com.github.naz013.logic.reminder.usecase.CompleteRelatedGoogleTaskUseCase
 import com.github.naz013.logic.reminder.usecase.DeactivateReminderUseCase
@@ -40,7 +43,10 @@ val logicReminderModule = module {
   factoryOf(::ResolveReminderV2NotificationSettingsUseCase)
 
   factoryOf(::ActivateReminderUseCase)
-  factory { SaveReminderUseCase(get(), get(), get(), lazy { get() }) }
+  factoryOf(::ReminderChainValidator)
+  factoryOf(::ResolveChainedStartUseCase)
+  factoryOf(::ActivateChainedRemindersUseCase)
+  factory { SaveReminderUseCase(get(), get(), get(), lazy { get() }, get()) }
   factoryOf(::CompleteRelatedGoogleTaskUseCase)
 
   factoryOf(::StopLocationTrackingUseCase)
@@ -52,7 +58,7 @@ val logicReminderModule = module {
   factoryOf(::DeactivateReminderUseCase)
   factoryOf(::MoveReminderToArchiveUseCase)
 
-  factoryOf(::DeleteReminderUseCase)
+  factory { DeleteReminderUseCase(get(), get(), get(), get(), get(), get(), get(), lazy { get() }) }
   factoryOf(::DeleteAllReminderUseCase)
 
   factoryOf(::SaveReminderToGoogleTasksUseCase)
