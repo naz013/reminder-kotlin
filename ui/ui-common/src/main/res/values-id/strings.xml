@@ -1299,4 +1299,9 @@
     <string name="note_version_current">Saat ini</string>
     <string name="note_version_identical">Versi ini identik dengan catatan saat ini</string>
     <string name="note_version_compare_unavailable">Versi atau catatan ini tidak lagi tersedia</string>
+    <string name="note_share_as">Bagikan sebagai</string>
+    <string name="note_share_format_original">Catatan asli</string>
+    <string name="note_share_format_plain_text">Teks biasa</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

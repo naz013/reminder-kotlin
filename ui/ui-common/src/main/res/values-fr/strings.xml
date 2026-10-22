@@ -1307,4 +1307,9 @@
     <string name="note_version_current">Actuelle</string>
     <string name="note_version_identical">Cette version est identique à la note actuelle</string>
     <string name="note_version_compare_unavailable">Cette version ou cette note n\'est plus disponible</string>
+    <string name="note_share_as">Partager en tant que</string>
+    <string name="note_share_format_original">Note d\'origine</string>
+    <string name="note_share_format_plain_text">Texte brut</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

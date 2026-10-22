@@ -1307,4 +1307,9 @@
     <string name="note_version_current">Curentă</string>
     <string name="note_version_identical">Această versiune este identică cu nota curentă</string>
     <string name="note_version_compare_unavailable">Această versiune sau notă nu mai este disponibilă</string>
+    <string name="note_share_as">Distribuie ca</string>
+    <string name="note_share_format_original">Notă originală</string>
+    <string name="note_share_format_plain_text">Text simplu</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

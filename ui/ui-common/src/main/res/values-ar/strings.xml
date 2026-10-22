@@ -1314,4 +1314,9 @@
     <string name="note_version_current">الحالي</string>
     <string name="note_version_identical">هذه النسخة مطابقة للملاحظة الحالية</string>
     <string name="note_version_compare_unavailable">هذه النسخة أو الملاحظة لم تعد متاحة</string>
+    <string name="note_share_as">مشاركة كـ</string>
+    <string name="note_share_format_original">الملاحظة الأصلية</string>
+    <string name="note_share_format_plain_text">نص عادي</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

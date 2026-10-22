@@ -1299,4 +1299,9 @@
     <string name="note_version_current">Hiện tại</string>
     <string name="note_version_identical">Phiên bản này giống với ghi chú hiện tại</string>
     <string name="note_version_compare_unavailable">Phiên bản hoặc ghi chú này không còn khả dụng</string>
+    <string name="note_share_as">Chia sẻ dưới dạng</string>
+    <string name="note_share_format_original">Ghi chú gốc</string>
+    <string name="note_share_format_plain_text">Văn bản thuần</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

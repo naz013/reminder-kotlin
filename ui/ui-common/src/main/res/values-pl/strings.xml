@@ -1310,4 +1310,9 @@
     <string name="note_version_current">Bieżąca</string>
     <string name="note_version_identical">Ta wersja jest identyczna z bieżącą notatką</string>
     <string name="note_version_compare_unavailable">Ta wersja lub notatka nie jest już dostępna</string>
+    <string name="note_share_as">Udostępnij jako</string>
+    <string name="note_share_format_original">Oryginalna notatka</string>
+    <string name="note_share_format_plain_text">Zwykły tekst</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

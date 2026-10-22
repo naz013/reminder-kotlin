@@ -1309,4 +1309,9 @@
     <string name="note_version_current">Текущая</string>
     <string name="note_version_identical">Эта версия идентична текущей заметке</string>
     <string name="note_version_compare_unavailable">Эта версия или заметка больше недоступна</string>
+    <string name="note_share_as">Поделиться как</string>
+    <string name="note_share_format_original">Исходная заметка</string>
+    <string name="note_share_format_plain_text">Обычный текст</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

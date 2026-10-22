@@ -1310,4 +1310,9 @@
     <string name="note_version_current">Současná</string>
     <string name="note_version_identical">Tato verze je shodná se současnou poznámkou</string>
     <string name="note_version_compare_unavailable">Tato verze nebo poznámka již není k dispozici</string>
+    <string name="note_share_as">Sdílet jako</string>
+    <string name="note_share_format_original">Původní poznámka</string>
+    <string name="note_share_format_plain_text">Prostý text</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

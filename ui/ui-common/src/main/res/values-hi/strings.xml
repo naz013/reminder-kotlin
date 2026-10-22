@@ -1300,4 +1300,9 @@
     <string name="note_version_current">वर्तमान</string>
     <string name="note_version_identical">यह संस्करण वर्तमान नोट के समान है</string>
     <string name="note_version_compare_unavailable">यह संस्करण या नोट अब उपलब्ध नहीं है</string>
+    <string name="note_share_as">इस रूप में साझा करें</string>
+    <string name="note_share_format_original">मूल नोट</string>
+    <string name="note_share_format_plain_text">सादा पाठ</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

@@ -1297,4 +1297,9 @@
     <string name="note_version_current">現在</string>
     <string name="note_version_identical">このバージョンは現在のノートと同一です</string>
     <string name="note_version_compare_unavailable">このバージョンまたはノートは利用できなくなりました</string>
+    <string name="note_share_as">共有形式</string>
+    <string name="note_share_format_original">元のノート</string>
+    <string name="note_share_format_plain_text">プレーンテキスト</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

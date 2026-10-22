@@ -1295,4 +1295,9 @@
     <string name="note_version_current">ปัจจุบัน</string>
     <string name="note_version_identical">เวอร์ชันนี้เหมือนกับบันทึกปัจจุบัน</string>
     <string name="note_version_compare_unavailable">เวอร์ชันหรือบันทึกนี้ไม่พร้อมใช้งานอีกต่อไป</string>
+    <string name="note_share_as">แชร์เป็น</string>
+    <string name="note_share_format_original">โน้ตต้นฉบับ</string>
+    <string name="note_share_format_plain_text">ข้อความธรรมดา</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

@@ -1302,4 +1302,9 @@
     <string name="note_version_current">Nuvarande</string>
     <string name="note_version_identical">Den här versionen är identisk med den nuvarande anteckningen</string>
     <string name="note_version_compare_unavailable">Den här versionen eller anteckningen är inte längre tillgänglig</string>
+    <string name="note_share_as">Dela som</string>
+    <string name="note_share_format_original">Originalanteckning</string>
+    <string name="note_share_format_plain_text">Oformaterad text</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

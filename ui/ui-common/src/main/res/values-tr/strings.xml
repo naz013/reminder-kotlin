@@ -1304,4 +1304,9 @@
     <string name="note_version_current">Güncel</string>
     <string name="note_version_identical">Bu sürüm güncel notla aynı</string>
     <string name="note_version_compare_unavailable">Bu sürüm veya not artık mevcut değil</string>
+    <string name="note_share_as">Şu olarak paylaş</string>
+    <string name="note_share_format_original">Orijinal not</string>
+    <string name="note_share_format_plain_text">Düz metin</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

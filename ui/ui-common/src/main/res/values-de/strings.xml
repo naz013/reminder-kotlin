@@ -1300,4 +1300,9 @@
     <string name="note_version_current">Aktuell</string>
     <string name="note_version_identical">Diese Version ist identisch mit der aktuellen Notiz</string>
     <string name="note_version_compare_unavailable">Diese Version oder Notiz ist nicht mehr verfügbar</string>
+    <string name="note_share_as">Teilen als</string>
+    <string name="note_share_format_original">Originalnotiz</string>
+    <string name="note_share_format_plain_text">Reiner Text</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

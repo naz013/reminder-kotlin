@@ -1297,4 +1297,9 @@
     <string name="note_version_current">当前</string>
     <string name="note_version_identical">此版本与当前笔记相同</string>
     <string name="note_version_compare_unavailable">此版本或笔记已不可用</string>
+    <string name="note_share_as">分享为</string>
+    <string name="note_share_format_original">原始笔记</string>
+    <string name="note_share_format_plain_text">纯文本</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>

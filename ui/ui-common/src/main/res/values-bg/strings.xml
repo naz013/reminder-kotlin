@@ -1304,4 +1304,9 @@
     <string name="note_version_current">Текуща</string>
     <string name="note_version_identical">Тази версия е идентична с текущата бележка</string>
     <string name="note_version_compare_unavailable">Тази версия или бележка вече не е налична</string>
+    <string name="note_share_as">Споделяне като</string>
+    <string name="note_share_format_original">Оригинална бележка</string>
+    <string name="note_share_format_plain_text">Обикновен текст</string>
+    <string name="note_share_format_markdown">Markdown</string>
+    <string name="note_share_format_html">HTML</string>
 </resources>
