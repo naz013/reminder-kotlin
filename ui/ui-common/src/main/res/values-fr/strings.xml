@@ -1290,4 +1290,11 @@
     <string name="reset_steps_confirmation">Réinitialiser toutes les étapes comme non terminées ?</string>
     <string name="routine_run_channel_name">Exécution de routine</string>
     <string name="routine_run_channel_description">Affiche la routine en cours et son étape actuelle</string>
+    <string name="start_after_reminder">Démarrer après un autre rappel</string>
+    <string name="start_after_reminder_description">Reste en attente jusqu\'à ce que le rappel sélectionné soit terminé</string>
+    <string name="start_after_select_reminder">Sélectionner un rappel</string>
+    <string name="start_after_no_reminders">Aucun autre rappel à attendre</string>
+    <string name="start_after_clear">Retirer</string>
+    <string name="builder_error_start_after_cycle">Ces rappels s\'attendraient mutuellement. Choisissez un autre rappel.</string>
+    <string name="reminder_waiting_for">En attente de %1$s</string>
 </resources>

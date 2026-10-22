@@ -70,6 +70,8 @@ import com.github.naz013.icalendar.RecurrenceRuleTag
 import com.github.naz013.icalendar.TagType
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.FindStartAfterCandidatesUseCase
+import com.github.naz013.logic.reminder.usecase.ResolveChainedStartUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.logic.reminder.usecase.PauseReminderUseCase
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
@@ -147,6 +149,8 @@ internal class BuildReminderViewModel(
   private val isSimpleTodoReminderUseCase: IsSimpleTodoReminderUseCase,
   private val googleDriveAuthManager: GoogleDriveAuthManager,
   private val dropboxAuthManager: DropboxAuthManager,
+  private val findStartAfterCandidatesUseCase: FindStartAfterCandidatesUseCase,
+  private val resolveChainedStartUseCase: ResolveChainedStartUseCase,
 ) : ViewModel() {
 
   val initialId = navKey.id
@@ -304,6 +308,32 @@ internal class BuildReminderViewModel(
     _state.update { it.copy(colorIndex = null) }
   }
 
+  fun onStartAfterClick() {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val reminderId = originalV2?.uuId ?: stableReminderId
+      val candidates = findStartAfterCandidatesUseCase(reminderId).map { UiStartAfterCandidate(it.uuId, it.summary) }
+      _state.update { it.copy(startAfterCandidates = candidates) }
+    }
+  }
+
+  fun onStartAfterSelected(candidate: UiStartAfterCandidate) {
+    _state.update {
+      it.copy(
+        startAfterReminderId = candidate.id,
+        startAfterTitle = candidate.title,
+        startAfterCandidates = null,
+      )
+    }
+  }
+
+  fun onStartAfterCleared() {
+    _state.update { it.copy(startAfterReminderId = null, startAfterTitle = null) }
+  }
+
+  fun onStartAfterPickerDismissed() {
+    _state.update { it.copy(startAfterCandidates = null) }
+  }
+
   /** Re-checks cloud login state on every ON_RESUME (see [BuildReminderNavGraph]) - this
    *  Composable entry isn't necessarily recreated after a trip to the Cloud Services screen (e.g.
    *  reached via Settings without popping this entry off the backstack), so [isCloudLoggedIn],
@@ -374,8 +404,18 @@ internal class BuildReminderViewModel(
           val finalV2 = withOfflineOnly.copy(
             isCritical = _state.value.isCriticalChecked,
             iconIndex = _state.value.iconIndex,
-            colorIndex = _state.value.colorIndex
+            colorIndex = _state.value.colorIndex,
+            startAfterReminderId = _state.value.startAfterReminderId
           )
+
+          val startAfterId = finalV2.startAfterReminderId
+          if (startAfterId != null && resolveChainedStartUseCase.wouldCreateCycle(finalV2.uuId, startAfterId)) {
+            Logger.w(TAG, "Start-after link would create a cycle, id = ${finalV2.uuId}")
+            withContext(dispatcherProvider.main()) {
+              event.emit(ViewModelEvent.ShowMessage(R.string.builder_error_start_after_cycle))
+            }
+            return@launch
+          }
 
           isSaving = true
           val reviewDialogShown = saveAndStartReminder(finalV2, isEdit = isEdited)
@@ -613,6 +653,7 @@ internal class BuildReminderViewModel(
     if (navKey.isEditingExtend) {
       isEdited = true
       originalV2 = seed
+      val startAfter = loadStartAfter(seed)
       _state.update {
         it.copy(
           canRemove = true,
@@ -621,6 +662,8 @@ internal class BuildReminderViewModel(
           isCriticalChecked = seed.isCritical,
           iconIndex = seed.iconIndex,
           colorIndex = seed.colorIndex,
+          startAfterReminderId = startAfter?.id,
+          startAfterTitle = startAfter?.title,
         )
       }
       pauseReminder(seed)
@@ -846,6 +889,7 @@ internal class BuildReminderViewModel(
     }
 
     val builderItems = reminderToBiDecomposer(reminderV2)
+    val startAfter = loadStartAfter(reminderV2)
 
     Logger.d(TAG, "Edit reminder with builder items: $builderItems")
 
@@ -858,6 +902,8 @@ internal class BuildReminderViewModel(
         isCriticalChecked = reminderV2.isCritical,
         iconIndex = reminderV2.iconIndex,
         colorIndex = reminderV2.colorIndex,
+        startAfterReminderId = startAfter?.id,
+        startAfterTitle = startAfter?.title,
       )
     }
 
@@ -865,6 +911,13 @@ internal class BuildReminderViewModel(
       builderItemsLogic.setAll(builderItems)
       updateSelector()
     }
+  }
+
+  private suspend fun loadStartAfter(reminder: ReminderV2): UiStartAfterCandidate? {
+    val predecessorId = reminder.startAfterReminderId ?: return null
+    return reminderV2Repository.getById(predecessorId)
+      ?.takeUnless { it.isRemoved }
+      ?.let { UiStartAfterCandidate(it.uuId, it.summary) }
   }
 
   private suspend fun findSame(id: String) {

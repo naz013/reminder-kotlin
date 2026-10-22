@@ -22,6 +22,10 @@ internal data class BuildReminderState(
   val isCriticalChecked: Boolean = false,
   val iconIndex: Int? = null,
   val colorIndex: Int? = null,
+  val startAfterReminderId: String? = null,
+  val startAfterTitle: String? = null,
+  /** Non-null while the start-after picker sheet is open. */
+  val startAfterCandidates: List<UiStartAfterCandidate>? = null,
   val editingItem: Pair<Int, BuilderItem<*>>? = null,
   val isFromFile: Boolean = false,
   val hasSameInDb: Boolean = false,

@@ -1280,4 +1280,11 @@
     <string name="reset_steps_confirmation">将所有步骤重置为未完成？</string>
     <string name="routine_run_channel_name">例行任务运行器</string>
     <string name="routine_run_channel_description">显示正在运行的例行任务及其当前步骤</string>
+    <string name="start_after_reminder">在另一个提醒之后开始</string>
+    <string name="start_after_reminder_description">保持等待，直到所选提醒完成</string>
+    <string name="start_after_select_reminder">选择提醒</string>
+    <string name="start_after_no_reminders">没有其他可等待的提醒</string>
+    <string name="start_after_clear">移除</string>
+    <string name="builder_error_start_after_cycle">这些提醒会互相等待。请选择其他提醒。</string>
+    <string name="reminder_waiting_for">等待 %1$s</string>
 </resources>

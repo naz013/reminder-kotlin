@@ -1287,4 +1287,11 @@
     <string name="reset_steps_confirmation">Да се нулират ли всички стъпки като неизпълнени?</string>
     <string name="routine_run_channel_name">Изпълнение на рутина</string>
     <string name="routine_run_channel_description">Показва текущата рутина и нейната текуща стъпка</string>
+    <string name="start_after_reminder">Започни след друго напомняне</string>
+    <string name="start_after_reminder_description">Изчаква, докато избраното напомняне бъде завършено</string>
+    <string name="start_after_select_reminder">Изберете напомняне</string>
+    <string name="start_after_no_reminders">Няма други напомняния за изчакване</string>
+    <string name="start_after_clear">Премахни</string>
+    <string name="builder_error_start_after_cycle">Тези напомняния ще чакат едно друго. Изберете друго напомняне.</string>
+    <string name="reminder_waiting_for">Чака за %1$s</string>
 </resources>

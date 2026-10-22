@@ -1282,4 +1282,11 @@
     <string name="reset_steps_confirmation">Đặt lại tất cả các bước thành chưa hoàn thành?</string>
     <string name="routine_run_channel_name">Trình chạy thói quen</string>
     <string name="routine_run_channel_description">Hiển thị thói quen đang chạy và bước hiện tại</string>
+    <string name="start_after_reminder">Bắt đầu sau lời nhắc khác</string>
+    <string name="start_after_reminder_description">Tạm chờ cho đến khi lời nhắc đã chọn hoàn thành</string>
+    <string name="start_after_select_reminder">Chọn một lời nhắc</string>
+    <string name="start_after_no_reminders">Không có lời nhắc nào khác để chờ</string>
+    <string name="start_after_clear">Xóa</string>
+    <string name="builder_error_start_after_cycle">Các lời nhắc này sẽ chờ lẫn nhau. Hãy chọn lời nhắc khác.</string>
+    <string name="reminder_waiting_for">Đang chờ %1$s</string>
 </resources>

@@ -1293,4 +1293,11 @@
     <string name="reset_steps_confirmation">Zresetować wszystkie kroki jako niewykonane?</string>
     <string name="routine_run_channel_name">Uruchomiona rutyna</string>
     <string name="routine_run_channel_description">Pokazuje uruchomioną rutynę i jej bieżący krok</string>
+    <string name="start_after_reminder">Rozpocznij po innym przypomnieniu</string>
+    <string name="start_after_reminder_description">Czeka, aż wybrane przypomnienie zostanie ukończone</string>
+    <string name="start_after_select_reminder">Wybierz przypomnienie</string>
+    <string name="start_after_no_reminders">Brak innych przypomnień, na które można czekać</string>
+    <string name="start_after_clear">Usuń</string>
+    <string name="builder_error_start_after_cycle">Te przypomnienia czekałyby na siebie nawzajem. Wybierz inne przypomnienie.</string>
+    <string name="reminder_waiting_for">Oczekuje na %1$s</string>
 </resources>

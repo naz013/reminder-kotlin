@@ -50,6 +50,8 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.featureflags.FeatureFlags
 import com.github.naz013.icalendar.ICalendarApi
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
+import com.github.naz013.logic.reminder.usecase.FindStartAfterCandidatesUseCase
+import com.github.naz013.logic.reminder.usecase.ResolveChainedStartUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.logic.reminder.usecase.PauseReminderUseCase
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
@@ -123,6 +125,8 @@ class BuildReminderViewModelTest : BaseTest() {
   private val isSimpleTodoReminderUseCase = mockk<IsSimpleTodoReminderUseCase>()
   private val googleDriveAuthManager = mockk<GoogleDriveAuthManager>()
   private val dropboxAuthManager = mockk<DropboxAuthManager>()
+  private val findStartAfterCandidatesUseCase = mockk<FindStartAfterCandidatesUseCase>()
+  private val resolveChainedStartUseCase = mockk<ResolveChainedStartUseCase>()
 
   @Before
   override fun setUp() {
@@ -141,6 +145,7 @@ class BuildReminderViewModelTest : BaseTest() {
     // on any() rather than an exact value.
     coEvery { reminderV2Repository.getById(any()) } returns null
     every { isSimpleTodoReminderUseCase(any()) } returns false
+    coEvery { resolveChainedStartUseCase.wouldCreateCycle(any(), any()) } returns false
     every { builderItemsLogic.getUsed() } returns emptyList()
     every { builderItemsLogic.getAvailable() } returns listOf(summaryItem())
     // updateSelector() -> updateBuilderState() runs after almost every action; default it to a
@@ -227,6 +232,8 @@ class BuildReminderViewModelTest : BaseTest() {
       isSimpleTodoReminderUseCase = isSimpleTodoReminderUseCase,
       googleDriveAuthManager = googleDriveAuthManager,
       dropboxAuthManager = dropboxAuthManager,
+      findStartAfterCandidatesUseCase = findStartAfterCandidatesUseCase,
+      resolveChainedStartUseCase = resolveChainedStartUseCase,
     )
 
   @Test
@@ -1140,5 +1147,94 @@ class BuildReminderViewModelTest : BaseTest() {
 
     assertEquals(5, viewModel.state.value.iconIndex)
     assertEquals(9, viewModel.state.value.colorIndex)
+  }
+
+  @Test
+  fun `onStartAfterClick loads candidates for the reminder being built into state`() =
+    runTest {
+      coEvery { findStartAfterCandidatesUseCase(any()) } returns
+        listOf(reminderV2Fixture(uuId = "a").copy(summary = "Take pills"))
+      val viewModel = createViewModel()
+
+      viewModel.onStartAfterClick()
+
+      assertEquals(listOf(UiStartAfterCandidate("a", "Take pills")), viewModel.state.value.startAfterCandidates)
+    }
+
+  @Test
+  fun `onStartAfterSelected stores the predecessor and closes the picker`() {
+    val viewModel = createViewModel()
+
+    viewModel.onStartAfterSelected(UiStartAfterCandidate("a", "Take pills"))
+
+    assertEquals("a", viewModel.state.value.startAfterReminderId)
+    assertEquals("Take pills", viewModel.state.value.startAfterTitle)
+    assertNull(viewModel.state.value.startAfterCandidates)
+  }
+
+  @Test
+  fun `onStartAfterCleared removes the predecessor`() {
+    val viewModel = createViewModel()
+    viewModel.onStartAfterSelected(UiStartAfterCandidate("a", "Take pills"))
+
+    viewModel.onStartAfterCleared()
+
+    assertNull(viewModel.state.value.startAfterReminderId)
+    assertNull(viewModel.state.value.startAfterTitle)
+  }
+
+  @Test
+  fun `saveReminder saves the chosen predecessor with the reminder`() =
+    runTest {
+      every { biToReminderAdapter(any(), any(), any()) } returns
+        BiToReminderAdapter.BuildResult.Success(reminderV2Fixture(uuId = "new"))
+      val viewModel = createViewModel()
+      viewModel.onStartAfterSelected(UiStartAfterCandidate("a", "Take pills"))
+
+      viewModel.saveReminder(newId = false)
+
+      coVerify(exactly = 1) { activateReminderUseCase(match { it.startAfterReminderId == "a" }, startAnyway = true) }
+    }
+
+  @Test
+  fun `saveReminder shows an error and does not save when the predecessor would create a cycle`() =
+    runTest {
+      every { biToReminderAdapter(any(), any(), any()) } returns
+        BiToReminderAdapter.BuildResult.Success(reminderV2Fixture(uuId = "new"))
+      coEvery { resolveChainedStartUseCase.wouldCreateCycle("new", "a") } returns true
+      val viewModel = createViewModel()
+      viewModel.onStartAfterSelected(UiStartAfterCandidate("a", "Take pills"))
+
+      viewModel.saveReminder(newId = false)
+
+      coVerify(exactly = 0) { activateReminderUseCase(any(), any(), any()) }
+      assertEquals(
+        BuildReminderViewModel.ViewModelEvent.ShowMessage(R.string.builder_error_start_after_cycle),
+        viewModel.event.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `editing a waiting reminder loads its predecessor title into state`() {
+    val waiting = reminderV2Fixture(uuId = "42").copy(startAfterReminderId = "a")
+    coEvery { reminderV2Repository.getById("42") } returns waiting
+    coEvery { reminderV2Repository.getById("a") } returns reminderV2Fixture(uuId = "a").copy(summary = "Take pills")
+    coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
+
+    val viewModel = createViewModel(initialId = "42")
+
+    assertEquals("a", viewModel.state.value.startAfterReminderId)
+    assertEquals("Take pills", viewModel.state.value.startAfterTitle)
+  }
+
+  @Test
+  fun `editing a reminder whose predecessor is gone starts with no link`() {
+    val waiting = reminderV2Fixture(uuId = "42").copy(startAfterReminderId = "gone")
+    coEvery { reminderV2Repository.getById("42") } returns waiting
+    coEvery { reminderToBiDecomposer(any()) } returns listOf(summaryItem())
+
+    val viewModel = createViewModel(initialId = "42")
+
+    assertNull(viewModel.state.value.startAfterReminderId)
   }
 }

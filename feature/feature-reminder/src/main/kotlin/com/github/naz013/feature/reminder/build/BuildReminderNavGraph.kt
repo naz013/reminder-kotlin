@@ -29,6 +29,7 @@ import com.github.naz013.feature.reminder.compose.rememberPackageManagerWrapper
 import com.github.naz013.ui.common.permission.PermissionRequester
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.github.naz013.ui.common.livedata.ObserveEvent
+import com.github.naz013.feature.reminder.compose.StartAfterSheet
 import com.github.naz013.feature.reminder.build.adapter.rememberParamToTextAdapter
 import com.github.naz013.feature.reminder.build.bi.BiGroup
 import com.github.naz013.feature.reminder.build.help.ReminderHelpScreen
@@ -218,6 +219,7 @@ private fun MainEntry(
       hasColor = state.hasColor,
       colorPickerIndex = state.colorPickerIndex,
       hapticFeedbackEnabled = state.hapticFeedbackEnabled,
+      startAfterTitle = state.startAfterTitle,
       quickStartOptions = QuickStartOption.entries,
       allTags = state.allTags,
       selectedTagIds = state.selectedTagIds,
@@ -237,6 +239,8 @@ private fun MainEntry(
       onIconSelected = viewModel::onIconSelected,
       onColorSelected = viewModel::onColorSelected,
       onColorCleared = viewModel::onColorCleared,
+      onStartAfterClick = viewModel::onStartAfterClick,
+      onStartAfterClear = viewModel::onStartAfterCleared,
       onItemClick = { position, item -> viewModel.onItemEditedClicked(position, item) },
       onItemRemove = { position, item -> viewModel.removeItem(position, item) },
       onAddClick = { showSelector = true },
@@ -244,6 +248,14 @@ private fun MainEntry(
       onTagToggle = viewModel::onTagToggle,
       onManageTagsClick = viewModel::onManageTagsClick,
     )
+
+    state.startAfterCandidates?.let { candidates ->
+      StartAfterSheet(
+        candidates = candidates,
+        onDismissRequest = viewModel::onStartAfterPickerDismissed,
+        onCandidateClick = viewModel::onStartAfterSelected,
+      )
+    }
 
     if (showSelector) {
       BuilderSelectorSheet(

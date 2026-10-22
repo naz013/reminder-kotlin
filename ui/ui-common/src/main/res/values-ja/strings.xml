@@ -1280,4 +1280,11 @@
     <string name="reset_steps_confirmation">すべてのステップを未完了にリセットしますか？</string>
     <string name="routine_run_channel_name">ルーティン実行</string>
     <string name="routine_run_channel_description">実行中のルーティンと現在のステップを表示します</string>
+    <string name="start_after_reminder">別のリマインダーの後に開始</string>
+    <string name="start_after_reminder_description">選択したリマインダーが完了するまで待機します</string>
+    <string name="start_after_select_reminder">リマインダーを選択</string>
+    <string name="start_after_no_reminders">待機できる他のリマインダーがありません</string>
+    <string name="start_after_clear">削除</string>
+    <string name="builder_error_start_after_cycle">これらのリマインダーは互いに待ち合うことになります。別のリマインダーを選んでください。</string>
+    <string name="reminder_waiting_for">%1$s を待機中</string>
 </resources>

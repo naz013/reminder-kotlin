@@ -1283,4 +1283,11 @@
     <string name="reset_steps_confirmation">Alle Schritte auf nicht erledigt zurücksetzen?</string>
     <string name="routine_run_channel_name">Routine-Ausführung</string>
     <string name="routine_run_channel_description">Zeigt die laufende Routine und ihren aktuellen Schritt</string>
+    <string name="start_after_reminder">Nach einer anderen Erinnerung starten</string>
+    <string name="start_after_reminder_description">Bleibt pausiert, bis die ausgewählte Erinnerung abgeschlossen ist</string>
+    <string name="start_after_select_reminder">Erinnerung auswählen</string>
+    <string name="start_after_no_reminders">Keine weiteren Erinnerungen zum Abwarten</string>
+    <string name="start_after_clear">Entfernen</string>
+    <string name="builder_error_start_after_cycle">Diese Erinnerungen würden aufeinander warten. Wähle eine andere Erinnerung.</string>
+    <string name="reminder_waiting_for">Wartet auf %1$s</string>
 </resources>

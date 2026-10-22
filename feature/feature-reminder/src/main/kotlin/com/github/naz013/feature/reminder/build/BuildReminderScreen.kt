@@ -58,6 +58,7 @@ import com.github.naz013.feature.reminder.build.quickstart.QuickStartOption
 import com.github.naz013.feature.reminder.compose.AppearanceRow
 import com.github.naz013.feature.reminder.compose.CriticalRow
 import com.github.naz013.feature.reminder.compose.OfflineOnlyRow
+import com.github.naz013.feature.reminder.compose.StartAfterRow
 import com.github.naz013.feature.reminder.note.UiNoteList
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
@@ -106,6 +107,7 @@ internal fun BuildReminderScreen(
   hasColor: Boolean,
   colorPickerIndex: Int,
   hapticFeedbackEnabled: Boolean,
+  startAfterTitle: String?,
   quickStartOptions: List<QuickStartOption>,
   allTags: List<TagChipState>,
   selectedTagIds: Set<String>,
@@ -121,6 +123,8 @@ internal fun BuildReminderScreen(
   onIconSelected: (Int?) -> Unit,
   onColorSelected: (Int) -> Unit,
   onColorCleared: () -> Unit,
+  onStartAfterClick: () -> Unit,
+  onStartAfterClear: () -> Unit,
   onItemClick: (Int, BuilderItem<*>) -> Unit,
   onItemRemove: (Int, BuilderItem<*>) -> Unit,
   onAddClick: () -> Unit,
@@ -257,6 +261,14 @@ internal fun BuildReminderScreen(
             onIconSelected = onIconSelected,
             onColorSelected = onColorSelected,
             onColorCleared = onColorCleared,
+          )
+        }
+
+        item(key = "start_after") {
+          StartAfterRow(
+            selectedTitle = startAfterTitle,
+            onClick = onStartAfterClick,
+            onClearClick = onStartAfterClear,
           )
         }
 
@@ -601,6 +613,7 @@ private fun PreviewBuildReminderScreenEmpty() {
       hasColor = false,
       colorPickerIndex = -1,
       hapticFeedbackEnabled = true,
+      startAfterTitle = null,
       quickStartOptions = QuickStartOption.entries,
       allTags = emptyList(),
       selectedTagIds = emptySet(),
@@ -616,6 +629,8 @@ private fun PreviewBuildReminderScreenEmpty() {
       onIconSelected = {},
       onColorSelected = {},
       onColorCleared = {},
+      onStartAfterClick = {},
+      onStartAfterClear = {},
       onItemClick = { _, _ -> },
       onItemRemove = { _, _ -> },
       onAddClick = {},

@@ -1290,4 +1290,11 @@
     <string name="reset_steps_confirmation">Redefinir todas as etapas como não concluídas?</string>
     <string name="routine_run_channel_name">Execução de rotina</string>
     <string name="routine_run_channel_description">Mostra a rotina em andamento e a etapa atual</string>
+    <string name="start_after_reminder">Iniciar após outro lembrete</string>
+    <string name="start_after_reminder_description">Fica em espera até que o lembrete selecionado seja concluído</string>
+    <string name="start_after_select_reminder">Selecionar um lembrete</string>
+    <string name="start_after_no_reminders">Não há outros lembretes para aguardar</string>
+    <string name="start_after_clear">Remover</string>
+    <string name="builder_error_start_after_cycle">Estes lembretes ficariam à espera um do outro. Escolha outro lembrete.</string>
+    <string name="reminder_waiting_for">Aguardando %1$s</string>
 </resources>

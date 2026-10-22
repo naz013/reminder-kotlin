@@ -1290,4 +1290,11 @@
     <string name="reset_steps_confirmation">Resetezi toți pașii ca neefectuați?</string>
     <string name="routine_run_channel_name">Rulare rutină</string>
     <string name="routine_run_channel_description">Afișează rutina în curs și pasul ei curent</string>
+    <string name="start_after_reminder">Pornește după un alt memento</string>
+    <string name="start_after_reminder_description">Rămâne în așteptare până când mementoul selectat este finalizat</string>
+    <string name="start_after_select_reminder">Selectează un memento</string>
+    <string name="start_after_no_reminders">Nu există alte mementouri de așteptat</string>
+    <string name="start_after_clear">Elimină</string>
+    <string name="builder_error_start_after_cycle">Aceste mementouri s-ar aștepta unul pe altul. Alege alt memento.</string>
+    <string name="reminder_waiting_for">Așteaptă %1$s</string>
 </resources>

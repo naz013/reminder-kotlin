@@ -1285,4 +1285,11 @@
     <string name="reset_steps_confirmation">Nulstil alle trin til ikke udført?</string>
     <string name="routine_run_channel_name">Rutinekører</string>
     <string name="routine_run_channel_description">Viser den kørende rutine og dens aktuelle trin</string>
+    <string name="start_after_reminder">Start efter en anden påmindelse</string>
+    <string name="start_after_reminder_description">Venter, indtil den valgte påmindelse er fuldført</string>
+    <string name="start_after_select_reminder">Vælg en påmindelse</string>
+    <string name="start_after_no_reminders">Ingen andre påmindelser at vente på</string>
+    <string name="start_after_clear">Fjern</string>
+    <string name="builder_error_start_after_cycle">Disse påmindelser ville vente på hinanden. Vælg en anden påmindelse.</string>
+    <string name="reminder_waiting_for">Venter på %1$s</string>
 </resources>

@@ -1290,4 +1290,11 @@
     <string name="reset_steps_confirmation">Reimpostare tutti i passaggi come non completati?</string>
     <string name="routine_run_channel_name">Esecuzione routine</string>
     <string name="routine_run_channel_description">Mostra la routine in corso e il suo passaggio attuale</string>
+    <string name="start_after_reminder">Avvia dopo un altro promemoria</string>
+    <string name="start_after_reminder_description">Resta in attesa finché il promemoria selezionato non è completato</string>
+    <string name="start_after_select_reminder">Seleziona un promemoria</string>
+    <string name="start_after_no_reminders">Nessun altro promemoria da attendere</string>
+    <string name="start_after_clear">Rimuovi</string>
+    <string name="builder_error_start_after_cycle">Questi promemoria si aspetterebbero a vicenda. Scegli un altro promemoria.</string>
+    <string name="reminder_waiting_for">In attesa di %1$s</string>
 </resources>

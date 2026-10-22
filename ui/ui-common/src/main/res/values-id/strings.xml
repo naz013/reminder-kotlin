@@ -1282,4 +1282,11 @@
     <string name="reset_steps_confirmation">Setel ulang semua langkah menjadi belum selesai?</string>
     <string name="routine_run_channel_name">Penjalan rutinitas</string>
     <string name="routine_run_channel_description">Menampilkan rutinitas yang berjalan dan langkahnya saat ini</string>
+    <string name="start_after_reminder">Mulai setelah pengingat lain</string>
+    <string name="start_after_reminder_description">Tetap tertunda sampai pengingat yang dipilih selesai</string>
+    <string name="start_after_select_reminder">Pilih pengingat</string>
+    <string name="start_after_no_reminders">Tidak ada pengingat lain untuk ditunggu</string>
+    <string name="start_after_clear">Hapus</string>
+    <string name="builder_error_start_after_cycle">Pengingat ini akan saling menunggu. Pilih pengingat lain.</string>
+    <string name="reminder_waiting_for">Menunggu %1$s</string>
 </resources>

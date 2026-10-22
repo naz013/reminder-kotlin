@@ -1285,4 +1285,11 @@
     <string name="reset_steps_confirmation">Alle stappen terugzetten naar niet voltooid?</string>
     <string name="routine_run_channel_name">Routine-uitvoering</string>
     <string name="routine_run_channel_description">Toont de actieve routine en de huidige stap</string>
+    <string name="start_after_reminder">Starten na een andere herinnering</string>
+    <string name="start_after_reminder_description">Blijft in de wacht tot de geselecteerde herinnering is voltooid</string>
+    <string name="start_after_select_reminder">Selecteer een herinnering</string>
+    <string name="start_after_no_reminders">Geen andere herinneringen om op te wachten</string>
+    <string name="start_after_clear">Verwijderen</string>
+    <string name="builder_error_start_after_cycle">Deze herinneringen zouden op elkaar wachten. Kies een andere herinnering.</string>
+    <string name="reminder_waiting_for">Wacht op %1$s</string>
 </resources>
