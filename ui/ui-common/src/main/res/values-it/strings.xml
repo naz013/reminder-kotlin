@@ -1287,7 +1287,7 @@
     <string name="remove_color">Rimuovi colore</string>
     <string name="streak_milestone_reached">Traguardo di %1$d giorni raggiunto!</string>
     <string name="streak_milestone_next">Mancano %1$d giorni al traguardo di %2$d giorni</string>
-    <string name="reminder_archived">Promemoria spostato nell'archivio</string>
-    <string name="reminders_archived_count">%1$d promemoria spostati nell'archivio</string>
+    <string name="reminder_archived">Promemoria spostato nell\'archivio</string>
+    <string name="reminders_archived_count">%1$d promemoria spostati nell\'archivio</string>
     <string name="agenda_items_deleted_count">%1$d elementi eliminati</string>
 </resources>
