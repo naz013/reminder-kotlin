@@ -10,6 +10,7 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.reminder.UiReminderCommonAdapter
 import com.github.naz013.feature.reminder.build.formatter.factory.PlaceFormatterFactory
 import com.github.naz013.logic.reminder.RecurEventManager
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.UnitsConverter
 import com.github.naz013.ui.common.theme.ColorProvider
 import com.github.naz013.ui.group.UiGroupListAdapter
@@ -28,11 +29,12 @@ import org.threeten.bp.LocalDateTime
 class UiReminderListAdapterImplTest {
 
   private val uiReminderCommonAdapter = mockk<UiReminderCommonAdapter>()
+  private val textProvider = mockk<TextProvider>(relaxed = true)
   private val adapter = UiReminderListAdapterImpl(
     uiReminderCommonAdapter = uiReminderCommonAdapter,
     unitsConverter = mockk<UnitsConverter>(relaxed = true),
     colorProvider = mockk<ColorProvider>(relaxed = true),
-    textProvider = mockk<TextProvider>(relaxed = true),
+    textProvider = textProvider,
     shopItemsFormatter = mockk<ShopItemsFormatter>(relaxed = true),
     uiGroupListAdapter = mockk<UiGroupListAdapter>(relaxed = true),
     dateTimeManager = mockk<DateTimeManager>(relaxed = true),
@@ -96,6 +98,24 @@ class UiReminderListAdapterImplTest {
     val state = adapter.createV2(reminder, group = null).state
 
     assertNull(state.tagColor)
+  }
+
+  @Test
+  fun `adds a waiting label tag and exposes the predecessor title when the reminder waits`() {
+    every { textProvider.getString(R.string.reminder_waiting_for, "Take pills") } returns "Waiting for Take pills"
+    val reminder = reminderWith(iconIndex = null, colorIndex = null).copy(isActive = false, startAfterReminderId = "a")
+
+    val item = adapter.createV2(reminder, group = null, waitingForTitle = "Take pills")
+
+    assertEquals("Take pills", item.state.waitingForTitle)
+    assertEquals(listOf("Waiting for Take pills"), item.tags.map { it.text })
+  }
+
+  @Test
+  fun `shows no waiting label for a reminder that is not chained`() {
+    val item = adapter.createV2(reminderWith(iconIndex = null, colorIndex = null), group = null)
+
+    assertNull(item.state.waitingForTitle)
   }
 
   private fun reminderWith(iconIndex: Int?, colorIndex: Int?) = ReminderV2(

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.logic.birthday.BirthdayQueryFilter
 import com.github.naz013.logic.birthday.BirthdaySmartListPredicate
 import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
+import com.github.naz013.logic.reminder.usecase.ResolveWaitingTitlesUseCase
 import com.github.naz013.logic.reminder.filter.ReminderV2QueryFilterInstance
 import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
@@ -69,6 +70,7 @@ internal class AgendaViewModel(
   private val tagRepository: TagRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val uiAgendaItemAdapter: UiAgendaItemAdapter,
+  private val resolveWaitingTitlesUseCase: ResolveWaitingTitlesUseCase,
   private val dateTimeManager: DateTimeManager,
   private val birthdaySmartListPredicate: BirthdaySmartListPredicate,
   private val moveReminderToArchiveUseCase: MoveReminderToArchiveUseCase,
@@ -174,7 +176,8 @@ internal class AgendaViewModel(
     val filteredBirthdays = filterBirthdays(allBirthdays, query, smartList, tagId, groupId)
 
     val groupsById = groups.associateBy { it.uuId }
-    val items = uiAgendaItemAdapter.convertV2(filteredReminders, groupsById, filteredBirthdays)
+    val waitingForTitles = resolveWaitingTitlesUseCase(filteredReminders)
+    val items = uiAgendaItemAdapter.convertV2(filteredReminders, groupsById, filteredBirthdays, waitingForTitles)
     return MergedResult(items, tags, groups)
   }
 

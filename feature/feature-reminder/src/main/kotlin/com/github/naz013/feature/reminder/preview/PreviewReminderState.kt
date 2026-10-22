@@ -26,6 +26,8 @@ internal data class PreviewReminderState(
   val snoozedCountText: String? = null,
   val remaining: String? = null,
   val groupTitle: String? = null,
+  /** "Waiting for <title>" while this reminder is held back by a predecessor, else null. */
+  val waitingForText: String? = null,
   val priorityTitle: String = "",
   val target: UiReminderTarget? = null,
   val targetType: UiReminderType? = null,

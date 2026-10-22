@@ -485,6 +485,7 @@ private data class DetailItem(
 private fun detailRows(state: PreviewReminderState): List<@Composable () -> Unit> =
   buildList {
     state.dueDateTime?.let { text -> add { DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = text) } }
+    state.waitingForText?.let { text -> add { DetailRow(icon = DrawableCatalog.Fluent.Link, text = text) } }
     state.before?.let { text -> add { DetailRow(icon = DrawableCatalog.Builder.ByMonthday, text = text) } }
     add { DetailRow(icon = DrawableCatalog.Fluent.ArrowRepeatAll, text = state.repeat) }
     state.repeatLimitText?.let { text ->

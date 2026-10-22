@@ -46,6 +46,7 @@ internal class UiReminderListAdapterImpl(
   override fun createV2(
     data: ReminderV2,
     group: GroupV2?,
+    waitingForTitle: String?,
   ): UiReminderList {
     val due = uiReminderCommonAdapter.getDueV2(data)
     return UiReminderList(
@@ -57,6 +58,7 @@ internal class UiReminderListAdapterImpl(
       tertiaryText = createTertiaryTextV2(data),
       tags =
         listOfNotNull(
+          createWaitingBadge(waitingForTitle),
           createRepeatBadge(due),
           createRemainingBadge(due),
           createGroupBadgeV2(group),
@@ -78,9 +80,23 @@ internal class UiReminderListAdapterImpl(
           isCritical = data.isCritical,
           iconRes = data.iconIndex?.let { RoutineIconSet.ALL.getOrNull(it) },
           tagColor = data.colorIndex?.let { RoutineColors.ALL.getOrNull(it)?.toArgb() },
+          waitingForTitle = waitingForTitle,
         ),
     )
   }
+
+  private fun createWaitingBadge(waitingForTitle: String?): UiTextElement? =
+    waitingForTitle?.let {
+      UiTextElement(
+        text = textProvider.getString(R.string.reminder_waiting_for, it),
+        textFormat =
+          UiTextFormat(
+            fontSize = unitsConverter.spToPx(12f),
+            textStyle = UiTextStyle.BOLD,
+            textColor = colorProvider.getColorOnSecondaryContainer(),
+          ),
+      )
+    }
 
   private fun canSkipV2(data: ReminderV2): Boolean {
     if (data.location != null) return false

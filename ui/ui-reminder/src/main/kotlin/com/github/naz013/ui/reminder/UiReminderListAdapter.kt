@@ -7,5 +7,6 @@ interface UiReminderListAdapter {
   fun createV2(
     data: ReminderV2,
     group: GroupV2?,
+    waitingForTitle: String? = null,
   ): UiReminderList
 }

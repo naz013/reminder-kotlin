@@ -16,6 +16,7 @@ import com.github.naz013.logic.reminder.usecase.DeleteAllReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.logic.reminder.usecase.FindStartAfterCandidatesUseCase
 import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
+import com.github.naz013.logic.reminder.usecase.ResolveWaitingTitlesUseCase
 import com.github.naz013.logic.reminder.usecase.PauseReminderUseCase
 import com.github.naz013.logic.reminder.usecase.ResumeReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SaveOneTimeReminderUseCaseImpl
@@ -48,6 +49,7 @@ val logicReminderModule = module {
   factoryOf(::ResolveChainedStartUseCase)
   factoryOf(::ActivateChainedRemindersUseCase)
   factoryOf(::FindStartAfterCandidatesUseCase)
+  factoryOf(::ResolveWaitingTitlesUseCase)
   factory { SaveReminderUseCase(get(), get(), get(), lazy { get() }, get()) }
   factoryOf(::CompleteRelatedGoogleTaskUseCase)
 

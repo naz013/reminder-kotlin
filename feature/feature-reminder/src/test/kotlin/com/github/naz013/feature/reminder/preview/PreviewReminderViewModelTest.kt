@@ -44,6 +44,7 @@ import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
 import io.mockk.coVerify
+import com.github.naz013.ui.common.R
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
@@ -54,6 +55,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -394,6 +396,39 @@ class PreviewReminderViewModelTest : BaseTest() {
       val viewModel = createViewModel()
 
       assertTrue(viewModel.state.first().isCritical)
+    }
+
+  @Test
+  fun `state shows a waiting label and hides overdue timing for a chained reminder`() =
+    runTest {
+      val waiting = reminderV2(isActive = false).copy(startAfterReminderId = "a")
+      coEvery { reminderV2Repository.getById("42") } returns waiting
+      coEvery { reminderV2Repository.getById("a") } returns reminderV2(id = "a").copy(summary = "Take pills")
+      every { textProvider.getString(R.string.reminder_waiting_for, "Take pills") } returns "Waiting for Take pills"
+      every { uiReminderCommonAdapter.getDueV2(any()) } returns
+        UiReminderDueData(
+          dateTime = "1 Jan 2026, 10:00",
+          repeat = "Once",
+          before = "5 min ago",
+          remaining = "overdue",
+          formattedTime = "10:00",
+          formattedDateTime = "1 Jan 2026, 10:00",
+        )
+      val viewModel = createViewModel()
+
+      val state = viewModel.state.first()
+
+      assertEquals("Waiting for Take pills", state.waitingForText)
+      assertNull(state.before)
+      assertNull(state.remaining)
+    }
+
+  @Test
+  fun `state has no waiting label when the reminder is not chained`() =
+    runTest {
+      val viewModel = createViewModel()
+
+      assertNull(viewModel.state.first().waitingForText)
     }
 
   @Test

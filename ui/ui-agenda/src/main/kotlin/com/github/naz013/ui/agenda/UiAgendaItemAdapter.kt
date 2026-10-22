@@ -34,6 +34,7 @@ class UiAgendaItemAdapter(
     reminders: List<ReminderV2>,
     groupsById: Map<String, GroupV2>,
     birthdays: List<Birthday>,
+    waitingForTitles: Map<String, String> = emptyMap(),
   ): List<UiAgendaItem> {
     val (pinnedReminders, unpinnedReminders) = reminders.partition { it.isPinned }
     // Read once per conversion rather than per reminder - a cheap SharedPreferences-backed getter,
@@ -41,7 +42,7 @@ class UiAgendaItemAdapter(
     val notificationDefaults = reminderSettingsRepository.getNotificationDefaults()
 
     val reminderItems = unpinnedReminders.map {
-      toUiAgendaReminderV2(it, it.groupId?.let { id -> groupsById[id] }, notificationDefaults)
+      toUiAgendaReminderV2(it, it.groupId?.let { id -> groupsById[id] }, notificationDefaults, waitingForTitles[it.uuId])
     }
     val birthdayItems = birthdays.map { convertBirthday(it) }
     val merged = (reminderItems + birthdayItems).sortedBy { it.dateTime }
@@ -51,7 +52,9 @@ class UiAgendaItemAdapter(
 
     val pinnedItems =
       pinnedReminders
-        .map { toUiAgendaReminderV2(it, it.groupId?.let { id -> groupsById[id] }, notificationDefaults) }
+        .map {
+          toUiAgendaReminderV2(it, it.groupId?.let { id -> groupsById[id] }, notificationDefaults, waitingForTitles[it.uuId])
+        }
         .sortedBy { it.dateTime }
     val pinnedHeader =
       UiAgendaHeader(
@@ -90,8 +93,9 @@ class UiAgendaItemAdapter(
     reminder: ReminderV2,
     group: GroupV2?,
     notificationDefaults: NotificationSettings,
+    waitingForTitle: String?,
   ): UiAgendaReminder {
-    val uiReminderList = uiReminderListAdapter.createV2(reminder, group)
+    val uiReminderList = uiReminderListAdapter.createV2(reminder, group, waitingForTitle)
     return UiAgendaReminder(
       id = uiReminderList.id,
       dateTime = resolveReminderDateTime(reminder, uiReminderList.dueDateTime, uiReminderList.state.isActive),

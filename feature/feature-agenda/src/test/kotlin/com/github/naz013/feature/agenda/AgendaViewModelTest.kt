@@ -9,6 +9,7 @@ import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.reminder.UiReminderListActions
 import com.github.naz013.ui.reminder.UiReminderListState
+import com.github.naz013.logic.reminder.usecase.ResolveWaitingTitlesUseCase
 import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
 import com.github.naz013.logic.reminder.usecase.TogglePinnedReminderUseCase
@@ -67,6 +68,7 @@ class AgendaViewModelTest : BaseTest() {
   private val tagRepository = mockk<TagRepository>()
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
   private val uiAgendaItemAdapter = mockk<UiAgendaItemAdapter>()
+  private val resolveWaitingTitlesUseCase = mockk<ResolveWaitingTitlesUseCase>()
   private val dateTimeManager = mockk<DateTimeManager>(relaxed = true)
   private val moveReminderToArchiveUseCase = mockk<MoveReminderToArchiveUseCase>()
   private val skipReminderUseCase = mockk<SkipReminderUseCase>()
@@ -102,11 +104,12 @@ class AgendaViewModelTest : BaseTest() {
     every { tagRepository.observeAll() } returns flowOf(emptyList())
     // Echoes the filtered reminders/birthdays back as bare UiAgendaItems keyed by id, so tests can
     // assert on which domain objects survived filtering without depending on real UI formatting.
-    every { uiAgendaItemAdapter.convertV2(any(), any(), any()) } answers {
+    every { uiAgendaItemAdapter.convertV2(any(), any(), any(), any()) } answers {
       val reminders = firstArg<List<ReminderV2>>()
       val birthdays = thirdArg<List<Birthday>>()
       reminders.map { fakeReminderItem(it.uuId) } + birthdays.map { fakeBirthdayItem(it.uuId) }
     }
+    coEvery { resolveWaitingTitlesUseCase(any()) } returns emptyMap()
     every { uiAgendaItemAdapter.findTodayScrollTargetId(any()) } returns null
 
     viewModel =
@@ -119,6 +122,7 @@ class AgendaViewModelTest : BaseTest() {
         tagRepository = tagRepository,
         tagAssignmentRepository = tagAssignmentRepository,
         uiAgendaItemAdapter = uiAgendaItemAdapter,
+        resolveWaitingTitlesUseCase = resolveWaitingTitlesUseCase,
         dateTimeManager = dateTimeManager,
         birthdaySmartListPredicate = birthdaySmartListPredicate,
         moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,
@@ -480,6 +484,7 @@ class AgendaViewModelTest : BaseTest() {
       tagRepository = tagRepository,
       tagAssignmentRepository = tagAssignmentRepository,
       uiAgendaItemAdapter = uiAgendaItemAdapter,
+      resolveWaitingTitlesUseCase = resolveWaitingTitlesUseCase,
       dateTimeManager = dateTimeManager,
       birthdaySmartListPredicate = birthdaySmartListPredicate,
       moveReminderToArchiveUseCase = moveReminderToArchiveUseCase,

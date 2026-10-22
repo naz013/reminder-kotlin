@@ -344,6 +344,12 @@ internal class PreviewReminderViewModel(
     }
   }
 
+  private suspend fun loadWaitingForText(reminder: ReminderV2): String? {
+    val predecessorId = reminder.startAfterReminderId ?: return null
+    val predecessor = reminderV2Repository.getById(predecessorId)?.takeUnless { it.isRemoved } ?: return null
+    return textProvider.getString(R.string.reminder_waiting_for, predecessor.summary)
+  }
+
   private fun load() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val reminder = withContext(dispatcherProvider.io()) {
@@ -355,6 +361,7 @@ internal class PreviewReminderViewModel(
 
       reminderAction = reminder.action
 
+      val waitingForText = withContext(dispatcherProvider.io()) { loadWaitingForText(reminder) }
       val status = uiReminderCommonAdapter.getReminderStatus(reminder.isActive, reminder.isRemoved)
       val due = uiReminderCommonAdapter.getDueV2(reminder)
       val target = uiReminderCommonAdapter.getTargetV2(reminder)
@@ -384,14 +391,15 @@ internal class PreviewReminderViewModel(
             summary = reminder.summary,
             description = reminder.description?.takeIf { d -> d.isNotEmpty() },
             dueDateTime = due.formattedDateTime,
-            before = due.before,
+            before = due.before.takeIf { waitingForText == null },
             repeat = due.repeat,
             repeatLimitText = repeatLimitInfo?.text,
             isRepeatLimitReached = repeatLimitInfo?.isLimitReached ?: false,
             repeatUntilText = repeatUntilText,
             triggeredCountText = triggeredCountText,
             snoozedCountText = snoozedCountText,
-            remaining = due.remaining,
+            remaining = due.remaining.takeIf { waitingForText == null },
+            waitingForText = waitingForText,
             groupTitle = group?.title,
             priorityTitle =
               uiReminderCommonAdapter.getPriorityTitle(

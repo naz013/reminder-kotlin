@@ -30,6 +30,8 @@ data class UiReminderListState(
   val iconRes: Int? = null,
   /** ARGB of the reminder's chosen tag color, or null when none. */
   val tagColor: Int? = null,
+  /** Title of the reminder this one is waiting for, or null when it is not chained. */
+  val waitingForTitle: String? = null,
 ) {
   val hasTag: Boolean get() = iconRes != null || tagColor != null
 }
