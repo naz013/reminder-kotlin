@@ -47,7 +47,7 @@ are mechanical, not semantic:
   [architecture.md](architecture.md)).
 - **For Google Tasks functions only**: sign in under the app's Google Tasks screen first
   (`GoogleTasksAuthManager.isAuthorized()` gates those three functions — see
-  [BaseGoogleTaskAppFunctionService.kt](../appfunctions/src/main/kotlin/com/github/naz013/appfunctions/BaseGoogleTaskAppFunctionService.kt)).
+  [BaseGoogleTaskAppFunctionService.kt](../extensions/appfunctions/src/main/kotlin/com/github/naz013/appfunctions/BaseGoogleTaskAppFunctionService.kt)).
   Without it you should get a clean `AppFunctionNotSupportedException`, not a crash — that's an
   intentional path to test, not just a precondition.
 

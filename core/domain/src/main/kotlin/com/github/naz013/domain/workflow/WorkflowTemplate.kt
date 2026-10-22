@@ -26,7 +26,7 @@ data class WorkflowTemplate(
  * template isn't attached to anything until it's applied. */
 enum class WorkflowScopeType { GLOBAL, GROUP, REMINDER }
 
-/** Maps 1:1 onto the sections of docs/workflow-engine-research.md's workflow catalog. */
+/** Maps 1:1 onto the sections of docs/workflows.md's workflow catalog. */
 enum class WorkflowTemplateCategory {
   REMINDER_LIFECYCLE,
   GROUP,

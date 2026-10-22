@@ -111,8 +111,7 @@ these rather than a bespoke structure.
 - **List-detail** — parent-child pairing (e.g. message list + selected conversation; settings + category
   detail). This maps directly onto this app's list screens (Notes, Reminders, Birthdays, Groups, Tags,
   Places, Google Tasks) paired with their editor/preview/detail screens — see
-  [`home-two-pane-design.md`](home-two-pane-design.md) if that doc exists for this repo's specific
-  two-pane home implementation.
+  [`adaptive-layouts.md`](adaptive-layouts.md) for this repo's two-pane implementation.
   - Compact (0–599dp): 1 pane, list ↔ detail navigation, back button appears only in detail view.
   - Medium (600–839dp): 1 pane recommended (2 possible for low-density/quick browsing) — use a bottom nav
     bar or modal nav rail to maximize horizontal space if going 2-pane.

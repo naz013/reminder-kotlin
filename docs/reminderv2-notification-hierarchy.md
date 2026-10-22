@@ -26,9 +26,9 @@ hierarchy degrades gracefully to "one global default" if nothing more specific i
 ## The two shapes
 
 There are two versions of the same field list, living in
-[`domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/ReminderV2.kt`](../domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/ReminderV2.kt)
+[`core/domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/ReminderV2.kt`](../core/domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/ReminderV2.kt)
 and
-[`NotificationSettingsResolver.kt`](../domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/NotificationSettingsResolver.kt)
+[`NotificationSettingsResolver.kt`](../core/domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/NotificationSettingsResolver.kt)
 in the same package:
 
 - **`NotificationSettings`** — every field concrete (non-null), with a real default value. This is
@@ -50,7 +50,7 @@ having both a blanket flag *and* granular nulls was a source of confusion, not a
 ## Resolution
 
 The merge itself is one pure function,
-[`NotificationSettingsOverride.resolve(group, defaults)`](../domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/NotificationSettingsResolver.kt):
+[`NotificationSettingsOverride.resolve(group, defaults)`](../core/domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/NotificationSettingsResolver.kt):
 
 ```kotlin
 fun NotificationSettingsOverride.resolve(
@@ -67,7 +67,7 @@ It's pure domain logic (no repository dependency), so it's usable anywhere — i
 "effective settings" preview in the builder UI.
 
 The use case that actually wires it up for a given reminder is
-[`ResolveReminderV2NotificationSettingsUseCase`](../usecase/reminders/src/main/kotlin/com/github/naz013/usecase/reminders/ResolveReminderV2NotificationSettingsUseCase.kt)
+[`ResolveReminderV2NotificationSettingsUseCase`](../logic/logic-reminder/src/main/kotlin/com/github/naz013/logic/reminder/query/ResolveReminderV2NotificationSettingsUseCase.kt)
 (`usecase:reminders`):
 
 ```kotlin
@@ -99,7 +99,7 @@ actual notification delivery to call at the point a notification/alarm is built.
 
 ### Settings (global defaults)
 
-[`ReminderSettingsRepository`](../repository-api/src/main/java/com/github/naz013/repository/ReminderSettingsRepository.kt)
+[`ReminderSettingsRepository`](../data/repository-api/src/main/java/com/github/naz013/repository/ReminderSettingsRepository.kt)
 (`repository-api`) is the abstraction:
 
 ```kotlin
@@ -126,11 +126,11 @@ are just a new key + property pair.
 
 ### Group
 
-`GroupV2` (`domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/GroupV2.kt`) replaces the
+`GroupV2` (`core/domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/GroupV2.kt`) replaces the
 V1 `ReminderGroup` concept for anything UI-facing going forward — it's just called "Group" now,
 not "Reminder Group." Full stack: `GroupV2Repository` (repository-api) →
 `GroupV2Entity`/`GroupV2Dao`/`GroupV2RepositoryImpl` (repository) → `GroupsViewModel` /
-`EditGroupViewModel` (app, `groups/` package). The old V1 `ReminderGroup` table/repository/screens
+`EditGroupViewModel` (`feature-group`). The old V1 `ReminderGroup` table/repository/screens
 are untouched — `GroupV2` is a genuinely new, separate table (see Storage below), backfilled from
 `ReminderGroup` by id so existing `ReminderV2.groupId` references keep resolving.
 
@@ -163,7 +163,7 @@ data class NotificationSettingsOverrideColumns(
 Both `ReminderV2Entity.notification` and `GroupV2Entity.notification` reuse this exact same
 `NotificationSettingsOverrideColumns` class and the same `NotificationSettingsOverride.toColumns()`
 / `.toDomain()` mapper functions
-([`ReminderV2Mapper.kt`](../repository/src/main/java/com/github/naz013/repository/entity/ReminderV2Mapper.kt),
+([`ReminderV2Mapper.kt`](../data/repository/src/main/java/com/github/naz013/repository/entity/ReminderV2Mapper.kt),
 made `internal` rather than `private` specifically so `GroupV2Mapper.kt` can call them too) — one
 mapping to maintain, not two.
 
@@ -185,11 +185,11 @@ Two one-time migrations populate the V2 tables from V1 data, both invoked once f
 `SplashViewModel.checkDb()` at app startup, gated by `Prefs` one-shot flags
 (`groupV2BackfillDone` / `reminderV2BackfillDone`):
 
-1. [`GroupV2BackfillUseCase`](../repository/src/main/java/com/github/naz013/repository/migration/GroupV2BackfillUseCase.kt) —
+1. [`GroupV2BackfillUseCase`](../data/repository/src/main/java/com/github/naz013/repository/migration/GroupV2BackfillUseCase.kt) —
    maps every V1 `ReminderGroup` → `GroupV2`, **preserving the id** (`groupUuId` → `uuId`) so
    `ReminderV2.groupId` (copied from V1 `Reminder.groupUuId` during its own backfill) keeps
    resolving to the same group.
-2. [`ReminderV2BackfillUseCase`](../repository/src/main/java/com/github/naz013/repository/migration/ReminderV2BackfillUseCase.kt) —
+2. [`ReminderV2BackfillUseCase`](../data/repository/src/main/java/com/github/naz013/repository/migration/ReminderV2BackfillUseCase.kt) —
    maps every V1 `Reminder` → `ReminderV2`, including its notification fields into
    `NotificationSettingsOverride` (dropping the dead `useGlobalSettings = useGlobal` mapping since
    there's no destination field for it anymore).
@@ -220,14 +220,14 @@ Field-by-field, across the three sites (updated after the REM-1069 pass):
 | lockScreenVisibility | ✅ "Notification defaults" | ✅ | ✅ `LockScreenVisibilityBuilderItem` |
 | remindBefore | ❌ (frozen, no Settings-level default beyond `0`) | ❌ (frozen) | ✅ `BeforeTimeBuilderItem` |
 
-- **Settings** (`app/src/main/java/com/elementary/tasks/settings/reminders/`) covers all 10
+- **Settings** (`feature/feature-reminder/src/main/kotlin/com/github/naz013/feature/reminder/settings/`) covers all 10
   in-scope fields plus the frozen `color`/`priority`/`quietHoursFrom/To` rows. `vibrationPattern`
   is a new choice-dialog row (`ChoiceDialogKind.VIBRATION_PATTERN`) backed by
-  `VibrationPresets.ALL` (`app/src/main/java/com/elementary/tasks/core/utils/VibrationPresets.kt`).
+  `VibrationPresets.ALL` (`ui/ui-notification-settings/src/main/kotlin/com/github/naz013/ui/notification/settings/VibrationPresets.kt`).
   `Prefs.defaultVibrationPattern` switched from the buggy `getLongArray`/`putLongArray`
   (`StringSet`-backed, unordered/deduplicating) to an ordered comma-joined string via
   `getString`/`putString`.
-- **Reminder builder** (`app/src/main/java/com/elementary/tasks/reminder/build/`) now has all 10
+- **Reminder builder** (`feature/feature-reminder/src/main/kotlin/com/github/naz013/feature/reminder/build/`) now has all 10
   in-scope fields as builder items: `CategoryBuilderItem`, `LockScreenVisibilityBuilderItem`,
   `BypassDndBuilderItem`, `WakeScreenBuilderItem`, `VibrationPatternBuilderItem`,
   `DelayMinutesBuilderItem` (new), plus the pre-existing `remindBefore`/`priority`/`color`/
@@ -251,7 +251,7 @@ Field-by-field, across the three sites (updated after the REM-1069 pass):
 - **User-facing help**: a new "How does this work?" row at the top of both the Settings
   "Notification defaults" section and the Group editor "Notification overrides" section opens
   `NotificationCustomizationHelpScreen`
-  (`app/src/main/java/com/elementary/tasks/settings/reminders/help/NotificationCustomizationHelpScreen.kt`,
+  (`feature/feature-reminder/src/main/kotlin/com/github/naz013/feature/reminder/settings/help/NotificationCustomizationHelpScreen.kt`,
   registered as `SettingsNavKey.NotificationCustomizationHelp` so both features' nav graphs can
   push it on the shared backstack) — a WebView-hosted HTML guide
   (`app/src/main/assets/files/notification_customization.html`) explaining the 3-level hierarchy,
@@ -267,7 +267,7 @@ Field-by-field, across the three sites (updated after the REM-1069 pass):
   (`VibrationPresets.ALL`: Short/Long/Double buzz/Default) rather than a free-form
   millisecond-array editor — there was nothing to reuse, so this is a net-new, deliberately
   simple picker. Selecting a preset in any of the three sites immediately plays it via
-  `VibrationPlayer` (`app/src/main/java/com/elementary/tasks/core/utils/VibrationPlayer.kt`,
+  `VibrationPlayer` (`ui/ui-notification-settings/src/main/kotlin/com/github/naz013/ui/notification/settings/VibrationPlayer.kt`,
   a thin `Vibrator`/`VibrationEffect.createWaveform` wrapper) so the user can feel the difference,
   not just read the name.
 
@@ -284,21 +284,19 @@ In scope — bring these to full 3-level coverage (Settings + Group + Builder) w
 currently missing them: `vibrate`, `vibrationPattern`, `repeatNotification`, `delayMinutes`,
 `priority`, `category`, `bypassDoNotDisturb`, `wakeScreen`, `lockScreenVisibility`.
 
-## Explicit non-goals (as of this writing)
+## Delivery wiring and remaining limits
 
-- **Nothing reads the resolved `NotificationSettings` at notification-fire time.** Actual delivery
-  (`Notifier` channel creation, `ReminderHandlerQ`/`ReminderHandlerSilent`, `DoNotDisturbManager`)
-  still operates entirely on V1 `Reminder` and is unaffected by any of this. Wiring it up means
-  solving Android 8+'s per-channel sound/vibration constraint (a channel's sound/vibration is fixed
-  at creation and can't be changed later — a "channel per configuration" strategy is likely needed)
-  and belongs with the eventual reminder-builder cutover to `ReminderV2`.
-- V1 `Reminder`/`ReminderGroup` and their tables/migrations/usecases are fully untouched.
-- The V1 reminder-builder's group picker (`GroupDecomposer`, `BiFactory`) and home/schedule
-  group-based filtering (`home/agenda`, `home/scheduleview`) still read the V1 `ReminderGroup`
-  table — only the standalone Group list/edit screens moved to `GroupV2`.
-- No cloud-sync wiring for `GroupV2Json`/`ReminderV2Json`'s notification fields — the JSON DTOs
-  exist and are kept in sync with the domain shapes, but aren't registered in `DataType`/
-  `GetClassByDataTypeUseCase` yet.
+- **Resolved settings are read at fire time.** `ReminderActionProcessor` (`logic:logic-notification-action`)
+  calls `ResolveReminderV2NotificationSettingsUseCase` and applies the result. `isCritical` on `ReminderV2`
+  is an opt-in alarm-style escalation that bypasses the hierarchy entirely.
+- **Android 8+ per-channel constraint still applies.** A channel's sound and vibration are fixed at creation,
+  so any field that must differ per reminder needs a channel per configuration or has to be applied outside
+  the channel. Check how `Notifier` handles a given field before adding UI for it.
+- **Frozen fields:** `color`, `volume`, `soundUri`, `quietHoursFrom`, `quietHoursTo`, `activeHours` and
+  `remindBefore` have no 3-level UI.
+- **Sync and backup:** `ReminderV2Json` and `GroupV2Json` live in `data:files-api` and are converted in
+  `DataConverterImpl`. A new notification field must be added to both DTOs and both mapping directions; see
+  `CLAUDE.md`.
 
 ## Checklist: adding a new customization field
 
@@ -329,7 +327,7 @@ badge count", "custom LED blink rate"), touch all of these:
    `RemindersSettingsViewModel`/`RemindersSettingsState`, following the existing toggle
    (`SettingsSwitchItem`) or choice-dialog (`SettingsItem` + `ChoiceDialogKind`) patterns.
 9. **Group UI**: add a row to the "Notification overrides" section in `EditGroupScreen`/
-   `EditGroupViewModel`/`EditGroupState` (`app/src/main/java/com/elementary/tasks/groups/create/`),
+   `EditGroupViewModel`/`EditGroupState` (`feature/feature-group/src/main/kotlin/com/github/naz013/group/create/`),
    following the established `SettingsItem` + `SingleChoiceDialog` pattern with an "Inherit from
    Settings" option prepended to the field's choices (see `GroupNotificationDialogKind`,
    `onNotificationChoiceSelected`, `refreshNotificationSubtitles()`). `delayMinutes` instead uses
@@ -341,20 +339,20 @@ badge count", "custom LED blink rate"), touch all of these:
 
 ## Key files
 
-- `domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/ReminderV2.kt` — `NotificationSettings`, `ReminderV2`
-- `domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/NotificationSettingsResolver.kt` — `NotificationSettingsOverride`, `resolve()`
-- `domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/GroupV2.kt`
-- `domain/src/main/kotlin/com/github/naz013/domain/sync/ReminderV2Json.kt`, `GroupV2Json.kt`
-- `repository-api/src/main/java/com/github/naz013/repository/ReminderSettingsRepository.kt`, `GroupV2Repository.kt`
-- `repository/src/main/java/com/github/naz013/repository/entity/ReminderV2Entity.kt`, `GroupV2Entity.kt`, `ReminderV2Mapper.kt`, `GroupV2Mapper.kt`
-- `repository/src/main/java/com/github/naz013/repository/migrations/Migration23To24.kt`, `Migration24To25.kt`
-- `repository/src/main/java/com/github/naz013/repository/migration/GroupV2BackfillUseCase.kt`, `ReminderGroupToGroupV2Mapper.kt`, `ReminderV2BackfillUseCase.kt`, `ReminderToReminderV2Mapper.kt`
+- `core/domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/ReminderV2.kt` — `NotificationSettings`, `ReminderV2`
+- `core/domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/NotificationSettingsResolver.kt` — `NotificationSettingsOverride`, `resolve()`
+- `core/domain/src/main/kotlin/com/github/naz013/domain/reminder/v2/GroupV2.kt`
+- `data/files-api/src/main/kotlin/com/github/naz013/files/model/ReminderV2Json.kt`, `GroupV2Json.kt`
+- `data/repository-api/src/main/java/com/github/naz013/repository/ReminderSettingsRepository.kt`, `GroupV2Repository.kt`
+- `data/repository/src/main/java/com/github/naz013/repository/entity/ReminderV2Entity.kt`, `GroupV2Entity.kt`, `ReminderV2Mapper.kt`, `GroupV2Mapper.kt`
+- `data/repository/src/main/java/com/github/naz013/repository/migrations/Migration23To24.kt`, `Migration24To25.kt`
+- `data/repository/src/main/java/com/github/naz013/repository/migration/GroupV2BackfillUseCase.kt`, `ReminderGroupToGroupV2Mapper.kt`, `ReminderV2BackfillUseCase.kt`, `ReminderToReminderV2Mapper.kt`
 - `usecase/reminders/src/main/kotlin/com/github/naz013/usecase/reminders/ResolveReminderV2NotificationSettingsUseCase.kt`
 - `app/src/main/java/com/elementary/tasks/core/data/repository/ReminderSettingsRepositoryImpl.kt`
 - `app/src/main/java/com/elementary/tasks/core/utils/params/Prefs.kt`, `PrefsConstants.kt`
-- `app/src/main/java/com/elementary/tasks/settings/reminders/` — Settings UI section
-- `app/src/main/java/com/elementary/tasks/groups/` — Group CRUD screens (list, create/edit, use cases), notification-overrides section in `create/EditGroupScreen.kt`/`EditGroupViewModel.kt`/`EditGroupState.kt`
-- `app/src/main/java/com/elementary/tasks/reminder/build/BuilderItem.kt` — all per-reminder builder items, including `CategoryBuilderItem`/`LockScreenVisibilityBuilderItem`/`BypassDndBuilderItem`/`WakeScreenBuilderItem`/`VibrationPatternBuilderItem`/`DelayMinutesBuilderItem`
-- `app/src/main/java/com/elementary/tasks/reminder/build/formatter/` — `Formatter` implementations shared across the builder and (via direct reuse) the Group editor's subtitle text
-- `app/src/main/java/com/elementary/tasks/core/utils/VibrationPresets.kt` — the fixed vibration-pattern preset list shared by Settings/Builder/Group
-- `app/src/main/java/com/elementary/tasks/splash/SplashViewModel.kt` — backfill trigger points
+- `feature/feature-reminder/src/main/kotlin/com/github/naz013/feature/reminder/settings/` — Settings UI section
+- `feature/feature-group/src/main/kotlin/com/github/naz013/group/` — Group CRUD screens (list, create/edit, use cases), notification-overrides section in `create/EditGroupScreen.kt`/`EditGroupViewModel.kt`/`EditGroupState.kt`
+- `feature/feature-reminder/src/main/kotlin/com/github/naz013/feature/reminder/build/BuilderItem.kt` — all per-reminder builder items, including `CategoryBuilderItem`/`LockScreenVisibilityBuilderItem`/`BypassDndBuilderItem`/`WakeScreenBuilderItem`/`VibrationPatternBuilderItem`/`DelayMinutesBuilderItem`
+- `feature/feature-reminder/src/main/kotlin/com/github/naz013/feature/reminder/build/formatter/` — `Formatter` implementations shared across the builder and (via direct reuse) the Group editor's subtitle text
+- `ui/ui-notification-settings/src/main/kotlin/com/github/naz013/ui/notification/settings/VibrationPresets.kt` — the fixed vibration-pattern preset list shared by Settings/Builder/Group
+- `app/src/main/java/com/elementary/tasks/navigation/BottomNavInitViewModel.kt` — backfill trigger points

@@ -12,14 +12,15 @@ two-pane wiring hook, and preview tooling all live in `ui-common`.
 `SceneDecoratorStrategy` registered in `AppNavGraph.kt` (see below) - no manual per-screen
 branching.
 
-Planned next: 2-3 List→Preview flows (Notes, Google Tasks, Agenda/Reminders) adopt two-pane
-(Phase 2), fold-posture-aware refinements and the remaining screens (Phase 3). See
-`docs/home-two-pane-design.md` for a concrete Phase 2 proposal (Home list + reminder/birthday
-preview) - the first one written up in detail, not yet implemented.
+**Phase 2 (done for Home):** Home, Agenda and Birthdays tag their entries with
+`ListDetailSceneStrategy.listPane()` / `.detailPane()` (see `HomeNavGraph.kt`, `AgendaNavGraph.kt`,
+`BirthdaysNavGraph.kt`), and Google Tasks and the Google Calendar event preview use the same hook.
+
+Still open: fold-posture-aware refinements and any remaining list screens (Phase 3).
 
 ## Breakpoint reference
 
-[`DeviceScreenConfiguration`](../ui-common/src/main/kotlin/com/github/naz013/ui/common/compose/foundation/DeviceScreenConfiguration.kt)
+[`DeviceScreenConfiguration`](../ui/ui-common/src/main/kotlin/com/github/naz013/ui/common/compose/foundation/DeviceScreenConfiguration.kt)
 classifies the window into six buckets off `androidx.window.core.layout.WindowSizeClass`'s
 canonical breakpoints (width 600/840dp, height 480/900dp):
 
@@ -43,7 +44,7 @@ a whole composable per bucket - reach for these first before hand-rolling a `whe
 
 For fold posture (independent of size - a device can be `TabletLandscape` sized and still have a
 hinge splitting it), use `rememberAppWindowState()` /
-[`FoldPosture`](../ui-common/src/main/kotlin/com/github/naz013/ui/common/compose/foundation/AppWindowState.kt)
+[`FoldPosture`](../ui/ui-common/src/main/kotlin/com/github/naz013/ui/common/compose/foundation/AppWindowState.kt)
 (`Flat` / `Book` / `TableTop`). Nothing in the app reads this yet - it's here for Phase 3.
 
 ## Deciding what a screen needs
@@ -51,7 +52,7 @@ hinge splitting it), use `rememberAppWindowState()` /
 1. **Nothing** - most edit/preview/settings-detail screens are fine staying single-column; don't
    add adaptive machinery to a screen just because it's now possible.
 2. **Top-level navigation chrome** (one per app, not per screen) →
-   [`AppNavigationScaffold`](../ui-common/src/main/kotlin/com/github/naz013/ui/common/compose/foundation/navigation/AppNavigationScaffold.kt).
+   [`AppNavigationScaffold`](../ui/ui-common/src/main/kotlin/com/github/naz013/ui/common/compose/foundation/navigation/AppNavigationScaffold.kt).
 3. **A List → Preview/Edit flow with a genuinely useful side-by-side view** (Notes, Google Tasks,
    Reminders/Agenda, Settings hub) → tag the two `NavKey` entries with `ListDetailSceneStrategy`
    metadata (below). Don't reach for this on flows where the "detail" is a full-screen editor that

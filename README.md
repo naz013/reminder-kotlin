@@ -27,7 +27,7 @@ A comprehensive task management and reminder application for Android, built with
 ### Groups & Organization
 - **Task Categories**: Organize reminders into custom groups (General, Personal, Work, etc.)
 - **Smart Lists**: Filter reminders by predefined smart lists (Today, Overdue, This Week)
-- **Tag Support**: Add custom tags to reminders for better organization and filtering
+- **Tags**: Label reminders, notes, birthdays, Google Tasks and routines, and filter each list by tag
 
 ### Cloud Backup & Sync
 - **Automatic Backups**: Keep your data safe with automatic cloud backup functionality
@@ -35,14 +35,25 @@ A comprehensive task management and reminder application for Android, built with
 - **Dropbox Support**: Additional cloud storage option for your reminders and notes
 - **Cross-Device Sync**: Access your reminders and notes across multiple devices
 
+### Habits, Routines & Focus
+- **Habit Tracker**: One-tap daily check-ins with streaks
+- **Routines**: Ordered, timed steps run in a guided focus timer, on demand or on a schedule
+- **Pomodoro**: Work and break timer with a foreground notification
+
+### Automation
+- **Workflow Rules**: Local trigger, condition and action rules (auto-archive, escalate on repeated snooze, react to Bluetooth or Wi-Fi), all on-device
+
 ### Insights & Analytics
 - **Activity Tracking**: Monitor your reminder completion and task trends
-- **Habit Streaks**: Track habit completion streaks over time
+- **Streaks**: Reminder and routine streaks with 7, 30 and 100-day milestone badges
 - **Weekly Trends**: Visualize your busiest days and activity patterns
 
 ### Customization
 - **Material Design**: Modern UI built with Material Design 3 components
 - **Widget Support**: Add home screen widgets for quick access to your tasks and reminders
+- **Wear OS**: Companion watch app with a reminder list and next-reminder tile
+- **Assistants**: Gemini AppFunctions let on-device assistants manage reminders, notes and birthdays (Pro)
+- **Local Encrypted Backup**: Export everything to a passphrase-protected file, fully offline (Pro)
 - **Flexible Settings**: Customize notification behavior, default reminder settings, and more
 
 ### Additional Features

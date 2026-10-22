@@ -14,7 +14,7 @@ The project uses a **multi-module Clean Architecture** layout. Key rules:
 - `*-api` modules — interfaces only (e.g. `repository-api`, `cloud-api`, `logging-api`, `navigation-api`). Never add implementations here.
 - `repository` — Room implementation of `repository-api`.
 - `cloud` — Implementations of `cloud-api` (Google Drive/Tasks, Dropbox).
-- `usecase:*` modules — pure logic; **only** depend on `repository-api`, never on `repository` directly.
+- `logic-*` modules — cross-feature business logic; depend on `repository-api`, never on `repository` directly.
 - `sync` — Orchestration via `cloud-api` and `repository-api`.
 - `app` — the only module that wires concrete Koin DI bindings.
 - `ui-common` — Shared Compose components + Material 3 tokens.

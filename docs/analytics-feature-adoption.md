@@ -16,10 +16,10 @@ by a persisted flag, the first time they complete that feature's core action.
 
 | Piece | Location |
 |---|---|
-| `Event.FEATURE_ADOPTED` (`"feature_adopted"`) | [analytics/src/main/kotlin/com/github/naz013/analytics/AnalyticEvent.kt](../analytics/src/main/kotlin/com/github/naz013/analytics/AnalyticEvent.kt) |
+| `Event.FEATURE_ADOPTED` (`"feature_adopted"`) | [analytics/src/main/kotlin/com/github/naz013/analytics/AnalyticEvent.kt](../core/analytics/src/main/kotlin/com/github/naz013/analytics/AnalyticEvent.kt) |
 | `FeatureAdoptedEvent(feature: Feature)` | same file — reuses `Parameter.TYPE`, same as `FeatureUsedEvent` |
 | `Prefs.hasAdoptedGoogleTasks` (persisted, one-time flag) | [app/src/main/java/com/elementary/tasks/core/utils/params/Prefs.kt](../app/src/main/java/com/elementary/tasks/core/utils/params/Prefs.kt) |
-| Fired from the "create new Google Task" path | [app/src/main/java/com/elementary/tasks/googletasks/task/EditGoogleTaskViewModel.kt](../app/src/main/java/com/elementary/tasks/googletasks/task/EditGoogleTaskViewModel.kt) `save()` |
+| Fired from the "create new Google Task" path | [app/src/main/java/com/elementary/tasks/googletasks/task/EditGoogleTaskViewModel.kt](../feature/feature-googletask/src/main/kotlin/com/github/naz013/feature/googletask/task/EditGoogleTaskViewModel.kt) `save()` |
 
 The adoption moment was deliberately chosen as **the first Google Task the user creates**, not the
 OAuth login step. Logging in without ever creating a task isn't real adoption — it's the login flow

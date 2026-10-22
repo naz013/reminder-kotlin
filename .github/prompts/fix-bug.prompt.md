@@ -18,7 +18,7 @@ Affected area (module / screen / class): ${input:affected_area:Which module, scr
 1. **Reproduce** the bug locally or trace the code path described.
 2. **Consult `rules and agents.md`** to ensure the fix adheres to the project's architectural constraints.
 3. **Identify the root cause** — is it in:
-   - A use case (`usecase:*`)?
+   - A use case (`logic-*`)?
    - A repository or DAO (`repository`)?
    - A ViewModel state mutation (`app`)?
    - A Compose recomposition / state issue?

@@ -126,7 +126,7 @@ import org.koin.compose.koinInject
  * entry pair into a two-pane list-detail layout on Medium+ width just by tagging its `entry<>()`
  * calls with `ListDetailSceneStrategy.listPane()`/`.detailPane()` - no other wiring needed. Home's
  * `HomeNavKey.Main` and the reminder/birthday preview screens are the first adopters - see
- * `docs/home-two-pane-design.md`.
+ * `docs/adaptive-layouts.md`.
  *
  * [sidePanelSceneStrategy] is a second, independent two-pane mechanism for flows that want a
  * floating Material 3 side sheet (https://m3.material.io/components/side-sheets/overview) instead

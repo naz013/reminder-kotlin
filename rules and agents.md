@@ -11,9 +11,7 @@ below are unqualified for readability; prepend the group to get the real Gradle 
 - **repository** (`data/`): Room implementation of `repository-api`.
 - **cloud-api** (`data/`): Cloud storage interfaces.
 - **cloud** (`data/`): Implementations (Google Drive/Tasks, Dropbox).
-- **usecase:* modules**: Pure logic. Depend ONLY on `repository-api` (never `repository`). **Stale** —
-  no `usecase:*` modules exist in `settings.gradle.kts` today; see the "Known doc gap" callout in
-  `docs/architecture.md`'s Module Inventory before relying on this.
+- **logic-* modules** (`logic/`): Cross-feature business logic. Depend on `repository-api`, never `repository`.
 - **sync** (`data/`): Orchestration via `cloud-api` and `repository-api`.
 - **app**: Entry point. Wires implementations via Koin.
 - **ui-common** (`ui/`): Shared Compose components + Material 3 tokens.
@@ -63,9 +61,8 @@ below are unqualified for readability; prepend the group to get the real Gradle 
     though everything works locally.
 
 ## Feature Modules: `feature-*` / `ui-*` / `logic-*`
-Newer features (Google Tasks, Tags, Insights) are extracted out of `app` into a per-feature module
-family instead of living in `app`. Ongoing migration - not every feature has all three yet, check
-before assuming. Full guide + checklist for creating one: `docs/architecture.md` ("Feature Modules").
+Features are extracted out of `app` into a per-feature module family instead of living in `app`. Not
+every feature has all three kinds, check before assuming. Full guide + checklist for creating one: `docs/architecture.md` ("Feature Modules").
 - **`feature-<name>`**: screens, ViewModels, `<Feature>NavKey`/`<Feature>NavGraph`, own `KoinModule.kt`,
   feature-private orchestration use cases. Only `app` depends on it; it never depends on `app` or on
   another `feature-*` module.
@@ -79,7 +76,7 @@ before assuming. Full guide + checklist for creating one: `docs/architecture.md`
 
 ## Dependency Rules
 - Arrows: `A -> B` (A depends on B).
-- `usecase` -> `repository-api` (NOT `repository`).
+- `logic-*` -> `repository-api` (NOT `repository`).
 - `feature` -> `*-api` modules (for decoupling).
 - `feature-*` -> its own `ui-*`/`logic-*` siblings and other `logic-*` modules; never -> another `feature-*` or `app`.
 - `domain` is the root (no arrows outgoing).

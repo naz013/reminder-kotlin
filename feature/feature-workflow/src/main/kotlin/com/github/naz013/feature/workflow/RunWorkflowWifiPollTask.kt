@@ -13,7 +13,7 @@ import com.github.naz013.workapi.TaskResult
  * .registerNetworkCallback], but that registration doesn't survive process death, so a
  * connect/disconnect that happens while the app isn't running would otherwise never fire (same
  * class of gap `TableChangeNotifier`'s `LocalBroadcastManager` use has, per
- * docs/workflow-engine-research.md). Run periodically (see `JobScheduler
+ * docs/workflows.md). Run periodically (see `JobScheduler
  * .scheduleWorkflowWifiPollCheck`), this diffs the currently-connected SSID against
  * [WorkflowWifiPollState.lastKnownSsid] and fires whatever [WorkflowTriggerRunner] would have
  * fired for the transition(s) missed in between - at the poll interval's granularity, not

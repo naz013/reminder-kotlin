@@ -2,122 +2,122 @@
 
 ## Purpose
 
-**Reminder** is a comprehensive task management and reminder application for Android, written in Kotlin. It helps users stay organised by letting them create richly configured reminders, capture notes, track birthdays, manage Google Tasks, and back up all data to the cloud.
+**Reminder** is an offline-first, privacy-focused task and reminder app for Android, written in Kotlin. It
+lets users create richly configured reminders, capture notes, track birthdays and habits, manage Google Tasks,
+and optionally back up to their own cloud storage. Data stays on the device by default; cloud features are
+opt-in, and the app has no backend of its own.
 
-The app is available on [Google Play](https://play.google.com/store/apps/details?id=com.cray.software.justreminder).
+Available on [Google Play](https://play.google.com/store/apps/details?id=com.cray.software.justreminder) as two
+product flavors, `free` (ad-supported) and `pro`.
 
----
+## Release gating
 
-## Core Features
+These features sit behind a `FeatureFlag` (code default `false`) and/or a PRO check. The flags are enabled for
+users through Remote Config, so the remaining gate is PRO where one is listed:
 
-### Reminders & Tasks
-
-| Capability | Description |
+| Feature | Gate |
 |---|---|
-| **Flexible scheduling** | One-time, daily, by day-of-week, by day-of-month, by day-of-year, countdown timer, and iCalendar (RRULE) patterns |
-| **Location-based reminders** | Triggers when the user enters or leaves a saved geographic location |
-| **Actions** | A reminder can trigger a phone call, send an SMS, open a URL, launch an application, send an e-mail, or show a shopping sub-task list |
-| **Priority & groups** | Reminders belong to user-defined groups and can be assigned a priority level |
-| **Sub-tasks** | Shopping-list reminders support nested sub-task items |
-| **Do-Not-Disturb** | Configurable quiet-hours window that suppresses reminder notifications |
-| **Event history** | A historical log of every reminder event that has fired |
-| **Recur presets** | Saved RRULE presets for quickly re-applying complex repeat patterns |
-| **Smart lists** | Pinned quick filters (Today, Overdue, This week, No group) on the home reminder list, computed entirely on-device from existing reminder fields |
-| **Tags** | Cross-cutting labels (name + color) that can be attached to both reminders and notes, independent of Groups; managed from their own screen and embeddable as a chip picker in edit screens |
+| Workflow rules | `FeatureFlag.WORKFLOW_ENABLED`; running rules needs PRO |
+| Routines | `FeatureFlag.ROUTINE_ENABLED`; intended PRO, but no PRO check found in code (see [routines.md](routines.md) §6.4); Insights are PRO |
+| Habit tracker | `FeatureFlag.HABIT_ENABLED` and PRO |
+| On-device AI digest | `FeatureFlag.AI_DIGEST`, PRO, and a device that supports on-device summarization |
+| Public holidays in Calendar | `FeatureFlag.PUBLIC_HOLIDAYS` |
+| Streaks & Insights, local encrypted backup, Gemini AppFunctions | PRO build |
+| Pro trial | Free users can earn 24 hours of PRO by watching rewarded ads; the trial does not unlock AppFunctions |
 
-### Streaks & Insights (PRO)
+Flags are defined in `core/feature-flags-api/.../FeatureFlag.kt` and backed by SharedPreferences and Firebase
+Remote Config.
 
-- A dashboard showing per-reminder streaks (consecutive days fired), a weekly activity trend, and the busiest day of the week — computed entirely on-device from the existing event-history log, with no data leaving the device
-- Reachable from Settings; hidden on the free flavor
+## Core features
+
+### Reminders
+- **Scheduling:** one-time, daily, by weekday, day of month, day of year, countdown, and iCalendar RRULE
+  patterns, with saved RRULE presets.
+- **Location reminders:** trigger on entering or leaving a saved place.
+- **Actions:** call, SMS, open a URL or app, send e-mail, or show a shopping sub-task list.
+- **Organization:** groups, priority, tags, a reminder icon and color shown in lists and the calendar, and
+  Smart Lists on the home list (Today, Overdue, This week, No group).
+- **Quick add:** type a phrase and the on-device parser (`logic-quickadd`) builds the reminder.
+- **Notification customization:** every notification parameter (sound, vibration, priority, category, DND bypass,
+  wake screen, lock-screen visibility, repeat) resolves Reminder, then Group, then global default. An opt-in
+  critical mode forces an alarm-style, DND-bypassing delivery. See
+  [reminderv2-notification-hierarchy.md](reminderv2-notification-hierarchy.md).
+- **In-app alert banner:** a foregrounded app mirrors a firing reminder or birthday as a banner. See
+  [in-app-notification-overlay.md](in-app-notification-overlay.md).
+- **History, archive, do-not-disturb window,** and **multi-select** bulk actions on Notes, Groups and Tags
+  (pattern in [multiselect.md](multiselect.md)).
 
 ### Notes
-
-- **Quick note-taking** with rich-text support and image attachments
-- **Search and filter** across all notes by text content
-- **iCalendar export** so notes can be shared via standard calendar formats
+Rich text with images and per-note font, color, tags, archive, search and tag filtering, and iCalendar export.
+Dropping text, text files and PDFs into the editor is supported ([drag-and-drop-notes.md](drag-and-drop-notes.md)).
 
 ### Birthdays
+Tracked independently of the system calendar, with tags and a tag filter, a dedicated action screen when the
+alarm fires, and an optional import from contacts.
 
-- Track contact birthdays independently of the system calendar
-- Look up birthdays by day and month for "upcoming today" widgets
+### Tags
+One cross-entity label for reminders, notes, birthdays, Google Tasks and routines, with filtering on each list
+and a tag details screen. See [tags.md](tags.md).
 
-### Google Tasks integration
+### Habits, Routines and Pomodoro
+- **Habits:** one-tap daily check-ins with streaks.
+- **Routines:** ordered, time-boxed steps run in a guided focus timer, on demand or on a daily, weekly or
+  monthly schedule. See [routines.md](routines.md).
+- **Pomodoro:** work/break timer with a foreground notification; focus time feeds Insights.
 
-- Browse and manage Google Task lists and individual tasks
-- Full two-way sync with the Google Tasks API
+### Workflow rules
+Local trigger, condition and action automation over reminders and groups (for example auto-archive, escalate on
+repeated snooze, weekly completion summary, react to a Bluetooth device or Wi-Fi network). See
+[workflows.md](workflows.md).
 
-### Gemini AppFunctions integration (PRO)
+### Google Tasks
+Browse and manage Google Task lists and tasks with two-way sync.
 
-- Exposes reminder, note, birthday, and Google Task actions (create, list, complete, update, delete, search) to Gemini and other on-device assistants via Android's `androidx.appfunctions` platform API — no network round trip, everything runs on-device
-- PRO-only; a "Gemini functions" screen under Settings → Other explains what's supported
+### Calendar and Agenda
+A calendar of reminders, birthdays and Google Task due dates (plus public holidays when enabled), and an
+Agenda of reminders and birthdays with Smart List and tag filters. On wide screens Home, Agenda and Birthdays
+use a list-detail layout ([adaptive-layouts.md](adaptive-layouts.md)).
 
-### Calendar View
+### Streaks & Insights (PRO)
+Computed on-device from the event history and routine and Pomodoro records: reminder streaks with 7, 30 and
+100-day milestone badges, weekly trend, busiest day, routine streaks and most-skipped step, and focus time.
 
-- A combined calendar screen that surfaces reminders, birthdays, and Google Task due dates in a single timeline view
+### Cloud backup and sync
+Reminders, notes, birthdays, groups, tags, places, recur presets, settings and routines (plus PRO workflow rules
+and habits) sync through Google Drive or Dropbox. Google Tasks sync with Google itself. The `sync` module is provider-agnostic and works on per-item files with sync metadata.
 
-### Cloud Backup & Sync
+### Local encrypted backup (PRO)
+Export to a single passphrase-protected file saved anywhere through the system file picker, fully offline.
+AES-256-GCM with a PBKDF2-derived key (600,000 iterations). Restore upserts by id and deletes nothing.
 
-The app supports backing up and restoring all data (reminders, notes, birthdays, Google Tasks, places) to and from:
+### Widgets, Wear OS, assistants
+- **Widgets:** calendar, notes, birthdays, Google Tasks, single note, combined buttons and active reminders. A
+  "Next Reminder" widget is built for the lock screen and the Android 14+ glanceable hub. A Quick Settings tile
+  adds a reminder in one tap.
+- **Wear OS:** companion watch app with a reminder list and a next-reminder tile, synced over the Wearable Data
+  Layer (`extensions:wearsync`, `wear/wear-app`).
+- **Gemini AppFunctions (PRO):** create, list, complete, update, delete and search reminders, notes, birthdays
+  and Google Tasks from on-device assistants. See [appfunctions-testing.md](appfunctions-testing.md).
 
-- **Google Drive**
-- **Dropbox**
+### Customization and settings
+Material 3 theming and color schemes, custom sounds and vibration patterns, default reminder settings,
+iCalendar import/export, biometric lock, a first-run onboarding flow, and a "What's New" screen on updates.
 
-Sync is handled by a dedicated `sync` module that negotiates differences between local storage and remote file metadata so data survives device changes.
-
-### Local Encrypted Backup (PRO)
-
-- Exports all local data (reminders, notes excluded, groups, birthdays, places, recur presets) to a single passphrase-encrypted file the user saves anywhere via the system file picker (Storage Access Framework) — entirely offline, no network involved
-- AES-256-GCM encryption with a PBKDF2-derived key (600,000 iterations); a wrong passphrase or corrupted file is detected and rejected cleanly
-- Restoring upserts items back by ID without deleting anything already on-device
-- Reachable from Settings ("Export backup" / "Restore backup"); hidden on the free flavor
-
-### Widgets
-
-Home-screen widgets give at-a-glance access to upcoming reminders, notes, birthdays, and Google Tasks without opening the app. A "Next Reminder" widget is sized and categorized (`keyguard`) for lock-screen placement (e.g. Samsung One UI's lock-screen widgets, Android 14+ Glanceable Hub on tablets) and doesn't require configuration to add. A Quick Settings tile ("Add reminder") offers the same one-tap reminder creation from the notification shade, reusing the existing app-shortcut deep link.
-
-### Customisation & Settings
-
-- Material 3 theming with user-selectable colour schemes
-- Custom notification sounds and vibration patterns
-- Configurable default reminder settings
-- Import / export using iCalendar (`.ics`) format
-- Biometric lock for the app
-
----
-
-## Technology Stack
+## Technology stack
 
 | Layer | Technology |
 |---|---|
 | Language | Kotlin |
-| Minimum / Target SDK | See `app/build.gradle.kts` |
-| UI toolkit | Jetpack Compose + Material 3 (views used in legacy screens) |
-| Architecture | MVVM with ViewModels and StateFlow / LiveData |
-| Navigation | Jetpack Navigation Component |
-| Local persistence | Room (SQLite) |
+| UI | Jetpack Compose + Material 3 (a few legacy View screens remain) |
+| Architecture | Multi-module Clean Architecture, MVVM with StateFlow |
+| Navigation | Jetpack Navigation 3 |
+| Persistence | Room |
 | Dependency injection | Koin |
 | Concurrency | Kotlin Coroutines |
-| Cloud APIs | Google Drive REST API, Google Tasks API, Dropbox SDK |
-| Analytics & crash reporting | Firebase Analytics, Firebase Crashlytics |
-| Date / time | ThreeTenABP (JSR-310 back-port) |
-| iCalendar | lib-recur (RRULE parsing) |
-| Build system | Gradle with Kotlin DSL |
+| Cloud APIs | Google Drive REST, Google Tasks, Dropbox SDK |
+| Analytics and crash reporting | Firebase Analytics, Crashlytics |
+| Date and time | ThreeTenABP |
+| iCalendar | lib-recur |
+| Build | Gradle Kotlin DSL with convention plugins in `build-logic` |
 
----
-
-## User-Facing Screens
-
-| Screen | Description |
-|---|---|
-| Home / Dashboard | Main entry point; shows upcoming reminders and quick-add actions |
-| Reminder list | Filterable list of all reminders |
-| Reminder create/edit | Multi-step wizard for creating or editing a reminder with all scheduling options |
-| Notes list | Grid/list of all notes |
-| Note create/edit | Editor for creating or editing a note with image support |
-| Birthdays list | List of tracked birthdays |
-| Google Tasks | List-based view of Google Task lists and tasks |
-| Calendar | Monthly/weekly calendar view with all events |
-| Places | Map view for saved geographic locations used in GPS reminders |
-| Settings | Full settings hierarchy |
-| Widgets | Multiple widget configurations |
-| Global search | Search across reminders, notes, birthdays, and tasks |
+Module layout is in [architecture.md](architecture.md).

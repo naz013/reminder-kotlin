@@ -12,6 +12,9 @@ For deeper background, read (don't duplicate into this file):
 - `docs/app-overview.md` — full feature list and user-facing screens
 - `docs/architecture.md` — module inventory and dependency graph
 - `docs/adaptive-layouts.md` — tablet/desktop/foldable layout conventions (nav rail, two-pane, breakpoints)
+- `docs/tags.md` — cross-entity tags: taggable types, filtering, sync/backup, how to add a new type
+- `docs/workflows.md` — local trigger/condition/action automation engine
+- `docs/routines.md` — Routines feature status and remaining work
 - `docs/multiselect.md` — long-press bulk-selection pattern (`Selectable`, `SelectionTopBar`, `SelectionOverlay`)
 - `rules and agents.md` — condensed architecture rules referenced by the prompt files in `.github/prompts/`
 

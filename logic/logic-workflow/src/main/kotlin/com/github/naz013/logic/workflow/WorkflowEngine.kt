@@ -37,7 +37,7 @@ data class PendingWorkflowAction(
 /**
  * Evaluates enabled [WorkflowRule]s against current ReminderV2/GroupV2 state and runs their
  * action for any reminder that qualifies (in scope, and every one of the rule's [WorkflowCondition]s
- * holds). Each trigger gets its own `run*Rules()` method — see docs/workflow-engine-research.md for
+ * holds). Each trigger gets its own `run*Rules()` method — see docs/workflows.md for
  * the full catalog. [WorkflowAction.ArchiveReminder], [WorkflowAction.ApplyNotificationOverride],
  * and [WorkflowAction.RunBackgroundTask] are applied directly; [WorkflowAction.CompleteReminder] and
  * [WorkflowAction.ActivateReminder] are returned as a [PendingWorkflowAction] for an app-module

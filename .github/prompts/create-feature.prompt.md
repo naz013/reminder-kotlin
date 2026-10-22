@@ -13,7 +13,7 @@ Create or extend a feature following the multi-module Clean Architecture convent
    - New **domain model** → `domain` module (pure Kotlin, no Android deps).
    - New **repository interface** → `repository-api` module.
    - New **Room DAO / entity** → `repository` module.
-   - New **use case** → appropriate `usecase:*` module (depends only on `repository-api`).
+   - New **use case** → appropriate `logic-*` module (depends only on `repository-api`).
    - New **UI screen** → `app` module using Jetpack Compose + ViewModel.
    - Shared **UI component** → `ui-common` module.
    - New **cloud integration** → `cloud-api` (interface) + `cloud` (implementation).
@@ -27,7 +27,7 @@ Create or extend a feature following the multi-module Clean Architecture convent
    - **Mandatory**: Create mappers between Room Entity and Domain model. Use the `domain` model in the API and `Entity` for Room storage.
 
 4. **Use cases** (if needed):
-   - Create a class with a single `invoke` operator in the appropriate `usecase:*` module.
+   - Create a class with a single `invoke` operator in the appropriate `logic-*` module.
    - Inject the repository interface via constructor.
    - Register the class in the module's `KoinModule.kt`.
 

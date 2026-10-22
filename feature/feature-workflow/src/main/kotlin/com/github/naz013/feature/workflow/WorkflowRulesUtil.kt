@@ -21,7 +21,7 @@ import org.threeten.bp.LocalDateTime
  * Workflow gallery. Only called once [com.github.naz013.logic.workflow.WorkflowConfig.isEnabled]
  * is true (see `BottomNavInitViewModel.checkDb()`) — the rule and templates are fully
  * user-manageable through the builder/gallery screens in this module, see
- * docs/workflow-engine-research.md for the broader catalog this is a starting point for.
+ * docs/workflows.md for the broader catalog this is a starting point for.
  */
 class WorkflowRulesUtil(
   private val workflowTemplateRepository: WorkflowTemplateRepository,

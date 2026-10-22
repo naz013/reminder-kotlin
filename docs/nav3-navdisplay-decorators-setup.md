@@ -7,7 +7,7 @@ frames it as a generic "how to build this from scratch" guide rather than a desc
 app's specific screens.
 
 For *why* specific features look the way they do (which screens are two-pane, why the rail is
-static), see `docs/adaptive-layouts.md` and `docs/home-two-pane-design.md`. This doc is about the
+static), see `docs/adaptive-layouts.md`. This doc is about the
 *mechanics*: dependencies, the single shared backstack, per-feature entry registration,
 `NavDisplay`, scene strategies, and entry/scene decorators.
 

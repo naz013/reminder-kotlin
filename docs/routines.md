@@ -10,11 +10,11 @@ original design/research that still have standing value now the feature is built
 resolved open questions) - they're kept condensed, not as a duplicate of the source code. §4 onward is the
 actively-maintained status/remaining-work tracker.
 
-**Status: the functional core, PRO Insights, and the background reset worker are all done and gated behind a
-flag.** Domain model, persistence, recurrence, tags, cloud sync/local backup, the focus-runner execution
-screen, a periodic background reset check, and PRO Insights integration are all implemented and behind
-`RoutineConfig.isEnabled` (`FeatureFlag.ROUTINE_ENABLED`, off by default). What's left is several smaller
-polish items, localization, test coverage, and a handful of product decisions - see §6.
+**Status: shipped.** Domain model, persistence, recurrence, tags, cloud sync/local backup, the focus-runner
+execution screen, a periodic background reset check, and PRO Insights integration are all implemented.
+`RoutineConfig.isEnabled` (`FeatureFlag.ROUTINE_ENABLED`) is `false` as a code default but is enabled for users
+through the remote flag. What's left is several smaller polish items, localization, test coverage, and one
+product question - see §6.
 
 ---
 
@@ -62,8 +62,9 @@ visible just from reading the code.
   pre-formatted `durationLabel`/`stepCountLabel`/`scheduleRangeLabel` strings and a pre-resolved
   `contentColor`, because `ui-routine` can't depend on `logic-routine`'s `RoutineDurationCalculator` or
   compute palette contrast itself.
-- **Free vs. PRO gating of base Routines**: still undecided - see §6.4 open decisions. Insights (§5) is
-  explicitly PRO-gated; the base feature (create/edit/run) is not gated by `BuildInfo.isPro` yet.
+- **Free vs. PRO gating of base Routines**: intended to be PRO, but `RoutineConfigImpl` checks only the feature
+  flag (unlike `WorkflowConfigImpl.isRunnable` and `HabitConfig`, which also check `BuildInfo.isPro`), so no
+  PRO check was found on create/edit/run. See §6.4. Insights (§5) is PRO-gated.
 - **No routine-level linked `ReminderV2` trigger.** `Routine.reminderId` was in the original design (a
   scheduled routine would own a linked reminder for notifications) but was never wired to anything - no
   `RoutineScheduleBridge` was ever built, and it was dropped from the domain model entirely (Room migration
@@ -397,24 +398,17 @@ reminder-specific wording and need a refresh, not just a first translation.
   in this repo yet - not Routines-specific, flagged for a future project-wide migration-testing pass.
 
 ### 6.4 Open product decisions (need a person, not just an implementer)
-1. **Free vs. PRO gating.** Is `feature-routine` itself free, PRO-only, or free-with-limits (e.g. N routines
-   on free)? Affects `RoutineEditScreen`'s save flow and possibly the home tile's visibility, alongside
-   `RoutineConfig.isEnabled`. Currently nothing gates it by `BuildInfo.isPro`.
+1. **Confirm the PRO gate is actually enforced.** Routines are meant to be PRO, but the code only checks
+   `FeatureFlag.ROUTINE_ENABLED`. If free users can see the Routines tile, add a `BuildInfo.isPro` check
+   (mirroring `WorkflowConfigImpl.isRunnable`) to `RoutineConfig` and route free users to the PRO screen.
 2. **Step-level notifications.** With `Routine.reminderId` dropped (§2), whether a step's `scheduledTime`
    should fire its own notification at all - and if so, how - is an open design question from scratch, not a
    half-built feature to finish. No `RoutineScheduleBridge` (or equivalent) exists.
-3. **When to flip `RoutineConfig.isEnabled` to `true`.** The functional core, Insights, and the background
-   reset worker (§4-§5) are all done. What's left is a product/QA call, not an implementation gap: at minimum
-   a device/emulator walkthrough (nothing in this feature has been manually run yet - only compiled,
-   unit-tested, and detekt-checked) and a decision on #1.
 
 ---
 
 ## Suggested sequencing
 
-1. A manual device/emulator pass over everything in §4-§5 (never yet exercised outside
-   compile+unit-test+detekt) - the natural next step before considering the flag live.
-2. §6.2 (localization) - can happen any time, ideally batched once the string set stabilizes rather than
-   repeated per-PR.
-3. §6.3 (tests) - ideally alongside whichever item above it covers, not batched at the end;
-   `RoutineExecutionViewModel`'s ticker needs a testing-approach decision first (§6.3).
+1. Resolve §6.4 #1 (PRO gate).
+2. §6.2 (localization) - ideally batched once the string set stabilizes rather than repeated per-PR.
+3. §6.3 (tests) - `RoutineExecutionViewModel`'s ticker needs a testing-approach decision first (§6.3).

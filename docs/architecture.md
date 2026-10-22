@@ -20,17 +20,17 @@ between the actual leaf modules are unchanged from before the reorg.
 
 | Group | Contains | Why together |
 |---|---|---|
-| `core/` | `domain`, `logging`, `logging-api`, `feature-common`, `feature-flags-api`, `navigation-api`, `analytics`, `date-calculations`, `platform-common`, `platform-api`, `testing` | Foundation every other layer depends on |
-| `data/` | `repository(-api)`, `cloud(-api)`, `sync`, `files(-api)`, `work(-api)`, `icalendar(-api)`, `holidays(-api)`, `legal(-api)`, `googlecalendar-api`, `location-api`, `notification-api`, `scheduler-api` | Persistence, cloud, sync, and the thin platform-contract `-api` modules `app` implements directly |
-| `ui/` | `ui-common`, `ui-map`, `ui-note`, `ui-reminder`, `ui-tag`, `ui-googletask`, `ui-group`, `ui-notification-settings`, `ui-icons-solar` | Shared Compose building blocks, no navigation/ViewModels |
-| `logic/` | `logic-reminder`, `logic-note`, `logic-tag`, `logic-googletask`, `logic-group`, `logic-schedule`, `logic-workflow`, `logic-habit` | Cross-feature business logic |
-| `feature/` | `feature-note`, `feature-reminder`, `feature-tags`, `feature-googletask`, `feature-group`, `feature-insights`, `feature-workflow` | Vertical feature slices; only `app` depends on these |
-| `extensions/` | `appwidgets(-api)`, `appfunctions`, `localbackup` | Cross-feature, flavor/runtime-gated additions `app` pulls in as a unit |
+| `core/` | `domain`, `logging`, `logging-api`, `feature-common`, `feature-flags-api`, `navigation-api`, `analytics`, `date-calculations`, `platform-common`, `platform-api`, `preferences`, `crypto`, `testing` | Foundation every other layer depends on |
+| `data/` | `repository(-api)`, `cloud(-api)`, `sync`, `files(-api)`, `work(-api)`, `icalendar(-api)`, `holidays(-api)`, `legal(-api)`, `digest(-api)`, `demo-photo(-api)`, `googlecalendar-api`, `location-api`, `notification-api`, `scheduler-api` | Persistence, cloud, sync, and the thin platform-contract `-api` modules `app` implements directly |
+| `ui/` | `ui-common`, `ui-map`, `ui-note`, `ui-reminder`, `ui-tag`, `ui-googletask`, `ui-group`, `ui-agenda`, `ui-birthday`, `ui-routine`, `ui-notification-settings`, `ui-icons-solar` | Shared Compose building blocks, no navigation/ViewModels |
+| `logic/` | `logic-reminder`, `logic-note`, `logic-tag`, `logic-googletask`, `logic-group`, `logic-birthday`, `logic-schedule`, `logic-workflow`, `logic-habit`, `logic-routine`, `logic-quickadd`, `logic-notification-action`, `logic-demo-data` | Cross-feature business logic |
+| `feature/` | `feature-home`, `feature-agenda`, `feature-calendar`, `feature-reminder`, `feature-note`, `feature-birthday`, `feature-googletask`, `feature-places`, `feature-group`, `feature-tags`, `feature-insights`, `feature-workflow`, `feature-habit`, `feature-routine`, `feature-pomodoro`, `feature-onboarding`, `feature-settings` | Vertical feature slices; only `app` depends on these |
+| `extensions/` | `appwidgets(-api)`, `appfunctions`, `localbackup`, `wearsync(-api)` | Cross-feature, flavor/runtime-gated additions `app` pulls in as a unit |
 | `admin/` | `cloudtestadmin`, `reviews`, `reviewsadmin` | Debug/internal-only tooling, excluded from release builds and most CI test runs |
 
 The leaf module's own directory/Gradle name is unchanged by the move (e.g. `repository-api` is still
 named `repository-api`, just included as `:data:repository-api`) — only the group prefix is new. The
-rest of this document (and the dependency graph below) refers to modules by their leaf name for
+rest of this document refers to modules by their leaf name for
 readability; prepend the group from the table above to get the full Gradle path (e.g. `sync` →
 `:data:sync`).
 
@@ -57,14 +57,14 @@ readability; prepend the group from the table above to get the full Gradle path 
 | `core:platform-common` | Android library | Android-platform-level helpers: biometric auth, permission helpers, Google sign-in wrappers, camera/gallery pickers (`rememberCameraPicker`/`rememberGalleryPicker`), and speech-to-text (`SpeechEngine`). |
 | `ui:ui-common` | Android library | Shared Compose components, Material 3 theme tokens, reusable composables, and color-picker utilities. |
 | `ui:ui-map` | Android library (Compose) | `SimpleMapView` — the stateful Google Maps widget (tap-to-set marker + radius circle, layers/marker-style/radius/recent-places picker chrome) extracted from `app` so `feature-reminder` and `places` (still in `app`) can both depend on it directly instead of routing map screens through callback threading. Also owns `GeocoderTask`, the recent-places `UiPlaceList`/`UiPlaceListAdapter`, and `DefaultRadiusFormatter`. Exposes a `MapPreferences` seam interface (`app`'s `MapPreferencesImpl` delegates to `Prefs`) and takes `BuildInfo` for the one PRO-gated behavior (marker-style picker visibility), rather than depending on `app`-only `Prefs`/`BuildParams` directly. Unlike other `ui-<feature>` modules it does own a ViewModel (`SimpleMapViewViewModel`) and a Koin module — a deliberate exception since it's a reusable stateful widget, not a full screen with its own nav graph. |
-| `extensions:appwidgets` | Android library | All home-screen widget implementations (reminders, notes, birthdays, Google Tasks), plus the compact "Next Reminder" widget purpose-built for lock-screen/keyguard placement and the Android 14+ Glanceable Hub (`widgetCategory="home_screen\|keyguard"` + `widgetFeatures="configuration_optional"` on every provider). Aggregates usecase modules. |
+| `extensions:appwidgets` | Android library | All home-screen widget implementations (reminders, notes, birthdays, Google Tasks), plus the compact "Next Reminder" widget purpose-built for lock-screen/keyguard placement and the Android 14+ Glanceable Hub (`widgetCategory="home_screen\|keyguard"` + `widgetFeatures="configuration_optional"` on every provider). Reads through `repository-api` and the `logic-*` modules. |
 | `extensions:appfunctions` | Android library | Exposes reminders/notes/birthdays/Google Tasks capabilities to Gemini and other on-device assistants via the Android `androidx.appfunctions` platform API. **PRO-only**: wired into `app` via `"proImplementation"(project(":extensions:appfunctions"))`, never a plain `implementation` — see "Flavor-gated modules" below. For on-device/`adb` testing, see [appfunctions-testing.md](appfunctions-testing.md). |
 | `reviews` | Android library | In-app review flow using the Play Core / Play Review API. |
 | `reviewsadmin` | Android library | Internal admin tooling for the review flow (debug/test only). |
 | `cloudtestadmin` | Android library | Internal admin tooling for testing cloud integrations (debug/test only). — these three live under `admin/`, see "Module Groups" above. |
 | `feature:feature-googletask` | Android library (Compose) | Fully extracted Google Tasks feature: screens, ViewModels, `GoogleTasksNavKey`/`GoogleTasksNavGraph`, feature-private sync/upload/download orchestration use cases, own `KoinModule`. See "Feature Modules" below. |
 | `ui:ui-googletask` | Android library (Compose) | Small reusable Compose pieces for Google Tasks: item-state adapter, Google Sign-In Compose helper (`rememberGoogleTasksLogin`). No navigation, no ViewModels. |
-| `logic:logic-googletask` | Kotlin library | Scaffolded sibling of `feature-googletask` for cross-feature Google Tasks logic. Currently has no source — not yet populated (see "Feature Modules" below). |
+| `logic:logic-googletask` | Android library | Cross-feature Google Tasks logic shared by `feature-googletask` and other consumers. |
 | `feature:feature-tags` | Android library (Compose) | Fully extracted Tags feature: screens, ViewModels, `TagsNavKey`/`TagsNavGraph`, own `KoinModule`. Tag data now lives in the shared `AppDb` via `repository-api`'s `TagRepository`/`TagAssignmentRepository` — there is no separate `tags_db` any more. Both flavors. |
 | `ui:ui-tag` | Android library (Compose) | Reusable Tags Compose building blocks (chip picker, item styling) usable outside `feature-tags`. |
 | `ui:ui-icons-solar` | Android library (resources only) | The "Solar Linear" icon pack (480 Design, 1246 icons) converted to VectorDrawables (`ic_solar_*`) plus the `SolarIcons` catalog of `@DrawableRes` ids grouped by upstream category. No dependencies. Used by `ui-routine`'s `RoutineIconSet` for routine/habit icons; see the module `README.md` for source and licensing. |
@@ -76,141 +76,71 @@ readability; prepend the group from the table above to get the full Gradle path 
 | `logic:logic-workflow` | Kotlin library | Cross-feature-shaped workflow engine and rule/template use cases: `WorkflowEngine` (evaluates enabled `WorkflowRule`s against reminder/group state and runs their action, returning `PendingWorkflowAction` for the two actions — `CompleteReminder`/`ActivateReminder` — it can't finish itself), `ApplyWorkflowTemplateUseCase`, `CreateWorkflowRuleUseCase`, `SaveWorkflowRuleAsTemplateUseCase`, `GetWorkflowTemplatesUseCase`, and `WorkflowTemplate.isExecutable()` — scope lookups (global/group/reminder) go through `WorkflowRuleRepository.observeByScope`/`getByScope` directly, not a dedicated use case. `feature-workflow` is currently its only consumer. |
 | `feature:feature-note` | Android library (Compose) | Fully extracted Notes feature: list/archive, edit, preview, and image-viewer screens, `NotesNavKey`/`NotesNavGraph`, own `KoinModule`, and feature-private use cases (`SaveNoteUseCase`, `DeleteNoteUseCase`, `ChangeNoteArchiveStateUseCase`, `CreateSharedNoteFileUseCase`). Threads `applicationId`, `adsContent`, `onOpenNoteSettings`, and `onEditReminder` in from `AppNavGraph.kt` since it can't reference `app`'s `BuildConfig`, ad banners, or `SettingsNavKey`/`BuildReminderNavKey` directly. |
 | `ui:ui-note` | Android library (Compose) | Canonical Notes UI model and Compose building blocks: `UiNoteListItem`/`UiNoteImage` + their adapters, `NoteColorEngine`, and one shared `NoteCard`/`CheckableNoteCard` — replaces three note-card implementations that had drifted apart (app's old `NoteCard`, feature-note's leaner `NoteListItemCard`, and the Single Note widget config screen's bespoke rendering). Exposes `NotePreferences`/`NoteFontProvider`/`NoteNotifier` seam interfaces implemented by `app` (`core/notes/AppNote*`) and bound via Koin there, since `ui-note` can't depend on `app`'s `Prefs`/`AssetsUtil`/`Notifier`. |
-| `logic:logic-note` | Kotlin library | Scaffolded sibling of `feature-note`/`ui-note` for cross-feature Notes business logic. Currently has no source — not yet populated (see "Feature Modules" below). |
+| `logic:logic-note` | Kotlin library | Cross-feature Notes business logic used by `feature-note` and other features. |
 | `feature:feature-reminder` | Android library (Compose) | Fully extracted Reminders feature: build/edit, action popup, preview, archive, and settings screens, `BuildReminderNavKey`/`ReminderPreviewNavKey`/other nav keys and their `*NavGraph.kt`s, own `KoinModule`, and feature-private orchestration (builders, decomposers, validators, use cases). Owns its map screens directly (`MapEditorScreen`/`MapValueEditor` for the location builder, `EmbeddedMap`/`FullscreenMapEntry` for the preview screen) via a direct dependency on `ui-map` — the `mapEditorContent`/`embeddedMapContent`/`fullscreenMapEntryContent` callback threading these used to need was removed once `ui-map` existed for both `feature-reminder` and `places` to depend on. Still threads genuinely app-only infrastructure it can't depend on directly — ads, OS pickers, file/intent sending, and cross-feature navigation into Notes/Google Tasks — as composable/callback params supplied by `AppNavGraph.kt`. Depends on `ui-map`, `ui-reminder`, `logic-reminder`, and (for cross-feature rendering) `ui-note`/`ui-tag`/`ui-group`/`ui-googletask`/`feature-tags`. |
 | `ui:ui-reminder` | Android library (Compose) | Reminder domain-type Compose building blocks and adapters (`UiReminderListAdapter`, `UiReminderCommonAdapter`, `UiReminderPlaceAdapter`, due-date/status formatting). No navigation, no ViewModels. |
 | `logic:logic-reminder` | Kotlin library | Reminder behavior strategies, occurrence calculators (`*OccurrenceCalculatorV2`), save/delete/activate/pause/complete/snooze use cases, `AddReminderToHistoryUseCase`, and the `ReminderPreferences`/`ReminderNotifier` seam interfaces implemented by `app`. Consumed cross-feature by `feature-googletask` (`CompleteRelatedGoogleTaskUseCase`), `feature-workflow` (`ActivateReminderUseCase`/`CompleteReminderUseCase`), and `feature-reminder` itself. |
 | `logic:logic-schedule` | Kotlin library | Background-work scheduling use cases (`ScheduleBackgroundWorkUseCase`, sync/upload/delete `BackgroundTask` impls) shared by multiple features via `work-api`. |
 | `extensions:localbackup` | Android library (Compose) | **PRO-only** local encrypted backup/restore. Owns the crypto (PBKDF2 + AES-GCM), the archive framing (reusing `files-api`'s `DataConverter`), and the passphrase Compose UI. Gated at runtime via `BuildInfo.isPro`. |
 
-> **Known doc gap, unrelated to the module regrouping above:** this file and `rules and agents.md` both
-> describe an `app`-read layer of `usecase:reminders` / `usecase:notes` / `usecase:birthdays` /
-> `usecase:googletasks` modules. No such modules exist in `settings.gradle.kts` or on disk today, and
-> none of the use-case classes named here (`GetActiveRemindersV2UseCase`, `GetAllNotesUseCase`, etc.)
-> exist in the current source tree — the only remaining hits are this doc and detekt baselines. That
-> part of the doc predates this reorg and needs a separate pass to find out what actually replaced that
-> layer (a `.claude/worktrees/feature-note-extraction` checkout in this repo still has the old flat
-> `usecase/reminders` etc. modules, if you need a reference point for what they used to contain) before
-> rewriting it — don't trust the `usecase:*` mentions elsewhere in this file until that's done.
+### Other modules
+
+Modules added after the table above was written. Each follows the `feature` / `ui` / `logic` roles described under "Feature Modules"; read the module's own source for detail.
+
+| Module | Purpose |
+|---|---|
+| `feature:feature-home` | Home screen: chronological list, day-overview pane (list-detail on wide screens), header navigation grid. |
+| `feature:feature-agenda` (+ `ui:ui-agenda`) | Reminders and birthdays agenda with Smart List and tag filters. |
+| `feature:feature-calendar` | Month/week calendar with reminders, birthdays, Google Tasks and (flagged) public holidays. |
+| `feature:feature-birthday` (+ `ui:ui-birthday`, `logic:logic-birthday`) | Birthday list, editor, preview and settings. |
+| `feature:feature-places` | Saved places map screens. |
+| `feature:feature-group` (+ `ui:ui-group`, `logic:logic-group`) | Reminder group list and editor. |
+| `feature:feature-routine` (+ `ui:ui-routine`, `logic:logic-routine`) | Routines: sequenced, timed steps with a focus runner. See [routines.md](routines.md). |
+| `feature:feature-pomodoro` | Pomodoro timer with a foreground notifier; feeds Insights. |
+| `feature:feature-onboarding` | First-run flow. |
+| `feature:feature-settings` | The settings hierarchy (largest feature module). |
+| `ui:ui-notification-settings` | Shared notification-customization Compose pieces; see [reminderv2-notification-hierarchy.md](reminderv2-notification-hierarchy.md). |
+| `logic:logic-notification-action` | Reminder and birthday alarm / notification-action pipeline (`ReminderActionProcessor`, `BirthdayActionProcessor`, in-app alert bus). |
+| `logic:logic-quickadd` | On-device natural-language parser for quick-add text, with per-language vocabularies. |
+| `logic:logic-demo-data`, `data:demo-photo(-api)` | Demo content generation. |
+| `data:digest(-api)` | On-device daily digest summarization behind `FeatureFlag.AI_DIGEST` and a device-capability check. |
+| `data:holidays(-api)` | Public holiday sync, behind `FeatureFlag.PUBLIC_HOLIDAYS`. |
+| `data:legal(-api)` | Legal documents access. |
+| `core:preferences`, `core:crypto` | Preference storage engine and shared crypto helpers. |
+| `extensions:wearsync(-api)` + `wear/wear-app` | Phone-side Wear OS data sync and the watch app (reminder list, next-reminder tile). |
 
 ---
 
 ## Dependency Graph
 
-The arrows below read **"depends on"** (i.e., `A → B` means module A has a compile dependency on module B).
+Arrows read "depends on". Per-module dependency lists are not maintained by hand any more (they drifted). To
+see the exact edges of one module, read its `build.gradle.kts` or run
+`./gradlew :<group>:<module>:dependencies`. The allowed directions are:
 
 ```
 app
- ├── domain
- ├── logging-api ←─────────────── logging
- ├── repository-api ←────────────── repository
- │     └── domain
- ├── cloud-api ←──────────────────── cloud
- │     ├── logging-api
- │     └── domain
- ├── sync
- │     ├── cloud-api
- │     ├── repository-api
- │     ├── domain
- │     └── logging-api
- ├── icalendar
- │     ├── domain
- │     └── logging-api
- ├── analytics
- │     ├── domain
- │     └── logging-api
- ├── navigation-api
- │     └── logging-api
- ├── feature-common
- │     ├── domain
- │     └── logging-api
- ├── platform-common
- │     ├── feature-common
- │     └── logging-api
- ├── ui-common
- │     ├── domain
- │     ├── logging-api
- │     ├── navigation-api
- │     └── platform-common
- ├── ui-map
- │     ├── domain / logging-api / feature-common / feature-flags-api / platform-common / platform-api
- │     ├── date-calculations / repository-api
- │     └── ui-common
- ├── appwidgets
- │     ├── domain / logging-api / navigation-api / cloud-api
- │     ├── analytics / icalendar
- │     ├── feature-common / platform-common / ui-common / ui-note
- │     └── usecase:reminders / usecase:notes / usecase:birthdays / usecase:googletasks
- ├── appfunctions (PRO flavor only — see "Flavor-gated modules" below)
- │     ├── domain / repository-api / logging-api / analytics
- │     ├── platform-common / date-calculations
- │     ├── cloud-api / cloud
- │     └── usecase:reminders / usecase:notes / usecase:birthdays / usecase:googletasks
- ├── usecase:reminders ──┐
- ├── usecase:notes      ──┤── domain, repository-api, logging-api
- ├── usecase:birthdays  ──┤
- ├── usecase:googletasks─┘
- ├── reviews
- ├── ui-googletask
- │     └── domain / logging-api / cloud-api / ui-common / platform-common
- ├── logic-googletask (scaffolded, no source yet)
- ├── feature-googletask
- │     ├── domain / repository-api / usecase:googletasks / cloud-api / work-api / appwidgets-api
- │     ├── feature-common / ui-common / platform-common / platform-api / analytics / date-calculations
- │     └── ui-googletask / logic-googletask / logic-reminder
- ├── ui-tag
- │     └── domain / logging-api / ui-common / platform-api / platform-common
- ├── ui-icons-solar
- │     └── no dependencies (resources + catalog only)
- ├── ui-routine
- │     └── domain / logging-api / ui-common / ui-icons-solar
- ├── logic-tag
- │     └── domain / repository-api / logging-api / files-api / logic-schedule
- ├── feature-tags
- │     ├── domain / repository-api / logging-api / feature-common / ui-common
- │     └── ui-tag / logic-tag
- ├── feature-insights (PRO at runtime — see "Runtime vs. build-time PRO gating" below)
- │     ├── domain / repository-api / logging-api / feature-common / platform-common / ui-common
- │     └── no persistent storage of its own; no sibling ui-*/logic-* module yet
- ├── logic-workflow
- │     └── domain / repository-api / logging-api / work-api
- ├── feature-workflow
- │     ├── domain / repository-api / logging-api / work-api / feature-common / ui-common
- │     └── usecase:reminders / logic-reminder / logic-workflow; no sibling ui-* module yet
- ├── ui-note
- │     └── domain / logging-api / ui-common / platform-api / platform-common
- ├── logic-note (scaffolded, no source yet)
- ├── feature-note
- │     ├── domain / repository-api / logging-api / feature-common / ui-common / platform-common / platform-api
- │     ├── files-api / logic-schedule / navigation-api / appwidgets-api / analytics / date-calculations
- │     └── ui-note / logic-tag / ui-tag / feature-tags / logic-reminder
- ├── ui-reminder
- │     └── domain / logging-api / ui-common / platform-api / platform-common
- ├── logic-reminder
- │     ├── domain / repository-api / logging-api / files-api / icalendar-api
- │     ├── appwidgets-api / scheduler-api / location-api / notification-api / googlecalendar-api / work-api / platform-api
- │     └── logic-schedule / date-calculations
- ├── feature-reminder
- │     ├── domain / logging-api / navigation-api / analytics / platform-common / platform-api / date-calculations
- │     ├── feature-common / feature-flags-api / repository-api / files-api / cloud-api / icalendar-api / googlecalendar-api
- │     ├── work-api / scheduler-api / appwidgets-api / reviews
- │     └── ui-common / ui-map / ui-reminder / ui-note / ui-tag / ui-group / ui-googletask / ui-notification-settings / logic-reminder / logic-schedule / logic-tag / feature-tags
- ├── logic-schedule
- │     └── domain / logging-api / repository-api / work-api / (own scheduler use cases)
- ├── localbackup (PRO at runtime — see "Runtime vs. build-time PRO gating" below)
- │     ├── domain / repository-api / files-api / logging-api / feature-common / ui-common
- │     └── javax.crypto / java.security only (no new crypto dependency)
- └── (debug) cloudtestadmin / reviewsadmin
+ ├── feature-*   (screens, ViewModels, NavKeys, own Koin module; only app may depend on these)
+ │     ├── ui-*      (reusable Compose pieces; no navigation, no ViewModels)
+ │     ├── logic-*   (cross-feature use cases; no Compose)
+ │     └── ui-common, feature-common, platform-common, analytics, date-calculations
+ ├── extensions:*    (appwidgets, appfunctions [PRO], localbackup, wearsync)
+ ├── data:repository ──implements──> data:repository-api
+ ├── data:cloud      ──implements──> data:cloud-api
+ └── data:*-api / core:*-api interfaces implemented directly in app (scheduler, location, notification, ...)
+
+logic-* / ui-* / feature-* / data:sync
+ └── repository-api, cloud-api, work-api, files-api, ...   (interfaces only)
+       └── core:domain                                      (no dependencies)
 ```
 
 ### Key architectural rules
 
 1. **`domain` has zero external dependencies.** It is the foundation everything else builds on.
 2. **`*-api` modules contain only interfaces and data types.** Implementations live in the corresponding non-`-api` module.
-3. **`usecase:*` modules only depend on `repository-api` (not `repository`).** They never touch Room or the database directly.
+3. **Nothing except `app` depends on `repository` (the Room implementation).** `logic-*`, `ui-*` and `feature-*` modules go through `repository-api`.
 4. **`sync` is cloud-provider agnostic.** It operates through `cloud-api` interfaces and is never aware of whether storage is Google Drive or Dropbox.
 5. **`app` is the only module that wires concrete implementations** to their interfaces via Koin `KoinModule` objects.
-6. **Flavor-gated modules** (currently just `appfunctions`) are added in `app/build.gradle.kts` via `"proImplementation"(project(":x"))` / `"freeImplementation"(project(":x"))`, never a plain `implementation` — see "Flavor-gated modules" below for how `main`-sourceset code still references them.
+6. **Flavor-gated modules** (currently `appfunctions`) are added in `app/build.gradle.kts` via `"proImplementation"(project(":x"))` / `"freeImplementation"(project(":x"))`, never a plain `implementation` — see "Flavor-gated modules" below for how `main`-sourceset code still references them.
 7. **Newer features are extracted into a `feature-*` (+ optional `ui-*` / `logic-*`) module family instead of living in `app`.** Only `app` may depend on a `feature-*` module; `feature-*` modules never depend on `app` or on each other directly — a feature that needs another feature's logic depends on that feature's `logic-*` module instead (e.g. `feature-googletask` → `logic-reminder`, not → `feature-reminder`). See "Feature Modules" below.
 
 ---
@@ -229,38 +159,38 @@ Because `main`-sourceset code (e.g. `ReminderApp.kt`) can't reference types from
 
 ## Layered Architecture (per feature)
 
-Each major feature (reminders, notes, birthdays, Google Tasks) follows the same vertical slice:
+Each major feature follows the same vertical slice:
 
 ```
-┌─────────────────────────────────────────────────┐
-│  app  (ViewModel + Compose/Fragment UI)          │
-│       uses usecase:* for read operations         │
-│       calls repository-api directly for writes  │
-└────────────────────┬────────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│  feature-*  (Compose screen -> ViewModel)         │
+│     reads/writes through repository-api directly, │
+│     or through logic-* use cases when the logic   │
+│     is shared across features                     │
+└────────────────────┬─────────────────────────────┘
                      │
           ┌──────────▼──────────┐
-          │   usecase:*          │
-          │  (pure read logic)   │
+          │   logic-* (optional) │
           └──────────┬──────────┘
                      │
           ┌──────────▼──────────┐
           │   repository-api     │
-          │   (interfaces)       │
           └──────────┬──────────┘
                      │
           ┌──────────▼──────────┐
-          │   repository         │
+          │   repository        │
           │   (Room + DAOs)      │
           └─────────────────────┘
 ```
+
+An older `usecase:*` read-only layer used to sit between the UI and `repository-api`. It no longer exists.
 
 ---
 
 ## Feature Modules: `feature-*` / `ui-*` / `logic-*`
 
-Newer features (Google Tasks, Tags, Insights) are being extracted out of `app` into their own module
-family instead of living entirely inside `app`. This is an **ongoing, incremental migration** — not
-every feature has been fully split yet, and not every split feature has all three module kinds. Check
+Most features (Google Tasks, Tags, Insights, Reminders, Notes, ...) have been extracted out of `app` into their own module
+family instead of living entirely inside `app`. Not every extracted feature has all three module kinds. Check
 what actually exists before assuming a feature follows the full pattern (see "Current extraction
 status" below).
 
@@ -270,7 +200,7 @@ status" below).
 |---|---|---|---|---|
 | `logic-<feature>` | `logic-reminder`, `logic-tag`, `logic-schedule`, `logic-workflow` | Pure/Android-library business logic and use cases for the feature that **other features also need**. No Compose, no ViewModels, no navigation. | `domain`, `repository-api`, `logging-api`, whichever `*-api` modules it needs (`files-api`, `work-api`, `icalendar-api`, …), sometimes another `logic-*` module (`logic-tag` → `logic-schedule`) | Its own `feature-<feature>` module **and** any other `feature-*` module that needs that logic — e.g. `feature-googletask` depends on `logic-reminder` for `CompleteRelatedGoogleTaskUseCase`, not on `feature-reminder` |
 | `ui-<feature>` | `ui-googletask`, `ui-tag`, `ui-reminder` | Small, reusable Compose building blocks for the feature's domain type — item-state adapters, list-item composables, auth/login Compose helpers. Deliberately free of navigation and ViewModels. | `domain`, `logging-api`, `ui-common`, `platform-common`/`platform-api`, occasionally `cloud-api` (e.g. `ui-googletask`'s Google Sign-In helper) | Its own `feature-<feature>` module **and** any other module that wants to render that feature's items |
-| `feature-<feature>` | `feature-googletask`, `feature-tags`, `feature-insights` | The screens: ViewModels, Compose screens, a sealed `<Feature>NavKey : NavKey` per destination, a `<Feature>NavGraph.kt` exposing `fun EntryProviderScope<NavKey>.xyzEntries(backStack, ...)`, the feature's own `KoinModule.kt`, and any use cases that are genuinely feature-private orchestration (not reused elsewhere). | `domain`, `repository-api` or the relevant `usecase:*` module for reads, its own `ui-<feature>`/`logic-<feature>`, other `logic-*` modules it needs, `feature-common`, `ui-common`, `platform-common`/`platform-api`, `analytics`, `date-calculations` as needed | `app` **only** — wired into `ReminderApp.kt`'s `startKoin { modules(...) }` and into `AppNavGraph.kt`'s `entryProvider { }` via its `xyzEntries(backStack)` call |
+| `feature-<feature>` | `feature-googletask`, `feature-tags`, `feature-insights` | The screens: ViewModels, Compose screens, a sealed `<Feature>NavKey : NavKey` per destination, a `<Feature>NavGraph.kt` exposing `fun EntryProviderScope<NavKey>.xyzEntries(backStack, ...)`, the feature's own `KoinModule.kt`, and any use cases that are genuinely feature-private orchestration (not reused elsewhere). | `domain`, `repository-api`, its own `ui-<feature>`/`logic-<feature>`, other `logic-*` modules it needs, `feature-common`, `ui-common`, `platform-common`/`platform-api`, `analytics`, `date-calculations` as needed | `app` **only** — wired into `ReminderApp.kt`'s `startKoin { modules(...) }` and into `AppNavGraph.kt`'s `entryProvider { }` via its `xyzEntries(backStack)` call |
 
 `feature-*` modules never depend on `app` or on each other — see rule 7 above.
 
@@ -281,8 +211,7 @@ destinations — list, task-list, task preview, task edit, list edit), five View
 `cloud-api`/`repository-api` calls — these aren't shared with any other feature, so they live inside
 `feature-googletask` rather than in `logic-googletask`. It pulls in `ui-googletask` for the Google
 Sign-In Compose helper (`rememberGoogleTasksLogin`) and item-state adapter, and — notably —
-`logic-reminder`, not `logic-googletask` (which is currently an empty scaffold), for completing a
-reminder linked to a task.
+`logic-reminder` for completing a reminder linked to a task.
 
 ### Why the split (ui vs. logic vs. feature)
 
@@ -301,21 +230,15 @@ need on spec alone.
 
 This is a migration in progress, not a finished pattern applied uniformly:
 
-- **Fully extracted** — screens, ViewModels, nav graph, and Koin module all live in the `feature-*`
-  module, wired via `xyzEntries()` in `AppNavGraph.kt`: `feature-googletask`, `feature-tags`,
-  `feature-insights`, `feature-workflow`, `feature-note`, `feature-reminder`.
-- **Scaffolded, not yet populated** — the module and its Gradle dependencies exist and are already
-  wired into `app`'s dependency list, but there is no source yet; the dependency was declared ahead of
-  an extraction that hasn't happened: `logic-googletask`, `logic-note`.
+- **Fully extracted** — screens, ViewModels, nav graph and Koin module all live in the `feature-*` module,
+  wired via `xyzEntries()` in `AppNavGraph.kt`: every module listed under `feature/` in "Module Groups".
+- **Still in `app`** — seam implementations (`*PreferencesImpl`, notifiers, `*Gate` impls), DI wiring, the
+  nav graph, and the remaining legacy Activities/receivers/services.
 
-`feature-reminder` is the largest extraction to date: besides the usual screens/ViewModels/nav-graph/
-Koin-module shape, a handful of app-only pieces couldn't move and stay behind as deliberate seams —
-`ReminderPreferences`/`ReminderNotifier` interfaces (implemented by `app`'s `ReminderPreferencesImpl`/
-`AppReminderNotifier`), and the map-editor/map-preview screens (`MapEditorScreen`, `ReminderMapMarker`,
-`ReminderPreviewMapContent.kt`) which stay in `app/src/main/java/com/elementary/tasks/reminder/` because
-they depend on the `simplemap` module also shared by the separate `places` feature — `feature-reminder`
-can't take that dependency itself, so `AppNavGraph.kt` threads the map composables in as callback/slot
-parameters instead.
+`feature-reminder` is the largest extraction. App-only pieces it cannot own stay behind as seam interfaces
+implemented in `app` (`ReminderPreferences`, `ReminderNotifier`), and genuinely app-only infrastructure (ads,
+OS pickers, cross-feature navigation) is passed in as composable/callback parameters from `AppNavGraph.kt`.
+Its map screens live in `feature-reminder` and depend on `ui-map` directly.
 
 Don't assume every `feature-*` module owns a full vertical slice — check whether it has its own
 `*NavGraph.kt`/`*NavKey.kt` before assuming its screens are wired outside `app`.
@@ -329,8 +252,7 @@ Don't assume every `feature-*` module owns a full vertical slice — check wheth
    "Module Groups" above. Give it a `build.gradle.kts` using `id("reminder.android.library.compose")`
    (add `alias(libs.plugins.kotlin.serialization)` if it defines `@Serializable` `NavKey`s) and
    `android { namespace = "com.github.naz013.feature.<name>" }`.
-2. **Dependencies.** Only what the feature needs directly: `domain`, `repository-api` (or the relevant
-   `usecase:*` module for reads), `logging-api`, `feature-common`, `ui-common`,
+2. **Dependencies.** Only what the feature needs directly: `domain`, `repository-api`, `logging-api`, `feature-common`, `ui-common`,
    `platform-common`/`platform-api`, plus its own `ui-<name>`/`logic-<name>` and any cross-feature
    `logic-*` modules it calls into. Never depend on `repository` (the Room implementation) directly — go
    through `repository-api`.

@@ -155,5 +155,5 @@ Reminder PRO was built offline-first. Your reminders, notes, birthdays, groups a
 - Firebase Analytics/Crashlytics usage (mentioned in the privacy policy) is intentionally not
   called out in the marketing copy — it's disclosed via the Play Data Safety form and privacy
   policy, not typically restated in store description body text.
-- The in-progress workflow/automation engine (`docs/workflow-engine-research.md`) is deliberately
+- The in-progress workflow/automation engine (`docs/workflows.md`) is deliberately
   excluded, per instructions, since it isn't shipped or user-visible yet.
