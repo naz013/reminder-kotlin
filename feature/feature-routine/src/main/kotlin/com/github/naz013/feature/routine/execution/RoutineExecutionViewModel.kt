@@ -39,6 +39,7 @@ internal class RoutineExecutionViewModel(
   private val recordRoutineExecutionUseCase: RecordRoutineExecutionUseCase,
   private val routineDurationCalculator: RoutineDurationCalculator,
   private val appPreferences: AppPreferences,
+  private val currentTimeMillis: () -> Long = System::currentTimeMillis,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow<RoutineExecutionState>(RoutineExecutionState.Loading)
@@ -77,7 +78,7 @@ internal class RoutineExecutionViewModel(
       }
       routine = loaded
       steps = loaded.sortedSteps
-      sessionStartedAtMillis = System.currentTimeMillis()
+      sessionStartedAtMillis = currentTimeMillis()
       startStep(0)
       startTicker()
     }
@@ -98,7 +99,7 @@ internal class RoutineExecutionViewModel(
     pausedRemainingMillis = null
     val step = steps[index]
     if (step.durationSeconds > 0) {
-      stepDeadlineAtMillis = System.currentTimeMillis() + step.durationSeconds * 1000L
+      stepDeadlineAtMillis = currentTimeMillis() + step.durationSeconds * 1000L
     }
     publishRunningState()
   }
@@ -106,7 +107,7 @@ internal class RoutineExecutionViewModel(
   private fun currentRemainingMillis(): Long {
     val step = steps.getOrNull(stepIndex)
     if (step == null || step.durationSeconds <= 0) return 0L
-    return pausedRemainingMillis ?: (stepDeadlineAtMillis - System.currentTimeMillis()).coerceAtLeast(0L)
+    return pausedRemainingMillis ?: (stepDeadlineAtMillis - currentTimeMillis()).coerceAtLeast(0L)
   }
 
   private fun publishRunningState() {
@@ -134,7 +135,7 @@ internal class RoutineExecutionViewModel(
     val running = _state.value as? RoutineExecutionState.Running ?: return
     if (running.isPaused || !running.isTimed) return
     publishRunningState()
-    val remainingMillis = stepDeadlineAtMillis - System.currentTimeMillis()
+    val remainingMillis = stepDeadlineAtMillis - currentTimeMillis()
     if (remainingMillis <= 0 && !hasAutoAdvancedForStep) {
       hasAutoAdvancedForStep = true
       if (routine?.autoAdvance == true) {
@@ -148,13 +149,13 @@ internal class RoutineExecutionViewModel(
     if (step.durationSeconds <= 0) return
     val remaining = pausedRemainingMillis
     if (remaining != null) {
-      stepDeadlineAtMillis = System.currentTimeMillis() + remaining
+      stepDeadlineAtMillis = currentTimeMillis() + remaining
       pausedRemainingMillis = null
-      pauseStartedAtMillis?.let { totalPausedMillis += System.currentTimeMillis() - it }
+      pauseStartedAtMillis?.let { totalPausedMillis += currentTimeMillis() - it }
       pauseStartedAtMillis = null
     } else {
       pausedRemainingMillis = currentRemainingMillis()
-      pauseStartedAtMillis = System.currentTimeMillis()
+      pauseStartedAtMillis = currentTimeMillis()
     }
     publishRunningState()
   }
@@ -205,7 +206,7 @@ internal class RoutineExecutionViewModel(
   }
 
   private fun elapsedActiveSeconds(): Int {
-    val activeMillis = (System.currentTimeMillis() - sessionStartedAtMillis - totalPausedMillis).coerceAtLeast(0L)
+    val activeMillis = (currentTimeMillis() - sessionStartedAtMillis - totalPausedMillis).coerceAtLeast(0L)
     return (activeMillis / 1000L).toInt()
   }
 

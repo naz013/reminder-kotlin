@@ -371,16 +371,14 @@ Done: the routine and habit strings exist in every shipped `values-*/strings.xml
   (`RoutinesE2ETest.TestFeatureFlags`, loaded in `@BeforeClass` the same way `testRepositoryModule` is) that
   forces `ROUTINE_ENABLED` on without touching the real production default in `FeatureFlag.kt`.
   `.maestro/routines/` wasn't needed - every case turned out coverable at Tier B.
-- **ViewModel tests**: `RoutineEditViewModelTest` exists (mandatory-steps/recurrence-anchoring/full-recurrence
-  coverage). `RoutinesListViewModelTest`, `RoutinePreviewViewModelTest`, and `RoutineExecutionViewModelTest`
-  still don't. The last is the highest-risk gap: `RoutineExecutionViewModel`'s ticker launches with
-  `viewModelScope.launch(dispatcherProvider.main())` and calls real `delay(1000)`; under
-  `mockDispatcherProvider()` that resolves to plain `Dispatchers.Unconfined` (not a `TestDispatcher`), which
-  does *not* auto-advance virtual time the way `runTest {}`'s own scheduler does - so the ticker just sits on
-  a real 1-second delay for the test JVM's lifetime, un-cancelled (nothing calls `onCleared()` on a
-  bare-constructed test ViewModel). It doesn't corrupt assertions today, but it's a leaked-coroutine smell
-  worth fixing before adding tests here: either give `BaseTest` a shared `TestDispatcher`/scheduler that
-  `dispatcherProvider.main()` can return, or make the ticker's dispatcher injectable/mockable directly.
+- **ViewModel tests**: `RoutineEditViewModelTest`, `RoutinePreviewViewModelTest` and
+  `RoutineExecutionViewModelTest` exist; `RoutinesListViewModelTest` still doesn't.
+  `RoutineExecutionViewModelTest` (ticker, pause/resume, +1 minute, skip vs complete, auto-advance, finish
+  summary, silent back-press record, untimed steps) is covered with virtual time. The ticker is made testable by
+  injecting the clock: the ViewModel takes `currentTimeMillis: () -> Long = System::currentTimeMillis` (production
+  default unchanged, countdown still recomputed from the absolute `stepDeadlineAtMillis`). The test supplies a
+  `DispatcherProvider` whose `main()` is a `StandardTestDispatcher` on the `runTest` scheduler and a clock reading
+  `testScheduler.currentTime`, so `delay(1000)` advances virtually and no real delay leaks.
 - **Migration test**: none of `Migration33To34` (adds the Routine/RoutineExecution tables) or
   `Migration34To35` (drops `Routine.reminderId`) has a test, because no Room migration test exists anywhere
   in this repo yet - not Routines-specific, flagged for a future project-wide migration-testing pass.
@@ -399,4 +397,4 @@ Done: the routine and habit strings exist in every shipped `values-*/strings.xml
 
 1. Resolve §6.4 #1 (PRO gate).
 2. §6.2 (reset confirmation).
-3. §6.3 (tests) - `RoutineExecutionViewModel`'s ticker needs a testing-approach decision first (§6.3).
+3. §6.3 (tests) - remaining: `RoutinesListViewModelTest`.
