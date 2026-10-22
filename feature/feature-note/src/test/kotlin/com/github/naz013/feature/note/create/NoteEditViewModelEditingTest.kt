@@ -59,6 +59,32 @@ internal class NoteEditViewModelEditingTest : NoteEditViewModelTestSupport() {
     assertEquals(listOf(NoteTextSpan(2, 3, NoteSpanAttribute.BulletItem)), state.spans)
   }
 
+  private fun NoteEditViewModel.typeChars(input: String) {
+    input.forEach { ch ->
+      val current = state.value.textFieldValue
+      val text = current.text.substring(0, current.selection.start) + ch + current.text.substring(current.selection.end)
+      onTextFieldValueChange(TextFieldValue(text, TextRange(current.selection.start + 1)))
+    }
+  }
+
+  @Test
+  fun `typing markdown lines char by char keeps line spans on their own lines`() {
+    val viewModel = buildViewModel()
+
+    viewModel.typeChars("# Big title\n- item one\n## Sub heading\nplain")
+
+    val state = viewModel.state.value
+    assertEquals("Big title\nitem one\nSub heading\nplain", state.textFieldValue.text)
+    assertEquals(
+      listOf(
+        NoteTextSpan(0, 9, NoteSpanAttribute.Heading1),
+        NoteTextSpan(10, 18, NoteSpanAttribute.BulletItem),
+        NoteTextSpan(19, 30, NoteSpanAttribute.Heading2),
+      ),
+      state.spans,
+    )
+  }
+
   @Test
   fun `pasting a marker with a space does not trigger the shortcut`() {
     val viewModel = buildViewModel()

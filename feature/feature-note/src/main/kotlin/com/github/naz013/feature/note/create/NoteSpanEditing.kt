@@ -58,6 +58,18 @@ internal fun shiftSpans(old: String, new: String, spans: List<NoteTextSpan>): Li
   if (old == new) return spans
   val edit = diffEdit(old, new)
   val insertedLength = edit.newEnd - edit.start
+  return shiftedSpans(spans, edit, insertedLength).map { clampLineFormatToItsLine(new, it) }
+}
+
+/** A heading/bullet covers exactly its own line, so the sticky trailing edge must not carry it
+ * across a newline typed at its end or into the lines below. */
+private fun clampLineFormatToItsLine(text: String, span: NoteTextSpan): NoteTextSpan {
+  if (span.attribute.axis() != NoteSpanAxis.LINE_FORMAT) return span
+  val lineEnd = currentLineRange(text, span.start).last + 1
+  return if (span.end > lineEnd) span.copy(end = maxOf(lineEnd, span.start)) else span
+}
+
+private fun shiftedSpans(spans: List<NoteTextSpan>, edit: TextEdit, insertedLength: Int): List<NoteTextSpan> {
   return spans.mapNotNull { span ->
     when {
       span.end < edit.start -> span
