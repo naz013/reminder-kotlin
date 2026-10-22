@@ -4,11 +4,11 @@ import android.app.ForegroundServiceStartNotAllowedException
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
-import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Notifier
+import com.github.naz013.feature.pomodoro.engine.PomodoroEngineState
 import com.github.naz013.feature.pomodoro.engine.PomodoroMode
 import com.github.naz013.feature.pomodoro.engine.PomodoroTimerEngine
 import com.github.naz013.logging.Logger
@@ -26,6 +26,8 @@ import org.koin.android.ext.android.inject
 class PomodoroTimerService : LifecycleService() {
   private val notifier by inject<Notifier>()
   private val pomodoroTimerEngine by inject<PomodoroTimerEngine>()
+  private val notificationFactory = PomodoroNotificationFactory()
+  private var lastPosted: PomodoroPostedSnapshot? = null
 
   override fun onCreate() {
     super.onCreate()
@@ -34,7 +36,7 @@ class PomodoroTimerService : LifecycleService() {
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
       } else {
-        showNotification(state.mode, state.remainingSeconds, state.isPaused)
+        showNotification(state)
       }
     }.launchIn(lifecycleScope)
   }
@@ -49,17 +51,22 @@ class PomodoroTimerService : LifecycleService() {
     }
     val state = pomodoroTimerEngine.state.value
     if (state.isRunning) {
-      startAsForeground(state.mode, state.remainingSeconds, state.isPaused)
+      startAsForeground(state)
     }
     return START_NOT_STICKY
   }
 
-  private fun showNotification(mode: PomodoroMode, remainingSeconds: Int, isPaused: Boolean) {
-    notifier.notify(NOTIFICATION_ID, buildNotification(mode, remainingSeconds, isPaused))
+  private fun showNotification(state: PomodoroEngineState) {
+    val snapshot = PomodoroNotificationPlanner.snapshot(state, System.currentTimeMillis())
+    if (PomodoroNotificationPlanner.shouldRepost(lastPosted, snapshot)) {
+      lastPosted = snapshot
+      notifier.notify(NOTIFICATION_ID, buildNotification(state))
+    }
   }
 
-  private fun startAsForeground(mode: PomodoroMode, remainingSeconds: Int, isPaused: Boolean) {
-    val notification = buildNotification(mode, remainingSeconds, isPaused)
+  private fun startAsForeground(state: PomodoroEngineState) {
+    lastPosted = PomodoroNotificationPlanner.snapshot(state, System.currentTimeMillis())
+    val notification = buildNotification(state)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
       try {
         startForeground(NOTIFICATION_ID, notification)
@@ -72,36 +79,27 @@ class PomodoroTimerService : LifecycleService() {
     }
   }
 
-  private fun buildNotification(
-    mode: PomodoroMode,
-    remainingSeconds: Int,
-    isPaused: Boolean,
-  ): android.app.Notification {
-    val minutes = remainingSeconds / SECONDS_PER_MINUTE
-    val seconds = remainingSeconds % SECONDS_PER_MINUTE
-    val timeLabel = "%02d:%02d".format(minutes, seconds)
-    val modeLabelRes = when (mode) {
+  private fun buildNotification(state: PomodoroEngineState): android.app.Notification {
+    val plan = PomodoroNotificationPlanner.plan(state, System.currentTimeMillis(), Build.VERSION.SDK_INT)
+    val modeLabelRes = when (state.mode) {
       PomodoroMode.Work -> R.string.pomodoro_work
       PomodoroMode.Break -> R.string.pomodoro_break
       PomodoroMode.LongBreak -> R.string.pomodoro_long_break
       PomodoroMode.Idle -> R.string.pomodoro_focus_timer
     }
-    val builder = notifier.getNotificationBuilder(Notifier.CHANNEL_FOCUS_TIMER)
-    builder.setContentTitle(getString(modeLabelRes))
-    builder.setContentText(timeLabel)
-    builder.setSmallIcon(R.drawable.ic_fluent_clock_alarm)
-    builder.setOngoing(true)
-    builder.setOnlyAlertOnce(true)
-    builder.priority = NotificationCompat.PRIORITY_LOW
-    builder.addAction(
-      0,
-      getString(if (isPaused) R.string.pomodoro_resume else R.string.pomodoro_pause),
-      servicePendingIntent(if (isPaused) ACTION_RESUME else ACTION_PAUSE),
+    val texts = PomodoroNotificationTexts(
+      title = getString(modeLabelRes),
+      toggleActionLabel = getString(if (state.isPaused) R.string.pomodoro_resume else R.string.pomodoro_pause),
+      stopActionLabel = getString(R.string.pomodoro_stop),
     )
-    builder.addAction(0, getString(R.string.pomodoro_stop), servicePendingIntent(ACTION_STOP))
-    return builder.build()
+    return notificationFactory.build(
+      builder = notifier.getNotificationBuilder(Notifier.CHANNEL_FOCUS_TIMER),
+      plan = plan,
+      texts = texts,
+      toggleIntent = servicePendingIntent(if (state.isPaused) ACTION_RESUME else ACTION_PAUSE),
+      stopIntent = servicePendingIntent(ACTION_STOP),
+    )
   }
-
   private fun servicePendingIntent(action: String): PendingIntent {
     val intent = Intent(this, PomodoroTimerService::class.java).setAction(action)
     return PendingIntent.getService(
@@ -115,7 +113,6 @@ class PomodoroTimerService : LifecycleService() {
   companion object {
     private const val TAG = "PomodoroTimerService"
     private const val NOTIFICATION_ID = 1246
-    private const val SECONDS_PER_MINUTE = 60
     const val ACTION_START = "com.elementary.tasks.pomodoro.action.START"
     const val ACTION_PAUSE = "com.elementary.tasks.pomodoro.action.PAUSE"
     const val ACTION_RESUME = "com.elementary.tasks.pomodoro.action.RESUME"
