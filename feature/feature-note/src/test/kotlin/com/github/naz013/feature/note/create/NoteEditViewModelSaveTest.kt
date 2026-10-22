@@ -5,6 +5,7 @@ import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureUsedEvent
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.note.Note
+import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
@@ -180,6 +181,64 @@ internal class NoteEditViewModelSaveTest : NoteEditViewModelTestSupport() {
     coVerify(exactly = 0) { saveNoteUseCase(any()) }
     val event = viewModel.event.value?.getContentIfNotHandled()
     assertEquals(NoteEditViewModel.ViewModelEvent.Error("Outdated"), event)
+  }
+
+  @Test
+  fun `saveNote snapshots the previous stored content for an existing note`() {
+    val stored = NoteWithImages(
+      note = Note(key = "42", content = NoteDocument(text = "Old"), syncState = SyncState.Synced),
+    )
+    coEvery { noteRepository.getById("42") } returns stored
+    every { uiNoteEditAdapter.convert(stored) } returns uiNoteEdit(id = "42", text = "Old")
+    val viewModel = buildViewModel(id = "42")
+    viewModel.onTextFieldValueChange(TextFieldValue("New"))
+
+    viewModel.saveNote()
+
+    coVerify(exactly = 1) {
+      saveNoteVersionUseCase("42", NoteDocument(text = "Old"), NoteDocument(text = "New"), any())
+    }
+  }
+
+  @Test
+  fun `saveNote does not snapshot a brand new note`() {
+    val viewModel = buildViewModel()
+    viewModel.onTextFieldValueChange(TextFieldValue("First"))
+
+    viewModel.saveNote()
+
+    coVerify(exactly = 0) { saveNoteVersionUseCase(any(), any(), any(), any()) }
+  }
+
+  @Test
+  fun `saveNote with newId does not snapshot the original note`() {
+    val stored = NoteWithImages(
+      note = Note(key = "42", content = NoteDocument(text = "Old"), syncState = SyncState.Synced),
+    )
+    coEvery { noteRepository.getById("42") } returns stored
+    every { uiNoteEditAdapter.convert(stored) } returns uiNoteEdit(id = "42", text = "Old")
+    val viewModel = buildViewModel(id = "42")
+    viewModel.onTextFieldValueChange(TextFieldValue("New"))
+
+    viewModel.saveNote(newId = true)
+
+    coVerify(exactly = 0) { saveNoteVersionUseCase(any(), any(), any(), any()) }
+  }
+
+  @Test
+  fun `saveNote still saves the note when storing the version fails`() {
+    val stored = NoteWithImages(
+      note = Note(key = "42", content = NoteDocument(text = "Old"), syncState = SyncState.Synced),
+    )
+    coEvery { noteRepository.getById("42") } returns stored
+    every { uiNoteEditAdapter.convert(stored) } returns uiNoteEdit(id = "42", text = "Old")
+    coEvery { saveNoteVersionUseCase(any(), any(), any(), any()) } throws IllegalStateException("db")
+    val viewModel = buildViewModel(id = "42")
+    viewModel.onTextFieldValueChange(TextFieldValue("New"))
+
+    viewModel.saveNote()
+
+    coVerify(exactly = 1) { saveNoteUseCase(any()) }
   }
 
   @Test

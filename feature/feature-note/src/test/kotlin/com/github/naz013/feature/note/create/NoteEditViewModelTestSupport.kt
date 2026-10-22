@@ -16,6 +16,7 @@ import com.github.naz013.feature.note.create.images.ImageDecoder
 import com.github.naz013.feature.note.preview.ImagesSingleton
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.feature.note.usecase.SaveNoteVersionUseCase
 import com.github.naz013.logic.note.NoteImageRepository
 import com.github.naz013.logic.note.SaveNoteUseCase
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
@@ -81,6 +82,7 @@ internal open class NoteEditViewModelTestSupport : BaseTest() {
   protected val tagAssignmentRepository = mockk<TagAssignmentRepository>()
   protected val toggleTagAssignmentUseCase = mockk<ToggleTagAssignmentUseCase>(relaxed = true)
   protected val tagChipStateAdapter = mockk<TagChipStateAdapter>(relaxed = true)
+  protected val saveNoteVersionUseCase = mockk<SaveNoteVersionUseCase>(relaxed = true)
 
   protected val fakeContext = mockk<Context>(relaxed = true)
 
@@ -228,5 +230,6 @@ internal open class NoteEditViewModelTestSupport : BaseTest() {
       tagAssignmentRepository = tagAssignmentRepository,
       toggleTagAssignmentUseCase = toggleTagAssignmentUseCase,
       tagChipStateAdapter = tagChipStateAdapter,
+      saveNoteVersionUseCase = saveNoteVersionUseCase,
     )
 }

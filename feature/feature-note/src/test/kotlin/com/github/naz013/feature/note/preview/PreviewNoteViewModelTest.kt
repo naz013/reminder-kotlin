@@ -8,7 +8,9 @@ import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteDocument
+import com.github.naz013.domain.note.NoteVersion
 import com.github.naz013.domain.note.NoteWithImages
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
@@ -22,9 +24,11 @@ import com.github.naz013.feature.note.preview.reminders.UiNoteAttachedReminder
 import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
+import com.github.naz013.feature.note.usecase.RestoreNoteVersionUseCase
 import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.repository.NoteRepository
+import com.github.naz013.repository.NoteVersionRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.testing.BaseTest
@@ -44,6 +48,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -72,6 +77,9 @@ class PreviewNoteViewModelTest : BaseTest() {
   private val noteColorEngine = mockk<NoteColorEngine>()
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
   private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
+  private val noteVersionRepository = mockk<NoteVersionRepository>()
+  private val restoreNoteVersionUseCase = mockk<RestoreNoteVersionUseCase>()
+  private val dateTimeManager = mockk<DateTimeManager>()
 
   @Before
   override fun setUp() {
@@ -145,6 +153,9 @@ class PreviewNoteViewModelTest : BaseTest() {
       noteColorEngine = noteColorEngine,
       tagAssignmentRepository = tagAssignmentRepository,
       tagChipStateAdapter = tagChipStateAdapter,
+      noteVersionRepository = noteVersionRepository,
+      restoreNoteVersionUseCase = restoreNoteVersionUseCase,
+      dateTimeManager = dateTimeManager,
     )
 
   @Test
@@ -487,5 +498,92 @@ class PreviewNoteViewModelTest : BaseTest() {
       viewModel.onReminderDetachClick("missing")
 
       coVerify(exactly = 0) { saveReminderUseCase(any()) }
+    }
+
+  private fun version(id: Long, text: String) =
+    NoteVersion(id = id, noteKey = key, content = NoteDocument(text = text), savedAt = id * 1000)
+
+  private fun TestScope.collectLatest(viewModel: PreviewNoteViewModel): () -> PreviewNoteState {
+    var latest = PreviewNoteState(id = key)
+    backgroundScope.launch(Dispatchers.Unconfined) { viewModel.state.collect { latest = it } }
+    return { latest }
+  }
+
+  @Test
+  fun `onHistoryClick shows versions newest first with a two line preview`() =
+    runTest {
+      coEvery { noteVersionRepository.getByNoteKey(key) } returns
+        listOf(version(2, "One\n\nTwo\nThree"), version(1, "Old"))
+      every { dateTimeManager.getFullDateTime(any<Long>()) } answers { "at ${firstArg<Long>()}" }
+      val viewModel = createViewModel()
+      val latest = collectLatest(viewModel)
+
+      viewModel.onHistoryClick()
+
+      val history = latest().history
+      assertEquals(listOf(2L, 1L), history?.versions?.map { it.id })
+      assertEquals("One\nTwo", history?.versions?.first()?.preview)
+      assertEquals("at 2000", history?.versions?.first()?.savedAtFormatted)
+      assertNull(history?.selectedVersion)
+    }
+
+  @Test
+  fun `onHistoryClick shows an empty history when no versions exist`() =
+    runTest {
+      coEvery { noteVersionRepository.getByNoteKey(key) } returns emptyList()
+      val viewModel = createViewModel()
+      val latest = collectLatest(viewModel)
+
+      viewModel.onHistoryClick()
+
+      assertEquals(emptyList<UiNoteVersion>(), latest().history?.versions)
+    }
+
+  @Test
+  fun `selecting a version shows it and going back returns to the list`() =
+    runTest {
+      coEvery { noteVersionRepository.getByNoteKey(key) } returns listOf(version(1, "Old text"))
+      every { dateTimeManager.getFullDateTime(any<Long>()) } returns "when"
+      val viewModel = createViewModel()
+      val latest = collectLatest(viewModel)
+      viewModel.onHistoryClick()
+
+      viewModel.onVersionClick(1L)
+      assertEquals("Old text", latest().history?.selectedVersion?.fullText)
+
+      viewModel.onVersionBackClick()
+      assertNull(latest().history?.selectedVersion)
+    }
+
+  @Test
+  fun `onVersionRestoreClick restores the selected version closes history and reports success`() =
+    runTest {
+      every { textProvider.getText(R.string.note_version_restored) } returns "Restored"
+      coEvery { noteVersionRepository.getByNoteKey(key) } returns listOf(version(1, "Old"))
+      every { dateTimeManager.getFullDateTime(any<Long>()) } returns "when"
+      coEvery { restoreNoteVersionUseCase(1L) } returns true
+      val viewModel = createViewModel()
+      val latest = collectLatest(viewModel)
+      viewModel.onHistoryClick()
+      viewModel.onVersionClick(1L)
+
+      viewModel.onVersionRestoreClick()
+
+      coVerify(exactly = 1) { restoreNoteVersionUseCase(1L) }
+      assertNull(latest().history)
+      assertEquals(
+        PreviewNoteViewModel.ViewModelEvent.Message("Restored"),
+        viewModel.event.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `onVersionRestoreClick does nothing when no version is selected`() =
+    runTest {
+      val viewModel = createViewModel()
+
+      viewModel.onVersionRestoreClick()
+
+      coVerify(exactly = 0) { restoreNoteVersionUseCase(any()) }
     }
 }
