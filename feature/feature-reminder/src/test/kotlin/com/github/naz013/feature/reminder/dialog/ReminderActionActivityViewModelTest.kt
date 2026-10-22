@@ -7,6 +7,7 @@ import com.github.naz013.feature.reminder.actions.ReminderAction
 import com.github.naz013.logic.reminder.ReminderNotifier
 import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.logic.reminder.usecase.CompleteReminderUseCase
+import com.github.naz013.logic.reminder.usecase.ActivateChainedRemindersUseCase
 import com.github.naz013.logic.reminder.usecase.DeactivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SnoozeReminderUseCase
@@ -32,6 +33,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
   private val saveReminderUseCase = mockk<SaveReminderUseCase>(relaxed = true)
   private val completeReminderUseCase = mockk<CompleteReminderUseCase>(relaxed = true)
   private val deactivateReminderUseCase = mockk<DeactivateReminderUseCase>(relaxed = true)
+  private val activateChainedRemindersUseCase = mockk<ActivateChainedRemindersUseCase>(relaxed = true)
   private val snoozeReminderUseCase = mockk<SnoozeReminderUseCase>(relaxed = true)
   private val reminderPreferences = mockk<ReminderPreferences>(relaxed = true)
   private val getReminderActionScreenStateUseCase = mockk<CreateReminderActionScreenStateUseCase>()
@@ -84,6 +86,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
       getReminderActionScreenStateUseCase = getReminderActionScreenStateUseCase,
       reminderNotifier = reminderNotifier,
       textProvider = textProvider,
+      activateChainedRemindersUseCase = activateChainedRemindersUseCase,
     )
 
   @Test
@@ -132,6 +135,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
       viewModel.onActionClick(ReminderAction.Dismiss)
 
       coVerify(exactly = 1) { deactivateReminderUseCase(match { it.uuId == r.uuId }) }
+      coVerify(exactly = 1) { activateChainedRemindersUseCase(r.uuId) }
       assertEquals(
         ReminderActionActivityViewModel.ViewModelEvent.Finish,
         viewModel.event.value?.peekContent(),

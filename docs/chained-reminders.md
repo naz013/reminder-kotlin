@@ -41,3 +41,10 @@ copy of the reminder:
 - Lists (`ui:ui-reminder`, Agenda): a "Waiting for <title>" tag from `UiReminderListAdapter.createV2`. Waiting
   reminders are inactive, so they are never overdue and are absent from the active Today and calendar queries.
 - Preview screen: a "Waiting for <title>" detail row; the overdue timing rows are hidden.
+
+## Known limits
+
+- A manually paused (toggled-off) predecessor with no link counts as finished, so a link to it is dropped on save.
+- Group, tag, archive and calendar agenda lists show no "Waiting for" tag; only the Agenda list and the preview do.
+- Cloud sync, restore and group deletion remove reminders without releasing their successors.
+- A waiting reminder is parked with a plain save and its alarms cancelled; its Google Task export is not completed until it is later activated.

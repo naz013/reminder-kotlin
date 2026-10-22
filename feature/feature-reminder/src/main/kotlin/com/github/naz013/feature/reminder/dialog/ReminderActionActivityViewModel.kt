@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.feature.reminder.actions.ReminderAction
 import com.github.naz013.logic.reminder.ReminderNotifier
 import com.github.naz013.logic.reminder.ReminderPreferences
+import com.github.naz013.logic.reminder.usecase.ActivateChainedRemindersUseCase
 import com.github.naz013.logic.reminder.usecase.CompleteReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeactivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
@@ -38,6 +39,7 @@ internal class ReminderActionActivityViewModel(
   private val getReminderActionScreenStateUseCase: CreateReminderActionScreenStateUseCase,
   private val reminderNotifier: ReminderNotifier,
   private val textProvider: TextProvider,
+  private val activateChainedRemindersUseCase: ActivateChainedRemindersUseCase,
 ) : ViewModel() {
   private val _state = mutableLiveDataOf<ReminderActionScreenState>()
   val state = _state.toLiveData()
@@ -164,6 +166,7 @@ internal class ReminderActionActivityViewModel(
     viewModelScope.launch(dispatcherProvider.io()) {
       val reminder = reminderV2Repository.getById(id) ?: return@launch
       deactivateReminderUseCase(reminder)
+      activateChainedRemindersUseCase(reminder.uuId)
       withContext(dispatcherProvider.main()) {
         event.emit(ViewModelEvent.Finish)
       }

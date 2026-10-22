@@ -20,6 +20,7 @@ class DeleteReminderUseCase(
   private val eventOccurrenceRepository: EventOccurrenceRepository,
   private val eventHistoryRepository: EventHistoryRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
+  // Lazy: ActivateChained -> Activate -> Delete would otherwise be a construction cycle.
   private val activateChainedRemindersUseCase: Lazy<ActivateChainedRemindersUseCase>,
 ) {
   suspend operator fun invoke(reminder: ReminderV2) {

@@ -17,6 +17,8 @@ import com.github.naz013.workapi.WorkScheduler
  */
 class ActivateReminderUseCase(
   private val behaviorStrategyResolver: BehaviorStrategyResolverV2,
+  // DeleteReminderUseCase holds ActivateChainedRemindersUseCase lazily to break the
+  // Activate -> Delete -> ActivateChained -> Activate dependency cycle.
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val startLocationTrackingUseCase: StartLocationTrackingUseCase,
   private val saveReminderUseCase: SaveReminderUseCase,
@@ -27,7 +29,7 @@ class ActivateReminderUseCase(
   private val workScheduler: WorkScheduler,
   private val systemInfo: SystemInfo,
   private val resolveChainedStartUseCase: ResolveChainedStartUseCase,
-  private val deactivateReminderUseCase: DeactivateReminderUseCase,
+  private val pauseReminderUseCase: PauseReminderUseCase,
 ) {
 
   @IgnorableReturnValue
@@ -39,7 +41,14 @@ class ActivateReminderUseCase(
     val resolved = resolveChainedStartUseCase(reminder)
     if (resolved.startAfterReminderId != null) {
       Logger.i(TAG, "Reminder id=${resolved.uuId} waits for id=${resolved.startAfterReminderId}, not scheduling.")
-      return deactivateReminderUseCase(resolved)
+      val parked =
+        resolved.copy(
+          isActive = false,
+          sync = resolved.sync.copy(syncState = SyncState.WaitingForUpload),
+        )
+      saveReminderUseCase(parked)
+      pauseReminderUseCase(parked)
+      return parked
     }
     return activate(resolved, startAnyway, skipGoogleTaskExport)
   }
