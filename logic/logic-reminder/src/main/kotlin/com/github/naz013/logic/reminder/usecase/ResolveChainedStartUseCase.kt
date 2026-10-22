@@ -26,19 +26,20 @@ class ResolveChainedStartUseCase(
       predecessor == null || predecessor.isRemoved -> dropLink(reminder, "predecessor missing or removed")
       !predecessor.isActive && predecessor.startAfterReminderId == null ->
         dropLink(reminder, "predecessor already finished")
-      createsCycle(reminder, predecessor) -> dropLink(reminder, "cycle")
+      wouldCreateCycle(reminder.uuId, predecessorId) -> dropLink(reminder, "cycle")
       else -> reminder.copy(isActive = false)
     }
   }
 
-  private suspend fun createsCycle(reminder: ReminderV2, predecessor: ReminderV2): Boolean {
+  /** True when making [reminderId] wait for [predecessorId] would loop back to [reminderId]. */
+  suspend fun wouldCreateCycle(reminderId: String, predecessorId: String): Boolean {
     val links = mutableMapOf<String, String?>()
-    var current: ReminderV2? = predecessor
-    while (current != null && links.size < MAX_CHAIN_DEPTH && !links.containsKey(current.uuId)) {
-      links[current.uuId] = current.startAfterReminderId
-      current = current.startAfterReminderId?.let { reminderV2Repository.getById(it) }
+    var currentId: String? = predecessorId
+    while (currentId != null && links.size < MAX_CHAIN_DEPTH && !links.containsKey(currentId)) {
+      links[currentId] = reminderV2Repository.getById(currentId)?.startAfterReminderId
+      currentId = links[currentId]
     }
-    return chainValidator.wouldCreateCycle(reminder.uuId, predecessor.uuId) { links[it] }
+    return chainValidator.wouldCreateCycle(reminderId, predecessorId) { links[it] }
   }
 
   private fun dropLink(reminder: ReminderV2, reason: String): ReminderV2 {
