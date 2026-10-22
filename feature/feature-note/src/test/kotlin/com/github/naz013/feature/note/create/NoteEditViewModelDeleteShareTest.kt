@@ -5,6 +5,8 @@ import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.note.R
+import com.github.naz013.feature.note.share.NoteShareFormat
+import com.github.naz013.feature.note.share.NoteShareText
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -82,7 +84,7 @@ internal class NoteEditViewModelDeleteShareTest : NoteEditViewModelTestSupport()
     every { file.canRead() } returns true
     coEvery { createSharedNoteFileUseCase(any()) } returns file
 
-    viewModel.onShareClick()
+    viewModel.onShareFormatSelected(NoteShareFormat.ORIGINAL)
 
     val event = viewModel.event.value?.getContentIfNotHandled()
     assertEquals(NoteEditViewModel.ViewModelEvent.ShareNote(text = "Note body", file = file), event)
@@ -94,7 +96,7 @@ internal class NoteEditViewModelDeleteShareTest : NoteEditViewModelTestSupport()
     coEvery { createSharedNoteFileUseCase(any()) } returns null
     val viewModel = buildViewModel()
 
-    viewModel.onShareClick()
+    viewModel.onShareFormatSelected(NoteShareFormat.ORIGINAL)
 
     val event = viewModel.event.value?.getContentIfNotHandled()
     assertEquals(NoteEditViewModel.ViewModelEvent.Error("Cannot share"), event)
@@ -109,7 +111,7 @@ internal class NoteEditViewModelDeleteShareTest : NoteEditViewModelTestSupport()
     coEvery { createSharedNoteFileUseCase(any()) } returns file
 
     val viewModel = buildViewModel()
-    viewModel.onShareClick()
+    viewModel.onShareFormatSelected(NoteShareFormat.ORIGINAL)
 
     val event = viewModel.event.value?.getContentIfNotHandled()
     assertEquals(NoteEditViewModel.ViewModelEvent.Error("Cannot share"), event)
@@ -123,9 +125,44 @@ internal class NoteEditViewModelDeleteShareTest : NoteEditViewModelTestSupport()
     coEvery { createSharedNoteFileUseCase(any()) } returns file
 
     val viewModel = buildViewModel()
-    viewModel.onShareClick()
+    viewModel.onShareFormatSelected(NoteShareFormat.ORIGINAL)
 
     val event = viewModel.event.value?.getContentIfNotHandled()
     assertEquals(NoteEditViewModel.ViewModelEvent.Error("Cannot share"), event)
+  }
+
+  @Test
+  fun `onShareClick opens the share as sheet`() {
+    val viewModel = buildViewModel()
+
+    viewModel.onShareClick()
+
+    assertEquals(NoteEditDialog.SHARE_AS, viewModel.state.value.activeDialog)
+  }
+
+  @Test
+  fun `onShareFormatSelected closes the sheet and emits the markdown of the current text`() {
+    val viewModel = buildViewModel()
+    viewModel.onTextFieldValueChange(TextFieldValue("Note body"))
+    viewModel.onShareClick()
+
+    viewModel.onShareFormatSelected(NoteShareFormat.MARKDOWN)
+
+    assertNull(viewModel.state.value.activeDialog)
+    val event = viewModel.event.value?.getContentIfNotHandled()
+    val expected = NoteShareText(subject = "Note body", text = "Note body", mimeType = "text/plain")
+    assertEquals(NoteEditViewModel.ViewModelEvent.ShareText(expected), event)
+  }
+
+  @Test
+  fun `onShareFormatSelected html emits text html`() {
+    val viewModel = buildViewModel()
+    viewModel.onTextFieldValueChange(TextFieldValue("Note body"))
+
+    viewModel.onShareFormatSelected(NoteShareFormat.HTML)
+
+    val shared = (viewModel.event.value?.getContentIfNotHandled() as NoteEditViewModel.ViewModelEvent.ShareText).content
+    assertEquals("text/html", shared.mimeType)
+    assertEquals(true, shared.text.contains("<p>Note body</p>"))
   }
 }

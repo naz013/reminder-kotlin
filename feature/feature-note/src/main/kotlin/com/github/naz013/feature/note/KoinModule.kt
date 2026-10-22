@@ -13,7 +13,9 @@ import com.github.naz013.feature.note.preview.ImagesSingleton
 import com.github.naz013.feature.note.preview.PreviewNoteViewModel
 import com.github.naz013.feature.note.preview.reminders.ReminderToUiNoteAttachedReminder
 import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
+import com.github.naz013.feature.note.share.NoteShareContentBuilder
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
+import com.github.naz013.ui.note.NoteFontProvider
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
 import com.github.naz013.feature.note.usecase.MergeNotesUseCase
 import com.github.naz013.feature.note.usecase.RestoreNoteVersionUseCase
@@ -34,6 +36,7 @@ val featureNoteModule = module {
   factoryOf(::RestoreNoteVersionUseCase)
 
   factoryOf(::CreateSharedNoteFileUseCase)
+  factory { NoteShareContentBuilder { get<NoteFontProvider>().getFontNames() } }
 
   factoryOf(::ReminderToUiNoteAttachedReminder)
 
@@ -55,6 +58,7 @@ val featureNoteModule = module {
       sharedText,
       sharedImageUris,
       fromIntentData,
+      get(),
       get(),
       get(),
       get(),
@@ -117,6 +121,7 @@ val featureNoteModule = module {
   viewModel { (id: String) ->
     PreviewNoteViewModel(
       id,
+      get(),
       get(),
       get(),
       get(),

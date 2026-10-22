@@ -15,6 +15,7 @@ import com.github.naz013.feature.note.create.drop.DroppedContentParser
 import com.github.naz013.feature.note.create.images.ImageDecoder
 import com.github.naz013.feature.note.preview.ImagesSingleton
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
+import com.github.naz013.feature.note.share.NoteShareContentBuilder
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
 import com.github.naz013.feature.note.usecase.SaveNoteVersionUseCase
 import com.github.naz013.logic.note.NoteImageRepository
@@ -83,6 +84,7 @@ internal open class NoteEditViewModelTestSupport : BaseTest() {
   protected val toggleTagAssignmentUseCase = mockk<ToggleTagAssignmentUseCase>(relaxed = true)
   protected val tagChipStateAdapter = mockk<TagChipStateAdapter>(relaxed = true)
   protected val saveNoteVersionUseCase = mockk<SaveNoteVersionUseCase>(relaxed = true)
+  protected val noteShareContentBuilder = NoteShareContentBuilder { listOf("Roboto Black", "Roboto Bold") }
 
   protected val fakeContext = mockk<Context>(relaxed = true)
 
@@ -231,5 +233,6 @@ internal open class NoteEditViewModelTestSupport : BaseTest() {
       toggleTagAssignmentUseCase = toggleTagAssignmentUseCase,
       tagChipStateAdapter = tagChipStateAdapter,
       saveNoteVersionUseCase = saveNoteVersionUseCase,
+      noteShareContentBuilder = noteShareContentBuilder,
     )
 }

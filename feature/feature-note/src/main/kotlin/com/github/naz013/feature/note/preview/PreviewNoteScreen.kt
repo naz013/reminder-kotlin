@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.naz013.feature.note.R
+import com.github.naz013.feature.note.share.NoteShareSheet
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
@@ -95,7 +96,7 @@ internal fun PreviewNoteScreen(
           listOf(
             PopupMenuItem(
               id = OVERFLOW_ITEM_SHARE,
-              title = stringResource(R.string.share),
+              title = stringResource(R.string.note_share_as),
               iconRes = DrawableCatalog.Fluent.ShareAndroid,
             ),
             PopupMenuItem(
@@ -193,6 +194,13 @@ internal fun PreviewNoteScreen(
         modifier = Modifier.padding(top = 16.dp),
       )
     }
+  }
+
+  if (state.showShareSheet) {
+    NoteShareSheet(
+      onDismissRequest = actions.onShareDismiss,
+      onFormatClick = actions.onShareFormatSelected,
+    )
   }
 
   state.history?.let { history ->

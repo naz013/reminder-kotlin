@@ -54,7 +54,7 @@ Rich text with images and per-note font, color, tags, archive, search and tag fi
 Dropping text, text files and PDFs into the editor is supported ([drag-and-drop-notes.md](drag-and-drop-notes.md)).
 Each note keeps a local version history that can be browsed and restored from the preview screen
 ([note-version-history.md](note-version-history.md)).
-The editor turns typed Markdown line markers into headings and bullets ([note-markdown.md](note-markdown.md)).
+The editor turns typed Markdown line markers into headings and bullets ([note-markdown.md](note-markdown.md)). "Share as" sends a note as the original file, plain text, hybrid Markdown or HTML ([note-markdown.md](note-markdown.md)).
 
 ### Birthdays
 Tracked independently of the system calendar, with tags and a tag filter, a dedicated action screen when the

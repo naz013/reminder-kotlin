@@ -1,5 +1,7 @@
 package com.github.naz013.feature.note.preview
 
+import androidx.compose.ui.graphics.isSpecified
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,6 +22,9 @@ import com.github.naz013.feature.note.R
 import com.github.naz013.feature.note.UiNoteNotificationAdapter
 import com.github.naz013.feature.note.UiNotePreviewAdapter
 import com.github.naz013.feature.note.preview.reminders.ReminderToUiNoteAttachedReminder
+import com.github.naz013.feature.note.share.NoteShareContentBuilder
+import com.github.naz013.feature.note.share.NoteShareFormat
+import com.github.naz013.feature.note.share.NoteShareText
 import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
@@ -64,6 +69,7 @@ internal class PreviewNoteViewModel(
   private val noteVersionRepository: NoteVersionRepository,
   private val restoreNoteVersionUseCase: RestoreNoteVersionUseCase,
   private val dateTimeManager: DateTimeManager,
+  private val noteShareContentBuilder: NoteShareContentBuilder,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewNoteState(id = key))
@@ -179,6 +185,40 @@ internal class PreviewNoteViewModel(
   }
 
   fun onShareClick() {
+    _state.update { it.copy(showShareSheet = true) }
+  }
+
+  fun onShareDismiss() {
+    _state.update { it.copy(showShareSheet = false) }
+  }
+
+  fun onShareFormatSelected(format: NoteShareFormat) {
+    _state.update { it.copy(showShareSheet = false) }
+    if (format == NoteShareFormat.ORIGINAL) {
+      shareOriginalNote()
+    } else {
+      shareNoteAsText(format)
+    }
+  }
+
+  private fun shareNoteAsText(format: NoteShareFormat) {
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val noteWithImages = noteRepository.getById(key) ?: return@launch
+      val document = noteWithImages.note?.content ?: return@launch
+      val shared = noteShareContentBuilder.build(
+        format = format,
+        title = noteWithImages.getTitle(),
+        document = document,
+        backgroundArgb = _state.value.background.takeIf { it.isSpecified }?.toArgb(),
+        contentArgb = _state.value.content.takeIf { it.isSpecified }?.toArgb(),
+      ) ?: return@launch
+      withContext(dispatcherProvider.main()) {
+        event.emit(ViewModelEvent.ShareText(shared))
+      }
+    }
+  }
+
+  private fun shareOriginalNote() {
     viewModelScope.launch(dispatcherProvider.default()) {
       val noteWithImages = noteRepository.getById(key) ?: return@launch
       val file = createSharedNoteFileUseCase(noteWithImages)
@@ -295,6 +335,10 @@ internal class PreviewNoteViewModel(
     data class ShareNote(
       val text: String,
       val file: File,
+    ) : ViewModelEvent
+
+    data class ShareText(
+      val content: NoteShareText,
     ) : ViewModelEvent
 
     data class Message(

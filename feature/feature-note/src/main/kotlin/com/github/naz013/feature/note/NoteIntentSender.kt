@@ -6,17 +6,37 @@ import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import com.github.naz013.common.uri.UriUtil
+import com.github.naz013.feature.note.share.NoteShareText
 import com.github.naz013.logging.Logger
 import java.io.File
 
 internal interface NoteIntentSender {
   fun send(text: String?, file: File)
+  fun sendText(content: NoteShareText)
 }
 
 private class NoteIntentSenderImpl(
   private val context: Context,
   private val applicationId: String,
 ) : NoteIntentSender {
+  override fun sendText(content: NoteShareText) {
+    val intent = Intent(Intent.ACTION_SEND)
+    intent.type = content.mimeType
+    intent.putExtra(Intent.EXTRA_SUBJECT, content.subject)
+    intent.putExtra(Intent.EXTRA_TEXT, content.text)
+    if (content.isHtml) intent.putExtra(Intent.EXTRA_HTML_TEXT, content.text)
+    startChooser(intent)
+  }
+
+  private fun startChooser(intent: Intent) {
+    try {
+      context.startActivity(Intent.createChooser(intent, context.getString(R.string.share_send_note)))
+    } catch (e: Exception) {
+      Logger.w("NoteIntentSender", "App not found, exception: ${e.message}")
+      Toast.makeText(context, R.string.app_not_found, Toast.LENGTH_SHORT).show()
+    }
+  }
+
   override fun send(text: String?, file: File) {
     val intent = Intent(Intent.ACTION_SEND)
     intent.type = "text/plain"

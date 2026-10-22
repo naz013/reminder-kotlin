@@ -2,6 +2,7 @@ package com.github.naz013.feature.note.create
 
 import android.content.ClipData
 import com.github.naz013.domain.note.NoteSpanAttribute
+import com.github.naz013.feature.note.share.NoteShareFormat
 import com.github.naz013.ui.tag.TagChipState
 
 /**
@@ -13,6 +14,7 @@ internal data class NoteEditActions(
   val onBackClick: () -> Unit = {},
   val onSaveClick: () -> Unit = {},
   val onShareClick: () -> Unit = {},
+  val onShareFormatSelected: (NoteShareFormat) -> Unit = {},
   val onDeleteClick: () -> Unit = {},
   val onMicClick: () -> Unit = {},
   val onColorTabClick: () -> Unit = {},

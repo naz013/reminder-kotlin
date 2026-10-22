@@ -1,5 +1,7 @@
 package com.github.naz013.feature.note.preview
 
+import com.github.naz013.feature.note.share.NoteShareFormat
+
 /**
  * Bundles every user-interaction callback for the note preview screen so the composable tree
  * (screen -> top bar / image carousel / reminder row / dialogs) doesn't need a long parameter
@@ -10,6 +12,8 @@ internal data class PreviewNoteActions(
   val onEditClick: () -> Unit = {},
   val onStatusClick: () -> Unit = {},
   val onShareClick: () -> Unit = {},
+  val onShareDismiss: () -> Unit = {},
+  val onShareFormatSelected: (NoteShareFormat) -> Unit = {},
   val onArchiveClick: () -> Unit = {},
   val onPinClick: () -> Unit = {},
   val onDeleteClick: () -> Unit = {},

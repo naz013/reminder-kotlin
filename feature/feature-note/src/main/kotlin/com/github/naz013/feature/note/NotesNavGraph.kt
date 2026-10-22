@@ -331,6 +331,10 @@ private fun NotePreviewEntry(
         noteIntentSender.send(event.text, event.file)
       }
 
+      is PreviewNoteViewModel.ViewModelEvent.ShareText -> {
+        noteIntentSender.sendText(event.content)
+      }
+
       is PreviewNoteViewModel.ViewModelEvent.Delete -> {
         dialogDispatcher.showDialog(
           titleRes = R.string.delete_this_note,
@@ -352,6 +356,8 @@ private fun NotePreviewEntry(
         permissionRequester.request(Permissions.POST_NOTIFICATION, onGranted = { viewModel.onStatusClick() })
       },
       onShareClick = viewModel::onShareClick,
+      onShareDismiss = viewModel::onShareDismiss,
+      onShareFormatSelected = viewModel::onShareFormatSelected,
       onArchiveClick = viewModel::onArchiveClick,
       onPinClick = viewModel::onPinClick,
       onDeleteClick = viewModel::onDeleteClick,
@@ -449,6 +455,10 @@ private fun NoteEditEntry(
         noteIntentSender.send(event.text, event.file)
       }
 
+      is NoteEditViewModel.ViewModelEvent.ShareText -> {
+        noteIntentSender.sendText(event.content)
+      }
+
       is NoteEditViewModel.ViewModelEvent.ShowDatePicker -> {
         dateTimePicker.showDatePicker(event.date, event.title, viewModel::onNewDate)
       }
@@ -477,6 +487,7 @@ private fun NoteEditEntry(
       onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
       onSaveClick = viewModel::onSaveClicked,
       onShareClick = viewModel::onShareClick,
+      onShareFormatSelected = viewModel::onShareFormatSelected,
       onDeleteClick = viewModel::onDeleteRequested,
       onMicClick = {
         permissionRequester.request(Permissions.RECORD_AUDIO, onGranted = {

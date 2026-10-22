@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import com.github.naz013.common.uri.UriUtil
 import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.feature.note.R
+import com.github.naz013.feature.note.share.NoteShareSheet
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
@@ -109,7 +110,7 @@ internal fun NoteEditScreen(
           MenuIconButton(
             icon = AppIcons.Fluent.ShareAndroid,
             iconColor = contentColor,
-            contentDescription = stringResource(R.string.share),
+            contentDescription = stringResource(R.string.note_share_as),
             onClick = actions.onShareClick,
           )
           if (state.canDelete) {
@@ -228,6 +229,12 @@ internal fun NoteEditScreen(
         onDismiss = actions.onDialogDismiss,
         onKeep = actions.onSameNoteKeep,
         onReplace = actions.onSameNoteReplace,
+      )
+
+    NoteEditDialog.SHARE_AS ->
+      NoteShareSheet(
+        onDismissRequest = actions.onDialogDismiss,
+        onFormatClick = actions.onShareFormatSelected,
       )
 
     null -> Unit

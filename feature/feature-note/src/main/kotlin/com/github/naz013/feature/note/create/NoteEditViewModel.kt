@@ -5,6 +5,8 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
 import android.util.Patterns
+import androidx.compose.ui.graphics.isSpecified
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.core.graphics.drawable.toBitmap
@@ -44,6 +46,9 @@ import com.github.naz013.feature.note.UiNoteEditAdapter
 import com.github.naz013.feature.note.create.drop.DroppedContentParser
 import com.github.naz013.feature.note.create.images.ImageDecoder
 import com.github.naz013.feature.note.preview.ImagesSingleton
+import com.github.naz013.feature.note.share.NoteShareContentBuilder
+import com.github.naz013.feature.note.share.NoteShareFormat
+import com.github.naz013.feature.note.share.NoteShareText
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
 import com.github.naz013.feature.note.usecase.SaveNoteVersionUseCase
@@ -117,6 +122,7 @@ internal class NoteEditViewModel(
   private val toggleTagAssignmentUseCase: ToggleTagAssignmentUseCase,
   private val tagChipStateAdapter: TagChipStateAdapter,
   private val saveNoteVersionUseCase: SaveNoteVersionUseCase,
+  private val noteShareContentBuilder: NoteShareContentBuilder,
 ) : ViewModel() {
 
   val is24HourFormat: Boolean = notePreferences.is24HourFormat
@@ -426,6 +432,36 @@ internal class NoteEditViewModel(
   }
 
   fun onShareClick() {
+    _state.update { it.copy(activeDialog = NoteEditDialog.SHARE_AS) }
+  }
+
+  fun onShareFormatSelected(format: NoteShareFormat) {
+    _state.update { it.copy(activeDialog = null) }
+    if (format == NoteShareFormat.ORIGINAL) {
+      shareOriginalNote()
+    } else {
+      shareNoteAsText(format)
+    }
+  }
+
+  private fun shareNoteAsText(format: NoteShareFormat) {
+    viewModelScope.launch(dispatcherProvider.io()) {
+      val note = createObject()
+      val colors = _state.value.noteColors
+      val shared = noteShareContentBuilder.build(
+        format = format,
+        title = note.getTitle(),
+        document = note.note?.content ?: return@launch,
+        backgroundArgb = colors.background.takeIf { it.isSpecified }?.toArgb(),
+        contentArgb = colors.content.takeIf { it.isSpecified }?.toArgb(),
+      ) ?: return@launch
+      withContext(dispatcherProvider.main()) {
+        event.emit(ViewModelEvent.ShareText(shared))
+      }
+    }
+  }
+
+  private fun shareOriginalNote() {
     viewModelScope.launch(dispatcherProvider.io()) {
       val note = createObject()
       val file = createSharedNoteFileUseCase(note)
@@ -897,6 +933,10 @@ internal class NoteEditViewModel(
     data class ShareNote(
       val text: String,
       val file: File,
+    ) : ViewModelEvent
+
+    data class ShareText(
+      val content: NoteShareText,
     ) : ViewModelEvent
 
     data class ShowDatePicker(

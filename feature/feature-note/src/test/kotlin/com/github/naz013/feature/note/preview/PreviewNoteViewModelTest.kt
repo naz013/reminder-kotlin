@@ -8,6 +8,8 @@ import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteDocument
+import com.github.naz013.domain.note.NoteSpanAttribute
+import com.github.naz013.domain.note.NoteTextSpan
 import com.github.naz013.domain.note.NoteVersion
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.datecalc.DateTimeManager
@@ -21,6 +23,9 @@ import com.github.naz013.feature.note.UiNotePreview
 import com.github.naz013.feature.note.UiNotePreviewAdapter
 import com.github.naz013.feature.note.preview.reminders.ReminderToUiNoteAttachedReminder
 import com.github.naz013.feature.note.preview.reminders.UiNoteAttachedReminder
+import com.github.naz013.feature.note.share.NoteShareContentBuilder
+import com.github.naz013.feature.note.share.NoteShareFormat
+import com.github.naz013.feature.note.share.NoteShareText
 import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
@@ -80,6 +85,7 @@ class PreviewNoteViewModelTest : BaseTest() {
   private val noteVersionRepository = mockk<NoteVersionRepository>()
   private val restoreNoteVersionUseCase = mockk<RestoreNoteVersionUseCase>()
   private val dateTimeManager = mockk<DateTimeManager>()
+  private val noteShareContentBuilder = NoteShareContentBuilder { listOf("Roboto Black", "Roboto Bold") }
 
   @Before
   override fun setUp() {
@@ -156,6 +162,7 @@ class PreviewNoteViewModelTest : BaseTest() {
       noteVersionRepository = noteVersionRepository,
       restoreNoteVersionUseCase = restoreNoteVersionUseCase,
       dateTimeManager = dateTimeManager,
+      noteShareContentBuilder = noteShareContentBuilder,
     )
 
   @Test
@@ -380,7 +387,7 @@ class PreviewNoteViewModelTest : BaseTest() {
       coEvery { createSharedNoteFileUseCase(n) } returns file
       val viewModel = createViewModel()
 
-      viewModel.onShareClick()
+      viewModel.onShareFormatSelected(NoteShareFormat.ORIGINAL)
 
       val event = viewModel.event.value?.peekContent()
       assertEquals(PreviewNoteViewModel.ViewModelEvent.ShareNote("Buy milk", file), event)
@@ -392,7 +399,7 @@ class PreviewNoteViewModelTest : BaseTest() {
       coEvery { noteRepository.getById(key) } returns null
       val viewModel = createViewModel()
 
-      viewModel.onShareClick()
+      viewModel.onShareFormatSelected(NoteShareFormat.ORIGINAL)
 
       assertNull(viewModel.event.value?.peekContent())
     }
@@ -406,7 +413,7 @@ class PreviewNoteViewModelTest : BaseTest() {
       every { textProvider.getText(R.string.failed_to_send_note) } returns "Failed to send note"
       val viewModel = createViewModel()
 
-      viewModel.onShareClick()
+      viewModel.onShareFormatSelected(NoteShareFormat.ORIGINAL)
 
       val event = viewModel.event.value?.peekContent()
       assertEquals(PreviewNoteViewModel.ViewModelEvent.Message("Failed to send note"), event)
@@ -423,10 +430,92 @@ class PreviewNoteViewModelTest : BaseTest() {
       every { textProvider.getText(R.string.failed_to_send_note) } returns "Failed to send note"
       val viewModel = createViewModel()
 
-      viewModel.onShareClick()
+      viewModel.onShareFormatSelected(NoteShareFormat.ORIGINAL)
 
       val event = viewModel.event.value?.peekContent()
       assertEquals(PreviewNoteViewModel.ViewModelEvent.Message("Failed to send note"), event)
+    }
+
+  @Test
+  fun `onShareClick opens the share sheet and onShareDismiss closes it`() =
+    runTest {
+      val viewModel = createViewModel()
+      val latest = collectLatest(viewModel)
+
+      viewModel.onShareClick()
+      assertEquals(true, latest().showShareSheet)
+
+      viewModel.onShareDismiss()
+      assertEquals(false, latest().showShareSheet)
+    }
+
+  @Test
+  fun `onShareFormatSelected closes the share sheet`() =
+    runTest {
+      val viewModel = createViewModel()
+      val latest = collectLatest(viewModel)
+      viewModel.onShareClick()
+
+      viewModel.onShareFormatSelected(NoteShareFormat.PLAIN_TEXT)
+
+      assertEquals(false, latest().showShareSheet)
+    }
+
+  @Test
+  fun `onShareFormatSelected plain text emits the raw text as text plain`() =
+    runTest {
+      coEvery { noteRepository.getById(key) } returns note(summary = "Buy milk\nand eggs")
+      val viewModel = createViewModel()
+
+      viewModel.onShareFormatSelected(NoteShareFormat.PLAIN_TEXT)
+
+      val expected = NoteShareText(subject = "Buy milk", text = "Buy milk\nand eggs", mimeType = "text/plain")
+      assertEquals(PreviewNoteViewModel.ViewModelEvent.ShareText(expected), viewModel.event.value?.peekContent())
+    }
+
+  @Test
+  fun `onShareFormatSelected markdown emits markdown as text plain`() =
+    runTest {
+      val n = NoteWithImages(
+        note = Note(
+          key = key,
+          content = NoteDocument(text = "Title", spans = listOf(NoteTextSpan(0, 5, NoteSpanAttribute.Heading1))),
+          syncState = SyncState.Synced,
+        ),
+      )
+      coEvery { noteRepository.getById(key) } returns n
+      val viewModel = createViewModel()
+
+      viewModel.onShareFormatSelected(NoteShareFormat.MARKDOWN)
+
+      val expected = NoteShareText(subject = "Title", text = "# Title", mimeType = "text/plain")
+      assertEquals(PreviewNoteViewModel.ViewModelEvent.ShareText(expected), viewModel.event.value?.peekContent())
+    }
+
+  @Test
+  fun `onShareFormatSelected html emits an html document as text html`() =
+    runTest {
+      coEvery { noteRepository.getById(key) } returns note(summary = "Buy milk")
+      val viewModel = createViewModel()
+
+      viewModel.onShareFormatSelected(NoteShareFormat.HTML)
+
+      val shared = (viewModel.event.value?.peekContent() as PreviewNoteViewModel.ViewModelEvent.ShareText).content
+      assertEquals("text/html", shared.mimeType)
+      assertEquals("Buy milk", shared.subject)
+      assertEquals(true, shared.text.contains("<title>Buy milk</title>"))
+      assertEquals(true, shared.text.contains("<p>Buy milk</p>"))
+    }
+
+  @Test
+  fun `onShareFormatSelected text format does nothing when the note is not found`() =
+    runTest {
+      coEvery { noteRepository.getById(key) } returns null
+      val viewModel = createViewModel()
+
+      viewModel.onShareFormatSelected(NoteShareFormat.MARKDOWN)
+
+      assertNull(viewModel.event.value?.peekContent())
     }
 
   @Test

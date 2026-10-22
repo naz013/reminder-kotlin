@@ -21,4 +21,5 @@ internal data class PreviewNoteState(
   val background: Color = Color.Transparent,
   val content: Color = Color.Unspecified,
   val history: NoteHistoryState? = null,
+  val showShareSheet: Boolean = false,
 )
