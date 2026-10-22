@@ -52,6 +52,8 @@ Remote Config.
 ### Notes
 Rich text with images and per-note font, color, tags, archive, search and tag filtering, and iCalendar export.
 Dropping text, text files and PDFs into the editor is supported ([drag-and-drop-notes.md](drag-and-drop-notes.md)).
+Each note keeps a local version history that can be browsed and restored from the preview screen
+([note-version-history.md](note-version-history.md)).
 
 ### Birthdays
 Tracked independently of the system calendar, with tags and a tag filter, a dedicated action screen when the
