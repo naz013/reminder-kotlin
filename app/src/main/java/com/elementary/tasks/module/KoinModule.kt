@@ -45,6 +45,7 @@ import com.elementary.tasks.module.uicommon.ThemePreferencesImpl
 import com.elementary.tasks.module.uimap.MapPreferencesImpl
 import com.elementary.tasks.pomodoro.PomodoroForegroundNotifierImpl
 import com.elementary.tasks.pomodoro.PomodoroPreferencesImpl
+import com.elementary.tasks.routine.RoutineRunForegroundNotifierImpl
 import com.github.naz013.analytics.AnalyticsStateProvider
 import com.github.naz013.analytics.initializeAnalytics
 import com.github.naz013.appwidgets.AppWidgetPreferences
@@ -54,6 +55,7 @@ import com.github.naz013.datecalc.DateTimePreferences
 import com.github.naz013.feature.googletask.GoogleTasksPreferences
 import com.github.naz013.feature.pomodoro.PomodoroForegroundNotifier
 import com.github.naz013.feature.pomodoro.PomodoroPreferences
+import com.github.naz013.feature.routine.run.RoutineRunForegroundNotifier
 import com.github.naz013.feature.settings.NoteSettingsPreferences
 import com.github.naz013.feature.settings.SettingsHubDoNotDisturbChecker
 import com.github.naz013.feature.settings.SettingsHubRemoteMessages
@@ -144,6 +146,9 @@ val libModule = module {
   // pomodoro
   factory { PomodoroPreferencesImpl(get()) as PomodoroPreferences }
   factory { PomodoroForegroundNotifierImpl(get()) as PomodoroForegroundNotifier }
+
+  // routine runner
+  factory<RoutineRunForegroundNotifier> { RoutineRunForegroundNotifierImpl(get()) }
 
   // logic notification action
   factory { NotificationGatewayImpl(get()) as NotificationGateway }

@@ -1291,4 +1291,6 @@
     <string name="reminders_archived_count">%1$d připomínek přesunuto do archivu</string>
     <string name="agenda_items_deleted_count">%1$d položek smazáno</string>
     <string name="reset_steps_confirmation">Resetovat všechny kroky jako nesplněné?</string>
+    <string name="routine_run_channel_name">Spuštěná rutina</string>
+    <string name="routine_run_channel_description">Zobrazuje spuštěnou rutinu a její aktuální krok</string>
 </resources>

@@ -1285,4 +1285,6 @@
     <string name="reminders_archived_count">%1$d напомняния са преместени в архива</string>
     <string name="agenda_items_deleted_count">%1$d елемента са изтрити</string>
     <string name="reset_steps_confirmation">Да се нулират ли всички стъпки като неизпълнени?</string>
+    <string name="routine_run_channel_name">Изпълнение на рутина</string>
+    <string name="routine_run_channel_description">Показва текущата рутина и нейната текуща стъпка</string>
 </resources>

@@ -245,6 +245,16 @@
         </service>
 
         <service
+            android:name=".routine.RoutineRunService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="routine_focus_runner" />
+        </service>
+
+        <service
             android:name=".qstile.QuickAddTileService"
             android:exported="true"
             android:icon="@drawable/add_reminder_shortcut"

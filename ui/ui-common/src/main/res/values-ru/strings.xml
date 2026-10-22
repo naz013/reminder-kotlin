@@ -1290,4 +1290,6 @@
     <string name="reminders_archived_count">Напоминаний перемещено в архив: %1$d</string>
     <string name="agenda_items_deleted_count">Удалено элементов: %1$d</string>
     <string name="reset_steps_confirmation">Сбросить все шаги как невыполненные?</string>
+    <string name="routine_run_channel_name">Выполнение рутины</string>
+    <string name="routine_run_channel_description">Показывает выполняемую рутину и её текущий шаг</string>
 </resources>

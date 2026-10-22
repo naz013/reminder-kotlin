@@ -1278,4 +1278,6 @@
     <string name="reminders_archived_count">알림 %1$d개가 보관함으로 이동되었습니다</string>
     <string name="agenda_items_deleted_count">항목 %1$d개가 삭제되었습니다</string>
     <string name="reset_steps_confirmation">모든 단계를 미완료로 초기화할까요?</string>
+    <string name="routine_run_channel_name">루틴 실행기</string>
+    <string name="routine_run_channel_description">실행 중인 루틴과 현재 단계를 표시합니다</string>
 </resources>

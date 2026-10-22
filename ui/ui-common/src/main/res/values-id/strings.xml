@@ -1280,4 +1280,6 @@
     <string name="reminders_archived_count">%1$d pengingat dipindahkan ke arsip</string>
     <string name="agenda_items_deleted_count">%1$d item dihapus</string>
     <string name="reset_steps_confirmation">Setel ulang semua langkah menjadi belum selesai?</string>
+    <string name="routine_run_channel_name">Penjalan rutinitas</string>
+    <string name="routine_run_channel_description">Menampilkan rutinitas yang berjalan dan langkahnya saat ini</string>
 </resources>

@@ -62,7 +62,7 @@ and a tag details screen. See [tags.md](tags.md).
 ### Habits, Routines and Pomodoro
 - **Habits:** one-tap daily check-ins with streaks.
 - **Routines:** ordered, time-boxed steps run in a guided focus timer, on demand or on a daily, weekly or
-  monthly schedule. See [routines.md](routines.md).
+  monthly schedule. A running routine keeps going in the background with a progress notification (Pause/Skip/Stop). See [routines.md](routines.md).
 - **Pomodoro:** work/break timer with a foreground notification; focus time feeds Insights.
 
 ### Workflow rules

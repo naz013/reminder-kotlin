@@ -1288,4 +1288,6 @@
     <string name="reminders_archived_count">%1$d lembretes movidos para o arquivo</string>
     <string name="agenda_items_deleted_count">%1$d itens excluídos</string>
     <string name="reset_steps_confirmation">Redefinir todas as etapas como não concluídas?</string>
+    <string name="routine_run_channel_name">Execução de rotina</string>
+    <string name="routine_run_channel_description">Mostra a rotina em andamento e a etapa atual</string>
 </resources>

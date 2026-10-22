@@ -1288,4 +1288,6 @@
     <string name="reminders_archived_count">%1$d promemoria spostati nell\'archivio</string>
     <string name="agenda_items_deleted_count">%1$d elementi eliminati</string>
     <string name="reset_steps_confirmation">Reimpostare tutti i passaggi come non completati?</string>
+    <string name="routine_run_channel_name">Esecuzione routine</string>
+    <string name="routine_run_channel_description">Mostra la routine in corso e il suo passaggio attuale</string>
 </resources>

@@ -1283,4 +1283,6 @@
     <string name="reminders_archived_count">%1$d påminnelser flyttades till arkivet</string>
     <string name="agenda_items_deleted_count">%1$d objekt raderades</string>
     <string name="reset_steps_confirmation">Återställa alla steg till ej slutförda?</string>
+    <string name="routine_run_channel_name">Rutinkörning</string>
+    <string name="routine_run_channel_description">Visar den pågående rutinen och dess aktuella steg</string>
 </resources>

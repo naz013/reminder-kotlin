@@ -1283,4 +1283,6 @@
     <string name="reminders_archived_count">%1$d påminnelser flyttet til arkivet</string>
     <string name="agenda_items_deleted_count">%1$d elementer slettet</string>
     <string name="reset_steps_confirmation">Tilbakestille alle trinn til ikke utført?</string>
+    <string name="routine_run_channel_name">Rutinekjører</string>
+    <string name="routine_run_channel_description">Viser den kjørende rutinen og det gjeldende trinnet</string>
 </resources>

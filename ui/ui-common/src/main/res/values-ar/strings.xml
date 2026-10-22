@@ -1295,4 +1295,6 @@
     <string name="reminders_archived_count">تم نقل %1$d تذكيرات إلى الأرشيف</string>
     <string name="agenda_items_deleted_count">تم حذف %1$d عناصر</string>
     <string name="reset_steps_confirmation">هل تريد إعادة تعيين جميع الخطوات إلى غير مكتملة؟</string>
+    <string name="routine_run_channel_name">مشغّل الروتين</string>
+    <string name="routine_run_channel_description">يعرض الروتين الجاري وخطوته الحالية</string>
 </resources>

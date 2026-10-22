@@ -1288,4 +1288,6 @@
     <string name="reminders_archived_count">%1$d mementouri mutate în arhivă</string>
     <string name="agenda_items_deleted_count">%1$d elemente șterse</string>
     <string name="reset_steps_confirmation">Resetezi toți pașii ca neefectuați?</string>
+    <string name="routine_run_channel_name">Rulare rutină</string>
+    <string name="routine_run_channel_description">Afișează rutina în curs și pasul ei curent</string>
 </resources>

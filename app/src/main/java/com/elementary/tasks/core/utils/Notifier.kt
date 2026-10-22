@@ -66,6 +66,7 @@ class Notifier(
       createNotificationChannel(createNoteChannel())
       createNotificationChannel(createCalendarEventChannel())
       createNotificationChannel(createFocusTimerChannel())
+      createNotificationChannel(createRoutineRunChannel())
     }
   }
 
@@ -207,6 +208,18 @@ class Notifier(
     val description = context.getString(R.string.channel_for_focus_timer_notifications)
     val importance = NotificationManager.IMPORTANCE_LOW
     val channel = NotificationChannel(CHANNEL_FOCUS_TIMER, name, importance)
+    channel.description = description
+    channel.enableVibration(false)
+    channel.setSound(null, null)
+    channel.setShowBadge(false)
+    channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+    return channel
+  }
+
+  private fun createRoutineRunChannel(): NotificationChannel {
+    val name = context.getString(R.string.routine_run_channel_name)
+    val description = context.getString(R.string.routine_run_channel_description)
+    val channel = NotificationChannel(CHANNEL_ROUTINE_RUN, name, NotificationManager.IMPORTANCE_LOW)
     channel.description = description
     channel.enableVibration(false)
     channel.setSound(null, null)
@@ -453,5 +466,6 @@ class Notifier(
     const val CHANNEL_SYSTEM = "reminder.channel.system"
     const val CHANNEL_CALENDAR_EVENT = "reminder.channel.calendar_event"
     const val CHANNEL_FOCUS_TIMER = "reminder.channel.focus_timer"
+    const val CHANNEL_ROUTINE_RUN = "reminder.channel.routine_run"
   }
 }

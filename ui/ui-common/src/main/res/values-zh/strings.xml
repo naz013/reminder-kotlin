@@ -1278,4 +1278,6 @@
     <string name="reminders_archived_count">%1$d 个提醒已移至归档</string>
     <string name="agenda_items_deleted_count">已删除 %1$d 项</string>
     <string name="reset_steps_confirmation">将所有步骤重置为未完成？</string>
+    <string name="routine_run_channel_name">例行任务运行器</string>
+    <string name="routine_run_channel_description">显示正在运行的例行任务及其当前步骤</string>
 </resources>

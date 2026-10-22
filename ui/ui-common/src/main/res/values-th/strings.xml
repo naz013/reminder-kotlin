@@ -1276,4 +1276,6 @@
     <string name="reminders_archived_count">ย้ายการเตือน %1$d รายการไปยังที่เก็บถาวรแล้ว</string>
     <string name="agenda_items_deleted_count">ลบ %1$d รายการแล้ว</string>
     <string name="reset_steps_confirmation">รีเซ็ตทุกขั้นตอนเป็นยังไม่เสร็จหรือไม่?</string>
+    <string name="routine_run_channel_name">ตัวรันกิจวัตร</string>
+    <string name="routine_run_channel_description">แสดงกิจวัตรที่กำลังทำงานและขั้นตอนปัจจุบัน</string>
 </resources>

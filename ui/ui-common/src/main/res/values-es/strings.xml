@@ -1288,4 +1288,6 @@
     <string name="reminders_archived_count">%1$d recordatorios movidos al archivo</string>
     <string name="agenda_items_deleted_count">%1$d elementos eliminados</string>
     <string name="reset_steps_confirmation">¿Restablecer todos los pasos como no completados?</string>
+    <string name="routine_run_channel_name">Ejecución de rutina</string>
+    <string name="routine_run_channel_description">Muestra la rutina en curso y su paso actual</string>
 </resources>

@@ -1278,4 +1278,6 @@
     <string name="reminders_archived_count">%1$d 件のリマインダーをアーカイブに移動しました</string>
     <string name="agenda_items_deleted_count">%1$d 件の項目を削除しました</string>
     <string name="reset_steps_confirmation">すべてのステップを未完了にリセットしますか？</string>
+    <string name="routine_run_channel_name">ルーティン実行</string>
+    <string name="routine_run_channel_description">実行中のルーティンと現在のステップを表示します</string>
 </resources>

@@ -199,6 +199,31 @@ Routine" FAB on the preview screen.
   decision first, to avoid a leaked real-delay coroutine per test). No celebration-dialog animation on finish
   (plain summary only). Not exercised on a device/emulator - compile + unit test + detekt verified only.
 
+### 4.2.1 Run engine and background service
+The run logic no longer lives in the view model. `RoutineRunEngine` (public interface, `RoutineRunEngineImpl`
+internal, Koin `single` in `feature-routine`) owns the ticker, deadline math, pause/resume, +1 min,
+skip/complete/previous, auto-advance, completed-step tracking, tone/haptics gating and recording. It holds a
+single active run and exposes `state: StateFlow<RoutineRunState>` (`Idle`/`Loading`/`NotFound`/`Running`/
+`Finished`) plus a `stepTransitions` flow for haptics. `RoutineExecutionViewModel` only maps that state to
+`RoutineExecutionState` and forwards clicks.
+
+- **Lifecycle**: the view model calls `start(id)` on creation (no-op if that routine is already running, a
+  different active run is stopped and recorded silently first). Back press and `onCleared` call `stop()`,
+  which records silently if mid-run and returns the engine to `Idle`. Finishing sets `Finished` and records
+  once. Leaving or locking the app does not end the run.
+- **Foreground service**: `RoutineRunService` (app, `specialUse` foreground service) is started through the
+  `RoutineRunForegroundNotifier` seam once the routine has loaded, observes the engine state and shows an
+  ongoing low-priority notification on `Notifier.CHANNEL_ROUTINE_RUN`: title is the routine, text the step
+  title, sub text "Step N of M". A running timed step uses the system countdown chronometer; paused or
+  untimed steps show static text. Actions: Pause/Resume (timed steps only), Skip, Stop, delivered to the
+  engine as service `PendingIntent`s. Tapping opens the app (launch intent; there is no routine deep link).
+  On API 36+ the notification is a promoted ongoing live update with a `ProgressStyle` segment per step,
+  progress = completed steps. The service stops itself when the state is no longer `Running`.
+- **Planner**: `RoutineRunNotificationPlanner` (pure) builds the plan and a snapshot; `shouldRepost` only
+  re-posts on step/pause/total changes or an end-time shift (+1 min), never per tick.
+- **Known gaps**: not verified on a device; the Stop-state `Finished` summary is only shown if the screen is
+  open (the notification just disappears); no deep link straight to the run screen.
+
 ### 4.3 Full recurrence support
 The editor's repeat control is a 4-way picker - Never/Daily/Weekly/Monthly - instead of the original single
 "repeats daily" switch, with a 7-day chip row for Weekly and a day-of-month stepper (capped 1-28, sidestepping

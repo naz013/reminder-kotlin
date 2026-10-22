@@ -1283,4 +1283,6 @@
     <string name="reminders_archived_count">%1$d herinneringen naar archief verplaatst</string>
     <string name="agenda_items_deleted_count">%1$d items verwijderd</string>
     <string name="reset_steps_confirmation">Alle stappen terugzetten naar niet voltooid?</string>
+    <string name="routine_run_channel_name">Routine-uitvoering</string>
+    <string name="routine_run_channel_description">Toont de actieve routine en de huidige stap</string>
 </resources>
