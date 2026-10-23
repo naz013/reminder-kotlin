@@ -11,6 +11,8 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
@@ -43,6 +45,7 @@ class RemindersArchiveViewModel(
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val deleteAllReminderUseCase: DeleteAllReminderUseCase,
   private val activateReminderUseCase: ActivateReminderUseCase,
+  val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(RemindersArchiveScreenState())
@@ -65,6 +68,9 @@ class RemindersArchiveViewModel(
           reminderV2Repository.observeByRemovedStatus(removed = true).map { it to query }
         }
         .combine(undoDelete.pendingIds) { (reminders, query), pendingIds ->
+          reminders.filterNot { it.uuId in pendingIds } to query
+        }
+        .combine(pendingDeleteCoordinator.pendingIds(PendingEntity.REMINDER)) { (reminders, query), pendingIds ->
           reminders.filterNot { it.uuId in pendingIds } to query
         }
         .collect { (reminders, query) -> applyReminders(reminders, query) }

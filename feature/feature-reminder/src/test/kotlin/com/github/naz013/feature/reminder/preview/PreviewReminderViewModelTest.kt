@@ -45,9 +45,15 @@ import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
 import io.mockk.coVerify
 import com.github.naz013.ui.common.R
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkStatic
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -95,9 +101,14 @@ class PreviewReminderViewModelTest : BaseTest() {
   private val workflowConfig = mockk<WorkflowConfig>(relaxed = true)
   private val pomodoroSessionRepository = mockk<PomodoroSessionRepository>(relaxed = true)
 
+  private val pendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
+
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.REMINDER) } returns pendingIds
+    every { textProvider.getText(R.string.reminder_deleted) } returns "Reminder deleted"
     every { googleDriveAuthManager.isAuthorized() } returns false
     every { dropboxAuthManager.isAuthorized() } returns false
     every { tagAssignmentRepository.observeTagsForItem(any(), any()) } returns flowOf(emptyList())
@@ -188,6 +199,7 @@ class PreviewReminderViewModelTest : BaseTest() {
       dropboxAuthManager = dropboxAuthManager,
       workflowConfig = workflowConfig,
       pomodoroSessionRepository = pomodoroSessionRepository,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
 
   @Test
@@ -576,21 +588,65 @@ class PreviewReminderViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onDeleteConfirmed hard-deletes when canDelete is true`() =
+  fun `onDeleteClick on an archived reminder marks it pending without a dialog or delete`() =
     runTest {
-      coEvery { reminderV2Repository.getById("42") } returns reminderV2(isRemoved = true)
       val removedReminder = reminderV2(isRemoved = true)
       coEvery { reminderV2Repository.getById("42") } returns removedReminder
-      val viewModel = createViewModel()
-      viewModel.state.first()
+      val viewModel = loadedViewModel()
 
-      viewModel.onDeleteConfirmed()
+      viewModel.onDeleteClick()
+
+      verify(exactly = 1) {
+        pendingDeleteCoordinator.markPending(PendingEntity.REMINDER, "42", "Reminder deleted", any())
+      }
+      coVerify(exactly = 0) { deleteReminderUseCase(any()) }
+      coVerify(exactly = 0) { moveReminderToArchiveUseCase(any()) }
+      assertFalse(viewModel.state.first().showDeleteConfirm)
+      val event = viewModel.event.value?.peekContent()
+      assertEquals(PreviewReminderViewModel.ViewModelEvent.Deleted("42"), event)
+    }
+
+  @Test
+  fun `committing the pending reminder delete deletes it exactly once`() =
+    runTest {
+      val removedReminder = reminderV2(isRemoved = true)
+      coEvery { reminderV2Repository.getById("42") } returns removedReminder
+      val onCommit = slot<suspend () -> Unit>()
+      every { pendingDeleteCoordinator.markPending(any(), any(), any(), capture(onCommit)) } just runs
+      val viewModel = loadedViewModel()
+      viewModel.onDeleteClick()
+
+      onCommit.captured.invoke()
 
       coVerify(exactly = 1) { deleteReminderUseCase(removedReminder) }
-      coVerify(exactly = 0) { moveReminderToArchiveUseCase(any()) }
-      val event = viewModel.event.value?.peekContent()
-      assertEquals(PreviewReminderViewModel.ViewModelEvent.MoveBack, event)
     }
+
+  @Test
+  fun `onDeleteClick on an archived reminder does nothing when already pending`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("42") } returns reminderV2(isRemoved = true)
+      val viewModel = loadedViewModel()
+      pendingIds.value = setOf("42")
+
+      viewModel.onDeleteClick()
+
+      verify(exactly = 0) { pendingDeleteCoordinator.markPending(any(), any(), any(), any()) }
+    }
+
+  @Test
+  fun `does not load a reminder that is pending delete`() =
+    runTest {
+      pendingIds.value = setOf("42")
+      val viewModel = createViewModel()
+
+      assertEquals("", viewModel.state.first().summary)
+    }
+
+  private suspend fun loadedViewModel(): PreviewReminderViewModel {
+    val viewModel = createViewModel()
+    viewModel.state.first()
+    return viewModel
+  }
 
   @Test
   fun `onDeleteConfirmed moves to archive when canDelete is false`() =

@@ -11,11 +11,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.PendingDeleteHost
 import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import org.koin.compose.viewmodel.koinViewModel
@@ -52,6 +54,11 @@ private fun ListEntry(
   val toastDispatcher = rememberToastDispatcher()
   val snackbarHostState = remember { SnackbarHostState() }
   UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
+  PendingDeleteHost(
+    coordinator = viewModel.pendingDeleteCoordinator,
+    type = PendingEntity.REMINDER,
+    snackbarHostState = snackbarHostState,
+  )
 
   viewModel.event.ObserveEvent { event ->
     when (event) {

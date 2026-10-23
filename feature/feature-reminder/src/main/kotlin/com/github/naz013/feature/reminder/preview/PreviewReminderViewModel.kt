@@ -28,6 +28,8 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.cloudapi.dropbox.DropboxAuthManager
@@ -92,6 +94,7 @@ internal class PreviewReminderViewModel(
   private val dropboxAuthManager: DropboxAuthManager,
   private val workflowConfig: WorkflowConfig,
   private val pomodoroSessionRepository: PomodoroSessionRepository,
+  private val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewReminderState())
@@ -282,7 +285,11 @@ internal class PreviewReminderViewModel(
   }
 
   fun onDeleteClick() {
-    _state.update { it.copy(showDeleteConfirm = true) }
+    if (_state.value.canDelete) {
+      deleteReminder()
+    } else {
+      _state.update { it.copy(showDeleteConfirm = true) }
+    }
   }
 
   fun onDeleteDismiss() {
@@ -290,13 +297,8 @@ internal class PreviewReminderViewModel(
   }
 
   fun onDeleteConfirmed() {
-    val canDelete = _state.value.canDelete
     _state.update { it.copy(showDeleteConfirm = false) }
-    if (canDelete) {
-      deleteReminder()
-    } else {
-      moveToTrash()
-    }
+    moveToTrash()
   }
 
   fun shareReminder() {
@@ -316,15 +318,19 @@ internal class PreviewReminderViewModel(
   }
 
   private fun deleteReminder() {
+    if (id in pendingDeleteCoordinator.pendingIds(PendingEntity.REMINDER).value) return
     Logger.i(TAG, "Deleting reminder, id: $id")
-    viewModelScope.launch(dispatcherProvider.io()) {
-      reminderV2Repository.getById(id)?.also { reminder ->
-        deleteReminderUseCase(reminder)
-        withContext(dispatcherProvider.main()) {
-          event.emit(ViewModelEvent.MoveBack)
-        }
-      }
+    pendingDeleteCoordinator.markPending(
+      type = PendingEntity.REMINDER,
+      id = id,
+      message = textProvider.getText(R.string.reminder_deleted),
+    ) {
+      reminderV2Repository.getById(id)?.also {
+        deleteReminderUseCase(it)
+        Logger.i(TAG, "Deleted reminder: $id")
+      } ?: Logger.e(TAG, "Cannot delete reminder with id = $id. Not found.")
     }
+    event.emit(ViewModelEvent.Deleted(id))
   }
 
   private fun moveToTrash() {
@@ -355,6 +361,7 @@ internal class PreviewReminderViewModel(
       val reminder = withContext(dispatcherProvider.io()) {
         reminderV2Repository.getById(id)
       } ?: return@launch
+      if (id in pendingDeleteCoordinator.pendingIds(PendingEntity.REMINDER).value) return@launch
       val reminderGroup = withContext(dispatcherProvider.io()) {
         reminder.groupId?.let { groupV2Repository.getById(it) }
       }
@@ -514,6 +521,8 @@ internal class PreviewReminderViewModel(
 
   sealed interface ViewModelEvent {
     data object MoveBack : ViewModelEvent
+
+    data class Deleted(val id: String) : ViewModelEvent
 
     data class ShowError(
       val message: String

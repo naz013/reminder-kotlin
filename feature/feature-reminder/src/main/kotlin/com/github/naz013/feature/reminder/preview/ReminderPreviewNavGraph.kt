@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.navigation.popDeleted
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.navigation.sidePanelSupporting
 import com.github.naz013.ui.common.livedata.ObserveEvent
@@ -96,6 +97,10 @@ private fun PreviewEntry(
     when (event) {
       PreviewReminderViewModel.ViewModelEvent.MoveBack -> {
         if (backStack.size > 1) backStack.removeLastOrNull()
+      }
+
+      is PreviewReminderViewModel.ViewModelEvent.Deleted -> {
+        backStack.popDeleted { it is ReminderPreviewNavKey.Preview && it.id == event.id }
       }
 
       is PreviewReminderViewModel.ViewModelEvent.ShowError -> {

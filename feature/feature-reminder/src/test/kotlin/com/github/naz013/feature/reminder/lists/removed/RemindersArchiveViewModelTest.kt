@@ -19,9 +19,12 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoEvent
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -37,12 +40,15 @@ class RemindersArchiveViewModelTest : BaseTest() {
   private val deleteAllReminderUseCase = mockk<DeleteAllReminderUseCase>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val activateReminderUseCase = mockk<ActivateReminderUseCase>(relaxed = true)
+  private val coordinatorPendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   private lateinit var viewModel: RemindersArchiveViewModel
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.REMINDER) } returns coordinatorPendingIds
     every { reminderV2Repository.observeByRemovedStatus(removed = true) } returns flowOf(emptyList())
     coEvery { groupV2Repository.getAll() } returns emptyList()
     every { uiReminderListAdapter.createV2(any(), any()) } answers { uiReminderList(firstArg<ReminderV2>().uuId) }
@@ -60,6 +66,7 @@ class RemindersArchiveViewModelTest : BaseTest() {
       deleteReminderUseCase = deleteReminderUseCase,
       deleteAllReminderUseCase = deleteAllReminderUseCase,
       activateReminderUseCase = activateReminderUseCase,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
 
   private fun reminderV2(
@@ -97,6 +104,20 @@ class RemindersArchiveViewModelTest : BaseTest() {
       assertEquals(reminders, state.filteredReminders)
       assertTrue(state.listState is ListState.Ready)
       assertEquals(2, (state.listState as ListState.Ready).items.size)
+    }
+
+  @Test
+  fun `excludes archived reminders pending delete in the coordinator`() =
+    runTest {
+      val kept = reminderV2("1")
+      val pending = reminderV2("2")
+      every { reminderV2Repository.observeByRemovedStatus(removed = true) } returns flowOf(listOf(kept, pending))
+      coordinatorPendingIds.value = setOf("2")
+      val vm = createViewModel()
+
+      val ready = vm.state.first().listState as ListState.Ready
+
+      assertEquals(listOf("1"), ready.items.map { it.id })
     }
 
   @Test
