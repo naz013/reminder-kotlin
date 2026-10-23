@@ -14,12 +14,12 @@ delete-all and cascading deletes. The helper below works with or without a prior
 
 ## Usage in a list screen
 
-1. ViewModel: `val undoDelete = UndoDeleteController(viewModelScope, dispatcherProvider.default())`.
+1. ViewModel: `val undoDelete = UndoDeleteController(viewModelScope, dispatcherProvider.io())`.
 2. Combine `undoDelete.pendingIds` into the list flow and filter those ids out.
 3. On delete/archive (after the confirm, if one is required) call `undoDelete.markPending(...)` with the
    real repository work in `onCommit`.
 4. `override fun onCleared() { undoDelete.commitAllDetached(dispatcherProvider.io()) }`.
 5. Screen: `UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)`.
 
-Migration of Agenda/Notes/Birthdays/Reminders archive and the rest of these docs: see the unified
-delete-undo Trello series.
+Migrated screens: Agenda, Birthdays, Reminders archive, Notes (list and archive each own a controller
+and a `SnackbarHostState`). Remaining screens and docs: see the unified delete-undo Trello series.

@@ -740,7 +740,6 @@
 
     <string name="turn_off">Ausschalten</string>
 
-    <string name="delete_note_permanently">Notiz dauerhaft löschen?</string>
     <string name="delete_group_permanently">Gruppe dauerhaft löschen?</string>
 
     <string name="share_send_note">Notiz senden…</string>
@@ -919,7 +918,6 @@
     <string name="smart_lists">Intelligente Listen</string>
     <string name="note_selected_count_one">%1$d Notiz ausgewählt</string>
     <string name="note_selected_count_other">%1$d Notizen ausgewählt</string>
-    <string name="notes_delete_selected_permanently">%1$d Notizen dauerhaft löschen?</string>
     <string name="home">Start</string>
     <string name="expand_navigation">Navigation erweitern</string>
     <string name="collapse_navigation">Navigation einklappen</string>

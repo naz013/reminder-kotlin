@@ -740,7 +740,6 @@
 
     <string name="turn_off">Vypnout</string>
 
-    <string name="delete_note_permanently">Smazat poznámku trvale?</string>
     <string name="delete_group_permanently">Smazat skupinu trvale?</string>
 
     <string name="share_send_note">Odeslat poznámku…</string>
@@ -919,7 +918,6 @@
     <string name="smart_lists">Chytré seznamy</string>
     <string name="note_selected_count_one">Vybrána %1$d poznámka</string>
     <string name="note_selected_count_other">Vybráno %1$d poznámek</string>
-    <string name="notes_delete_selected_permanently">Trvale smazat %1$d poznámek?</string>
     <string name="home">Domů</string>
     <string name="expand_navigation">Rozbalit navigaci</string>
     <string name="collapse_navigation">Sbalit navigaci</string>

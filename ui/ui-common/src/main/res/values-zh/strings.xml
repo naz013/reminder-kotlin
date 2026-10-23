@@ -740,7 +740,6 @@
 
     <string name="turn_off">关闭</string>
 
-    <string name="delete_note_permanently">永久删除备注?</string>
     <string name="delete_group_permanently">永久删除群组?</string>
 
     <string name="share_send_note">发送备注…</string>
@@ -919,7 +918,6 @@
     <string name="smart_lists">智能列表</string>
     <string name="note_selected_count_one">已选择 %1$d 篇笔记</string>
     <string name="note_selected_count_other">已选择 %1$d 篇笔记</string>
-    <string name="notes_delete_selected_permanently">永久删除 %1$d 篇笔记?</string>
     <string name="home">首页</string>
     <string name="expand_navigation">展开导航</string>
     <string name="collapse_navigation">收起导航</string>

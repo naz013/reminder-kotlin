@@ -42,9 +42,8 @@ import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.ToastDispatcher
-import com.github.naz013.ui.common.compose.foundation.snackbar.UndoSnackbarDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
-import com.github.naz013.ui.common.compose.foundation.snackbar.rememberUndoSnackbarDispatcher
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.permission.PermissionRequester
@@ -77,8 +76,6 @@ private class NotesNavHandlers(
   val backStack: MutableList<NavKey>,
   val dialogDispatcher: DialogDispatcher,
   val toastDispatcher: ToastDispatcher,
-  val undoSnackbarDispatcher: UndoSnackbarDispatcher,
-  val undoActionLabel: String,
   val noteIntentSender: NoteIntentSender,
   val permissionRequester: PermissionRequester,
   val onOpenNoteSettings: (String) -> Unit,
@@ -122,39 +119,12 @@ private fun handleNotesNavigationEvent(
       )
     }
 
-    is NotesViewModel.NavigationEvent.ConfirmDelete -> {
-      handlers.dialogDispatcher.showDialog(
-        titleRes = R.string.delete_note_permanently,
-        positiveButtonRes = R.string.yes,
-        negativeButtonRes = R.string.cancel,
-        onPositive = { handlers.viewModel.deleteNote(event.id) }
-      )
-    }
-
-    is NotesViewModel.NavigationEvent.ConfirmDeleteSelected -> {
-      handlers.dialogDispatcher.showDialog(
-        title = event.title,
-        positiveButtonRes = R.string.yes,
-        negativeButtonRes = R.string.cancel,
-        onPositive = { handlers.viewModel.deleteSelectedNotes(event.ids) }
-      )
-    }
-
     is NotesViewModel.NavigationEvent.ConfirmMergeSelected -> {
       handlers.dialogDispatcher.showDialog(
         title = event.title,
         positiveButtonRes = R.string.yes,
         negativeButtonRes = R.string.cancel,
         onPositive = { handlers.viewModel.mergeSelectedNotes(event.ids) }
-      )
-    }
-
-    is NotesViewModel.NavigationEvent.ShowUndoDelete -> {
-      handlers.undoSnackbarDispatcher.showUndoSnackbar(
-        message = event.message,
-        actionLabel = handlers.undoActionLabel,
-        onUndo = { handlers.viewModel.undoDeleteNote(event.batchKey) },
-        onTimeout = { handlers.viewModel.commitDeleteNote(event.batchKey) },
       )
     }
 
@@ -176,7 +146,7 @@ private fun NotesListEntry(
   val dialogDispatcher = rememberDialogDispatcher()
   val toastDispatcher = rememberToastDispatcher()
   val snackbarHostState = remember { SnackbarHostState() }
-  val undoSnackbarDispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
+  UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
   val noteIntentSender = rememberNoteIntentSender(applicationId)
   val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
   val noteColorEngine = koinInject<NoteColorEngine>()
@@ -186,8 +156,6 @@ private fun NotesListEntry(
     backStack = backStack,
     dialogDispatcher = dialogDispatcher,
     toastDispatcher = toastDispatcher,
-    undoSnackbarDispatcher = undoSnackbarDispatcher,
-    undoActionLabel = stringResource(R.string.undo),
     noteIntentSender = noteIntentSender,
     permissionRequester = permissionRequester,
     onOpenNoteSettings = onOpenNoteSettings,
@@ -234,7 +202,7 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>, applicationId: Str
   val dialogDispatcher = rememberDialogDispatcher()
   val toastDispatcher = rememberToastDispatcher()
   val snackbarHostState = remember { SnackbarHostState() }
-  val undoSnackbarDispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
+  UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
   val noteIntentSender = rememberNoteIntentSender(applicationId)
   val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
   val noteColorEngine = koinInject<NoteColorEngine>()
@@ -244,8 +212,6 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>, applicationId: Str
     backStack = backStack,
     dialogDispatcher = dialogDispatcher,
     toastDispatcher = toastDispatcher,
-    undoSnackbarDispatcher = undoSnackbarDispatcher,
-    undoActionLabel = stringResource(R.string.undo),
     noteIntentSender = noteIntentSender,
     permissionRequester = permissionRequester,
     onOpenNoteSettings = {},

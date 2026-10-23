@@ -740,7 +740,6 @@
 
     <string name="turn_off">Kapat</string>
 
-    <string name="delete_note_permanently">Notu kalıcı olarak sil?</string>
     <string name="delete_group_permanently">Grubu kalıcı olarak sil?</string>
 
     <string name="share_send_note">Notu gönder…</string>
@@ -919,7 +918,6 @@
     <string name="smart_lists">Akıllı Listeler</string>
     <string name="note_selected_count_one">%1$d not seçildi</string>
     <string name="note_selected_count_other">%1$d not seçildi</string>
-    <string name="notes_delete_selected_permanently">%1$d not kalıcı olarak silinsin mi?</string>
     <string name="home">Ana Sayfa</string>
     <string name="expand_navigation">Gezinmeyi genişlet</string>
     <string name="collapse_navigation">Gezinmeyi daralt</string>

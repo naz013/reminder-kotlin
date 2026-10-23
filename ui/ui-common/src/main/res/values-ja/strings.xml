@@ -740,7 +740,6 @@
 
     <string name="turn_off">オフにする</string>
 
-    <string name="delete_note_permanently">メモを完全に削除しますか?</string>
     <string name="delete_group_permanently">グループを完全に削除しますか?</string>
 
     <string name="share_send_note">メモを送信…</string>
@@ -919,7 +918,6 @@
     <string name="smart_lists">スマートリスト</string>
     <string name="note_selected_count_one">%1$d件のメモを選択中</string>
     <string name="note_selected_count_other">%1$d件のメモを選択中</string>
-    <string name="notes_delete_selected_permanently">%1$d件のメモを完全に削除しますか?</string>
     <string name="home">ホーム</string>
     <string name="expand_navigation">ナビゲーションを展開</string>
     <string name="collapse_navigation">ナビゲーションを折りたたむ</string>

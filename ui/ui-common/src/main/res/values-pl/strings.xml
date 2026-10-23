@@ -740,7 +740,6 @@
 
     <string name="turn_off">Wyłącz</string>
 
-    <string name="delete_note_permanently">Usunąć notatkę na stałe?</string>
     <string name="delete_group_permanently">Usunąć grupę na stałe?</string>
 
     <string name="share_send_note">Wyślij notatkę…</string>
@@ -919,7 +918,6 @@
     <string name="smart_lists">Inteligentne listy</string>
     <string name="note_selected_count_one">Zaznaczono %1$d notatkę</string>
     <string name="note_selected_count_other">Zaznaczono %1$d notatek</string>
-    <string name="notes_delete_selected_permanently">Usunąć %1$d notatek na stałe?</string>
     <string name="home">Strona główna</string>
     <string name="expand_navigation">Rozwiń nawigację</string>
     <string name="collapse_navigation">Zwiń nawigację</string>

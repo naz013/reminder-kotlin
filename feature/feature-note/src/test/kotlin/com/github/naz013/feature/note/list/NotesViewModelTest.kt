@@ -40,6 +40,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import com.github.naz013.feature.common.viewmodel.UndoEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -373,13 +374,16 @@ class NotesViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onNoteMenuAction DELETE posts ConfirmDelete navigation event`() {
-    val viewModel = createViewModel()
+  fun `onNoteMenuAction DELETE marks the note pending without a confirm event`() =
+    runTest {
+      val viewModel = createViewModel()
 
-    viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.DELETE)
+      viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.DELETE)
 
-    assertEquals(NotesViewModel.NavigationEvent.ConfirmDelete("7"), viewModel.navigationEvent.value?.peekContent())
-  }
+      assertEquals("7", viewModel.undoDelete.undoEvents.first().batchKey)
+      assertEquals(null, viewModel.navigationEvent.value)
+      coVerify(exactly = 0) { deleteNoteUseCase(any()) }
+    }
 
   @Test
   fun `onNoteMenuAction ARCHIVE archives the note, refreshes the list and updates the widget`() =
@@ -396,7 +400,7 @@ class NotesViewModelTest : BaseTest() {
   fun `clearing the view model commits a pending single delete`() =
     runTest {
       val viewModel = createViewModel()
-      viewModel.deleteNote("7")
+      viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.DELETE)
 
       NotesViewModel::class.java.getDeclaredMethod("onCleared").apply { isAccessible = true }.invoke(viewModel)
 
@@ -444,37 +448,37 @@ class NotesViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `deleteNote hides the note immediately without deleting it yet`() =
+  fun `delete menu action hides the note immediately without deleting it yet`() =
     runTest {
       val (viewModel, state) = readyViewModel(listOf("7"))
 
-      viewModel.deleteNote("7")
+      viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.DELETE)
 
       assertEquals(ListState.Empty, state().listState)
       coVerify(exactly = 0) { deleteNoteUseCase(any()) }
     }
 
   @Test
-  fun `deleteNote posts a ShowUndoDelete navigation event keyed by the note id`() =
+  fun `delete menu action posts an undo event keyed by the note id`() =
     runTest {
       every { textProvider.getString(R.string.note_deleted) } returns "Note deleted"
       val viewModel = createViewModel()
 
-      viewModel.deleteNote("7")
+      viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.DELETE)
 
       assertEquals(
-        NotesViewModel.NavigationEvent.ShowUndoDelete(batchKey = "7", message = "Note deleted"),
-        viewModel.navigationEvent.value?.peekContent(),
+        UndoEvent(batchKey = "7", message = "Note deleted", token = 1L),
+        viewModel.undoDelete.undoEvents.first(),
       )
     }
 
   @Test
-  fun `undoDeleteNote cancels the pending delete and the note reappears`() =
+  fun `undo cancels the pending delete and the note reappears`() =
     runTest {
       val (viewModel, state) = readyViewModel(listOf("7"))
-      viewModel.deleteNote("7")
+      viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.DELETE)
 
-      viewModel.undoDeleteNote("7")
+      viewModel.undoDelete.undo("7")
 
       val ready = state().listState as ListState.Ready
       assertEquals(listOf("7"), ready.notes.map { it.id })
@@ -482,37 +486,37 @@ class NotesViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `commitDeleteNote deletes, refreshes and updates the widget when not archived`() =
+  fun `commit deletes, refreshes and updates the widget when not archived`() =
     runTest {
       val viewModel = createViewModel(isArchived = false)
-      viewModel.deleteNote("7")
+      viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.DELETE)
 
-      viewModel.commitDeleteNote("7")
+      viewModel.undoDelete.commit("7")
 
       coVerify(exactly = 1) { deleteNoteUseCase("7") }
       verify(exactly = 1) { appWidgetUpdater.updateNotesWidget() }
     }
 
   @Test
-  fun `commitDeleteNote does not update the widget on the archive screen`() =
+  fun `commit does not update the widget on the archive screen`() =
     runTest {
       val viewModel = createViewModel(isArchived = true)
-      viewModel.deleteNote("7")
+      viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.DELETE)
 
-      viewModel.commitDeleteNote("7")
+      viewModel.undoDelete.commit("7")
 
       coVerify(exactly = 1) { deleteNoteUseCase("7") }
       verify(exactly = 0) { appWidgetUpdater.updateNotesWidget() }
     }
 
   @Test
-  fun `commitDeleteNote does nothing for a batch key that was already undone`() =
+  fun `commit does nothing for a batch key that was already undone`() =
     runTest {
       val viewModel = createViewModel()
-      viewModel.deleteNote("7")
-      viewModel.undoDeleteNote("7")
+      viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.DELETE)
+      viewModel.undoDelete.undo("7")
 
-      viewModel.commitDeleteNote("7")
+      viewModel.undoDelete.commit("7")
 
       coVerify(exactly = 0) { deleteNoteUseCase(any()) }
     }
@@ -720,22 +724,6 @@ class NotesViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onDeleteSelectedClick posts ConfirmDeleteSelected with the selected ids and a formatted title`() =
-    runTest {
-      every { textProvider.getText(R.string.notes_delete_selected_permanently, 2) } returns "Delete 2 notes permanently?"
-      val (viewModel, _) = readyViewModel(listOf("1", "2"))
-      viewModel.onNoteLongClick("1")
-      viewModel.onNoteClick("2")
-
-      viewModel.onDeleteSelectedClick()
-
-      assertEquals(
-        NotesViewModel.NavigationEvent.ConfirmDeleteSelected(setOf("1", "2"), "Delete 2 notes permanently?"),
-        viewModel.navigationEvent.value?.peekContent(),
-      )
-    }
-
-  @Test
   fun `onDeleteSelectedClick does nothing when nothing is selected`() =
     runTest {
       val (viewModel, _) = readyViewModel(listOf("1"))
@@ -746,13 +734,13 @@ class NotesViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `deleteSelectedNotes hides the notes immediately, clears selection, without deleting yet`() =
+  fun `onDeleteSelectedClick hides the notes immediately, clears selection, without deleting yet`() =
     runTest {
       val (viewModel, state) = readyViewModel(listOf("1", "2"), isArchived = false)
       viewModel.onNoteLongClick("1")
       viewModel.onNoteClick("2")
 
-      viewModel.deleteSelectedNotes(setOf("1", "2"))
+      viewModel.onDeleteSelectedClick()
 
       assertEquals(ListState.Empty, state().listState)
       assertEquals(0, state().selectedCount)
@@ -760,30 +748,29 @@ class NotesViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `deleteSelectedNotes posts a ShowUndoDelete navigation event with a formatted message`() =
+  fun `onDeleteSelectedClick posts an undo event with a formatted message`() =
     runTest {
       every { textProvider.getText(R.string.notes_deleted_count, 2) } returns "2 notes deleted"
       val (viewModel, _) = readyViewModel(listOf("1", "2"))
       viewModel.onNoteLongClick("1")
       viewModel.onNoteClick("2")
 
-      viewModel.deleteSelectedNotes(setOf("1", "2"))
+      viewModel.onDeleteSelectedClick()
 
-      val event = viewModel.navigationEvent.value?.peekContent() as NotesViewModel.NavigationEvent.ShowUndoDelete
+      val event = viewModel.undoDelete.undoEvents.first()
       assertEquals("2 notes deleted", event.message)
     }
 
   @Test
-  fun `commitDeleteNote after a bulk delete deletes each note, refreshes and updates the widget`() =
+  fun `commit after a bulk delete deletes each note, refreshes and updates the widget`() =
     runTest {
       val (viewModel, _) = readyViewModel(listOf("1", "2"), isArchived = false)
       viewModel.onNoteLongClick("1")
       viewModel.onNoteClick("2")
-      viewModel.deleteSelectedNotes(setOf("1", "2"))
-      val batchKey =
-        (viewModel.navigationEvent.value?.peekContent() as NotesViewModel.NavigationEvent.ShowUndoDelete).batchKey
+      viewModel.onDeleteSelectedClick()
+      val batchKey = viewModel.undoDelete.undoEvents.first().batchKey
 
-      viewModel.commitDeleteNote(batchKey)
+      viewModel.undoDelete.commit(batchKey)
 
       coVerify(exactly = 1) { deleteNoteUseCase("1") }
       coVerify(exactly = 1) { deleteNoteUseCase("2") }
@@ -791,15 +778,14 @@ class NotesViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `deleteSelectedNotes does not update the widget on the archive screen`() =
+  fun `onDeleteSelectedClick does not update the widget on the archive screen`() =
     runTest {
       val (viewModel, _) = readyViewModel(listOf("1"), isArchived = true)
       viewModel.onNoteLongClick("1")
 
-      viewModel.deleteSelectedNotes(setOf("1"))
-      val batchKey =
-        (viewModel.navigationEvent.value?.peekContent() as NotesViewModel.NavigationEvent.ShowUndoDelete).batchKey
-      viewModel.commitDeleteNote(batchKey)
+      viewModel.onDeleteSelectedClick()
+      val batchKey = viewModel.undoDelete.undoEvents.first().batchKey
+      viewModel.undoDelete.commit(batchKey)
 
       coVerify(exactly = 1) { deleteNoteUseCase("1") }
       verify(exactly = 0) { appWidgetUpdater.updateNotesWidget() }

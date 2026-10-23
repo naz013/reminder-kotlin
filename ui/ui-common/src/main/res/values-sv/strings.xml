@@ -737,7 +737,6 @@
 
     <string name="turn_off">Stäng av</string>
 
-    <string name="delete_note_permanently">Ta bort anteckningen permanent?</string>
     <string name="delete_group_permanently">Ta bort gruppen permanent?</string>
 
     <string name="share_send_note">Skicka anteckning…</string>
@@ -917,7 +916,6 @@
     <string name="smart_lists">Smarta listor</string>
     <string name="note_selected_count_one">%1$d anteckning vald</string>
     <string name="note_selected_count_other">%1$d anteckningar valda</string>
-    <string name="notes_delete_selected_permanently">Ta bort %1$d anteckningar permanent?</string>
     <string name="home">Start</string>
     <string name="expand_navigation">Expandera navigering</string>
     <string name="collapse_navigation">Komprimera navigering</string>

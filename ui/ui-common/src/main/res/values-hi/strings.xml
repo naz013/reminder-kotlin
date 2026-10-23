@@ -740,7 +740,6 @@
 
     <string name="turn_off">बंद करें</string>
 
-    <string name="delete_note_permanently">नोट को स्थायी रूप से हटाएं?</string>
     <string name="delete_group_permanently">समूह को स्थायी रूप से हटाएं?</string>
 
     <string name="share_send_note">नोट भेजें…</string>
@@ -919,7 +918,6 @@
     <string name="smart_lists">स्मार्ट सूचियाँ</string>
     <string name="note_selected_count_one">%1$d नोट चयनित</string>
     <string name="note_selected_count_other">%1$d नोट्स चयनित</string>
-    <string name="notes_delete_selected_permanently">%1$d नोट्स को स्थायी रूप से हटाएं?</string>
     <string name="home">होम</string>
     <string name="expand_navigation">नेविगेशन विस्तृत करें</string>
     <string name="collapse_navigation">नेविगेशन संक्षिप्त करें</string>

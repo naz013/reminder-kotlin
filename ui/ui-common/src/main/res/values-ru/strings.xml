@@ -739,7 +739,6 @@
 
     <string name="turn_off">Выключить</string>
 
-    <string name="delete_note_permanently">Удалить заметку навсегда?</string>
     <string name="delete_group_permanently">Удалить группу навсегда?</string>
 
     <string name="share_send_note">Отправить заметку…</string>
@@ -918,7 +917,6 @@
     <string name="smart_lists">Умные списки</string>
     <string name="note_selected_count_one">Выбрана %1$d заметка</string>
     <string name="note_selected_count_other">Выбрано %1$d заметок</string>
-    <string name="notes_delete_selected_permanently">Удалить %1$d заметок навсегда?</string>
     <string name="home">Главная</string>
     <string name="expand_navigation">Развернуть навигацию</string>
     <string name="collapse_navigation">Свернуть навигацию</string>

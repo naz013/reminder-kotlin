@@ -738,7 +738,6 @@
 
     <string name="turn_off">Turn off</string>
 
-    <string name="delete_note_permanently">Delete note permanently?</string>
     <string name="delete_group_permanently">Delete group permanently?</string>
 
     <string name="share_send_note">Send note…</string>
@@ -921,7 +920,6 @@
     <string name="note_selected_count_one">%1$d note selected</string>
     <string name="note_selected_count_other">%1$d notes selected</string>
 
-    <string name="notes_delete_selected_permanently">Delete %1$d notes permanently?</string>
     <string name="home">Home</string>
     <string name="expand_navigation">Expand navigation</string>
     <string name="collapse_navigation">Collapse navigation</string>

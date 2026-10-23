@@ -740,7 +740,6 @@
 
     <string name="turn_off">Desligar</string>
 
-    <string name="delete_note_permanently">Excluir nota permanentemente?</string>
     <string name="delete_group_permanently">Excluir grupo permanentemente?</string>
 
     <string name="share_send_note">Enviar nota…</string>
@@ -919,7 +918,6 @@
     <string name="smart_lists">Listas inteligentes</string>
     <string name="note_selected_count_one">%1$d nota selecionada</string>
     <string name="note_selected_count_other">%1$d notas selecionadas</string>
-    <string name="notes_delete_selected_permanently">Excluir %1$d notas permanentemente?</string>
     <string name="home">Início</string>
     <string name="expand_navigation">Expandir navegação</string>
     <string name="collapse_navigation">Recolher navegação</string>

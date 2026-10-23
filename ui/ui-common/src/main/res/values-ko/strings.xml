@@ -740,7 +740,6 @@
 
     <string name="turn_off">끄기</string>
 
-    <string name="delete_note_permanently">메모를 영구 삭제하시겠습니까?</string>
     <string name="delete_group_permanently">그룹을 영구 삭제하시겠습니까?</string>
 
     <string name="share_send_note">메모 보내기…</string>
@@ -919,7 +918,6 @@
     <string name="smart_lists">스마트 목록</string>
     <string name="note_selected_count_one">메모 %1$d개 선택됨</string>
     <string name="note_selected_count_other">메모 %1$d개 선택됨</string>
-    <string name="notes_delete_selected_permanently">%1$d개의 메모를 영구 삭제하시겠습니까?</string>
     <string name="home">홈</string>
     <string name="expand_navigation">탐색 펼치기</string>
     <string name="collapse_navigation">탐색 접기</string>

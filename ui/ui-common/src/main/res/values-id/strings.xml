@@ -737,7 +737,6 @@
 
     <string name="turn_off">Matikan</string>
 
-    <string name="delete_note_permanently">Hapus catatan secara permanen?</string>
     <string name="delete_group_permanently">Hapus grup secara permanen?</string>
 
     <string name="share_send_note">Kirim catatan…</string>
@@ -917,7 +916,6 @@
     <string name="smart_lists">Daftar Pintar</string>
     <string name="note_selected_count_one">%1$d catatan dipilih</string>
     <string name="note_selected_count_other">%1$d catatan dipilih</string>
-    <string name="notes_delete_selected_permanently">Hapus %1$d catatan secara permanen?</string>
     <string name="home">Beranda</string>
     <string name="expand_navigation">Perluas navigasi</string>
     <string name="collapse_navigation">Ciutkan navigasi</string>

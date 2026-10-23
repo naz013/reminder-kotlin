@@ -14,7 +14,7 @@ import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
-import com.github.naz013.feature.common.viewmodel.PendingDeleteTracker
+import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.feature.note.R
@@ -99,7 +99,7 @@ internal class NotesViewModel(
   private val searchQuery = MutableStateFlow("")
   private val sortOrder = MutableStateFlow(notePreferences.noteOrder)
   private val selectedTagId = MutableStateFlow<String?>(null)
-  private val pendingDeleteTracker = PendingDeleteTracker()
+  val undoDelete = UndoDeleteController(viewModelScope, dispatcherProvider.io())
 
   init {
     analyticsEventSender.send(ScreenUsedEvent(Screen.NOTES_LIST))
@@ -127,7 +127,7 @@ internal class NotesViewModel(
             notes.filter { it.note?.key in ids }
           }
         }
-        .combine(pendingDeleteTracker.pendingIds) { notes, pendingIds ->
+        .combine(undoDelete.pendingIds) { notes, pendingIds ->
           notes.filterNot { it.note?.key in pendingIds }
         }
         .collect { applyList(it) }
@@ -221,24 +221,17 @@ internal class NotesViewModel(
 
   fun onDeleteSelectedClick() {
     val ids = selectedIds()
-    if (ids.isNotEmpty()) {
-      navigationEvent.emit(
-        NavigationEvent.ConfirmDeleteSelected(
-          ids = ids,
-          title = textProvider.getText(R.string.notes_delete_selected_permanently, ids.size),
-        )
-      )
-    }
-  }
-
-  fun deleteSelectedNotes(ids: Set<String>) {
     if (ids.isEmpty()) return
     val batchKey = UUID.randomUUID().toString()
     // Clear selection before marking pending: markPending's pendingIds update can synchronously
     // empty listState (via the reactive pipeline above), and updateSelection is a no-op once
     // listState is no longer Ready - clearing first avoids a stuck selectedCount.
     onSelectionCancel()
-    pendingDeleteTracker.markPending(batchKey = batchKey, ids = ids) {
+    undoDelete.markPending(
+      batchKey = batchKey,
+      ids = ids,
+      message = textProvider.getText(R.string.notes_deleted_count, ids.size),
+    ) {
       ids.forEach { deleteNoteUseCase(it) }
       if (!isArchived) {
         withContext(dispatcherProvider.main()) {
@@ -246,12 +239,6 @@ internal class NotesViewModel(
         }
       }
     }
-    navigationEvent.emit(
-      NavigationEvent.ShowUndoDelete(
-        batchKey = batchKey,
-        message = textProvider.getText(R.string.notes_deleted_count, ids.size),
-      )
-    )
   }
 
   fun onArchiveSelectedClick() {
@@ -344,7 +331,7 @@ internal class NotesViewModel(
       NoteMenuAction.ARCHIVE -> moveToArchive(note.id)
       NoteMenuAction.UNARCHIVE -> unarchive(note.id)
       NoteMenuAction.PIN, NoteMenuAction.UNPIN -> togglePinned(note.id)
-      NoteMenuAction.DELETE -> navigationEvent.emit(NavigationEvent.ConfirmDelete(note.id))
+      NoteMenuAction.DELETE -> deleteNote(note.id)
     }
   }
 
@@ -398,8 +385,12 @@ internal class NotesViewModel(
     }
   }
 
-  fun deleteNote(id: String) {
-    pendingDeleteTracker.markPending(batchKey = id, ids = setOf(id)) {
+  private fun deleteNote(id: String) {
+    undoDelete.markPending(
+      batchKey = id,
+      ids = setOf(id),
+      message = textProvider.getString(R.string.note_deleted),
+    ) {
       deleteNoteUseCase(id)
       if (!isArchived) {
         withContext(dispatcherProvider.main()) {
@@ -407,24 +398,11 @@ internal class NotesViewModel(
         }
       }
     }
-    navigationEvent.emit(
-      NavigationEvent.ShowUndoDelete(batchKey = id, message = textProvider.getString(R.string.note_deleted))
-    )
-  }
-
-  fun undoDeleteNote(batchKey: String) {
-    pendingDeleteTracker.undo(batchKey)
-  }
-
-  fun commitDeleteNote(batchKey: String) {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      pendingDeleteTracker.commit(batchKey)
-    }
   }
 
   override fun onCleared() {
     super.onCleared()
-    pendingDeleteTracker.commitAllDetached(dispatcherProvider.io())
+    undoDelete.commitAllDetached(dispatcherProvider.io())
   }
 
   fun saveNoteColor(
@@ -486,23 +464,9 @@ internal class NotesViewModel(
       val id: String,
     ) : NavigationEvent
 
-    data class ConfirmDelete(
-      val id: String,
-    ) : NavigationEvent
-
-    data class ConfirmDeleteSelected(
-      val ids: Set<String>,
-      val title: String,
-    ) : NavigationEvent
-
     data class ConfirmMergeSelected(
       val ids: List<String>,
       val title: String,
-    ) : NavigationEvent
-
-    data class ShowUndoDelete(
-      val batchKey: String,
-      val message: String,
     ) : NavigationEvent
 
     data class Error(val message: String) : NavigationEvent

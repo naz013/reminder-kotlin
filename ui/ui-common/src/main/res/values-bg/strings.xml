@@ -740,7 +740,6 @@
 
     <string name="turn_off">Изключване</string>
 
-    <string name="delete_note_permanently">Изтриване на бележка окончателно?</string>
     <string name="delete_group_permanently">Изтриване на група окончателно?</string>
 
     <string name="share_send_note">Изпращане на бележка…</string>
@@ -919,7 +918,6 @@
     <string name="smart_lists">Интелигентни списъци</string>
     <string name="note_selected_count_one">Избрана е %1$d бележка</string>
     <string name="note_selected_count_other">Избрани са %1$d бележки</string>
-    <string name="notes_delete_selected_permanently">Изтриване на %1$d бележки окончателно?</string>
     <string name="home">Начало</string>
     <string name="expand_navigation">Разгъване на навигацията</string>
     <string name="collapse_navigation">Свиване на навигацията</string>

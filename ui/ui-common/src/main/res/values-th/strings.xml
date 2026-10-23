@@ -737,7 +737,6 @@
 
     <string name="turn_off">ปิด</string>
 
-    <string name="delete_note_permanently">ลบโน้ตอย่างถาวร?</string>
     <string name="delete_group_permanently">ลบกลุ่มอย่างถาวร?</string>
 
     <string name="share_send_note">ส่งโน้ต…</string>
@@ -917,7 +916,6 @@
     <string name="smart_lists">รายการอัจฉริยะ</string>
     <string name="note_selected_count_one">เลือก %1$d โน้ตแล้ว</string>
     <string name="note_selected_count_other">เลือก %1$d โน้ตแล้ว</string>
-    <string name="notes_delete_selected_permanently">ลบ %1$d โน้ตอย่างถาวร?</string>
     <string name="home">หน้าแรก</string>
     <string name="expand_navigation">ขยายการนำทาง</string>
     <string name="collapse_navigation">ยุบการนำทาง</string>
