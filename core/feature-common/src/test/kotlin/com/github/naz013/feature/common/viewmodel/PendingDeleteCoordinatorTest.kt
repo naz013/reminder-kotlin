@@ -2,6 +2,8 @@ package com.github.naz013.feature.common.viewmodel
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
@@ -141,6 +143,59 @@ class PendingDeleteCoordinatorTest {
 
     coordinator.registerHost(PendingEntity.NOTE)
     assertEquals(1, coordinator.hostCount(PendingEntity.NOTE).value)
+  }
+
+  @Test
+  fun `fallback becomes active only after no host stayed registered for the settle time`() = runTest {
+    val coordinator = coordinator()
+    val seen = mutableListOf<Boolean>()
+    val job = coordinator.fallbackActive(PendingEntity.NOTE, settleMs = 300L)
+      .onEach { seen += it }
+      .launchIn(this)
+
+    runCurrent()
+    advanceTimeBy(299)
+    assertEquals(emptyList<Boolean>(), seen)
+
+    advanceTimeBy(2)
+    runCurrent()
+    assertEquals(listOf(true), seen)
+    job.cancel()
+  }
+
+  @Test
+  fun `fallback never activates when a host registers within the settle time`() = runTest {
+    val coordinator = coordinator()
+    val seen = mutableListOf<Boolean>()
+    val job = coordinator.fallbackActive(PendingEntity.NOTE, settleMs = 300L)
+      .onEach { seen += it }
+      .launchIn(this)
+    runCurrent()
+    advanceTimeBy(100)
+
+    coordinator.registerHost(PendingEntity.NOTE)
+    advanceTimeBy(1_000)
+    runCurrent()
+
+    assertEquals(listOf(false), seen)
+    job.cancel()
+  }
+
+  @Test
+  fun `fallback deactivates immediately once a host registers`() = runTest {
+    val coordinator = coordinator()
+    val seen = mutableListOf<Boolean>()
+    val job = coordinator.fallbackActive(PendingEntity.NOTE, settleMs = 300L)
+      .onEach { seen += it }
+      .launchIn(this)
+    advanceTimeBy(301)
+    runCurrent()
+
+    coordinator.registerHost(PendingEntity.NOTE)
+    runCurrent()
+
+    assertEquals(listOf(true, false), seen)
+    job.cancel()
   }
 
   @Test

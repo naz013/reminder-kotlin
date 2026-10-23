@@ -9,6 +9,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +19,7 @@ import androidx.compose.material3.rememberWideNavigationRailState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -50,7 +52,9 @@ import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.elementary.tasks.settings.BirthdayCrossFeatureEntry
 import com.elementary.tasks.settings.ManagePresetsCrossFeatureEntry
 import com.elementary.tasks.settings.RemindersCrossFeatureEntry
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
 import com.github.naz013.ui.common.compose.foundation.share.rememberFileIntentSender
+import com.github.naz013.ui.common.compose.foundation.snackbar.PendingDeleteFallbackHost
 import com.github.naz013.ui.common.compose.foundation.telephony.rememberApplicationLauncher
 import com.github.naz013.ui.common.compose.foundation.telephony.rememberPhoneCaller
 import com.github.naz013.ui.common.compose.foundation.telephony.rememberSmsSender
@@ -170,6 +174,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
   val workflowConfig = koinInject<WorkflowConfig>()
   val buildInfo = koinInject<BuildInfo>()
   val analyticsEventSender = koinInject<AnalyticsEventSender>()
+  val pendingDeleteCoordinator = koinInject<PendingDeleteCoordinator>()
   val visibleHeaderSections =
     HeaderNavigationSection.pinned +
       homePreferences.headerNavigationOrder.filter { section ->
@@ -244,287 +249,293 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
     onDispose { appNavBridge.detachOuterBackStack(backStack) }
   }
 
-  NavDisplay(
-    backStack = backStack,
-    // The two-pane scaffold's gap between panes has no background of its own - without this it
-    // shows the raw window canvas (black) instead of the theme's background.
-    modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
-    onBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
-    // sidePanelSceneStrategy tried first: ListDetailSceneStrategy would otherwise phantom-claim
-    // Calendar's build-reminder/edit-birthday/preview screens too (they're also tagged
-    // ListDetailSceneStrategy.detailPane() for their Home/Agenda/etc. callers) even when reached
-    // from Calendar, which was never tagged listPane() - see SidePanelSceneStrategy.kt's doc.
-    // sidePanelSceneStrategy only ever claims a scene when its own host+panel tags both match, so
-    // trying it first doesn't affect any of listDetailSceneStrategy's own (unrelated) pairings.
-    sceneStrategies = listOf(quickAddSceneStrategy, sidePanelSceneStrategy, listDetailSceneStrategy),
-    sceneDecoratorStrategies = listOf(persistentNavRailStrategy),
-    entryDecorators =
-      listOf(
-        rememberSaveableStateHolderNavEntryDecorator(),
-        rememberViewModelStoreNavEntryDecorator(),
-      ),
-    transitionSpec = {
-      (
-        fadeIn(tween(NAV_ANIM_FADE_DURATION_MS)) +
-          scaleIn(animationSpec = navScreenSpring(), initialScale = NAV_ANIM_ENTER_SCALE)
-      ) togetherWith (
-        fadeOut(tween(NAV_ANIM_FADE_DURATION_MS)) +
-          scaleOut(animationSpec = navScreenSpring(), targetScale = NAV_ANIM_EXIT_SCALE)
-      )
-    },
-    popTransitionSpec = {
-      (
-        fadeIn(tween(NAV_ANIM_FADE_DURATION_MS)) +
-          scaleIn(animationSpec = navScreenSpring(), initialScale = NAV_ANIM_EXIT_SCALE)
-      ) togetherWith (
-        fadeOut(tween(NAV_ANIM_FADE_DURATION_MS)) +
-          scaleOut(animationSpec = navScreenSpring(), targetScale = NAV_ANIM_ENTER_SCALE)
-      )
-    },
-    predictivePopTransitionSpec = {
-      (
-        fadeIn(tween(NAV_ANIM_FADE_DURATION_MS)) +
-          scaleIn(animationSpec = navScreenSpring(), initialScale = NAV_ANIM_EXIT_SCALE)
-      ) togetherWith (
-        fadeOut(tween(NAV_ANIM_FADE_DURATION_MS)) +
-          scaleOut(animationSpec = navScreenSpring(), targetScale = NAV_ANIM_ENTER_SCALE)
-      )
-    },
-    entryProvider =
-      entryProvider {
-        homeEntries(
-          backStack = backStack,
-          selectedEventId = selectedEventId,
-          onOpenReminderPreview = { id -> backStack.navigateToDetailPane(ReminderPreviewNavKey.Preview(id)) },
-          onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
-          onOpenSettings = { backStack.add(SettingsNavKey.Hub) },
-          onOpenHeaderItemsSettings = { backStack.add(SettingsNavKey.HeaderItems) },
-          onOpenCreateReminder = { backStack.add(BuildReminderNavKey.Main()) },
-          onOpenCreateBirthday = { backStack.add(BirthdaysNavKey.Edit()) },
-          onOpenCreateGoogleTask = {
-            backStack.add(GoogleTasksNavKey.List)
-            backStack.add(GoogleTasksNavKey.TaskEdit())
-          },
-          onOpenCalendar = { backStack.add(CalendarNavKey.Home) },
-          onOpenAgenda = { backStack.add(AgendaNavKey.List) },
-          onOpenNotes = { backStack.add(NotesNavKey.List) },
-          onOpenBirthdays = { backStack.add(BirthdaysNavKey.List) },
-          onOpenGoogleTasks = { backStack.add(GoogleTasksNavKey.List) },
-          onOpenGroups = { backStack.add(GroupsNavKey.List) },
-          onOpenTags = { backStack.add(TagsNavKey.Manage) },
-          onOpenRoutines = { backStack.add(RoutineNavKey.List) },
-          onOpenHabits = { backStack.add(HabitNavKey.List) },
-          onOpenWorkflowGallery = { backStack.add(WorkflowNavKey.Gallery) },
-          onOpenPomodoro = { backStack.add(PomodoroNavKey.Timer()) },
-          onOpenQuickAdd = { backStack.add(QuickAddNavKey.Sheet) },
-          onOpenProVersion = { backStack.add(SettingsNavKey.ProVersion) },
-          onOpenPrivacyPolicy = { backStack.add(OtherNavKey.PrivacyPolicy) },
-          onOpenCloudDrives = { backStack.add(ExportNavKey.CloudServices) },
-          onOpenWhatsNew = { backStack.add(OtherNavKey.WhatsNew) },
-          onOpenCreateNote = {
-            backStack.add(NotesNavKey.List)
-            backStack.add(NotesNavKey.Edit())
-          },
-          onOpenCreateTodo = { backStack.add(TodoEditNavKey.Main()) },
-          onEventAction = { action -> eventActionDispatcher.dispatch(action) },
-        )
-        notesEntries(
-          backStack = backStack,
-          applicationId = BuildConfig.APPLICATION_ID,
-          onOpenNoteSettings = { title -> backStack.add(SettingsNavKey.Note(title)) },
-          onEditReminder = { id -> backStack.add(BuildReminderNavKey.Main(id = id)) },
-          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.NotePreview) },
-        )
-        groupsEntries(
-          backStack = backStack,
-          isRenderedAsDetailPane = isRenderedAsDetailPane,
-          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Group) },
-          onNotificationHelpClick = { backStack.add(SettingsNavKey.NotificationCustomizationHelp) },
-          onNewReminderClick = { backStack.add(BuildReminderNavKey.Main(groupUuId = it)) },
-          onReminderPreviewClick = { backStack.add(ReminderPreviewNavKey.Preview(it)) },
-          onRulesForGroupClick = { backStack.add(WorkflowNavKey.RulesForGroup(it)) }
-        )
-        habitEntries(
-          backStack = backStack,
-          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Habit) },
-        )
-        routineEntries(
-          backStack = backStack,
-          isRenderedAsDetailPane = isRenderedAsDetailPane,
-          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Routine) },
-          onManageTagsClick = { backStack.add(TagsNavKey.Manage) },
-        )
-        placesEntries(
-          backStack = backStack,
-          isRenderedAsDetailPane = isRenderedAsDetailPane,
-          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Place) },
-        )
-        birthdaysEntries(
-          backStack = backStack,
-          isRenderedAsDetailPane = isRenderedAsDetailPane,
-          isRenderedAsSidePanel = isRenderedAsSidePanel,
-          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Birthday) },
-          onCallClick = { number -> phoneCaller.call(number) },
-          onSmsClick = { number -> smsSender.send(number, null) },
-        )
-        googleTasksEntries(
-          backStack = backStack,
-          isRenderedAsDetailPane = isRenderedAsDetailPane,
-          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.GoogleTask) }
-        )
-        buildReminderEntries(
-          backStack = backStack,
-          isRenderedAsDetailPane = isRenderedAsDetailPane,
-          isRenderedAsSidePanel = isRenderedAsSidePanel,
-          rememberContactPhonePicker = { rememberContactPhonePicker() },
-        )
-        quickAddEntries(backStack)
-        todoEditEntries(
-          backStack = backStack,
-          navigateBeyondBackStack = { key -> appNavBridge.navigate(key) },
-        )
-        calendarEntries(
-          backStack = backStack,
-          onOpenNewReminder = { dateMillis ->
-            backStack.navigateToDetailPane(
-              BuildReminderNavKey.Main(
-                deepLinkDateTimeType = BuildReminderNavKey.Main.DateTimeType.Date,
-                deepLinkDateTimeMillis = dateMillis,
-              ),
-            )
-          },
-          onOpenReminderPreview = { id -> backStack.navigateToDetailPane(ReminderPreviewNavKey.Preview(id)) },
-          onOpenNewBirthday = { epochDay ->
-            backStack.navigateToDetailPane(BirthdaysNavKey.Edit(prefillDateEpochDay = epochDay))
-          },
-          onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
-          onOpenGoogleCalendarEventPreview = { id ->
-            backStack.navigateToDetailPane(GoogleCalendarEventPreviewNavKey.Preview(id))
-          },
-          onOpenSettings = { title -> backStack.add(SettingsNavKey.Calendar(title)) },
-        )
-        agendaEntries(
-          backStack = backStack,
-          selectedItemId = selectedEventId,
-          onOpenReminderPreview = { id -> backStack.navigateToDetailPane(ReminderPreviewNavKey.Preview(id)) },
-          onOpenReminderEdit = { id -> backStack.navigateToEditDetailPane(BuildReminderNavKey.Main(id = id)) { it is ReminderPreviewNavKey.Preview && it.id == id } },
-          onOpenNewReminder = { backStack.add(BuildReminderNavKey.Main()) },
-          onOpenNewTodo = { backStack.add(TodoEditNavKey.Main()) },
-          onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
-          onOpenBirthdayEdit = { id -> backStack.navigateToEditDetailPane(BirthdaysNavKey.Edit(id)) { it is BirthdaysNavKey.Preview && it.id == id } },
-          onOpenNewBirthday = { backStack.add(BirthdaysNavKey.Edit()) },
-          onOpenArchive = { backStack.add(RemindersArchiveNavKey.List) },
-          onOpenGroups = { backStack.add(GroupsNavKey.List) },
-          onOpenTags = { backStack.add(TagsNavKey.Manage) },
-        )
-        reminderPreviewEntries(
-          backStack = backStack,
-          isRenderedAsDetailPane = isRenderedAsDetailPane,
-          isRenderedAsSidePanel = isRenderedAsSidePanel,
-          navigateBeyondBackStack = { keys -> appNavBridge.navigate(*keys.toTypedArray()) },
-          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.ReminderPreview) },
-          onShareFile = { title, file -> fileIntentSender.send(title, file) },
-          onOpenIntent = { intent, title -> intentResolver.resolve(intent, title) },
-          onOpenNote = { noteId -> appNavBridge.navigate(NotesNavKey.List, NotesNavKey.Preview(noteId)) },
-          onOpenGoogleTask = { taskId ->
-            appNavBridge.navigate(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit(id = taskId))
-          },
-          onOpenWorkflowRules = { reminderId -> backStack.add(WorkflowNavKey.RulesForReminder(reminderId)) },
-          onStartFocusSession = { reminderId ->
-            if (buildInfo.isPro) {
-              backStack.add(PomodoroNavKey.Timer(linkedReminderId = reminderId))
-            } else {
-              analyticsEventSender.send(FeatureGateTappedEvent(Feature.POMODORO))
-              backStack.add(SettingsNavKey.ProVersion)
-            }
-          },
-          onCallClick = { number -> phoneCaller.call(number) },
-          onSmsClick = { target, message -> smsSender.send(target, message) },
-          onAppClick = { target -> applicationLauncher.launch(target) },
-          onUrlClick = { target -> urlLauncher.launch(target) },
-        )
-        googleCalendarEventPreviewEntries(
-          backStack = backStack,
-          isRenderedAsDetailPane = isRenderedAsDetailPane,
-          isRenderedAsSidePanel = isRenderedAsSidePanel,
-        )
-        remindersArchiveEntries(
-          backStack = backStack,
-          selectedItemId = selectedEventId,
-          onOpenEdit = { id -> backStack.navigateToDetailPane(BuildReminderNavKey.Main(id = id)) },
-        )
-        settingsEntries(
-          backStack = backStack,
-          applicationId = BuildConfig.APPLICATION_ID,
-          restartActivityClass = BottomNavActivity::class.java,
-          isRenderedAsDetailPane = isRenderedAsDetailPane,
-          remindersEntry = { key, entryBackStack, renderAsDetailPane ->
-            RemindersCrossFeatureEntry(key, entryBackStack, renderAsDetailPane)
-          },
-          birthdayEntry = { key, entryBackStack, renderAsDetailPane ->
-            BirthdayCrossFeatureEntry(key, entryBackStack, renderAsDetailPane)
-          },
-          managePresetsEntry = { entryBackStack -> ManagePresetsCrossFeatureEntry(entryBackStack) },
-          notificationCustomizationHelpEntry = { onBackClick ->
-            NotificationCustomizationHelpScreen(onBackClick = onBackClick)
-          },
-          onOpenLocalBackupExport = { uri -> backStack.add(LocalBackupNavKey.Export(uri)) },
-          onOpenLocalBackupImport = { uri -> backStack.add(LocalBackupNavKey.Import(uri)) },
-          onTransferClick = {
-            // A double-tap here (nothing visibly changes until the zip is built) must not push
-            // this twice - each push independently reads every repository, builds a transfer zip
-            // and launches the sibling app, so a duplicate push means two receiving screens stack
-            // up on the other side, each needing its own dismissal.
-            if (backStack.lastOrNull() != TransferNavKey) backStack.add(TransferNavKey)
-          },
-          onOpenReminderActionTest = { reminderId -> ReminderActionActivity.mockTest(context, reminderId) },
-          onOpenBirthdayActionTest = { birthdayId -> BirthdayActionActivity.mockTest(context, birthdayId) },
-        )
-        securityEntries(backStack = backStack, isRenderedAsDetailPane = isRenderedAsDetailPane)
-        locationEntries(
-          backStack = backStack,
-          onOpenPlaces = { backStack.add(PlacesNavKey.List) },
-        )
-        otherEntries(
-          backStack = backStack,
-          isRenderedAsDetailPane = isRenderedAsDetailPane,
-          onOpenTroubleshooting = { backStack.add(SettingsNavKey.Troubleshooting) },
-          onOpenProVersion = { backStack.add(SettingsNavKey.ProVersion) },
-          onOpenAiDigest = { backStack.add(SettingsNavKey.AiDigest) },
-        )
-        exportEntries(backStack)
-        workflowEntries(
-          backStack = backStack,
-          isRenderedAsDetailPane = isRenderedAsDetailPane,
-          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Workflow) },
-        )
-        tagsEntries(
-          backStack = backStack,
-          isRenderedAsDetailPane = isRenderedAsDetailPane,
-          adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Tag) },
-          onReminderPreviewClick = { backStack.add(ReminderPreviewNavKey.Preview(it)) },
-          onNotePreviewClick = { id -> backStack.add(NotesNavKey.Preview(id)) },
-          onBirthdayPreviewClick = { id -> backStack.add(BirthdaysNavKey.Preview(id)) },
-          onGoogleTaskPreviewClick = { id -> backStack.add(GoogleTasksNavKey.TaskPreview(id)) },
-        )
-        insightsEntries(backStack)
-        pomodoroEntries(backStack)
-        localBackupEntries(backStack)
-        transferEntries(backStack)
-        onboardingEntries(
-          backStack = backStack,
-          onFinished = {
-            backStack.clear()
-            backStack.add(HomeNavKey.Main)
-          },
-          onCreateFirstReminder = {
-            backStack.clear()
-            backStack.add(HomeNavKey.Main)
-            backStack.add(BuildReminderNavKey.Main())
-          },
+  Box(modifier = Modifier.fillMaxSize()) {
+    NavDisplay(
+      backStack = backStack,
+      // The two-pane scaffold's gap between panes has no background of its own - without this it
+      // shows the raw window canvas (black) instead of the theme's background.
+      modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+      onBack = { if (backStack.size > 1) backStack.removeLastOrNull() },
+      // sidePanelSceneStrategy tried first: ListDetailSceneStrategy would otherwise phantom-claim
+      // Calendar's build-reminder/edit-birthday/preview screens too (they're also tagged
+      // ListDetailSceneStrategy.detailPane() for their Home/Agenda/etc. callers) even when reached
+      // from Calendar, which was never tagged listPane() - see SidePanelSceneStrategy.kt's doc.
+      // sidePanelSceneStrategy only ever claims a scene when its own host+panel tags both match, so
+      // trying it first doesn't affect any of listDetailSceneStrategy's own (unrelated) pairings.
+      sceneStrategies = listOf(quickAddSceneStrategy, sidePanelSceneStrategy, listDetailSceneStrategy),
+      sceneDecoratorStrategies = listOf(persistentNavRailStrategy),
+      entryDecorators =
+        listOf(
+          rememberSaveableStateHolderNavEntryDecorator(),
+          rememberViewModelStoreNavEntryDecorator(),
+        ),
+      transitionSpec = {
+        (
+          fadeIn(tween(NAV_ANIM_FADE_DURATION_MS)) +
+            scaleIn(animationSpec = navScreenSpring(), initialScale = NAV_ANIM_ENTER_SCALE)
+        ) togetherWith (
+          fadeOut(tween(NAV_ANIM_FADE_DURATION_MS)) +
+            scaleOut(animationSpec = navScreenSpring(), targetScale = NAV_ANIM_EXIT_SCALE)
         )
       },
-  )
+      popTransitionSpec = {
+        (
+          fadeIn(tween(NAV_ANIM_FADE_DURATION_MS)) +
+            scaleIn(animationSpec = navScreenSpring(), initialScale = NAV_ANIM_EXIT_SCALE)
+        ) togetherWith (
+          fadeOut(tween(NAV_ANIM_FADE_DURATION_MS)) +
+            scaleOut(animationSpec = navScreenSpring(), targetScale = NAV_ANIM_ENTER_SCALE)
+        )
+      },
+      predictivePopTransitionSpec = {
+        (
+          fadeIn(tween(NAV_ANIM_FADE_DURATION_MS)) +
+            scaleIn(animationSpec = navScreenSpring(), initialScale = NAV_ANIM_EXIT_SCALE)
+        ) togetherWith (
+          fadeOut(tween(NAV_ANIM_FADE_DURATION_MS)) +
+            scaleOut(animationSpec = navScreenSpring(), targetScale = NAV_ANIM_ENTER_SCALE)
+        )
+      },
+      entryProvider =
+        entryProvider {
+          homeEntries(
+            backStack = backStack,
+            selectedEventId = selectedEventId,
+            onOpenReminderPreview = { id -> backStack.navigateToDetailPane(ReminderPreviewNavKey.Preview(id)) },
+            onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
+            onOpenSettings = { backStack.add(SettingsNavKey.Hub) },
+            onOpenHeaderItemsSettings = { backStack.add(SettingsNavKey.HeaderItems) },
+            onOpenCreateReminder = { backStack.add(BuildReminderNavKey.Main()) },
+            onOpenCreateBirthday = { backStack.add(BirthdaysNavKey.Edit()) },
+            onOpenCreateGoogleTask = {
+              backStack.add(GoogleTasksNavKey.List)
+              backStack.add(GoogleTasksNavKey.TaskEdit())
+            },
+            onOpenCalendar = { backStack.add(CalendarNavKey.Home) },
+            onOpenAgenda = { backStack.add(AgendaNavKey.List) },
+            onOpenNotes = { backStack.add(NotesNavKey.List) },
+            onOpenBirthdays = { backStack.add(BirthdaysNavKey.List) },
+            onOpenGoogleTasks = { backStack.add(GoogleTasksNavKey.List) },
+            onOpenGroups = { backStack.add(GroupsNavKey.List) },
+            onOpenTags = { backStack.add(TagsNavKey.Manage) },
+            onOpenRoutines = { backStack.add(RoutineNavKey.List) },
+            onOpenHabits = { backStack.add(HabitNavKey.List) },
+            onOpenWorkflowGallery = { backStack.add(WorkflowNavKey.Gallery) },
+            onOpenPomodoro = { backStack.add(PomodoroNavKey.Timer()) },
+            onOpenQuickAdd = { backStack.add(QuickAddNavKey.Sheet) },
+            onOpenProVersion = { backStack.add(SettingsNavKey.ProVersion) },
+            onOpenPrivacyPolicy = { backStack.add(OtherNavKey.PrivacyPolicy) },
+            onOpenCloudDrives = { backStack.add(ExportNavKey.CloudServices) },
+            onOpenWhatsNew = { backStack.add(OtherNavKey.WhatsNew) },
+            onOpenCreateNote = {
+              backStack.add(NotesNavKey.List)
+              backStack.add(NotesNavKey.Edit())
+            },
+            onOpenCreateTodo = { backStack.add(TodoEditNavKey.Main()) },
+            onEventAction = { action -> eventActionDispatcher.dispatch(action) },
+          )
+          notesEntries(
+            backStack = backStack,
+            applicationId = BuildConfig.APPLICATION_ID,
+            onOpenNoteSettings = { title -> backStack.add(SettingsNavKey.Note(title)) },
+            onEditReminder = { id -> backStack.add(BuildReminderNavKey.Main(id = id)) },
+            adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.NotePreview) },
+          )
+          groupsEntries(
+            backStack = backStack,
+            isRenderedAsDetailPane = isRenderedAsDetailPane,
+            adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Group) },
+            onNotificationHelpClick = { backStack.add(SettingsNavKey.NotificationCustomizationHelp) },
+            onNewReminderClick = { backStack.add(BuildReminderNavKey.Main(groupUuId = it)) },
+            onReminderPreviewClick = { backStack.add(ReminderPreviewNavKey.Preview(it)) },
+            onRulesForGroupClick = { backStack.add(WorkflowNavKey.RulesForGroup(it)) }
+          )
+          habitEntries(
+            backStack = backStack,
+            adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Habit) },
+          )
+          routineEntries(
+            backStack = backStack,
+            isRenderedAsDetailPane = isRenderedAsDetailPane,
+            adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Routine) },
+            onManageTagsClick = { backStack.add(TagsNavKey.Manage) },
+          )
+          placesEntries(
+            backStack = backStack,
+            isRenderedAsDetailPane = isRenderedAsDetailPane,
+            adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Place) },
+          )
+          birthdaysEntries(
+            backStack = backStack,
+            isRenderedAsDetailPane = isRenderedAsDetailPane,
+            isRenderedAsSidePanel = isRenderedAsSidePanel,
+            adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Birthday) },
+            onCallClick = { number -> phoneCaller.call(number) },
+            onSmsClick = { number -> smsSender.send(number, null) },
+          )
+          googleTasksEntries(
+            backStack = backStack,
+            isRenderedAsDetailPane = isRenderedAsDetailPane,
+            adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.GoogleTask) }
+          )
+          buildReminderEntries(
+            backStack = backStack,
+            isRenderedAsDetailPane = isRenderedAsDetailPane,
+            isRenderedAsSidePanel = isRenderedAsSidePanel,
+            rememberContactPhonePicker = { rememberContactPhonePicker() },
+          )
+          quickAddEntries(backStack)
+          todoEditEntries(
+            backStack = backStack,
+            navigateBeyondBackStack = { key -> appNavBridge.navigate(key) },
+          )
+          calendarEntries(
+            backStack = backStack,
+            onOpenNewReminder = { dateMillis ->
+              backStack.navigateToDetailPane(
+                BuildReminderNavKey.Main(
+                  deepLinkDateTimeType = BuildReminderNavKey.Main.DateTimeType.Date,
+                  deepLinkDateTimeMillis = dateMillis,
+                ),
+              )
+            },
+            onOpenReminderPreview = { id -> backStack.navigateToDetailPane(ReminderPreviewNavKey.Preview(id)) },
+            onOpenNewBirthday = { epochDay ->
+              backStack.navigateToDetailPane(BirthdaysNavKey.Edit(prefillDateEpochDay = epochDay))
+            },
+            onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
+            onOpenGoogleCalendarEventPreview = { id ->
+              backStack.navigateToDetailPane(GoogleCalendarEventPreviewNavKey.Preview(id))
+            },
+            onOpenSettings = { title -> backStack.add(SettingsNavKey.Calendar(title)) },
+          )
+          agendaEntries(
+            backStack = backStack,
+            selectedItemId = selectedEventId,
+            onOpenReminderPreview = { id -> backStack.navigateToDetailPane(ReminderPreviewNavKey.Preview(id)) },
+            onOpenReminderEdit = { id -> backStack.navigateToEditDetailPane(BuildReminderNavKey.Main(id = id)) { it is ReminderPreviewNavKey.Preview && it.id == id } },
+            onOpenNewReminder = { backStack.add(BuildReminderNavKey.Main()) },
+            onOpenNewTodo = { backStack.add(TodoEditNavKey.Main()) },
+            onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
+            onOpenBirthdayEdit = { id -> backStack.navigateToEditDetailPane(BirthdaysNavKey.Edit(id)) { it is BirthdaysNavKey.Preview && it.id == id } },
+            onOpenNewBirthday = { backStack.add(BirthdaysNavKey.Edit()) },
+            onOpenArchive = { backStack.add(RemindersArchiveNavKey.List) },
+            onOpenGroups = { backStack.add(GroupsNavKey.List) },
+            onOpenTags = { backStack.add(TagsNavKey.Manage) },
+          )
+          reminderPreviewEntries(
+            backStack = backStack,
+            isRenderedAsDetailPane = isRenderedAsDetailPane,
+            isRenderedAsSidePanel = isRenderedAsSidePanel,
+            navigateBeyondBackStack = { keys -> appNavBridge.navigate(*keys.toTypedArray()) },
+            adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.ReminderPreview) },
+            onShareFile = { title, file -> fileIntentSender.send(title, file) },
+            onOpenIntent = { intent, title -> intentResolver.resolve(intent, title) },
+            onOpenNote = { noteId -> appNavBridge.navigate(NotesNavKey.List, NotesNavKey.Preview(noteId)) },
+            onOpenGoogleTask = { taskId ->
+              appNavBridge.navigate(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit(id = taskId))
+            },
+            onOpenWorkflowRules = { reminderId -> backStack.add(WorkflowNavKey.RulesForReminder(reminderId)) },
+            onStartFocusSession = { reminderId ->
+              if (buildInfo.isPro) {
+                backStack.add(PomodoroNavKey.Timer(linkedReminderId = reminderId))
+              } else {
+                analyticsEventSender.send(FeatureGateTappedEvent(Feature.POMODORO))
+                backStack.add(SettingsNavKey.ProVersion)
+              }
+            },
+            onCallClick = { number -> phoneCaller.call(number) },
+            onSmsClick = { target, message -> smsSender.send(target, message) },
+            onAppClick = { target -> applicationLauncher.launch(target) },
+            onUrlClick = { target -> urlLauncher.launch(target) },
+          )
+          googleCalendarEventPreviewEntries(
+            backStack = backStack,
+            isRenderedAsDetailPane = isRenderedAsDetailPane,
+            isRenderedAsSidePanel = isRenderedAsSidePanel,
+          )
+          remindersArchiveEntries(
+            backStack = backStack,
+            selectedItemId = selectedEventId,
+            onOpenEdit = { id -> backStack.navigateToDetailPane(BuildReminderNavKey.Main(id = id)) },
+          )
+          settingsEntries(
+            backStack = backStack,
+            applicationId = BuildConfig.APPLICATION_ID,
+            restartActivityClass = BottomNavActivity::class.java,
+            isRenderedAsDetailPane = isRenderedAsDetailPane,
+            remindersEntry = { key, entryBackStack, renderAsDetailPane ->
+              RemindersCrossFeatureEntry(key, entryBackStack, renderAsDetailPane)
+            },
+            birthdayEntry = { key, entryBackStack, renderAsDetailPane ->
+              BirthdayCrossFeatureEntry(key, entryBackStack, renderAsDetailPane)
+            },
+            managePresetsEntry = { entryBackStack -> ManagePresetsCrossFeatureEntry(entryBackStack) },
+            notificationCustomizationHelpEntry = { onBackClick ->
+              NotificationCustomizationHelpScreen(onBackClick = onBackClick)
+            },
+            onOpenLocalBackupExport = { uri -> backStack.add(LocalBackupNavKey.Export(uri)) },
+            onOpenLocalBackupImport = { uri -> backStack.add(LocalBackupNavKey.Import(uri)) },
+            onTransferClick = {
+              // A double-tap here (nothing visibly changes until the zip is built) must not push
+              // this twice - each push independently reads every repository, builds a transfer zip
+              // and launches the sibling app, so a duplicate push means two receiving screens stack
+              // up on the other side, each needing its own dismissal.
+              if (backStack.lastOrNull() != TransferNavKey) backStack.add(TransferNavKey)
+            },
+            onOpenReminderActionTest = { reminderId -> ReminderActionActivity.mockTest(context, reminderId) },
+            onOpenBirthdayActionTest = { birthdayId -> BirthdayActionActivity.mockTest(context, birthdayId) },
+          )
+          securityEntries(backStack = backStack, isRenderedAsDetailPane = isRenderedAsDetailPane)
+          locationEntries(
+            backStack = backStack,
+            onOpenPlaces = { backStack.add(PlacesNavKey.List) },
+          )
+          otherEntries(
+            backStack = backStack,
+            isRenderedAsDetailPane = isRenderedAsDetailPane,
+            onOpenTroubleshooting = { backStack.add(SettingsNavKey.Troubleshooting) },
+            onOpenProVersion = { backStack.add(SettingsNavKey.ProVersion) },
+            onOpenAiDigest = { backStack.add(SettingsNavKey.AiDigest) },
+          )
+          exportEntries(backStack)
+          workflowEntries(
+            backStack = backStack,
+            isRenderedAsDetailPane = isRenderedAsDetailPane,
+            adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Workflow) },
+          )
+          tagsEntries(
+            backStack = backStack,
+            isRenderedAsDetailPane = isRenderedAsDetailPane,
+            adsContent = { NormalAdBanner(modifier = Modifier.fillMaxWidth(), AdBanner.Tag) },
+            onReminderPreviewClick = { backStack.add(ReminderPreviewNavKey.Preview(it)) },
+            onNotePreviewClick = { id -> backStack.add(NotesNavKey.Preview(id)) },
+            onBirthdayPreviewClick = { id -> backStack.add(BirthdaysNavKey.Preview(id)) },
+            onGoogleTaskPreviewClick = { id -> backStack.add(GoogleTasksNavKey.TaskPreview(id)) },
+          )
+          insightsEntries(backStack)
+          pomodoroEntries(backStack)
+          localBackupEntries(backStack)
+          transferEntries(backStack)
+          onboardingEntries(
+            backStack = backStack,
+            onFinished = {
+              backStack.clear()
+              backStack.add(HomeNavKey.Main)
+            },
+            onCreateFirstReminder = {
+              backStack.clear()
+              backStack.add(HomeNavKey.Main)
+              backStack.add(BuildReminderNavKey.Main())
+            },
+          )
+        },
+    )
+    PendingDeleteFallbackHost(
+      coordinator = pendingDeleteCoordinator,
+      modifier = Modifier.align(Alignment.BottomCenter),
+    )
+  }
 }
 
 /**

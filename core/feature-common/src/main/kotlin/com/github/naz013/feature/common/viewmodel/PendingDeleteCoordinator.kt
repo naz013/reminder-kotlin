@@ -2,10 +2,15 @@ package com.github.naz013.feature.common.viewmodel
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.EnumMap
@@ -16,6 +21,9 @@ const val UNDO_WINDOW_MS = 4_000L
 
 /** Extra time past [UNDO_WINDOW_MS] before the watchdog commits a delete nobody resolved. */
 const val UNDO_WATCHDOG_GRACE_MS = 3_000L
+
+/** How long a type may stay without a list host before the root fallback host shows its undo UI. */
+const val FALLBACK_SETTLE_MS = 300L
 
 enum class PendingEntity { REMINDER, BIRTHDAY, NOTE, GROUP, TAG, PLACE }
 
@@ -46,6 +54,27 @@ interface PendingDeleteCoordinator {
 
   fun unregisterHost(type: PendingEntity)
 }
+
+/**
+ * True while no list host is registered for [type] and that has held for [settleMs]; the pause lets
+ * the list underneath a popped preview register its own host first, so the fallback never flashes.
+ */
+@OptIn(ExperimentalCoroutinesApi::class)
+fun PendingDeleteCoordinator.fallbackActive(
+  type: PendingEntity,
+  settleMs: Long = FALLBACK_SETTLE_MS,
+): Flow<Boolean> =
+  hostCount(type)
+    .map { it == 0 }
+    .distinctUntilChanged()
+    .transformLatest { noHost ->
+      if (noHost) {
+        delay(settleMs)
+        emit(true)
+      } else {
+        emit(false)
+      }
+    }
 
 internal class PendingDeleteCoordinatorImpl(
   private val scope: CoroutineScope,
