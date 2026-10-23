@@ -36,3 +36,26 @@ show them during the undo window, and a reminder assigned to a pending group in 
 when the delete commits.
 
 Workflow caveat: a pending-deleted rule may still fire during the undo window (the engine reads rules live).
+
+## Deleting from preview/edit screens
+
+A delete started on a preview/edit screen must survive that screen's ViewModel being cleared and show
+its undo Snackbar on the list the user returns to. Screens use an app-scoped coordinator instead of
+their own controller.
+
+- `PendingDeleteCoordinator` (`core:feature-common`, Koin `single`) - one `UndoDeleteController` per
+  `PendingEntity` (REMINDER, BIRTHDAY, NOTE, GROUP, TAG, PLACE), so types stay independent. API:
+  `controller(type)`, `pendingIds(type)`, `markPending(type, id, message, onCommit)`, `commitAll()`,
+  `hostCount(type)`, `registerHost(type)`, `unregisterHost(type)`. The batch key is the item id.
+- `PendingDeleteHost(coordinator, type, snackbarHostState)` (`ui:ui-common`) - wraps `UndoDeleteHost`
+  for the type's controller and registers itself in `hostCount(type)`, so a fallback host can tell
+  that no list is showing undo UI for that type. Use one host per type.
+- Watchdog: `markPending` also starts a timer of `UNDO_WINDOW_MS + UNDO_WATCHDOG_GRACE_MS` that commits
+  the exact event if nobody resolved it (no host ever appeared). Commit is idempotent. `UNDO_WINDOW_MS`
+  (4 s) mirrors `SnackbarDuration.Short` used by `UndoSnackbarDispatcher`; keep them in sync.
+- Commit on background: `ReminderApp` observes `ProcessLifecycleOwner` and calls `commitAll()` on
+  `ON_STOP`, so no delete stays hidden-but-uncommitted if the process is killed.
+- Navigation: `MutableList<NavKey>.popDeleted(isSameItem)` (`core:navigation-api`) removes trailing
+  back stack entries of the deleted item (always keeping one) so the user lands on the list.
+
+The preview/edit screens adopt this in following chunks; none use it yet.

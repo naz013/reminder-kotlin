@@ -51,16 +51,18 @@ class UndoDeleteController(
     ids: Set<String>,
     message: String,
     onCommit: suspend () -> Unit,
-  ) {
+  ): UndoEvent {
     val replaced: UndoEvent?
+    val event: UndoEvent
     synchronized(lock) {
-      val event = UndoEvent(batchKey = batchKey, message = message, token = ++lastToken)
+      event = UndoEvent(batchKey = batchKey, message = message, token = ++lastToken)
       tracker.markPending(internalKey(event), ids, onCommit)
       replaced = latest.value
       unresolved[event.token] = event
       latest.value = event
     }
     replaced?.let { commit(it) }
+    return event
   }
 
   fun undo(event: UndoEvent) {

@@ -33,7 +33,11 @@ import com.github.naz013.feature.agenda.featureAgendaModule
 import com.github.naz013.feature.birthday.featureBirthdayModule
 import com.github.naz013.feature.calendar.featureCalendarModule
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.github.naz013.feature.common.featureCommonModule
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
 import com.github.naz013.feature.googletask.featureGoogleTaskModule
 import com.github.naz013.feature.habit.habitModule
 import com.github.naz013.feature.home.featureHomeModule
@@ -258,5 +262,14 @@ class ReminderApp :
     get<WifiConnectionMonitor>().start()
 
     registerActivityLifecycleCallbacks(ActivityObserver(get(), get()))
+
+    val pendingDeleteCoordinator = get<PendingDeleteCoordinator>()
+    ProcessLifecycleOwner.get().lifecycle.addObserver(
+      object : DefaultLifecycleObserver {
+        override fun onStop(owner: LifecycleOwner) {
+          pendingDeleteCoordinator.commitAll()
+        }
+      },
+    )
   }
 }

@@ -22,7 +22,8 @@ interface UndoSnackbarDispatcher {
  * `actionLabel`) and reports back whether it was tapped ([UndoSnackbarDispatcher.showUndoSnackbar]'s
  * `onUndo`) or the Snackbar's own duration elapsed first (`onTimeout`) - the Snackbar's
  * [SnackbarDuration.Short] window is the single source of truth for how long "undo" stays
- * available, there is no separate timer on the caller's side.
+ * available, there is no separate timer on the caller's side. `UNDO_WINDOW_MS` in feature-common
+ * mirrors that duration (4 s) for the pending-delete watchdog; keep them in sync.
  *
  * A newly shown Snackbar dismisses whatever is currently displayed rather than queuing behind it,
  * so back-to-back deletes only ever show (and only ever grant an undo window for) the most recent
