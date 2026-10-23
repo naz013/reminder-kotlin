@@ -385,8 +385,8 @@ class BirthdayE2ETest : KoinTest {
   }
 
   /** Deletes a birthday from `BirthdaysScreen`'s own row menu (Open/Edit/Delete, see
-   *  `BirthdayAgendaRow.birthdayMenuItems`) + the screen's own confirm dialog
-   *  (`BirthdaysScreen`'s `AlertDialog`, gated on `state.confirmDeleteId`). Seeds directly through
+   *  `BirthdayAgendaRow.birthdayMenuItems`); delete has no confirm and hides the row immediately
+   *  behind an undo Snackbar (the DB delete is committed later). Seeds directly through
    *  the repository (this class's own [seedBirthdayDueToday]) rather than re-driving the create
    *  UI - already covered by [addingABirthdayPersistsItWithTodaysDate]. */
   @Test
@@ -409,12 +409,9 @@ class BirthdayE2ETest : KoinTest {
     composeRule.waitForIdle()
     composeRule.onNodeWithText(r(R.string.delete)).performClick()
     composeRule.waitForIdle()
-    composeRule.onNodeWithText(r(R.string.are_you_sure)).assertIsDisplayed()
-    composeRule.onNodeWithText(r(R.string.yes)).performClick()
-    composeRule.waitForIdle()
 
     composeRule.waitUntil(timeoutMillis = 10_000) {
-      runBlocking { birthdayRepository.getById(birthday.uuId) == null }
+      composeRule.onAllNodes(listRowText(birthday.name), useUnmergedTree = true).fetchSemanticsNodes().isEmpty()
     }
   }
 

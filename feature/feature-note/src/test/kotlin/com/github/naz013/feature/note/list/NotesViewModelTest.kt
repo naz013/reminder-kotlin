@@ -11,6 +11,7 @@ import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.common.viewmodel.UndoEvent
 import com.github.naz013.feature.note.R
 import com.github.naz013.feature.note.UiNoteNotification
 import com.github.naz013.feature.note.UiNoteNotificationAdapter
@@ -19,8 +20,8 @@ import com.github.naz013.feature.note.usecase.ChangeNoteArchiveStateUseCase
 import com.github.naz013.feature.note.usecase.CreateSharedNoteFileUseCase
 import com.github.naz013.feature.note.usecase.DeleteNoteUseCase
 import com.github.naz013.feature.note.usecase.MergeNotesUseCase
-import com.github.naz013.logic.note.SaveNoteUseCase
 import com.github.naz013.feature.note.usecase.TogglePinnedNoteUseCase
+import com.github.naz013.logic.note.SaveNoteUseCase
 import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
@@ -40,7 +41,6 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import com.github.naz013.feature.common.viewmodel.UndoEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first

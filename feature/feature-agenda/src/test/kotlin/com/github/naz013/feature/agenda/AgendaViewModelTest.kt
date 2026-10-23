@@ -576,7 +576,7 @@ class AgendaViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `undoPendingAction after bulk delete restores the items and never runs the use cases`() =
+  fun `undoDelete undo after bulk delete restores the items and never runs the use cases`() =
     runTest {
       val vm = readyViewModelWithReminderAndBirthday()
       selectReminderAndBirthday(vm)
@@ -591,7 +591,7 @@ class AgendaViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `commitPendingAction after bulk delete deletes reminders and birthdays once`() =
+  fun `undoDelete commit after bulk delete deletes reminders and birthdays once`() =
     runTest {
       val reminder = reminderV2(id = "r1")
       coEvery { reminderV2Repository.getById("r1") } returns reminder
@@ -638,7 +638,7 @@ class AgendaViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `commitPendingAction after bulk archive archives each reminder once`() =
+  fun `undoDelete commit after bulk archive archives each reminder once`() =
     runTest {
       coEvery { moveReminderToArchiveUseCase("r1") } just Runs
       val vm = readyViewModelWithReminderAndBirthday()
@@ -667,7 +667,7 @@ class AgendaViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `undoPendingAction after reminder delete restores it and double undo is a no-op`() =
+  fun `undoDelete undo after reminder delete restores it and double undo is a no-op`() =
     runTest {
       val vm = readyViewModelWithReminderAndBirthday()
       vm.onAgendaMenuAction(fakeReminderItem("r1"), AgendaMenuAction.DELETE)
@@ -681,7 +681,7 @@ class AgendaViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `commitPendingAction after reminder delete runs the use case once and ignores undo afterwards`() =
+  fun `undoDelete commit after reminder delete runs the use case once and ignores undo afterwards`() =
     runTest {
       val reminder = reminderV2(id = "r1")
       coEvery { reminderV2Repository.getById("r1") } returns reminder
@@ -737,7 +737,7 @@ class AgendaViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `commitPendingAction after birthday delete runs the use case once`() =
+  fun `undoDelete commit after birthday delete runs the use case once`() =
     runTest {
       coEvery { deleteBirthdayUseCase("b1") } just Runs
       val vm = readyViewModelWithReminderAndBirthday()
@@ -776,7 +776,7 @@ class AgendaViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `undoPendingAction after bulk archive restores the reminder and never archives it`() =
+  fun `undoDelete undo after bulk archive restores the reminder and never archives it`() =
     runTest {
       val vm = readyViewModelWithReminderAndBirthday()
       vm.onItemLongClick("r1")
@@ -790,7 +790,7 @@ class AgendaViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `undoPendingAction after reminder archive restores it and never archives it`() =
+  fun `undoDelete undo after reminder archive restores it and never archives it`() =
     runTest {
       every { textProvider.getText(R.string.reminder_archived) } returns "Reminder archived"
       val vm = readyViewModelWithReminderAndBirthday()
