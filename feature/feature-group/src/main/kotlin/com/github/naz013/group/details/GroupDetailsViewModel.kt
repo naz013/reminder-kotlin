@@ -51,6 +51,9 @@ internal class GroupDetailsViewModel(
     viewModelScope.launch(dispatcherProvider.io()) {
       groupV2Repository.observeById(id)
         .combine(reminderV2Repository.observeActiveByGroupId(id)) { group, reminders -> group to reminders }
+        .combine(pendingDeleteCoordinator.pendingIds(PendingEntity.REMINDER)) { (group, reminders), pendingIds ->
+          group to reminders.filterNot { it.uuId in pendingIds }
+        }
         .collect { (group, reminders) -> applyGroup(group, reminders) }
     }
   }

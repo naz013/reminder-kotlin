@@ -74,6 +74,9 @@ class TagDetailsViewModelTest : BaseTest() {
   private val deleteTagWithAssignmentsUseCase = mockk<DeleteTagWithAssignmentsUseCase>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val pendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingReminderIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingNoteIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingBirthdayIds = MutableStateFlow<Set<String>>(emptySet())
   private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   private lateinit var viewModel: TagDetailsViewModel
@@ -164,6 +167,9 @@ class TagDetailsViewModelTest : BaseTest() {
   override fun setUp() {
     super.setUp()
     every { pendingDeleteCoordinator.pendingIds(PendingEntity.TAG) } returns pendingIds
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.REMINDER) } returns pendingReminderIds
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.NOTE) } returns pendingNoteIds
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.BIRTHDAY) } returns pendingBirthdayIds
     every { textProvider.getText(R.string.tag_deleted) } returns "Tag deleted"
     every { tagRepository.observeById("1") } returns flowOf(tag())
     every { tagAssignmentRepository.observeItemIdsForTag(any(), any()) } returns flowOf(emptyList())
@@ -242,6 +248,20 @@ class TagDetailsViewModelTest : BaseTest() {
 
     val state = vm.state.first()
     assertEquals(listOf(TagDetailItem.ReminderItem(uiReminder)), state.sections.single().items)
+  }
+
+  @Test
+  fun `hides a tagged note that is pending delete in the coordinator`() = runTest {
+    val note = noteWithImages("n1")
+    every { tagAssignmentRepository.observeItemIdsForTag("1", TaggedItemType.NOTE) } returns flowOf(listOf("n1"))
+    coEvery { noteRepository.getByIds(listOf("n1")) } returns listOf(note)
+    every { uiNoteListItemAdapter.convert(note) } returns uiNoteListItem("n1")
+    val vm = buildViewModel()
+    assertEquals(1, vm.state.first().sections.size)
+
+    pendingNoteIds.value = setOf("n1")
+
+    assertTrue(vm.state.first { it.sections.isEmpty() }.sections.isEmpty())
   }
 
   @Test

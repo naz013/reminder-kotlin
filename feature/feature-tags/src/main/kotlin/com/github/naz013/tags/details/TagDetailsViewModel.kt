@@ -11,6 +11,7 @@ import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
 import com.github.naz013.feature.common.viewmodel.PendingEntity
+import com.github.naz013.feature.common.viewmodel.pendingIdsOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
@@ -75,6 +76,14 @@ internal class TagDetailsViewModel(
         tagAssignmentRepository.observeItemIdsForTag(id, TaggedItemType.GOOGLE_TASK),
       ) { tag, reminderIds, noteIds, birthdayIds, taskIds ->
         TagAssignmentSnapshot(tag, reminderIds.toSet(), noteIds.toSet(), birthdayIds.toSet(), taskIds.toSet())
+      }.combine(
+        pendingDeleteCoordinator.pendingIdsOf(PendingEntity.REMINDER, PendingEntity.NOTE, PendingEntity.BIRTHDAY),
+      ) { snapshot, pendingIds ->
+        snapshot.copy(
+          reminderIds = snapshot.reminderIds - pendingIds,
+          noteIds = snapshot.noteIds - pendingIds,
+          birthdayIds = snapshot.birthdayIds - pendingIds,
+        )
       }.collect { snapshot -> applySnapshot(snapshot) }
     }
     viewModelScope.launch(dispatcherProvider.default()) {

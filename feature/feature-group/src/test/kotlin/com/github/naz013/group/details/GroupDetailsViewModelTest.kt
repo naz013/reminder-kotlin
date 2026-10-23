@@ -50,6 +50,7 @@ class GroupDetailsViewModelTest : BaseTest() {
   private val notificationOverrideSubtitleFormatter = mockk<NotificationOverrideSubtitleFormatter>()
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val pendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingReminderIds = MutableStateFlow<Set<String>>(emptySet())
   private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   private lateinit var viewModel: GroupDetailsViewModel
@@ -115,6 +116,7 @@ class GroupDetailsViewModelTest : BaseTest() {
   override fun setUp() {
     super.setUp()
     every { pendingDeleteCoordinator.pendingIds(PendingEntity.GROUP) } returns pendingIds
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.REMINDER) } returns pendingReminderIds
     every { textProvider.getText(R.string.group_deleted) } returns "Group deleted"
     every { groupV2Repository.observeById("1") } returns flowOf(groupV2(id = "1"))
     coEvery { groupV2Repository.countAll() } returns 2
@@ -144,6 +146,21 @@ class GroupDetailsViewModelTest : BaseTest() {
     assertEquals(500, state.color)
     assertEquals("High", state.notificationSubtitles.priority)
     assertEquals(listOf(uiReminder), state.reminders)
+  }
+
+  @Test
+  fun `hides a reminder that is pending delete in the coordinator`() = runTest {
+    val kept = reminderV2("r1")
+    val pending = reminderV2("r2")
+    every { reminderV2Repository.observeActiveByGroupId("1") } returns flowOf(listOf(kept, pending))
+    every { uiReminderListAdapter.createV2(kept, any()) } returns uiReminderList("r1")
+    every { uiReminderListAdapter.createV2(pending, any()) } returns uiReminderList("r2")
+    pendingReminderIds.value = setOf("r2")
+    val vm = buildViewModel()
+
+    val state = vm.state.first { it.reminders.isNotEmpty() }
+
+    assertEquals(listOf("r1"), state.reminders.map { it.id })
   }
 
   @Test
