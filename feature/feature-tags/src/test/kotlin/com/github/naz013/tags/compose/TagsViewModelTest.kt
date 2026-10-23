@@ -8,6 +8,7 @@ import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoEvent
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
+import com.github.naz013.logic.tag.DeleteTagWithAssignmentsUseCase
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.common.R
@@ -31,7 +32,7 @@ import org.junit.Test
 
 class TagsViewModelTest : BaseTest() {
   private val tagRepository = mockk<TagRepository>()
-  private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
+  private val deleteTagWithAssignmentsUseCase = mockk<DeleteTagWithAssignmentsUseCase>(relaxed = true)
   private val themeProvider = mockk<ThemeProvider>()
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val coordinatorPendingIds = MutableStateFlow<Set<String>>(emptySet())
@@ -51,7 +52,6 @@ class TagsViewModelTest : BaseTest() {
     every { pendingDeleteCoordinator.pendingIds(PendingEntity.TAG) } returns coordinatorPendingIds
     every { tagRepository.observeAll() } returns flowOf(emptyList())
     every { themeProvider.themedColor(any<Int>()) } returns Color.Red
-    coEvery { tagRepository.delete(any()) } returns Unit
 
     viewModel = createViewModel()
   }
@@ -61,7 +61,7 @@ class TagsViewModelTest : BaseTest() {
       dispatcherProvider = mockDispatcherProvider(),
       textProvider = textProvider,
       tagRepository = tagRepository,
-      tagAssignmentRepository = tagAssignmentRepository,
+      deleteTagWithAssignmentsUseCase = deleteTagWithAssignmentsUseCase,
       themeProvider = themeProvider,
       pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
@@ -127,8 +127,7 @@ class TagsViewModelTest : BaseTest() {
       viewModel.onTagMenuAction(TagState(id = "5", name = "Work", color = Color.Red), TagMenuAction.DELETE)
 
       assertTrue(viewModel.undoDelete.pendingIds.value.isEmpty())
-      coVerify(exactly = 0) { tagAssignmentRepository.detachAllForTag(any()) }
-      coVerify(exactly = 0) { tagRepository.delete(any()) }
+      coVerify(exactly = 0) { deleteTagWithAssignmentsUseCase(any()) }
     }
 
   @Test
@@ -138,8 +137,7 @@ class TagsViewModelTest : BaseTest() {
 
       viewModel.deleteTag("1")
 
-      coVerify(exactly = 0) { tagAssignmentRepository.detachAllForTag(any()) }
-      coVerify(exactly = 0) { tagRepository.delete(any()) }
+      coVerify(exactly = 0) { deleteTagWithAssignmentsUseCase(any()) }
       assertEquals(
         UndoEvent(batchKey = "1", message = "Tag deleted", token = 1L),
         viewModel.undoDelete.undoEvents.first(),
@@ -159,8 +157,7 @@ class TagsViewModelTest : BaseTest() {
 
       assertEquals(listOf("2"), hiddenIds)
       assertEquals(listOf("1", "2"), restoredIds)
-      coVerify(exactly = 0) { tagAssignmentRepository.detachAllForTag(any()) }
-      coVerify(exactly = 0) { tagRepository.delete(any()) }
+      coVerify(exactly = 0) { deleteTagWithAssignmentsUseCase(any()) }
     }
 
   @Test
@@ -171,8 +168,7 @@ class TagsViewModelTest : BaseTest() {
       viewModel.undoDelete.commit("1")
       viewModel.undoDelete.commit("1")
 
-      coVerify(exactly = 1) { tagAssignmentRepository.detachAllForTag("1") }
-      coVerify(exactly = 1) { tagRepository.delete("1") }
+      coVerify(exactly = 1) { deleteTagWithAssignmentsUseCase("1") }
     }
 
   @Test
@@ -182,8 +178,7 @@ class TagsViewModelTest : BaseTest() {
 
       TagsViewModel::class.java.getDeclaredMethod("onCleared").apply { isAccessible = true }.invoke(viewModel)
 
-      coVerify(exactly = 1) { tagAssignmentRepository.detachAllForTag("1") }
-      coVerify(exactly = 1) { tagRepository.delete("1") }
+      coVerify(exactly = 1) { deleteTagWithAssignmentsUseCase("1") }
     }
 
   @Test
@@ -255,7 +250,7 @@ class TagsViewModelTest : BaseTest() {
       vm.onDeleteSelectedClick()
 
       assertTrue(vm.undoDelete.pendingIds.value.isEmpty())
-      coVerify(exactly = 0) { tagRepository.delete(any()) }
+      coVerify(exactly = 0) { deleteTagWithAssignmentsUseCase(any()) }
     }
 
   @Test
@@ -281,8 +276,7 @@ class TagsViewModelTest : BaseTest() {
       assertEquals(0, state().selectedCount)
       assertEquals(listOf("3"), (state().listState as TagsListState.Ready).tags.map { it.id })
       assertEquals("2 tags deleted", vm.undoDelete.undoEvents.first().message)
-      coVerify(exactly = 0) { tagAssignmentRepository.detachAllForTag(any()) }
-      coVerify(exactly = 0) { tagRepository.delete(any()) }
+      coVerify(exactly = 0) { deleteTagWithAssignmentsUseCase(any()) }
     }
 
   @Test
@@ -294,10 +288,8 @@ class TagsViewModelTest : BaseTest() {
 
       vm.undoDelete.commit(vm.undoDelete.undoEvents.first().batchKey)
 
-      coVerify(exactly = 1) { tagAssignmentRepository.detachAllForTag("1") }
-      coVerify(exactly = 1) { tagRepository.delete("1") }
-      coVerify(exactly = 1) { tagAssignmentRepository.detachAllForTag("2") }
-      coVerify(exactly = 1) { tagRepository.delete("2") }
+      coVerify(exactly = 1) { deleteTagWithAssignmentsUseCase("1") }
+      coVerify(exactly = 1) { deleteTagWithAssignmentsUseCase("2") }
     }
 
   @Test
@@ -310,8 +302,7 @@ class TagsViewModelTest : BaseTest() {
       vm.undoDelete.undo(vm.undoDelete.undoEvents.first().batchKey)
 
       assertEquals(listOf("1", "2"), (state().listState as TagsListState.Ready).tags.map { it.id })
-      coVerify(exactly = 0) { tagAssignmentRepository.detachAllForTag(any()) }
-      coVerify(exactly = 0) { tagRepository.delete(any()) }
+      coVerify(exactly = 0) { deleteTagWithAssignmentsUseCase(any()) }
     }
 
   @Test

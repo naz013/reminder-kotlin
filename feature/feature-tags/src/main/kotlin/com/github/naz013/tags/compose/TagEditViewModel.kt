@@ -13,7 +13,7 @@ import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
-import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.logic.tag.DeleteTagWithAssignmentsUseCase
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.preferences.AppPreferences
@@ -29,7 +29,7 @@ internal class TagEditViewModel(
   private val id: String?,
   private val dispatcherProvider: DispatcherProvider,
   private val tagRepository: TagRepository,
-  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val deleteTagWithAssignmentsUseCase: DeleteTagWithAssignmentsUseCase,
   private val appPreferences: AppPreferences,
   private val themeProvider: ThemeProvider,
   private val textProvider: TextProvider,
@@ -99,9 +99,7 @@ internal class TagEditViewModel(
       id = tagId,
       message = textProvider.getText(R.string.tag_deleted),
     ) {
-      tagAssignmentRepository.detachAllForTag(tagId)
-      tagRepository.delete(tagId)
-      Logger.i(TAG, "Deleted tag, id: $tagId")
+      deleteTagWithAssignmentsUseCase(tagId)
     }
     navigationEvent.emit(NavigationEvent.Deleted(tagId))
   }

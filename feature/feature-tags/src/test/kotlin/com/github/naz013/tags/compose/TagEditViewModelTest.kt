@@ -4,7 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
 import com.github.naz013.feature.common.viewmodel.PendingEntity
-import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.logic.tag.DeleteTagWithAssignmentsUseCase
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
@@ -28,7 +28,7 @@ import org.junit.Test
 
 class TagEditViewModelTest : BaseTest() {
   private val tagRepository = mockk<TagRepository>(relaxed = true)
-  private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
+  private val deleteTagWithAssignmentsUseCase = mockk<DeleteTagWithAssignmentsUseCase>(relaxed = true)
   private val appPreferences = mockk<AppPreferences>(relaxed = true)
   private val themeProvider = mockk<ThemeProvider>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
@@ -48,7 +48,7 @@ class TagEditViewModelTest : BaseTest() {
       id = id,
       dispatcherProvider = mockDispatcherProvider(),
       tagRepository = tagRepository,
-      tagAssignmentRepository = tagAssignmentRepository,
+      deleteTagWithAssignmentsUseCase = deleteTagWithAssignmentsUseCase,
       appPreferences = appPreferences,
       themeProvider = themeProvider,
       textProvider = textProvider,
@@ -76,7 +76,7 @@ class TagEditViewModelTest : BaseTest() {
       verify(exactly = 1) {
         pendingDeleteCoordinator.markPending(PendingEntity.TAG, "1", "Tag deleted", any())
       }
-      coVerify(exactly = 0) { tagRepository.delete(any()) }
+      coVerify(exactly = 0) { deleteTagWithAssignmentsUseCase(any()) }
       assertEquals(
         TagEditViewModel.NavigationEvent.Deleted("1"),
         viewModel.navigationEvent.value?.peekContent(),
@@ -88,14 +88,12 @@ class TagEditViewModelTest : BaseTest() {
     runTest {
       val onCommit = slot<suspend () -> Unit>()
       every { pendingDeleteCoordinator.markPending(any(), any(), any(), capture(onCommit)) } just runs
-      coEvery { tagRepository.delete(any()) } returns Unit
       val viewModel = createViewModel()
       viewModel.onDeleteClick()
 
       onCommit.captured.invoke()
 
-      coVerify(exactly = 1) { tagAssignmentRepository.detachAllForTag("1") }
-      coVerify(exactly = 1) { tagRepository.delete("1") }
+      coVerify(exactly = 1) { deleteTagWithAssignmentsUseCase("1") }
     }
 
   @Test

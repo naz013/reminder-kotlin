@@ -14,6 +14,7 @@ import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.tag.DeleteTagWithAssignmentsUseCase
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -39,6 +40,7 @@ internal class TagDetailsViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val tagRepository: TagRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
+  private val deleteTagWithAssignmentsUseCase: DeleteTagWithAssignmentsUseCase,
   private val groupV2Repository: GroupV2Repository,
   private val reminderV2Repository: ReminderV2Repository,
   private val uiReminderListAdapter: UiReminderListAdapter,
@@ -112,9 +114,7 @@ internal class TagDetailsViewModel(
       id = id,
       message = textProvider.getText(R.string.tag_deleted),
     ) {
-      tagAssignmentRepository.detachAllForTag(id)
-      tagRepository.delete(id)
-      Logger.i(TAG, "Deleted tag, id: $id")
+      deleteTagWithAssignmentsUseCase(id)
     }
     navigationEvent.emit(NavigationEvent.Deleted(id))
   }

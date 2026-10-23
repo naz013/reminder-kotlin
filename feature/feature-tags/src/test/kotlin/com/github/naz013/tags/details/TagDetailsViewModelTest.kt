@@ -14,6 +14,7 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
 import com.github.naz013.feature.common.viewmodel.PendingEntity
+import com.github.naz013.logic.tag.DeleteTagWithAssignmentsUseCase
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -70,6 +71,7 @@ class TagDetailsViewModelTest : BaseTest() {
   private val googleTaskListRepository = mockk<GoogleTaskListRepository>()
   private val googleTaskItemStateAdapter = mockk<GoogleTaskItemStateAdapter>()
   private val themeProvider = mockk<ThemeProvider>()
+  private val deleteTagWithAssignmentsUseCase = mockk<DeleteTagWithAssignmentsUseCase>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val pendingIds = MutableStateFlow<Set<String>>(emptySet())
   private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
@@ -142,6 +144,7 @@ class TagDetailsViewModelTest : BaseTest() {
     dispatcherProvider = mockDispatcherProvider(),
     tagRepository = tagRepository,
     tagAssignmentRepository = tagAssignmentRepository,
+    deleteTagWithAssignmentsUseCase = deleteTagWithAssignmentsUseCase,
     groupV2Repository = groupV2Repository,
     reminderV2Repository = reminderV2Repository,
     uiReminderListAdapter = uiReminderListAdapter,
@@ -172,7 +175,7 @@ class TagDetailsViewModelTest : BaseTest() {
     coEvery { googleTaskRepository.getAll() } returns emptyList()
     every { themeProvider.themedColor(any()) } returns Color.Blue
     coEvery { tagAssignmentRepository.detachAllForTag(any()) } just Runs
-    coEvery { tagRepository.delete(any()) } just Runs
+    coEvery { deleteTagWithAssignmentsUseCase(any()) } just Runs
 
     viewModel = buildViewModel()
   }
@@ -324,7 +327,7 @@ class TagDetailsViewModelTest : BaseTest() {
     verify(exactly = 1) {
       pendingDeleteCoordinator.markPending(PendingEntity.TAG, "1", "Tag deleted", any())
     }
-    coVerify(exactly = 0) { tagRepository.delete(any()) }
+    coVerify(exactly = 0) { deleteTagWithAssignmentsUseCase(any()) }
     val event = viewModel.navigationEvent.value?.peekContent()
     assertEquals(TagDetailsViewModel.NavigationEvent.Deleted("1"), event)
   }
@@ -338,8 +341,7 @@ class TagDetailsViewModelTest : BaseTest() {
 
     onCommit.captured.invoke()
 
-    coVerify(exactly = 1) { tagAssignmentRepository.detachAllForTag("1") }
-    coVerify(exactly = 1) { tagRepository.delete("1") }
+    coVerify(exactly = 1) { deleteTagWithAssignmentsUseCase("1") }
   }
 
   @Test

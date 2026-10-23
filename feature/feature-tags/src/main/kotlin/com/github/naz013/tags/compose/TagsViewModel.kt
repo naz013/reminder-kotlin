@@ -12,8 +12,8 @@ import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
+import com.github.naz013.logic.tag.DeleteTagWithAssignmentsUseCase
 import com.github.naz013.logging.Logger
-import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.selection.clearSelection
@@ -35,7 +35,7 @@ internal class TagsViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val textProvider: TextProvider,
   private val tagRepository: TagRepository,
-  private val tagAssignmentRepository: TagAssignmentRepository,
+  private val deleteTagWithAssignmentsUseCase: DeleteTagWithAssignmentsUseCase,
   private val themeProvider: ThemeProvider,
   val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
@@ -166,9 +166,7 @@ internal class TagsViewModel(
   }
 
   private suspend fun deleteTagWithAssignments(id: String) {
-    tagAssignmentRepository.detachAllForTag(id)
-    tagRepository.delete(id)
-    Logger.i(TAG, "Deleted tag, id: $id")
+    deleteTagWithAssignmentsUseCase(id)
   }
 
   private fun toTagState(tag: Tag): TagState {
