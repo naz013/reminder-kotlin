@@ -19,18 +19,18 @@ class NoteRepositoryImplTest {
   }
 
   @Test
-  fun `delete removes the note's version history too`() = runTest {
+  fun `delete removes the note and its version history in one transaction`() = runTest {
     repository.delete("n-1")
 
-    verify { dao.delete("n-1") }
-    verify { dao.deleteVersionsForNote("n-1") }
+    verify(exactly = 1) { dao.deleteWithVersions("n-1") }
+    verify(exactly = 0) { dao.delete(any()) }
   }
 
   @Test
-  fun `deleteAllNotes removes every version too`() = runTest {
+  fun `deleteAllNotes removes every note and version in one transaction`() = runTest {
     repository.deleteAllNotes()
 
-    verify { dao.deleteAllNotes() }
-    verify { dao.deleteAllVersions() }
+    verify(exactly = 1) { dao.deleteAllNotesWithVersions() }
+    verify(exactly = 0) { dao.deleteAllNotes() }
   }
 }

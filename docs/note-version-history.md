@@ -6,6 +6,11 @@ notes have none, and a save is skipped when the newest version is less than 60 s
 kept per note (oldest pruned). `SaveNoteVersionUseCase` holds this logic; `NoteEditViewModel.saveNote` calls it and a
 failure there never blocks the save.
 
+Concurrency and atomicity: `SaveNoteVersionUseCase` serializes saves with a shared `Mutex`, and skips a snapshot
+whose text and spans are identical to the newest stored version (even when forced), so concurrent saves cannot create
+duplicates. The insert and the cap-of-20 trim run in one Room transaction (`NoteVersionRepository.addAndPrune`), and
+`NoteRepositoryImpl.delete` / `deleteAllNotes` delete the note and its versions in one transaction too.
+
 Versions are **local only**: they live in the Room table `NoteVersion` (migration 45 to 46, `NoteVersionRepository`
 in `data:repository-api`) and are deliberately absent from the `*Json` DTOs, `DataConverterImpl`, `data:sync` and
 backups. They are deleted with their note (`NoteRepositoryImpl.delete` / `deleteAllNotes`).

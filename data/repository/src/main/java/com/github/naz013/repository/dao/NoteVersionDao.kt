@@ -3,6 +3,7 @@ package com.github.naz013.repository.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import com.github.naz013.repository.entity.NoteVersionEntity
 
 @Dao
@@ -28,4 +29,11 @@ internal interface NoteVersionDao {
       "(SELECT id FROM NoteVersion WHERE noteKey=:noteKey ORDER BY savedAt DESC, id DESC LIMIT :keep)"
   )
   fun prune(noteKey: String, keep: Int)
+
+  @Transaction
+  fun insertAndPrune(version: NoteVersionEntity, keep: Int): Long {
+    val id = insert(version)
+    prune(version.noteKey, keep)
+    return id
+  }
 }

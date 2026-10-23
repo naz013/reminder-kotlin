@@ -121,6 +121,18 @@ internal interface NotesDao {
   @Query("DELETE FROM NoteVersion")
   fun deleteAllVersions()
 
+  @Transaction
+  fun deleteWithVersions(id: String) {
+    delete(id)
+    deleteVersionsForNote(id)
+  }
+
+  @Transaction
+  fun deleteAllNotesWithVersions() {
+    deleteAllNotes()
+    deleteAllVersions()
+  }
+
   @Query("DELETE FROM ImageFile")
   fun deleteAllImages()
 

@@ -16,6 +16,11 @@ internal class NoteVersionRepositoryImpl(
     return dao.insert(version.toEntity())
   }
 
+  override suspend fun addAndPrune(version: NoteVersion, keep: Int): Long {
+    Logger.d(TAG, "Add version for note: ${version.noteKey}, keep=$keep")
+    return dao.insertAndPrune(version.toEntity(), keep)
+  }
+
   override suspend fun getByNoteKey(noteKey: String): List<NoteVersion> {
     Logger.d(TAG, "Get versions for note: $noteKey")
     return dao.getByNoteKey(noteKey).map { it.toDomain() }

@@ -37,6 +37,19 @@ class NoteVersionRepositoryImplTest {
   }
 
   @Test
+  fun `addAndPrune inserts and prunes through the single transactional DAO call`() = runTest {
+    val entity = slot<NoteVersionEntity>()
+    every { dao.insertAndPrune(capture(entity), 20) } returns 9L
+
+    val id = repository.addAndPrune(NoteVersion(noteKey = "n-1", content = NoteDocument(text = "old"), savedAt = 100L), 20)
+
+    assertEquals(9L, id)
+    assertEquals("n-1", entity.captured.noteKey)
+    verify(exactly = 0) { dao.insert(any()) }
+    verify(exactly = 0) { dao.prune(any(), any()) }
+  }
+
+  @Test
   fun `getByNoteKey maps entities back to domain keeping the DAO order`() = runTest {
     every { dao.getByNoteKey("n-1") } returns listOf(
       NoteVersionEntity(id = 2, noteKey = "n-1", text = "b", spans = emptyList(), savedAt = 200L),
