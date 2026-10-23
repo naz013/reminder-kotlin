@@ -129,6 +129,7 @@ and use the undo Snackbar instead; `NotesViewModel` is the reference. Only keep 
 passed through a nav event such as `NavigationEvent.ConfirmMergeSelected`) for irreversible or
 cascading actions. Recolor and similar non-destructive actions skip both. This is judgment, not a
 hard rule - follow what the screen already does for one item.
+
 ## 4. UI recipe
 
 ```kotlin

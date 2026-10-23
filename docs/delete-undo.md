@@ -24,11 +24,10 @@ on commit.
 5. Screen: `UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)`.
 
 Migrated screens: Agenda, Birthdays, Reminders archive, Notes (delete and archive/unarchive, single and
-bulk; list and archive each own a controller and a `SnackbarHostState`), Places list (undo only,
-no confirm), Tags list and Groups list (confirm kept,
-cascade runs on commit), Workflow rules (gallery, group and reminder scopes; undo only, no confirm).
-Still on confirm until cards 5/6: the Note preview and Note edit screens. Other remaining screens: see
-the unified delete-undo Trello series.
+bulk; list and archive each own a controller and a `SnackbarHostState`), Places list (undo only, no
+confirm), Tags list and Groups list (confirm kept, cascade runs on commit), Workflow rules (gallery,
+group and reminder scopes; undo only, no confirm). Still on confirm until card 5/6: the preview and
+edit screens. Other remaining screens: see the unified delete-undo Trello series.
 
 Bulk selection flows: see [multiselect.md](multiselect.md).
 
