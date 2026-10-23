@@ -224,6 +224,17 @@ class BirthdaysViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `clearing the view model commits a pending delete`() =
+    runTest {
+      viewModel.onMenuAction(uiBirthday(id = "7"), AgendaMenuAction.DELETE)
+      viewModel.onDeleteConfirmed()
+
+      BirthdaysViewModel::class.java.getDeclaredMethod("onCleared").apply { isAccessible = true }.invoke(viewModel)
+
+      coVerify(exactly = 1) { deleteBirthdayUseCase("7") }
+    }
+
+  @Test
   fun `commitDelete deletes the birthday after the undo window`() =
     runTest {
       viewModel.onMenuAction(uiBirthday(id = "7"), AgendaMenuAction.DELETE)

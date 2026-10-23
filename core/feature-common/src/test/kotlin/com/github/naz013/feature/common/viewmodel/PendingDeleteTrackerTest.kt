@@ -95,6 +95,19 @@ class PendingDeleteTrackerTest {
     }
 
   @Test
+  fun `commitAllDetached runs every pending commit action`() {
+    val tracker = PendingDeleteTracker()
+    val committed = java.util.concurrent.CopyOnWriteArrayList<String>()
+    tracker.markPending(batchKey = "a", ids = setOf("1")) { committed.add("a") }
+    tracker.markPending(batchKey = "b", ids = setOf("2")) { committed.add("b") }
+
+    tracker.commitAllDetached(kotlinx.coroutines.Dispatchers.Unconfined)
+
+    assertEquals(setOf("a", "b"), committed.toSet())
+    assertEquals(emptySet<String>(), tracker.pendingIds.value)
+  }
+
+  @Test
   fun `re-marking the same batch key replaces its ids and commit action`() =
     runBlocking {
       val tracker = PendingDeleteTracker()

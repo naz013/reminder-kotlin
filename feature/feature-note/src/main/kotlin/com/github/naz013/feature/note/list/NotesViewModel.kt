@@ -422,6 +422,11 @@ internal class NotesViewModel(
     }
   }
 
+  override fun onCleared() {
+    super.onCleared()
+    pendingDeleteTracker.commitAllDetached(dispatcherProvider.io())
+  }
+
   fun saveNoteColor(
     id: String,
     color: Int,

@@ -1,8 +1,12 @@
 package com.github.naz013.feature.common.viewmodel
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 /**
  * Backs an "undo delete" Snackbar for a list screen. [markPending] hides [ids] from the UI
@@ -43,6 +47,14 @@ class PendingDeleteTracker {
 
   suspend fun commitAll() {
     pendingBatches.keys.toList().forEach { commit(it) }
+  }
+
+  /**
+   * For `ViewModel.onCleared()`: viewModelScope is already cancelled there, so pending batches are
+   * committed on a standalone scope that outlives the ViewModel.
+   */
+  fun commitAllDetached(dispatcher: CoroutineDispatcher) {
+    CoroutineScope(SupervisorJob() + dispatcher).launch { commitAll() }
   }
 
   private class PendingBatch(

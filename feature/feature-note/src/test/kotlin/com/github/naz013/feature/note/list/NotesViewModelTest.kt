@@ -393,6 +393,17 @@ class NotesViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `clearing the view model commits a pending single delete`() =
+    runTest {
+      val viewModel = createViewModel()
+      viewModel.deleteNote("7")
+
+      NotesViewModel::class.java.getDeclaredMethod("onCleared").apply { isAccessible = true }.invoke(viewModel)
+
+      coVerify(exactly = 1) { deleteNoteUseCase("7") }
+    }
+
+  @Test
   fun `onNoteMenuAction UNARCHIVE unarchives the note without touching the widget`() =
     runTest {
       val viewModel = createViewModel()

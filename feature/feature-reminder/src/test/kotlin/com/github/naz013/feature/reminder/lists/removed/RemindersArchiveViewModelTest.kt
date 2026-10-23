@@ -191,6 +191,20 @@ class RemindersArchiveViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `clearing the view model commits a pending delete`() =
+    runTest {
+      val target = reminderV2("1")
+      coEvery { reminderV2Repository.getById("1") } returns target
+      viewModel.deleteReminder("1")
+
+      RemindersArchiveViewModel::class.java.getDeclaredMethod("onCleared")
+        .apply { isAccessible = true }
+        .invoke(viewModel)
+
+      coVerify(exactly = 1) { deleteReminderUseCase(target) }
+    }
+
+  @Test
   fun `commitDelete does nothing when the reminder is not found`() =
     runTest {
       coEvery { reminderV2Repository.getById("missing") } returns null

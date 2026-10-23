@@ -242,6 +242,11 @@ internal class BirthdaysViewModel(
     }
   }
 
+  override fun onCleared() {
+    super.onCleared()
+    pendingDeleteTracker.commitAllDetached(dispatcherProvider.io())
+  }
+
   sealed interface NavigationEvent {
     data class OpenPreview(val id: String) : NavigationEvent
     data class OpenEdit(val id: String) : NavigationEvent

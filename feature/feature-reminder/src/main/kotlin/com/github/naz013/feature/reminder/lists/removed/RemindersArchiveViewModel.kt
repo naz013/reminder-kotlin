@@ -138,6 +138,11 @@ class RemindersArchiveViewModel(
     }
   }
 
+  override fun onCleared() {
+    super.onCleared()
+    pendingDeleteTracker.commitAllDetached(dispatcherProvider.io())
+  }
+
   // Driven by reminderV2Repository.observeByRemovedStatus in init - no manual reload needed after
   // deleteReminder/deleteAll, the Flow re-emits on its own once the delete use case writes through.
   private suspend fun applyReminders(reminders: List<ReminderV2>, query: String) {
