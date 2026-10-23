@@ -3,6 +3,7 @@ package com.github.naz013.feature.reminder.lists.removed
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteAllReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.repository.GroupV2Repository
@@ -34,6 +35,7 @@ class RemindersArchiveViewModelTest : BaseTest() {
   private val deleteReminderUseCase = mockk<DeleteReminderUseCase>(relaxed = true)
   private val deleteAllReminderUseCase = mockk<DeleteAllReminderUseCase>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
+  private val activateReminderUseCase = mockk<ActivateReminderUseCase>(relaxed = true)
 
   private lateinit var viewModel: RemindersArchiveViewModel
 
@@ -56,6 +58,7 @@ class RemindersArchiveViewModelTest : BaseTest() {
       uiReminderListAdapter = uiReminderListAdapter,
       deleteReminderUseCase = deleteReminderUseCase,
       deleteAllReminderUseCase = deleteAllReminderUseCase,
+      activateReminderUseCase = activateReminderUseCase,
     )
 
   private fun reminderV2(
@@ -153,6 +156,32 @@ class RemindersArchiveViewModelTest : BaseTest() {
     val event = viewModel.event.value?.peekContent()
     assertEquals(RemindersArchiveViewModel.NavigationEvent.ConfirmDeleteReminder("7"), event)
   }
+
+  @Test
+  fun `onMenuAction RESTORE activates the reminder as not removed and emits ReminderRestored`() =
+    runTest {
+      val target = reminderV2("7").copy(isRemoved = true)
+      coEvery { reminderV2Repository.getById("7") } returns target
+
+      viewModel.onMenuAction(uiReminderList("7"), ArchiveReminderMenuAction.RESTORE)
+
+      coVerify(exactly = 1) { activateReminderUseCase(target.copy(isRemoved = false)) }
+      assertEquals(
+        RemindersArchiveViewModel.NavigationEvent.ReminderRestored,
+        viewModel.event.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `onMenuAction RESTORE does nothing when the reminder is not found`() =
+    runTest {
+      coEvery { reminderV2Repository.getById("7") } returns null
+
+      viewModel.onMenuAction(uiReminderList("7"), ArchiveReminderMenuAction.RESTORE)
+
+      coVerify(exactly = 0) { activateReminderUseCase(any(), any(), any()) }
+      assertEquals(null, viewModel.event.value)
+    }
 
   @Test
   fun `onDeleteAllClick emits ConfirmDeleteAll navigation event`() {

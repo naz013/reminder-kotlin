@@ -1307,4 +1307,6 @@
     <string name="note_share_format_plain_text">Almindelig tekst</string>
     <string name="note_share_format_markdown">Markdown</string>
     <string name="note_share_format_html">HTML</string>
+    <string name="restore">Gendan</string>
+    <string name="reminder_restored">Påmindelsen er gendannet</string>
 </resources>

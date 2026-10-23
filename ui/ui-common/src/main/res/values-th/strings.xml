@@ -1300,4 +1300,6 @@
     <string name="note_share_format_plain_text">ข้อความธรรมดา</string>
     <string name="note_share_format_markdown">Markdown</string>
     <string name="note_share_format_html">HTML</string>
+    <string name="restore">กู้คืน</string>
+    <string name="reminder_restored">กู้คืนการเตือนแล้ว</string>
 </resources>

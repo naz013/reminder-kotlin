@@ -1314,4 +1314,6 @@
     <string name="note_share_format_plain_text">Обычный текст</string>
     <string name="note_share_format_markdown">Markdown</string>
     <string name="note_share_format_html">HTML</string>
+    <string name="restore">Восстановить</string>
+    <string name="reminder_restored">Напоминание восстановлено</string>
 </resources>

@@ -30,4 +30,5 @@ sealed interface ListState {
 enum class ArchiveReminderMenuAction {
   EDIT,
   DELETE,
+  RESTORE,
 }

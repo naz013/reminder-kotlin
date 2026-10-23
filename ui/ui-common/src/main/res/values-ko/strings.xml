@@ -1302,4 +1302,6 @@
     <string name="note_share_format_plain_text">일반 텍스트</string>
     <string name="note_share_format_markdown">Markdown</string>
     <string name="note_share_format_html">HTML</string>
+    <string name="restore">복원</string>
+    <string name="reminder_restored">알림이 복원되었습니다</string>
 </resources>

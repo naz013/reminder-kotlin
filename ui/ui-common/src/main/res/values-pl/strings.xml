@@ -1315,4 +1315,6 @@
     <string name="note_share_format_plain_text">Zwykły tekst</string>
     <string name="note_share_format_markdown">Markdown</string>
     <string name="note_share_format_html">HTML</string>
+    <string name="restore">Przywróć</string>
+    <string name="reminder_restored">Przypomnienie zostało przywrócone</string>
 </resources>

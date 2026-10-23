@@ -1305,4 +1305,6 @@
     <string name="note_share_format_plain_text">Reiner Text</string>
     <string name="note_share_format_markdown">Markdown</string>
     <string name="note_share_format_html">HTML</string>
+    <string name="restore">Wiederherstellen</string>
+    <string name="reminder_restored">Erinnerung wiederhergestellt</string>
 </resources>

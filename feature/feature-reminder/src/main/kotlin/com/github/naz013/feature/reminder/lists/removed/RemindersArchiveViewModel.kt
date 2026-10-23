@@ -15,6 +15,7 @@ import com.github.naz013.feature.common.viewmodel.PendingDeleteTracker
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteAllReminderUseCase
 import com.github.naz013.logic.reminder.usecase.DeleteReminderUseCase
 import com.github.naz013.repository.GroupV2Repository
@@ -41,6 +42,7 @@ class RemindersArchiveViewModel(
   private val uiReminderListAdapter: UiReminderListAdapter,
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val deleteAllReminderUseCase: DeleteAllReminderUseCase,
+  private val activateReminderUseCase: ActivateReminderUseCase,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(RemindersArchiveScreenState())
@@ -89,6 +91,22 @@ class RemindersArchiveViewModel(
     when (action) {
       ArchiveReminderMenuAction.EDIT -> event.emit(NavigationEvent.OpenEdit(item.id))
       ArchiveReminderMenuAction.DELETE -> event.emit(NavigationEvent.ConfirmDeleteReminder(item.id))
+      ArchiveReminderMenuAction.RESTORE -> restoreReminder(item.id)
+    }
+  }
+
+  private fun restoreReminder(id: String) {
+    viewModelScope.launch(dispatcherProvider.io()) {
+      val reminder = reminderV2Repository.getById(id)
+      if (reminder == null) {
+        Logger.e(TAG, "Cannot restore reminder with id = $id. Not found.")
+        return@launch
+      }
+      activateReminderUseCase(reminder.copy(isRemoved = false))
+      Logger.i(TAG, "Restored reminder: $id")
+      withContext(dispatcherProvider.main()) {
+        event.emit(NavigationEvent.ReminderRestored)
+      }
     }
   }
 
@@ -188,6 +206,8 @@ class RemindersArchiveViewModel(
     data object ConfirmDeleteAll : NavigationEvent
 
     data object ArchiveEmptied : NavigationEvent
+
+    data object ReminderRestored : NavigationEvent
 
     data class ShowUndoDelete(
       val batchKey: String,

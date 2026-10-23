@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.foundation.component.AgendaListItem
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.reminder.UiReminderList
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 
@@ -27,6 +28,11 @@ fun ArchiveReminderRow(
           id = ArchiveReminderMenuAction.EDIT.ordinal,
           title = stringResource(R.string.edit),
           iconRes = R.drawable.ic_fluent_edit,
+        ),
+        PopupMenuItem(
+          id = ArchiveReminderMenuAction.RESTORE.ordinal,
+          title = stringResource(R.string.restore),
+          iconRes = DrawableCatalog.Fluent.ArrowCounterclockwise,
         ),
         PopupMenuItem(
           id = ArchiveReminderMenuAction.DELETE.ordinal,

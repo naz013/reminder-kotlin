@@ -1305,4 +1305,6 @@
     <string name="note_share_format_plain_text">सादा पाठ</string>
     <string name="note_share_format_markdown">Markdown</string>
     <string name="note_share_format_html">HTML</string>
+    <string name="restore">पुनर्स्थापित करें</string>
+    <string name="reminder_restored">रिमाइंडर पुनर्स्थापित किया गया</string>
 </resources>

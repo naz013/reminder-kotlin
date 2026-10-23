@@ -1312,4 +1312,6 @@
     <string name="note_share_format_plain_text">Texte brut</string>
     <string name="note_share_format_markdown">Markdown</string>
     <string name="note_share_format_html">HTML</string>
+    <string name="restore">Restaurer</string>
+    <string name="reminder_restored">Rappel restauré</string>
 </resources>
