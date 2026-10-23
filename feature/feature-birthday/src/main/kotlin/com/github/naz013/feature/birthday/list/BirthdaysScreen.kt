@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Button
@@ -29,7 +28,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -77,8 +75,6 @@ internal fun BirthdaysScreen(
   onItemClick: (UiAgendaBirthday) -> Unit,
   onItemLongClick: (String) -> Unit,
   onMenuAction: (UiAgendaBirthday, AgendaMenuAction) -> Unit,
-  onDeleteConfirmed: () -> Unit,
-  onDeleteDismiss: () -> Unit,
   onSelectionCancel: () -> Unit,
   onDeleteSelectedClick: () -> Unit,
   modifier: Modifier = Modifier,
@@ -194,19 +190,6 @@ internal fun BirthdaysScreen(
       onDismissRequest = { showFilterSheet = false },
       onSmartListSelected = onSmartListSelected,
       onTagFilterSelected = onTagFilterSelected,
-    )
-  }
-
-  if (state.confirmDeleteId != null) {
-    AlertDialog(
-      onDismissRequest = onDeleteDismiss,
-      text = { Text(stringResource(R.string.are_you_sure)) },
-      confirmButton = {
-        TextButton(onClick = onDeleteConfirmed) { Text(stringResource(R.string.yes)) }
-      },
-      dismissButton = {
-        TextButton(onClick = onDeleteDismiss) { Text(stringResource(R.string.no)) }
-      },
     )
   }
 }
@@ -383,8 +366,6 @@ private fun BirthdaysScreenEmptyPreview() {
       onItemClick = {},
       onItemLongClick = {},
       onMenuAction = { _, _ -> },
-      onDeleteConfirmed = {},
-      onDeleteDismiss = {},
       onSelectionCancel = {},
       onDeleteSelectedClick = {},
     )

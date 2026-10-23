@@ -1153,7 +1153,6 @@
     <string name="settings_search_keyword_delete_cloud_backup">șterge copia de rezervă din cloud</string>
     <string name="birthday_selected_count_one">%1$d zi de naștere selectată</string>
     <string name="birthday_selected_count_other">%1$d zile de naștere selectate</string>
-    <string name="birthdays_delete_selected_permanently">Ștergere %1$d zile de naștere permanent?</string>
     <string name="selected_count">%1$d selectate</string>
     <string name="undo">Anulează</string>
     <string name="note_deleted">Notă ștearsă</string>

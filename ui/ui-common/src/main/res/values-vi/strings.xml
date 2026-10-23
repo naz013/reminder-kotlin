@@ -1151,7 +1151,6 @@
     <string name="settings_search_keyword_delete_cloud_backup">xóa bản sao lưu đám mây</string>
     <string name="birthday_selected_count_one">%1$d sinh nhật được chọn</string>
     <string name="birthday_selected_count_other">%1$d sinh nhật được chọn</string>
-    <string name="birthdays_delete_selected_permanently">Xóa vĩnh viễn %1$d sinh nhật?</string>
     <string name="selected_count">Đã chọn %1$d</string>
     <string name="undo">Hoàn tác</string>
     <string name="note_deleted">Đã xóa ghi chú</string>

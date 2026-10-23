@@ -9,7 +9,7 @@ import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
-import com.github.naz013.feature.common.viewmodel.PendingDeleteTracker
+import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logic.birthday.BirthdayQueryFilter
@@ -65,7 +65,7 @@ internal class BirthdaysViewModel(
   private val searchQuery = MutableStateFlow("")
   private val selectedSmartList = MutableStateFlow<SmartListFilter?>(null)
   private val selectedTagId = MutableStateFlow<String?>(null)
-  private val pendingDeleteTracker = PendingDeleteTracker()
+  val undoDelete = UndoDeleteController(viewModelScope, dispatcherProvider.io())
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -90,7 +90,7 @@ internal class BirthdaysViewModel(
             birthdays.filter { it.uuId in ids }
           }
         }
-        .combine(pendingDeleteTracker.pendingIds) { birthdays, pendingIds ->
+        .combine(undoDelete.pendingIds) { birthdays, pendingIds ->
           birthdays.filterNot { it.uuId in pendingIds }
         }
         .collect { applyList(it) }
@@ -173,30 +173,18 @@ internal class BirthdaysViewModel(
   fun onDeleteSelectedClick() {
     val ids = selectedIds()
     if (ids.isEmpty()) return
-    navigationEvent.emit(
-      NavigationEvent.ConfirmDeleteSelected(
-        ids = ids,
-        title = textProvider.getText(R.string.birthdays_delete_selected_permanently, ids.size),
-      ),
-    )
-  }
-
-  fun deleteSelectedBirthdays(ids: Set<String>) {
-    if (ids.isEmpty()) return
     val batchKey = UUID.randomUUID().toString()
     // Clear selection before marking pending: markPending's pendingIds update can synchronously
     // empty listState (via the reactive pipeline above), and updateSelection is a no-op once
     // listState is no longer Ready - clearing first avoids a stuck selectedCount.
     onSelectionCancel()
-    pendingDeleteTracker.markPending(batchKey = batchKey, ids = ids) {
+    undoDelete.markPending(
+      batchKey = batchKey,
+      ids = ids,
+      message = textProvider.getText(R.string.birthdays_deleted_count, ids.size),
+    ) {
       ids.forEach { deleteBirthdayUseCase(it) }
     }
-    navigationEvent.emit(
-      NavigationEvent.ShowUndoDelete(
-        batchKey = batchKey,
-        message = textProvider.getText(R.string.birthdays_deleted_count, ids.size),
-      )
-    )
   }
 
   fun onMenuAction(
@@ -206,7 +194,7 @@ internal class BirthdaysViewModel(
     when (action) {
       AgendaMenuAction.OPEN -> navigationEvent.emit(NavigationEvent.OpenPreview(item.id))
       AgendaMenuAction.EDIT -> navigationEvent.emit(NavigationEvent.OpenEdit(item.id))
-      AgendaMenuAction.DELETE -> _state.update { it.copy(confirmDeleteId = item.id) }
+      AgendaMenuAction.DELETE -> deleteBirthday(item.id)
       AgendaMenuAction.ARCHIVE, AgendaMenuAction.SKIP, AgendaMenuAction.TURN_OFF,
       AgendaMenuAction.PIN, AgendaMenuAction.UNPIN,
       -> Unit
@@ -217,42 +205,25 @@ internal class BirthdaysViewModel(
     navigationEvent.emit(NavigationEvent.OpenNewBirthday)
   }
 
-  fun onDeleteDismiss() {
-    _state.update { it.copy(confirmDeleteId = null) }
-  }
-
-  fun onDeleteConfirmed() {
-    val id = _state.value.confirmDeleteId ?: return
-    _state.update { it.copy(confirmDeleteId = null) }
-    pendingDeleteTracker.markPending(batchKey = id, ids = setOf(id)) {
+  private fun deleteBirthday(id: String) {
+    undoDelete.markPending(
+      batchKey = id,
+      ids = setOf(id),
+      message = textProvider.getText(R.string.birthday_deleted),
+    ) {
       deleteBirthdayUseCase(id)
-    }
-    navigationEvent.emit(
-      NavigationEvent.ShowUndoDelete(batchKey = id, message = textProvider.getText(R.string.birthday_deleted))
-    )
-  }
-
-  fun undoDelete(batchKey: String) {
-    pendingDeleteTracker.undo(batchKey)
-  }
-
-  fun commitDelete(batchKey: String) {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      pendingDeleteTracker.commit(batchKey)
     }
   }
 
   override fun onCleared() {
     super.onCleared()
-    pendingDeleteTracker.commitAllDetached(dispatcherProvider.io())
+    undoDelete.commitAllDetached(dispatcherProvider.io())
   }
 
   sealed interface NavigationEvent {
     data class OpenPreview(val id: String) : NavigationEvent
     data class OpenEdit(val id: String) : NavigationEvent
     data object OpenNewBirthday : NavigationEvent
-    data class ConfirmDeleteSelected(val ids: Set<String>, val title: String) : NavigationEvent
-    data class ShowUndoDelete(val batchKey: String, val message: String) : NavigationEvent
   }
 
   companion object {

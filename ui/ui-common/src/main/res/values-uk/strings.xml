@@ -1153,7 +1153,6 @@
     <string name="settings_search_keyword_delete_cloud_backup">видалити хмарну резервну копію</string>
     <string name="birthday_selected_count_one">Вибрано %1$d день народження</string>
     <string name="birthday_selected_count_other">Вибрано %1$d днів народження</string>
-    <string name="birthdays_delete_selected_permanently">Видалити %1$d днів народження назавжди?</string>
     <string name="selected_count">Вибрано %1$d</string>
     <string name="undo">Скасувати</string>
     <string name="note_deleted">Нотатку видалено</string>

@@ -1151,7 +1151,6 @@
     <string name="settings_search_keyword_delete_cloud_backup">slett skysikkerhetskopi</string>
     <string name="birthday_selected_count_one">%1$d bursdag valgt</string>
     <string name="birthday_selected_count_other">%1$d bursdager valgt</string>
-    <string name="birthdays_delete_selected_permanently">Slette %1$d bursdager permanent?</string>
     <string name="selected_count">%1$d valgt</string>
     <string name="undo">Angre</string>
     <string name="note_deleted">Notat slettet</string>

@@ -26,10 +26,9 @@ import com.github.naz013.feature.birthday.preview.PreviewBirthdayViewModel
 import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
-import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.compose.foundation.navigation.sidePanelSupporting
-import com.github.naz013.ui.common.compose.foundation.snackbar.rememberUndoSnackbarDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
@@ -78,10 +77,8 @@ private fun ListEntry(
   backStack: MutableList<NavKey>,
 ) {
   val viewModel = koinViewModel<BirthdaysViewModel>()
-  val dialogDispatcher = rememberDialogDispatcher()
   val snackbarHostState = remember { SnackbarHostState() }
-  val undoSnackbarDispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
-  val undoActionLabel = stringResource(R.string.undo)
+  UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
 
   val selectedItemId =
     backStack.lastOrNull()?.let { key ->
@@ -108,24 +105,6 @@ private fun ListEntry(
       is BirthdaysViewModel.NavigationEvent.OpenNewBirthday -> {
         backStack.navigateToDetailPane(BirthdaysNavKey.Edit())
       }
-
-      is BirthdaysViewModel.NavigationEvent.ConfirmDeleteSelected -> {
-        dialogDispatcher.showDialog(
-          text = event.title,
-          positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.cancel,
-          onPositive = { viewModel.deleteSelectedBirthdays(event.ids) },
-        )
-      }
-
-      is BirthdaysViewModel.NavigationEvent.ShowUndoDelete -> {
-        undoSnackbarDispatcher.showUndoSnackbar(
-          message = event.message,
-          actionLabel = undoActionLabel,
-          onUndo = { viewModel.undoDelete(event.batchKey) },
-          onTimeout = { viewModel.commitDelete(event.batchKey) },
-        )
-      }
     }
   }
 
@@ -141,8 +120,6 @@ private fun ListEntry(
     onItemClick = viewModel::onItemClick,
     onItemLongClick = viewModel::onItemLongClick,
     onMenuAction = viewModel::onMenuAction,
-    onDeleteConfirmed = viewModel::onDeleteConfirmed,
-    onDeleteDismiss = viewModel::onDeleteDismiss,
     onSelectionCancel = viewModel::onSelectionCancel,
     onDeleteSelectedClick = viewModel::onDeleteSelectedClick,
   )

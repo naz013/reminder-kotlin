@@ -1153,7 +1153,6 @@
     <string name="settings_search_keyword_delete_cloud_backup">elimina backup cloud</string>
     <string name="birthday_selected_count_one">%1$d compleanno selezionato</string>
     <string name="birthday_selected_count_other">%1$d compleanni selezionati</string>
-    <string name="birthdays_delete_selected_permanently">Eliminare %1$d compleanni definitivamente?</string>
     <string name="selected_count">%1$d selezionati</string>
     <string name="undo">Annulla</string>
     <string name="note_deleted">Nota eliminata</string>

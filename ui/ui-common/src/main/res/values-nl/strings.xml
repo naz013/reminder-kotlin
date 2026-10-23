@@ -1151,7 +1151,6 @@
     <string name="settings_search_keyword_delete_cloud_backup">cloudback-up verwijderen</string>
     <string name="birthday_selected_count_one">%1$d verjaardag geselecteerd</string>
     <string name="birthday_selected_count_other">%1$d verjaardagen geselecteerd</string>
-    <string name="birthdays_delete_selected_permanently">%1$d verjaardagen permanent verwijderen?</string>
     <string name="selected_count">%1$d geselecteerd</string>
     <string name="undo">Ongedaan maken</string>
     <string name="note_deleted">Notitie verwijderd</string>

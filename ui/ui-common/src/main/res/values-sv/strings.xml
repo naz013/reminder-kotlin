@@ -1151,7 +1151,6 @@
     <string name="settings_search_keyword_delete_cloud_backup">ta bort molnsäkerhetskopia</string>
     <string name="birthday_selected_count_one">%1$d födelsedag vald</string>
     <string name="birthday_selected_count_other">%1$d födelsedagar valda</string>
-    <string name="birthdays_delete_selected_permanently">Ta bort %1$d födelsedagar permanent?</string>
     <string name="selected_count">%1$d valda</string>
     <string name="undo">Ångra</string>
     <string name="note_deleted">Anteckning raderad</string>

@@ -1153,7 +1153,6 @@
     <string name="settings_search_keyword_delete_cloud_backup">изтриване на облачно архивиране</string>
     <string name="birthday_selected_count_one">Избран е %1$d роден ден</string>
     <string name="birthday_selected_count_other">Избрани са %1$d рождени дни</string>
-    <string name="birthdays_delete_selected_permanently">Изтриване на %1$d рождени дни окончателно?</string>
     <string name="selected_count">Избрани %1$d</string>
     <string name="undo">Отмяна</string>
     <string name="note_deleted">Бележката е изтрита</string>

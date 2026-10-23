@@ -1149,7 +1149,6 @@
     <string name="settings_search_keyword_delete_cloud_backup">Cloud-Backup löschen</string>
     <string name="birthday_selected_count_one">%1$d Geburtstag ausgewählt</string>
     <string name="birthday_selected_count_other">%1$d Geburtstage ausgewählt</string>
-    <string name="birthdays_delete_selected_permanently">%1$d Geburtstage dauerhaft löschen?</string>
     <string name="selected_count">%1$d ausgewählt</string>
     <string name="undo">Rückgängig</string>
     <string name="note_deleted">Notiz gelöscht</string>

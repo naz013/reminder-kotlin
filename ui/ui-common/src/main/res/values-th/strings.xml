@@ -1151,7 +1151,6 @@
     <string name="settings_search_keyword_delete_cloud_backup">ลบข้อมูลสำรองบนคลาวด์</string>
     <string name="birthday_selected_count_one">เลือก %1$d วันเกิดแล้ว</string>
     <string name="birthday_selected_count_other">เลือก %1$d วันเกิดแล้ว</string>
-    <string name="birthdays_delete_selected_permanently">ลบ %1$d วันเกิดอย่างถาวร?</string>
     <string name="selected_count">เลือก %1$d รายการแล้ว</string>
     <string name="undo">เลิกทำ</string>
     <string name="note_deleted">ลบโน้ตแล้ว</string>

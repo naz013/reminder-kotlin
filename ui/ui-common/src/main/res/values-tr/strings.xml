@@ -1153,7 +1153,6 @@
     <string name="settings_search_keyword_delete_cloud_backup">bulut yedeğini sil</string>
     <string name="birthday_selected_count_one">%1$d doğum günü seçildi</string>
     <string name="birthday_selected_count_other">%1$d doğum günü seçildi</string>
-    <string name="birthdays_delete_selected_permanently">%1$d doğum günü kalıcı olarak silinsin mi?</string>
     <string name="selected_count">%1$d seçildi</string>
     <string name="undo">Geri al</string>
     <string name="note_deleted">Not silindi</string>

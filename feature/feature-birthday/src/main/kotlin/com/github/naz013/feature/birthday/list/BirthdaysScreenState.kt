@@ -11,7 +11,6 @@ internal data class BirthdaysScreenState(
   val selectedSmartList: SmartListFilter? = null,
   val selectedTagId: String? = null,
   val availableTags: List<TagChipState> = emptyList(),
-  val confirmDeleteId: String? = null,
   val selectedCount: Int = 0,
 )
 

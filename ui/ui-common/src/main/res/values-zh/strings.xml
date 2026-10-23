@@ -1153,7 +1153,6 @@
     <string name="settings_search_keyword_delete_cloud_backup">删除云备份</string>
     <string name="birthday_selected_count_one">已选择 %1$d 个生日</string>
     <string name="birthday_selected_count_other">已选择 %1$d 个生日</string>
-    <string name="birthdays_delete_selected_permanently">永久删除 %1$d 个生日?</string>
     <string name="selected_count">已选择 %1$d 项</string>
     <string name="undo">撤销</string>
     <string name="note_deleted">笔记已删除</string>

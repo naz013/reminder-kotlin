@@ -1153,7 +1153,6 @@
     <string name="settings_search_keyword_delete_cloud_backup">excluir backup na nuvem</string>
     <string name="birthday_selected_count_one">%1$d aniversário selecionado</string>
     <string name="birthday_selected_count_other">%1$d aniversários selecionados</string>
-    <string name="birthdays_delete_selected_permanently">Excluir %1$d aniversários permanentemente?</string>
     <string name="selected_count">%1$d selecionados</string>
     <string name="undo">Desfazer</string>
     <string name="note_deleted">Nota excluída</string>
