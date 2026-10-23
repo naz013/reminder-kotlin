@@ -43,7 +43,7 @@ internal class WorkflowGalleryViewModel(
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
       combine(
-              workflowRuleRepository.observeByScope(scopeType = SCOPE_TYPE_GLOBAL, scopeId = null),
+        workflowRuleRepository.observeByScope(scopeType = SCOPE_TYPE_GLOBAL, scopeId = null),
         undoDelete.pendingIds,
       ) { rules, pendingIds -> rules.filterNot { it.uuId in pendingIds } }
         .collect { rules -> applyRules(rules) }

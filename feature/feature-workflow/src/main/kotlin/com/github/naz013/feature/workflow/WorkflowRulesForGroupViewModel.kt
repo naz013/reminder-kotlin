@@ -43,7 +43,7 @@ internal class WorkflowRulesForGroupViewModel(
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
       combine(
-              workflowRuleRepository.observeByScope(scopeType = SCOPE_TYPE_GROUP, scopeId = groupId),
+        workflowRuleRepository.observeByScope(scopeType = SCOPE_TYPE_GROUP, scopeId = groupId),
         undoDelete.pendingIds,
       ) { rules, pendingIds -> rules.filterNot { it.uuId in pendingIds } }
         .collect { rules -> applyRules(rules) }

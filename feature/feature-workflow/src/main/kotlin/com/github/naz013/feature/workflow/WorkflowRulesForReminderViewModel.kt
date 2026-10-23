@@ -43,7 +43,7 @@ internal class WorkflowRulesForReminderViewModel(
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
       combine(
-              workflowRuleRepository.observeByScope(scopeType = SCOPE_TYPE_REMINDER, scopeId = reminderId),
+        workflowRuleRepository.observeByScope(scopeType = SCOPE_TYPE_REMINDER, scopeId = reminderId),
         undoDelete.pendingIds,
       ) { rules, pendingIds -> rules.filterNot { it.uuId in pendingIds } }
         .collect { rules -> applyRules(rules) }
