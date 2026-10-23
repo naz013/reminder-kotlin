@@ -365,4 +365,36 @@ class RoutineEditViewModelTest : BaseTest() {
     assertEquals(1, state.steps.size)
     assertEquals("Evening routine", state.title)
   }
+
+  @Test
+  fun `delete click shows the confirmation without deleting`() = runTest {
+    val viewModel = createViewModel(id = "id-5")
+
+    viewModel.onDeleteClick()
+
+    assertTrue(viewModel.state.first().showDeleteConfirmation)
+    coVerify(exactly = 0) { deleteRoutineUseCase(any()) }
+  }
+
+  @Test
+  fun `confirming delete removes the routine and hides the confirmation`() = runTest {
+    val viewModel = createViewModel(id = "id-5")
+    viewModel.onDeleteClick()
+
+    viewModel.onDeleteConfirmed()
+
+    assertFalse(viewModel.state.first().showDeleteConfirmation)
+    coVerify(exactly = 1) { deleteRoutineUseCase("id-5") }
+  }
+
+  @Test
+  fun `dismissing delete hides the confirmation without deleting`() = runTest {
+    val viewModel = createViewModel(id = "id-5")
+    viewModel.onDeleteClick()
+
+    viewModel.onDeleteDismissed()
+
+    assertFalse(viewModel.state.first().showDeleteConfirmation)
+    coVerify(exactly = 0) { deleteRoutineUseCase(any()) }
+  }
 }

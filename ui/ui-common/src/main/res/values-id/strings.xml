@@ -1306,4 +1306,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Pulihkan</string>
     <string name="reminder_restored">Pengingat dipulihkan</string>
+    <string name="delete_routine_confirmation">Hapus rutinitas ini? Tindakan ini tidak dapat dibatalkan.</string>
 </resources>

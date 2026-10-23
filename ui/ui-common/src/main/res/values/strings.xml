@@ -1327,4 +1327,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Restore</string>
     <string name="reminder_restored">Reminder restored</string>
+    <string name="delete_routine_confirmation">Delete this routine? This cannot be undone.</string>
 </resources>

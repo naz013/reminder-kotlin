@@ -54,6 +54,8 @@ internal class RoutinePreviewViewModel(
   val state = _state.stateInWhileSubscribed(RoutinePreviewState.Loading)
   private val _showResetConfirmation = MutableStateFlow(false)
   val showResetConfirmation: StateFlow<Boolean> = _showResetConfirmation
+  private val _showDeleteConfirmation = MutableStateFlow(false)
+  val showDeleteConfirmation: StateFlow<Boolean> = _showDeleteConfirmation
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   init {
@@ -154,6 +156,15 @@ internal class RoutinePreviewViewModel(
   }
 
   fun onDeleteClick() {
+    _showDeleteConfirmation.value = true
+  }
+
+  fun onDeleteDismissed() {
+    _showDeleteConfirmation.value = false
+  }
+
+  fun onDeleteConfirmed() {
+    _showDeleteConfirmation.value = false
     viewModelScope.launch(dispatcherProvider.io()) {
       deleteRoutineUseCase(id)
       Logger.i(TAG, "Deleted routine, id: $id")

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -120,8 +121,23 @@ internal fun RoutineEditScreen(
   onManageTagsClick: () -> Unit,
   onSaveClick: () -> Unit,
   onDeleteClick: () -> Unit,
+  onDeleteConfirmed: () -> Unit,
+  onDeleteDismissed: () -> Unit,
   adsContent: @Composable () -> Unit = {},
 ) {
+  if (state.showDeleteConfirmation) {
+    AlertDialog(
+      onDismissRequest = onDeleteDismissed,
+      title = { Text(stringResource(R.string.delete)) },
+      text = { Text(stringResource(R.string.delete_routine_confirmation)) },
+      confirmButton = {
+        TextButton(onClick = onDeleteConfirmed) { Text(stringResource(R.string.yes)) }
+      },
+      dismissButton = {
+        TextButton(onClick = onDeleteDismissed) { Text(stringResource(R.string.no)) }
+      },
+    )
+  }
   Scaffold(
     modifier = modifier,
     topBar = {

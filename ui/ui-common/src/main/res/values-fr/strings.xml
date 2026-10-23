@@ -1314,4 +1314,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Restaurer</string>
     <string name="reminder_restored">Rappel restauré</string>
+    <string name="delete_routine_confirmation">Supprimer cette routine ? Cette action est irréversible.</string>
 </resources>

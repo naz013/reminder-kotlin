@@ -68,10 +68,26 @@ internal fun RoutinePreviewScreen(
   onResetStepsConfirmed: () -> Unit,
   onResetStepsDismissed: () -> Unit,
   onDeleteClick: () -> Unit,
+  showDeleteConfirmation: Boolean,
+  onDeleteConfirmed: () -> Unit,
+  onDeleteDismissed: () -> Unit,
   onStepCheckToggle: (stepId: String) -> Unit,
   onStartClick: () -> Unit,
   adsContent: @Composable () -> Unit,
 ) {
+  if (showDeleteConfirmation) {
+    AlertDialog(
+      onDismissRequest = onDeleteDismissed,
+      title = { Text(stringResource(R.string.delete)) },
+      text = { Text(stringResource(R.string.delete_routine_confirmation)) },
+      confirmButton = {
+        TextButton(onClick = onDeleteConfirmed) { Text(stringResource(R.string.yes)) }
+      },
+      dismissButton = {
+        TextButton(onClick = onDeleteDismissed) { Text(stringResource(R.string.no)) }
+      },
+    )
+  }
   if (showResetConfirmation) {
     AlertDialog(
       onDismissRequest = onResetStepsDismissed,

@@ -1311,4 +1311,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Geri yükle</string>
     <string name="reminder_restored">Hatırlatıcı geri yüklendi</string>
+    <string name="delete_routine_confirmation">Bu rutin silinsin mi? Bu işlem geri alınamaz.</string>
 </resources>

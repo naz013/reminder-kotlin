@@ -1317,4 +1317,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Відновити</string>
     <string name="reminder_restored">Нагадування відновлено</string>
+    <string name="delete_routine_confirmation">Видалити цю рутину? Цю дію не можна скасувати.</string>
 </resources>

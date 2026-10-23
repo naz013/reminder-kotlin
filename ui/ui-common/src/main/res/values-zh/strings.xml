@@ -1304,4 +1304,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">恢复</string>
     <string name="reminder_restored">提醒已恢复</string>
+    <string name="delete_routine_confirmation">删除此例程？此操作无法撤销。</string>
 </resources>

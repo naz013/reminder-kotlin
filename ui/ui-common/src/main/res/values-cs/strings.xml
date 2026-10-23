@@ -1317,4 +1317,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Obnovit</string>
     <string name="reminder_restored">Připomenutí bylo obnoveno</string>
+    <string name="delete_routine_confirmation">Smazat tuto rutinu? Tuto akci nelze vrátit zpět.</string>
 </resources>

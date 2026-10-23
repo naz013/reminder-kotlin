@@ -1309,4 +1309,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Gendan</string>
     <string name="reminder_restored">Påmindelsen er gendannet</string>
+    <string name="delete_routine_confirmation">Slet denne rutine? Det kan ikke fortrydes.</string>
 </resources>

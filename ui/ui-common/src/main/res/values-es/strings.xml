@@ -1314,4 +1314,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Restaurar</string>
     <string name="reminder_restored">Recordatorio restaurado</string>
+    <string name="delete_routine_confirmation">¿Eliminar esta rutina? Esta acción no se puede deshacer.</string>
 </resources>

@@ -1309,4 +1309,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Återställ</string>
     <string name="reminder_restored">Påminnelsen har återställts</string>
+    <string name="delete_routine_confirmation">Ta bort den här rutinen? Detta kan inte ångras.</string>
 </resources>

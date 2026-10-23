@@ -1,5 +1,6 @@
 package com.github.naz013.feature.routine.preview
 
+import com.github.naz013.logic.routine.usecase.DeleteRoutineUseCase
 import com.github.naz013.logic.routine.usecase.ResetRoutineStepsUseCase
 import com.github.naz013.repository.RoutineRepository
 import com.github.naz013.repository.TagAssignmentRepository
@@ -21,6 +22,7 @@ class RoutinePreviewViewModelTest : BaseTest() {
   private val routineRepository = mockk<RoutineRepository>()
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
   private val resetRoutineStepsUseCase = mockk<ResetRoutineStepsUseCase>()
+  private val deleteRoutineUseCase = mockk<DeleteRoutineUseCase>(relaxed = true)
 
   @Before
   override fun setUp() {
@@ -37,7 +39,7 @@ class RoutinePreviewViewModelTest : BaseTest() {
     saveRoutineUseCase = mockk(relaxed = true),
     toggleRoutinePinUseCase = mockk(relaxed = true),
     resetRoutineStepsUseCase = resetRoutineStepsUseCase,
-    deleteRoutineUseCase = mockk(relaxed = true),
+    deleteRoutineUseCase = deleteRoutineUseCase,
     routineRecurrenceResetUseCase = mockk(relaxed = true),
     routineDurationCalculator = mockk(relaxed = true),
     textProvider = mockk(relaxed = true),
@@ -75,6 +77,38 @@ class RoutinePreviewViewModelTest : BaseTest() {
 
     assertFalse(viewModel.showResetConfirmation.first())
     coVerify(exactly = 0) { resetRoutineStepsUseCase(any()) }
+  }
+
+  @Test
+  fun `delete click shows the confirmation without deleting`() = runTest {
+    val viewModel = createViewModel()
+
+    viewModel.onDeleteClick()
+
+    assertTrue(viewModel.showDeleteConfirmation.first())
+    coVerify(exactly = 0) { deleteRoutineUseCase(any()) }
+  }
+
+  @Test
+  fun `confirming delete removes the routine and hides the confirmation`() = runTest {
+    val viewModel = createViewModel()
+    viewModel.onDeleteClick()
+
+    viewModel.onDeleteConfirmed()
+
+    assertFalse(viewModel.showDeleteConfirmation.first())
+    coVerify(exactly = 1) { deleteRoutineUseCase(ROUTINE_ID) }
+  }
+
+  @Test
+  fun `dismissing delete hides the confirmation without deleting`() = runTest {
+    val viewModel = createViewModel()
+    viewModel.onDeleteClick()
+
+    viewModel.onDeleteDismissed()
+
+    assertFalse(viewModel.showDeleteConfirmation.first())
+    coVerify(exactly = 0) { deleteRoutineUseCase(any()) }
   }
 
   private companion object {

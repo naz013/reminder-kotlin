@@ -1309,4 +1309,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Herstellen</string>
     <string name="reminder_restored">Herinnering hersteld</string>
+    <string name="delete_routine_confirmation">Deze routine verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
 </resources>

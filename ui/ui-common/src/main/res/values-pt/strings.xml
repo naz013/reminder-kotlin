@@ -1314,4 +1314,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Restaurar</string>
     <string name="reminder_restored">Lembrete restaurado</string>
+    <string name="delete_routine_confirmation">Excluir esta rotina? Esta ação não pode ser desfeita.</string>
 </resources>

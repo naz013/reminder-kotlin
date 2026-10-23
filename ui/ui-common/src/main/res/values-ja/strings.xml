@@ -1304,4 +1304,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">復元</string>
     <string name="reminder_restored">リマインダーを復元しました</string>
+    <string name="delete_routine_confirmation">このルーティンを削除しますか？この操作は元に戻せません。</string>
 </resources>

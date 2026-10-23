@@ -35,4 +35,5 @@ internal data class RoutineEditState(
   val canDelete: Boolean = false,
   val canSave: Boolean = false,
   val hapticFeedbackEnabled: Boolean = true,
+  val showDeleteConfirmation: Boolean = false,
 )

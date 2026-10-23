@@ -1306,4 +1306,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Khôi phục</string>
     <string name="reminder_restored">Đã khôi phục lời nhắc</string>
+    <string name="delete_routine_confirmation">Xóa thói quen này? Không thể hoàn tác thao tác này.</string>
 </resources>

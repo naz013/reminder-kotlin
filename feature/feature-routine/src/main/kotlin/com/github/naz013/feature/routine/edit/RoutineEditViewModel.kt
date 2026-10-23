@@ -263,6 +263,16 @@ internal class RoutineEditViewModel(
   }
 
   fun onDeleteClick() {
+    if (id == null) return
+    _state.update { it.copy(showDeleteConfirmation = true) }
+  }
+
+  fun onDeleteDismissed() {
+    _state.update { it.copy(showDeleteConfirmation = false) }
+  }
+
+  fun onDeleteConfirmed() {
+    _state.update { it.copy(showDeleteConfirmation = false) }
     val routineId = id ?: return
     viewModelScope.launch(dispatcherProvider.io()) {
       deleteRoutineUseCase(routineId)

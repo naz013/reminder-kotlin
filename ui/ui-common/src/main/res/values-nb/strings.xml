@@ -1309,4 +1309,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Gjenopprett</string>
     <string name="reminder_restored">Påminnelsen er gjenopprettet</string>
+    <string name="delete_routine_confirmation">Slette denne rutinen? Dette kan ikke angres.</string>
 </resources>

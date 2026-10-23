@@ -1316,4 +1316,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Восстановить</string>
     <string name="reminder_restored">Напоминание восстановлено</string>
+    <string name="delete_routine_confirmation">Удалить эту рутину? Это действие нельзя отменить.</string>
 </resources>

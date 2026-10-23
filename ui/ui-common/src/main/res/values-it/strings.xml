@@ -1314,4 +1314,5 @@
     <string name="note_share_format_html">HTML</string>
     <string name="restore">Ripristina</string>
     <string name="reminder_restored">Promemoria ripristinato</string>
+    <string name="delete_routine_confirmation">Eliminare questa routine? L\'operazione non può essere annullata.</string>
 </resources>

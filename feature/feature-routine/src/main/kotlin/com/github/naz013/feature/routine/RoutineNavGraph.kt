@@ -150,6 +150,8 @@ private fun RoutineEditEntry(
     onManageTagsClick = viewModel::onManageTagsClick,
     onSaveClick = viewModel::onSaveClick,
     onDeleteClick = viewModel::onDeleteClick,
+    onDeleteConfirmed = viewModel::onDeleteConfirmed,
+    onDeleteDismissed = viewModel::onDeleteDismissed,
     adsContent = adsContent,
   )
 }
@@ -173,6 +175,7 @@ private fun RoutinePreviewEntry(
 
   val state by viewModel.state.collectAsState(RoutinePreviewState.Loading)
   val showResetConfirmation by viewModel.showResetConfirmation.collectAsState()
+  val showDeleteConfirmation by viewModel.showDeleteConfirmation.collectAsState()
   RoutinePreviewScreen(
     state = state,
     renderAsDetailPane = renderAsDetailPane,
@@ -184,6 +187,9 @@ private fun RoutinePreviewEntry(
     onResetStepsConfirmed = viewModel::onResetStepsConfirmed,
     onResetStepsDismissed = viewModel::onResetStepsDismissed,
     onDeleteClick = viewModel::onDeleteClick,
+    showDeleteConfirmation = showDeleteConfirmation,
+    onDeleteConfirmed = viewModel::onDeleteConfirmed,
+    onDeleteDismissed = viewModel::onDeleteDismissed,
     onStepCheckToggle = viewModel::onStepCheckToggle,
     onStartClick = viewModel::onStartClick,
     adsContent = adsContent,
