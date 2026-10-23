@@ -22,7 +22,8 @@ delete-all and cascading deletes. The helper below works with or without a prior
 5. Screen: `UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)`.
 
 Migrated screens: Agenda, Birthdays, Reminders archive, Notes (list and archive each own a controller
-and a `SnackbarHostState`), Places list (undo only, no confirm), Tags list and Groups list (confirm kept, cascade runs on commit). Remaining screens and docs: see the unified delete-undo Trello series.
+and a `SnackbarHostState`), Places list (undo only, no confirm), Tags list and Groups list (confirm kept,
+cascade runs on commit). Remaining screens and docs: see the unified delete-undo Trello series.
 
 Cascade/picker caveat: pending groups/tags are only hidden from their own list. Pickers elsewhere may still
 show them during the undo window, and a reminder assigned to a pending group in that window loses the group
