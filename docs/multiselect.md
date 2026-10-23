@@ -99,28 +99,36 @@ private fun selectedIds(): Set<String> =
   (_state.value.listState as? ListState.Ready)?.items.orEmpty().selectedIds()
 ```
 
-Bulk actions loop `selectedIds()` through the *existing* single-item use case, then cancel the
-selection and refresh:
+Bulk actions loop `selectedIds()` through the *existing* single-item use case. Delete and archive
+are reversible, so they clear the selection first and then defer the work with
+`UndoDeleteController.markPending` (see [delete-undo.md](delete-undo.md)); the use case runs only
+when the undo window closes, and undo simply drops the pending ids:
 
 ```kotlin
 fun onArchiveSelectedClick() {
   val ids = selectedIds()
   if (ids.isEmpty()) return
-  viewModelScope.launch(dispatcherProvider.default()) {
+  onSelectionCancel()
+  undoDelete.markPending(
+    batchKey = UUID.randomUUID().toString(),
+    ids = ids,
+    message = textProvider.getText(R.string.notes_moved_to_archive_count, ids.size),
+  ) {
     ids.forEach { changeArchiveStateUseCase(it, true) }
-    withContext(dispatcherProvider.main()) { onSelectionCancel() }
-    refresh()
+    withContext(dispatcherProvider.main()) { refresh() }
   }
 }
 ```
 
-**Confirmation convention:** match whatever the single-item version of that action already does.
-Delete is destructive, so bulk delete asks for confirmation too - reuse `DialogDispatcher`, with a
-pluralized title built via `TextProvider.getText(res, ids.size)` and passed through the nav event
-(see `NotesViewModel.NavigationEvent.ConfirmDeleteSelected`). Non-destructive actions (archive,
-move, recolor) skip confirmation, same as their single-item menu entries do today. This is
-judgment, not a hard rule - follow what the screen already does for one item.
+Clear the selection before `markPending`: marking ids pending can synchronously empty the list,
+and selection updates are no-ops once the list is no longer `Ready`.
 
+**Confirmation convention:** reversible actions (delete, archive, unarchive) need no confirmation
+and use the undo Snackbar instead; `NotesViewModel` is the reference. Only keep a confirm dialog
+(`DialogDispatcher`, with a pluralized title built via `TextProvider.getText(res, ids.size)` and
+passed through a nav event such as `NavigationEvent.ConfirmMergeSelected`) for irreversible or
+cascading actions. Recolor and similar non-destructive actions skip both. This is judgment, not a
+hard rule - follow what the screen already does for one item.
 ## 4. UI recipe
 
 ```kotlin
@@ -164,14 +172,14 @@ private fun XSelectionMenuItems(isArchived: Boolean): List<PopupMenuItem> =
       PopupMenuItem(
         id = XSelectionAction.ARCHIVE.ordinal,
         title = stringResource(if (isArchived) R.string.unarchive else R.string.archive),
-        iconRes = R.drawable.ic_fluent_archive,
+        iconRes = DrawableCatalog.Fluent.Archive,
       )
     )
     add(
       PopupMenuItem(
         id = XSelectionAction.DELETE.ordinal,
         title = stringResource(R.string.delete),
-        iconRes = R.drawable.ic_fluent_delete,
+        iconRes = DrawableCatalog.Fluent.Delete,
       )
     )
   }

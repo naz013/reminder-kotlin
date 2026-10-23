@@ -1,7 +1,9 @@
 # Delete / archive with undo
 
-Policy: reversible deletes and archives show an undo Snackbar with no confirm dialog. Confirm only for
-delete-all and cascading deletes. The helper below works with or without a prior confirm.
+Policy: reversible deletes, archives and unarchives show an undo Snackbar with no confirm dialog.
+Confirm only for delete-all and cascading deletes. The helper below works with or without a prior
+confirm. Undo of an archive/unarchive leaves the item as it was, since the database is only touched
+on commit.
 
 ## Pieces
 
@@ -21,10 +23,14 @@ delete-all and cascading deletes. The helper below works with or without a prior
 4. `override fun onCleared() { undoDelete.commitAllDetached(dispatcherProvider.io()) }`.
 5. Screen: `UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)`.
 
-Migrated screens: Agenda, Birthdays, Reminders archive, Notes (list and archive each own a controller
-and a `SnackbarHostState`), Places list (undo only, no confirm), Tags list and Groups list (confirm kept,
+Migrated screens: Agenda, Birthdays, Reminders archive, Notes (delete and archive/unarchive, single and
+bulk; list and archive each own a controller and a `SnackbarHostState`), Places list (undo only,
+no confirm), Tags list and Groups list (confirm kept,
 cascade runs on commit), Workflow rules (gallery, group and reminder scopes; undo only, no confirm).
-Remaining screens and docs: see the unified delete-undo Trello series.
+Still on confirm until cards 5/6: the Note preview and Note edit screens. Other remaining screens: see
+the unified delete-undo Trello series.
+
+Bulk selection flows: see [multiselect.md](multiselect.md).
 
 Cascade/picker caveat: pending groups/tags are only hidden from their own list. Pickers elsewhere may still
 show them during the undo window, and a reminder assigned to a pending group in that window loses the group
