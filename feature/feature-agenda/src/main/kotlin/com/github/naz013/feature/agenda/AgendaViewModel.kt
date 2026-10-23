@@ -24,7 +24,10 @@ import com.github.naz013.logic.reminder.AgendaViewMode
 import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoDeleteController
+import com.github.naz013.feature.common.viewmodel.pendingIdsOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logic.reminder.smartlist.ReminderSmartListPredicate
@@ -78,6 +81,7 @@ internal class AgendaViewModel(
   private val deleteReminderUseCase: DeleteReminderUseCase,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
   private val reminderPreferences: ReminderPreferences,
+  val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   private val _agendaScreenState = MutableStateFlow(AgendaScreenState(viewMode = reminderPreferences.agendaViewMode))
@@ -86,8 +90,13 @@ internal class AgendaViewModel(
   val undoDelete = UndoDeleteController(viewModelScope, dispatcherProvider.io())
 
   val agendaScreenState =
-    combine(_agendaScreenState, _selectedItemId, undoDelete.pendingIds) { state, selectedItemId, pendingIds ->
-      state.withSelectedItem(selectedItemId).withoutItems(pendingIds)
+    combine(
+      _agendaScreenState,
+      _selectedItemId,
+      undoDelete.pendingIds,
+      pendingDeleteCoordinator.pendingIdsOf(PendingEntity.REMINDER, PendingEntity.BIRTHDAY),
+    ) { state, selectedItemId, pendingIds, coordinatorPendingIds ->
+      state.withSelectedItem(selectedItemId).withoutItems(pendingIds + coordinatorPendingIds)
     }.stateInWhileSubscribed(AgendaScreenState())
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 

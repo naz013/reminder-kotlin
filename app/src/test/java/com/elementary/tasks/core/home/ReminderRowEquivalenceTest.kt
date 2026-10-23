@@ -7,6 +7,8 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.home.HomePreferences
 import com.github.naz013.feature.home.scheduleview.GetActiveEventsForTheDayUseCase
 import com.github.naz013.repository.BirthdayRepository
@@ -32,6 +34,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -81,6 +84,10 @@ class ReminderRowEquivalenceTest : BaseTest() {
       reminderRowMapper = mapper,
       contextProvider = contextProvider,
       homePreferences = mockk<HomePreferences>(relaxed = true),
+      pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true).also {
+        every { it.pendingIds(PendingEntity.REMINDER) } returns MutableStateFlow(emptySet())
+        every { it.pendingIds(PendingEntity.BIRTHDAY) } returns MutableStateFlow(emptySet())
+      },
     )
     agendaAdapter = UiAgendaItemAdapter(
       uiReminderListAdapter,

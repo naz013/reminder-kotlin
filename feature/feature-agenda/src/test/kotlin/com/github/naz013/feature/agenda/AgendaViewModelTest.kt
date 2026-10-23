@@ -47,9 +47,12 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoEvent
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -80,12 +83,17 @@ class AgendaViewModelTest : BaseTest() {
   private val birthdaySmartListPredicate = BirthdaySmartListPredicate(provideBirthdayDateCalculator())
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val reminderPreferences = mockk<ReminderPreferences>(relaxed = true)
+  private val coordinatorReminderPendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val coordinatorBirthdayPendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   private lateinit var viewModel: AgendaViewModel
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.REMINDER) } returns coordinatorReminderPendingIds
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.BIRTHDAY) } returns coordinatorBirthdayPendingIds
     every { reminderPreferences.agendaViewMode } returns AgendaViewMode.LIST
     coEvery { groupV2Repository.getAll() } returns emptyList()
     // AgendaViewModel's init{} eagerly runs the load pipeline once on construction, and
@@ -133,6 +141,7 @@ class AgendaViewModelTest : BaseTest() {
         deleteReminderUseCase = deleteReminderUseCase,
         deleteBirthdayUseCase = deleteBirthdayUseCase,
         reminderPreferences = reminderPreferences,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
       )
 
     // Construction above already triggered one eager load via init{}. Clear recorded
@@ -495,6 +504,7 @@ class AgendaViewModelTest : BaseTest() {
       deleteReminderUseCase = deleteReminderUseCase,
       deleteBirthdayUseCase = deleteBirthdayUseCase,
       reminderPreferences = reminderPreferences,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
   }
 
@@ -555,6 +565,17 @@ class AgendaViewModelTest : BaseTest() {
       vm.onDeleteSelectedClick()
 
       assertEquals(null, vm.navigationEvent.value)
+    }
+
+  @Test
+  fun `hides a birthday pending delete in the coordinator`() =
+    runTest {
+      val vm = readyViewModelWithReminderAndBirthday()
+      coordinatorBirthdayPendingIds.value = setOf("b1")
+
+      val state = vm.agendaScreenState.first { (it.listState as? ListState.Ready)?.items?.map { item -> item.id } == listOf("r1") }
+
+      assertEquals(listOf("r1"), (state.listState as ListState.Ready).items.map { it.id })
     }
 
   @Test

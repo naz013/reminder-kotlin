@@ -8,6 +8,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transformLatest
@@ -54,6 +55,10 @@ interface PendingDeleteCoordinator {
 
   fun unregisterHost(type: PendingEntity)
 }
+
+/** Union of the pending ids of every given [types], for screens that list several entity kinds. */
+fun PendingDeleteCoordinator.pendingIdsOf(vararg types: PendingEntity): Flow<Set<String>> =
+  combine(types.map { pendingIds(it) }) { sets -> sets.fold(emptySet<String>()) { acc, ids -> acc + ids } }
 
 /**
  * True while no list host is registered for [type] and that has held for [settleMs]; the pause lets

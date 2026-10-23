@@ -1,6 +1,8 @@
 package com.github.naz013.feature.home.scheduleview
 
 import android.content.Context
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.feature.home.HomeEvent
 import com.github.naz013.feature.home.HomePreferences
@@ -26,6 +28,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.unmockkObject
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -48,6 +51,9 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
   private val shopItemsFormatter = mockk<ShopItemsFormatter>(relaxed = true)
   private val contextProvider = mockk<ContextProvider>()
   private val homePreferences = mockk<HomePreferences>(relaxed = true)
+  private val pendingReminderIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingBirthdayIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   private lateinit var useCase: GetActiveEventsForTheDayUseCase
 
@@ -97,6 +103,8 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
     every { reminderV2Repository.observeActiveInRange(any(), any(), any()) } returns flowOf(emptyList())
     coEvery { groupV2Repository.getAll() } returns emptyList()
     every { birthdayRepository.observeAll(any()) } returns flowOf(emptyList())
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.REMINDER) } returns pendingReminderIds
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.BIRTHDAY) } returns pendingBirthdayIds
 
     useCase = GetActiveEventsForTheDayUseCase(
       dateTimeManager = dateTimeManager,
@@ -108,6 +116,7 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
       reminderRowMapper = ReminderRowMapper(dateTimeManager, shopItemsFormatter),
       contextProvider = contextProvider,
       homePreferences = homePreferences,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
   }
 
@@ -129,6 +138,27 @@ class GetActiveEventsForTheDayUseCaseTest : BaseTest() {
     val event = events.single()
     assertEquals("Test reminder", event.text)
     assertEquals("Work", event.groupName)
+  }
+
+  @Test
+  fun `drops a reminder pending delete`() = runTest {
+    every { reminderV2Repository.observeActiveInRange(any(), any(), any()) } returns
+      flowOf(listOf(reminder(id = "r1"), reminder(id = "r2")))
+    pendingReminderIds.value = setOf("r1")
+
+    val events = useCase(day).first()
+
+    assertEquals(listOf("r2"), events.map { it.id })
+  }
+
+  @Test
+  fun `drops a birthday pending delete`() = runTest {
+    every { birthdayRepository.observeAll(any()) } returns flowOf(listOf(birthday(id = "b1"), birthday(id = "b2")))
+    pendingBirthdayIds.value = setOf("b1")
+
+    val events = useCase(day).first()
+
+    assertEquals(listOf("b2"), events.map { it.id })
   }
 
   @Test

@@ -17,6 +17,8 @@ import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlace
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.common.Permissions
+import com.github.naz013.feature.common.viewmodel.PendingEntity
+import com.github.naz013.ui.common.compose.foundation.snackbar.PendingDeleteHost
 import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -81,6 +83,16 @@ private fun AgendaEntry(
   val permissionRequester = rememberPermissionRequesterRationale()
   val snackbarHostState = remember { SnackbarHostState() }
   UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
+  PendingDeleteHost(
+    coordinator = viewModel.pendingDeleteCoordinator,
+    type = PendingEntity.REMINDER,
+    snackbarHostState = snackbarHostState,
+  )
+  PendingDeleteHost(
+    coordinator = viewModel.pendingDeleteCoordinator,
+    type = PendingEntity.BIRTHDAY,
+    snackbarHostState = snackbarHostState,
+  )
 
   LaunchedEffect(selectedItemId) { viewModel.onSelectedItemIdChanged(selectedItemId) }
 

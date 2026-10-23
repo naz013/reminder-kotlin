@@ -2,6 +2,7 @@ package com.github.naz013.feature.common.viewmodel
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -143,6 +144,18 @@ class PendingDeleteCoordinatorTest {
 
     coordinator.registerHost(PendingEntity.NOTE)
     assertEquals(1, coordinator.hostCount(PendingEntity.NOTE).value)
+  }
+
+  @Test
+  fun `pendingIdsOf merges the pending ids of the given types`() = runTest {
+    val coordinator = coordinator()
+    coordinator.markPending(PendingEntity.REMINDER, "r1", "Deleted") { }
+    coordinator.markPending(PendingEntity.BIRTHDAY, "b1", "Deleted") { }
+    coordinator.markPending(PendingEntity.NOTE, "n1", "Deleted") { }
+
+    val ids = coordinator.pendingIdsOf(PendingEntity.REMINDER, PendingEntity.BIRTHDAY).first()
+
+    assertEquals(setOf("r1", "b1"), ids)
   }
 
   @Test

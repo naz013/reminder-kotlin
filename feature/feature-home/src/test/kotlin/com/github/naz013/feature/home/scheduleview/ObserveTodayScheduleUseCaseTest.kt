@@ -2,6 +2,8 @@ package com.github.naz013.feature.home.scheduleview
 
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.Birthday
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logic.reminder.today.GetTodayScheduleUseCase
@@ -17,6 +19,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -37,6 +40,9 @@ class ObserveTodayScheduleUseCaseTest : BaseTest() {
   private val birthdayRepository = mockk<BirthdayRepository>()
   private val googleTaskRepository = mockk<GoogleTaskRepository>()
   private val reminderChanges = MutableSharedFlow<List<ReminderV2>>()
+  private val pendingReminderIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingBirthdayIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   private val now = LocalDateTime.of(2026, 7, 15, 12, 0)
   private lateinit var useCase: ObserveTodayScheduleUseCase
@@ -48,12 +54,15 @@ class ObserveTodayScheduleUseCaseTest : BaseTest() {
     every { reminderV2Repository.observeByRemovedStatus(false) } returns reminderChanges
     every { birthdayRepository.observeAll() } returns emptyFlow()
     every { googleTaskRepository.observeAll() } returns emptyFlow()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.REMINDER) } returns pendingReminderIds
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.BIRTHDAY) } returns pendingBirthdayIds
     useCase = ObserveTodayScheduleUseCase(
       dateTimeManager,
       getTodayScheduleUseCase,
       reminderV2Repository,
       birthdayRepository,
       googleTaskRepository,
+      pendingDeleteCoordinator,
     )
   }
 
@@ -86,6 +95,34 @@ class ObserveTodayScheduleUseCaseTest : BaseTest() {
     job.cancel()
 
     coVerify(exactly = 1) { getTodayScheduleUseCase(now) }
+  }
+
+  @Test
+  fun `drops a birthday item that is pending delete`() = runTest {
+    pendingBirthdayIds.value = setOf("b")
+    coEvery { getTodayScheduleUseCase(now) } returns listOf(item(TodayBucket.AllDay))
+    val emissions = mutableListOf<TodaySnapshot>()
+
+    val job = useCase().onEach { emissions.add(it) }.launchIn(this)
+    runCurrent()
+    job.cancel()
+
+    assertEquals(emptyList<TodayItem>(), emissions.single().items)
+  }
+
+  @Test
+  fun `re-queries when a pending delete starts`() = runTest {
+    coEvery { getTodayScheduleUseCase(now) } returns listOf(item(TodayBucket.AllDay))
+    val emissions = mutableListOf<TodaySnapshot>()
+    val job = useCase().onEach { emissions.add(it) }.launchIn(this)
+    runCurrent()
+
+    pendingBirthdayIds.value = setOf("b")
+    runCurrent()
+    job.cancel()
+
+    assertEquals(1, emissions.first().items.size)
+    assertEquals(emptyList<TodayItem>(), emissions.last().items)
   }
 
   @Test

@@ -13,6 +13,8 @@ import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
@@ -35,6 +37,7 @@ class GetActiveEventsForTheDayUseCase(
   private val reminderRowMapper: ReminderRowMapper,
   private val contextProvider: ContextProvider,
   private val homePreferences: HomePreferences,
+  private val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) {
   operator fun invoke(day: LocalDateTime): Flow<List<HomeEvent>> {
     val dayStart = day.toLocalDate().atStartOfDay()
@@ -44,11 +47,18 @@ class GetActiveEventsForTheDayUseCase(
       to = dateTimeManager.localToUtc(dayStart.plusDays(1)),
     )
     val birthdaysFlow = birthdayRepository.observeAll(dateTimeManager.getBirthdayDayMonth(day))
-    return combine(remindersFlow, birthdaysFlow) { reminders, birthdays ->
+    return combine(
+      remindersFlow,
+      birthdaysFlow,
+      pendingDeleteCoordinator.pendingIds(PendingEntity.REMINDER),
+      pendingDeleteCoordinator.pendingIds(PendingEntity.BIRTHDAY),
+    ) { reminders, birthdays, pendingReminders, pendingBirthdays ->
       val groupsMap = groupV2Repository.getAll().associateBy { it.uuId }
-      val reminderEvents = reminders.mapNotNull { toHomeEvent(it, it.groupId?.let { groupId -> groupsMap[groupId] }) }
+      val reminderEvents = reminders
+        .filterNot { it.uuId in pendingReminders }
+        .mapNotNull { toHomeEvent(it, it.groupId?.let { groupId -> groupsMap[groupId] }) }
       val birthdayEvents = birthdays
-        .filterNot { it.showedYear == day.year }
+        .filterNot { it.showedYear == day.year || it.uuId in pendingBirthdays }
         .map { toHomeEvent(it) }
       (reminderEvents + birthdayEvents).sortedBy { it.time }
     }

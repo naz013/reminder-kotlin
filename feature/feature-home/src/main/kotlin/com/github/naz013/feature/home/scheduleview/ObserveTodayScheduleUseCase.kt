@@ -1,6 +1,9 @@
 package com.github.naz013.feature.home.scheduleview
 
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
+import com.github.naz013.feature.common.viewmodel.pendingIdsOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.today.GetTodayScheduleUseCase
 import com.github.naz013.logic.reminder.today.TodayBucket
@@ -13,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -37,6 +41,7 @@ internal class ObserveTodayScheduleUseCase(
   private val reminderV2Repository: ReminderV2Repository,
   private val birthdayRepository: BirthdayRepository,
   private val googleTaskRepository: GoogleTaskRepository,
+  private val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) {
   @OptIn(ExperimentalCoroutinesApi::class)
   operator fun invoke(): Flow<TodaySnapshot> {
@@ -44,6 +49,7 @@ internal class ObserveTodayScheduleUseCase(
       reminderV2Repository.observeByRemovedStatus(false).map { },
       birthdayRepository.observeAll().map { },
       googleTaskRepository.observeAll().map { },
+      pendingDeleteCoordinator.pendingIdsOf(PendingEntity.REMINDER, PendingEntity.BIRTHDAY).drop(1).map { },
     ).onStart { emit(Unit) }
     return changes
       .conflate()
@@ -66,7 +72,13 @@ internal class ObserveTodayScheduleUseCase(
   private suspend fun load(): TodaySnapshot {
     val now = dateTimeManager.getCurrentDateTime()
     Logger.d(TAG, "Loading today schedule for $now")
-    return TodaySnapshot(getTodayScheduleUseCase(now), now)
+    val pendingReminders = pendingDeleteCoordinator.pendingIds(PendingEntity.REMINDER).value
+    val pendingBirthdays = pendingDeleteCoordinator.pendingIds(PendingEntity.BIRTHDAY).value
+    val items = getTodayScheduleUseCase(now).filterNot { item ->
+      (item is TodayItem.Reminder && item.id in pendingReminders) ||
+        (item is TodayItem.Birthday && item.id in pendingBirthdays)
+    }
+    return TodaySnapshot(items, now)
   }
 
   companion object {
