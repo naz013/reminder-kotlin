@@ -123,6 +123,7 @@ private fun RoutineEditEntry(
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       RoutineEditViewModel.NavigationEvent.Back -> if (backStack.size > 1) backStack.removeLastOrNull()
+      is RoutineEditViewModel.NavigationEvent.Deleted -> backStack.popDeletedRoutine(event.id)
       RoutineEditViewModel.NavigationEvent.OpenManageTags -> onManageTagsClick()
     }
   }
@@ -226,6 +227,12 @@ private fun RoutineExecutionEntry(
     onCompleteStepClick = viewModel::onCompleteStepClick,
     adsContent = adsContent,
   )
+}
+
+private fun MutableList<NavKey>.popDeletedRoutine(id: String) {
+  if (size > 1) removeLastOrNull()
+  val top = lastOrNull()
+  if (size > 1 && top is RoutineNavKey.Preview && top.id == id) removeLastOrNull()
 }
 
 /**

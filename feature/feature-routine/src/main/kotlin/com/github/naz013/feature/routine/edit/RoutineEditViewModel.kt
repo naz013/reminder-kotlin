@@ -278,13 +278,14 @@ internal class RoutineEditViewModel(
       deleteRoutineUseCase(routineId)
       Logger.i(TAG, "Deleted routine, id: $routineId")
       withContext(dispatcherProvider.main()) {
-        navigationEvent.emit(NavigationEvent.Back)
+        navigationEvent.emit(NavigationEvent.Deleted(routineId))
       }
     }
   }
 
   sealed interface NavigationEvent {
     data object Back : NavigationEvent
+    data class Deleted(val id: String) : NavigationEvent
     data object OpenManageTags : NavigationEvent
   }
 

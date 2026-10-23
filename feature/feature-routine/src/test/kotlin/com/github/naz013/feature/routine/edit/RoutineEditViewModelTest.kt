@@ -388,6 +388,17 @@ class RoutineEditViewModelTest : BaseTest() {
   }
 
   @Test
+  fun `confirming delete emits a deleted navigation event with the routine id`() = runTest {
+    val viewModel = createViewModel(id = "id-5")
+    var received: RoutineEditViewModel.NavigationEvent? = null
+    viewModel.navigationEvent.observeForever { received = it.getContentIfNotHandled() }
+
+    viewModel.onDeleteConfirmed()
+
+    assertEquals(RoutineEditViewModel.NavigationEvent.Deleted("id-5"), received)
+  }
+
+  @Test
   fun `dismissing delete hides the confirmation without deleting`() = runTest {
     val viewModel = createViewModel(id = "id-5")
     viewModel.onDeleteClick()
