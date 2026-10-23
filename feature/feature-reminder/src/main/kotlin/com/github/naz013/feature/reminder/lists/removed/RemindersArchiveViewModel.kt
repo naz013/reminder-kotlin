@@ -11,7 +11,7 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
-import com.github.naz013.feature.common.viewmodel.PendingDeleteTracker
+import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
@@ -53,7 +53,7 @@ class RemindersArchiveViewModel(
   val event: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   private val searchQueryFlow = MutableStateFlow("")
-  private val pendingDeleteTracker = PendingDeleteTracker()
+  val undoDelete = UndoDeleteController(viewModelScope, dispatcherProvider.io())
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
@@ -64,7 +64,7 @@ class RemindersArchiveViewModel(
         .flatMapLatest { query ->
           reminderV2Repository.observeByRemovedStatus(removed = true).map { it to query }
         }
-        .combine(pendingDeleteTracker.pendingIds) { (reminders, query), pendingIds ->
+        .combine(undoDelete.pendingIds) { (reminders, query), pendingIds ->
           reminders.filterNot { it.uuId in pendingIds } to query
         }
         .collect { (reminders, query) -> applyReminders(reminders, query) }
@@ -90,7 +90,7 @@ class RemindersArchiveViewModel(
   ) {
     when (action) {
       ArchiveReminderMenuAction.EDIT -> event.emit(NavigationEvent.OpenEdit(item.id))
-      ArchiveReminderMenuAction.DELETE -> event.emit(NavigationEvent.ConfirmDeleteReminder(item.id))
+      ArchiveReminderMenuAction.DELETE -> deleteReminder(item.id)
       ArchiveReminderMenuAction.RESTORE -> restoreReminder(item.id)
     }
   }
@@ -117,23 +117,28 @@ class RemindersArchiveViewModel(
     event.emit(NavigationEvent.ConfirmDeleteAll)
   }
 
-  fun deleteReminder(id: String) {
-    pendingDeleteTracker.markPending(batchKey = id, ids = setOf(id)) {
+  private fun deleteReminder(id: String) {
+    undoDelete.markPending(
+      batchKey = id,
+      ids = setOf(id),
+      message = textProvider.getText(R.string.reminder_deleted),
+    ) {
       reminderV2Repository.getById(id)?.also {
         deleteReminderUseCase(it)
         Logger.i(TAG, "Deleted reminder: $id")
       } ?: Logger.e(TAG, "Cannot delete reminder with id = $id. Not found.")
     }
-    event.emit(
-      NavigationEvent.ShowUndoDelete(batchKey = id, message = textProvider.getText(R.string.reminder_deleted))
-    )
   }
 
   fun deleteAll() {
     val toDeleteIds = _state.value.filteredReminders.map { it.uuId }.toSet()
     if (toDeleteIds.isEmpty()) return
     val batchKey = UUID.randomUUID().toString()
-    pendingDeleteTracker.markPending(batchKey = batchKey, ids = toDeleteIds) {
+    undoDelete.markPending(
+      batchKey = batchKey,
+      ids = toDeleteIds,
+      message = textProvider.getText(R.string.reminders_deleted_count, toDeleteIds.size),
+    ) {
       Logger.i(TAG, "Deleting all reminders: ${toDeleteIds.size}")
       val toDelete = toDeleteIds.mapNotNull { reminderV2Repository.getById(it) }
       deleteAllReminderUseCase(toDelete)
@@ -141,27 +146,11 @@ class RemindersArchiveViewModel(
         event.emit(NavigationEvent.ArchiveEmptied)
       }
     }
-    event.emit(
-      NavigationEvent.ShowUndoDelete(
-        batchKey = batchKey,
-        message = textProvider.getText(R.string.reminders_deleted_count, toDeleteIds.size),
-      )
-    )
-  }
-
-  fun undoDelete(batchKey: String) {
-    pendingDeleteTracker.undo(batchKey)
-  }
-
-  fun commitDelete(batchKey: String) {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      pendingDeleteTracker.commit(batchKey)
-    }
   }
 
   override fun onCleared() {
     super.onCleared()
-    pendingDeleteTracker.commitAllDetached(dispatcherProvider.io())
+    undoDelete.commitAllDetached(dispatcherProvider.io())
   }
 
   // Driven by reminderV2Repository.observeByRemovedStatus in init - no manual reload needed after
@@ -202,10 +191,6 @@ class RemindersArchiveViewModel(
       val id: String,
     ) : NavigationEvent
 
-    data class ConfirmDeleteReminder(
-      val id: String,
-    ) : NavigationEvent
-
     data object ConfirmDeleteAll : NavigationEvent
 
     data object ArchiveEmptied : NavigationEvent
@@ -213,11 +198,6 @@ class RemindersArchiveViewModel(
     data object ReminderRestored : NavigationEvent
 
     data object ReminderRestoredInactive : NavigationEvent
-
-    data class ShowUndoDelete(
-      val batchKey: String,
-      val message: String,
-    ) : NavigationEvent
   }
 
   companion object {

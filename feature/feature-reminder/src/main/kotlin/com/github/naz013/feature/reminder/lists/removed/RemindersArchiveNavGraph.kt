@@ -16,7 +16,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
-import com.github.naz013.ui.common.compose.foundation.snackbar.rememberUndoSnackbarDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -51,23 +51,12 @@ private fun ListEntry(
   val dialogDispatcher = rememberDialogDispatcher()
   val toastDispatcher = rememberToastDispatcher()
   val snackbarHostState = remember { SnackbarHostState() }
-  val undoSnackbarDispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
-  val undoActionLabel = stringResource(R.string.undo)
+  UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
 
   viewModel.event.ObserveEvent { event ->
     when (event) {
       is RemindersArchiveViewModel.NavigationEvent.OpenEdit -> {
         onOpenEdit(event.id)
-      }
-
-      is RemindersArchiveViewModel.NavigationEvent.ConfirmDeleteReminder -> {
-        dialogDispatcher.showDialog(
-          titleRes = R.string.delete,
-          textRes = R.string.are_you_sure,
-          positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.no,
-          onPositive = { viewModel.deleteReminder(event.id) },
-        )
       }
 
       RemindersArchiveViewModel.NavigationEvent.ConfirmDeleteAll -> {
@@ -89,15 +78,6 @@ private fun ListEntry(
 
       RemindersArchiveViewModel.NavigationEvent.ReminderRestoredInactive -> {
         toastDispatcher.showToast(messageRes = R.string.reminder_restored_inactive)
-      }
-
-      is RemindersArchiveViewModel.NavigationEvent.ShowUndoDelete -> {
-        undoSnackbarDispatcher.showUndoSnackbar(
-          message = event.message,
-          actionLabel = undoActionLabel,
-          onUndo = { viewModel.undoDelete(event.batchKey) },
-          onTimeout = { viewModel.commitDelete(event.batchKey) },
-        )
       }
     }
   }
