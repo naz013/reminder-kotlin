@@ -52,12 +52,15 @@ val featureBirthdayModule = module {
       get(),
       get(),
       get(),
+      get(),
       get()
     )
   }
   viewModel { (id: String) ->
     PreviewBirthdayViewModel(
       id,
+      get(),
+      get(),
       get(),
       get(),
       get(),

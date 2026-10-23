@@ -23,9 +23,17 @@ import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.birthday.UiBirthdayDateFormatter
 import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
+import com.github.naz013.ui.common.R
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -49,10 +57,14 @@ class EditBirthdayViewModelTest : BaseTest() {
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
   private val toggleTagAssignmentUseCase = mockk<ToggleTagAssignmentUseCase>()
   private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
+  private val pendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.BIRTHDAY) } returns pendingIds
+    every { textProvider.getText(R.string.birthday_deleted) } returns "Birthday deleted"
     every { dateTimeManager.getCurrentDate() } returns LocalDate.now()
     every { dateTimeManager.formatBirthdayFullDateForUi(any()) } returns "formatted"
     every { dateTimeManager.formatBirthdayDate(any()) } returns "1999-10-01"
@@ -84,6 +96,7 @@ class EditBirthdayViewModelTest : BaseTest() {
       tagAssignmentRepository = tagAssignmentRepository,
       toggleTagAssignmentUseCase = toggleTagAssignmentUseCase,
       tagChipStateAdapter = tagChipStateAdapter,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
 
   @Test
@@ -249,34 +262,65 @@ class EditBirthdayViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onDeleteConfirmed deletes and posts MoveBack when delete is allowed`() =
+  fun `onDeleteMenuClick marks pending and posts Deleted without deleting yet`() =
     runTest {
-      val birthday = Birthday(uuId = "42", name = "Alice", date = "1999-10-01", syncState = SyncState.Synced)
-      coEvery { birthdayRepository.getById("42") } returns birthday
-      every { dateTimeManager.parseBirthdayDate("1999-10-01") } returns LocalDate.of(1999, 10, 1)
-      val viewModel = createViewModel(id = "42")
-      // Trigger checkArguments() -> load() so canDelete is populated before deleting.
-      viewModel.state.first()
+      val viewModel = loadedViewModelForDelete()
 
       viewModel.onDeleteMenuClick()
-      viewModel.onDeleteConfirmed()
 
-      coVerify(exactly = 1) { deleteBirthdayUseCase("42") }
+      verify(exactly = 1) {
+        pendingDeleteCoordinator.markPending(PendingEntity.BIRTHDAY, "42", "Birthday deleted", any())
+      }
+      coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
       val event = viewModel.event.getOrAwaitValue()
-      assertEquals(EditBirthdayViewModel.ViewModelEvent.MoveBack, event?.getContentIfNotHandled())
+      assertEquals(EditBirthdayViewModel.ViewModelEvent.Deleted("42"), event?.getContentIfNotHandled())
     }
 
   @Test
-  fun `onDeleteConfirmed does nothing when delete is not allowed`() =
+  fun `committing the pending delete deletes the birthday exactly once`() =
+    runTest {
+      val onCommit = slot<suspend () -> Unit>()
+      every { pendingDeleteCoordinator.markPending(any(), any(), any(), capture(onCommit)) } just runs
+      val viewModel = loadedViewModelForDelete()
+      viewModel.onDeleteMenuClick()
+
+      onCommit.captured.invoke()
+
+      coVerify(exactly = 1) { deleteBirthdayUseCase("42") }
+    }
+
+  @Test
+  fun `onDeleteMenuClick does nothing when the birthday is already pending`() =
+    runTest {
+      val viewModel = loadedViewModelForDelete()
+      pendingIds.value = setOf("42")
+
+      viewModel.onDeleteMenuClick()
+
+      verify(exactly = 0) { pendingDeleteCoordinator.markPending(any(), any(), any(), any()) }
+    }
+
+  @Test
+  fun `onDeleteMenuClick does nothing when delete is not allowed`() =
     runTest {
       val viewModel = createViewModel()
       viewModel.state.first()
 
-      viewModel.onDeleteConfirmed()
+      viewModel.onDeleteMenuClick()
 
-      coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
+      verify(exactly = 0) { pendingDeleteCoordinator.markPending(any(), any(), any(), any()) }
       assertNull(viewModel.event.value)
     }
+
+  private suspend fun loadedViewModelForDelete(): EditBirthdayViewModel {
+    val birthday = Birthday(uuId = "42", name = "Alice", date = "1999-10-01", syncState = SyncState.Synced)
+    coEvery { birthdayRepository.getById("42") } returns birthday
+    every { dateTimeManager.parseBirthdayDate("1999-10-01") } returns LocalDate.of(1999, 10, 1)
+    val viewModel = createViewModel(id = "42")
+    // Trigger checkArguments() -> load() so canDelete is populated before deleting.
+    viewModel.state.first()
+    return viewModel
+  }
 
   @Test
   fun `onYearCheckChanged updates ignoreYear and reformats the date`() =

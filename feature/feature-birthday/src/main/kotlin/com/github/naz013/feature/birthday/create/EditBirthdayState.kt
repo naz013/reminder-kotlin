@@ -28,6 +28,4 @@ internal data class EditBirthdayState(
 
 internal sealed interface EditBirthdayDialog {
   data object CopyConflict : EditBirthdayDialog
-
-  data object DeleteConfirm : EditBirthdayDialog
 }

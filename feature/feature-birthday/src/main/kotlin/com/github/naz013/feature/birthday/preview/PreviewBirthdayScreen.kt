@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,7 +27,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -80,8 +78,6 @@ internal fun PreviewBirthdayScreen(
   onBackClick: () -> Unit,
   onEditClick: () -> Unit,
   onDeleteClick: () -> Unit,
-  onDeleteConfirmed: () -> Unit,
-  onDeleteDismiss: () -> Unit,
   onCallClick: () -> Unit,
   onSmsClick: () -> Unit,
   adsContent: @Composable () -> Unit,
@@ -168,19 +164,6 @@ internal fun PreviewBirthdayScreen(
         ConfettiOverlay(modifier = Modifier.align(Alignment.Center))
       }
     }
-  }
-
-  if (state.showDeleteConfirm) {
-    AlertDialog(
-      onDismissRequest = onDeleteDismiss,
-      text = { Text(stringResource(R.string.are_you_sure)) },
-      confirmButton = {
-        TextButton(onClick = onDeleteConfirmed) { Text(stringResource(R.string.yes)) }
-      },
-      dismissButton = {
-        TextButton(onClick = onDeleteDismiss) { Text(stringResource(R.string.no)) }
-      },
-    )
   }
 }
 
@@ -381,8 +364,6 @@ private fun PreviewBirthdayScreenPreview() {
       onBackClick = {},
       onEditClick = {},
       onDeleteClick = {},
-      onDeleteConfirmed = {},
-      onDeleteDismiss = {},
       onCallClick = {},
       onSmsClick = {},
       adsContent = {},

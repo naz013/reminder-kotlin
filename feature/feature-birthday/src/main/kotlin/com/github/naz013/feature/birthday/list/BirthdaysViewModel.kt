@@ -9,6 +9,8 @@ import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
@@ -53,6 +55,7 @@ internal class BirthdaysViewModel(
   private val uiAgendaItemAdapter: UiAgendaItemAdapter,
   private val birthdaySmartListPredicate: BirthdaySmartListPredicate,
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
+  val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(BirthdaysScreenState())
@@ -91,6 +94,9 @@ internal class BirthdaysViewModel(
           }
         }
         .combine(undoDelete.pendingIds) { birthdays, pendingIds ->
+          birthdays.filterNot { it.uuId in pendingIds }
+        }
+        .combine(pendingDeleteCoordinator.pendingIds(PendingEntity.BIRTHDAY)) { birthdays, pendingIds ->
           birthdays.filterNot { it.uuId in pendingIds }
         }
         .collect { applyList(it) }

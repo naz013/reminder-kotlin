@@ -25,6 +25,8 @@ import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
@@ -61,6 +63,7 @@ internal class EditBirthdayViewModel(
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val toggleTagAssignmentUseCase: ToggleTagAssignmentUseCase,
   private val tagChipStateAdapter: TagChipStateAdapter,
+  private val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(EditBirthdayState())
@@ -190,21 +193,18 @@ internal class EditBirthdayViewModel(
   }
 
   fun onDeleteMenuClick() {
-    _state.update { it.copy(dialog = EditBirthdayDialog.DeleteConfirm) }
-  }
-
-  fun onDeleteConfirmed() {
-    dismissDialog()
     if (!_state.value.canDelete) return
     val id = _state.value.id
+    if (id in pendingDeleteCoordinator.pendingIds(PendingEntity.BIRTHDAY).value) return
     Logger.i(TAG, "Deleting birthday, id: $id")
-    viewModelScope.launch(dispatcherProvider.io()) {
+    pendingDeleteCoordinator.markPending(
+      type = PendingEntity.BIRTHDAY,
+      id = id,
+      message = textProvider.getText(R.string.birthday_deleted),
+    ) {
       deleteBirthdayUseCase(id)
-
-      withContext(dispatcherProvider.main()) {
-        event.emit(ViewModelEvent.MoveBack)
-      }
     }
+    event.emit(ViewModelEvent.Deleted(id))
   }
 
   fun onDialogDismiss() {
@@ -344,6 +344,8 @@ internal class EditBirthdayViewModel(
 
   sealed interface ViewModelEvent {
     data object MoveBack : ViewModelEvent
+
+    data class Deleted(val id: String) : ViewModelEvent
 
     data class OpenDatePicker(
       val title: String,

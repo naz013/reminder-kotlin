@@ -21,9 +21,12 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoEvent
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -41,11 +44,15 @@ class BirthdaysViewModelTest : BaseTest() {
   private val deleteBirthdayUseCase = mockk<DeleteBirthdayUseCase>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
 
+  private val coordinatorPendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
+
   private lateinit var viewModel: BirthdaysViewModel
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.BIRTHDAY) } returns coordinatorPendingIds
     every { birthdayRepository.observeAll() } returns flowOf(emptyList())
     every { tagRepository.observeAll() } returns flowOf(emptyList())
     viewModel = createViewModel()
@@ -62,6 +69,7 @@ class BirthdaysViewModelTest : BaseTest() {
       uiAgendaItemAdapter = uiAgendaItemAdapter,
       birthdaySmartListPredicate = birthdaySmartListPredicate,
       deleteBirthdayUseCase = deleteBirthdayUseCase,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
 
   private fun birthday(
@@ -93,6 +101,22 @@ class BirthdaysViewModelTest : BaseTest() {
 
       val ready = state.listState as ListState.Ready
       assertEquals(1, ready.items.size)
+    }
+
+  @Test
+  fun `excludes birthdays pending delete in the coordinator`() =
+    runTest {
+      val kept = birthday(id = "1")
+      val pending = birthday(id = "2")
+      every { birthdayRepository.observeAll() } returns flowOf(listOf(kept, pending))
+      every { uiAgendaItemAdapter.convertBirthday(kept) } returns uiBirthday(id = "1")
+      every { uiAgendaItemAdapter.convertBirthday(pending) } returns uiBirthday(id = "2")
+      coordinatorPendingIds.value = setOf("2")
+      val vm = createViewModel()
+
+      val ready = vm.state.first().listState as ListState.Ready
+
+      assertEquals(listOf("1"), ready.items.map { it.id })
     }
 
   @Test

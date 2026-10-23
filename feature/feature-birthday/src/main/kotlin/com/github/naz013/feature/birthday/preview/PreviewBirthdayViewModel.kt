@@ -2,7 +2,10 @@ package com.github.naz013.feature.birthday.preview
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.github.naz013.common.TextProvider
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
+import com.github.naz013.ui.common.R
 import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
 import com.github.naz013.ui.birthday.UiBirthdayPreviewAdapter
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -19,10 +22,7 @@ import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.ui.tag.TagChipStateAdapter
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 internal class PreviewBirthdayViewModel(
   private val id: String,
@@ -33,6 +33,8 @@ internal class PreviewBirthdayViewModel(
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val tagChipStateAdapter: TagChipStateAdapter,
+  private val pendingDeleteCoordinator: PendingDeleteCoordinator,
+  private val textProvider: TextProvider,
 ) : ViewModel() {
 
   // Plain ViewModel-lifetime field, not part of the reactive pipeline below - the confetti
@@ -41,8 +43,6 @@ internal class PreviewBirthdayViewModel(
   // re-subscribed (e.g. the screen re-entering the foreground).
   private var canShowAnimation = true
 
-  private val _showDeleteConfirm = MutableStateFlow(false)
-
   // Fully derived from the Birthday/Tag tables via Room's Flow invalidation - no manual
   // load()/refresh() call anywhere in this ViewModel. Editing this birthday from another screen
   // (or the Edit screen popping back to this same preview pane in two-pane mode) is reflected
@@ -50,9 +50,9 @@ internal class PreviewBirthdayViewModel(
   val state = combine(
     birthdayRepository.observeById(id),
     tagAssignmentRepository.observeTagsForItem(id, TaggedItemType.BIRTHDAY),
-    _showDeleteConfirm,
-  ) { birthday, tags, showDeleteConfirm ->
-    buildState(birthday, tags, showDeleteConfirm)
+    pendingDeleteCoordinator.pendingIds(PendingEntity.BIRTHDAY),
+  ) { birthday, tags, pendingIds ->
+    buildState(birthday.takeUnless { id in pendingIds }, tags)
   }.stateInWhileSubscribed(PreviewBirthdayState())
 
   val event: LiveData<Event<ViewModelEvent>> field = mutableLiveEventOf()
@@ -70,32 +70,24 @@ internal class PreviewBirthdayViewModel(
   }
 
   fun onDeleteClick() {
-    _showDeleteConfirm.value = true
-  }
-
-  fun onDeleteDismiss() {
-    _showDeleteConfirm.value = false
-  }
-
-  fun onDeleteConfirmed() {
-    _showDeleteConfirm.value = false
-    viewModelScope.launch(dispatcherProvider.io()) {
+    if (id in pendingDeleteCoordinator.pendingIds(PendingEntity.BIRTHDAY).value) return
+    pendingDeleteCoordinator.markPending(
+      type = PendingEntity.BIRTHDAY,
+      id = id,
+      message = textProvider.getText(R.string.birthday_deleted),
+    ) {
       deleteBirthdayUseCase(id)
-
-      withContext(dispatcherProvider.main()) {
-        event.emit(ViewModelEvent.MoveBack)
-      }
     }
+    event.emit(ViewModelEvent.Deleted(id))
   }
 
   private suspend fun buildState(
     birthday: Birthday?,
     tags: List<Tag>,
-    showDeleteConfirm: Boolean,
   ): PreviewBirthdayState {
     val tagChips = tags.map { tagChipStateAdapter(it) }
     if (birthday == null) {
-      return PreviewBirthdayState(showDeleteConfirm = showDeleteConfirm, tags = tagChips)
+      return PreviewBirthdayState(tags = tagChips)
     }
 
     analyticsEventSender.send(FeatureUsedEvent(Feature.BIRTHDAY_PREVIEW))
@@ -106,7 +98,6 @@ internal class PreviewBirthdayViewModel(
 
     return PreviewBirthdayState(
       birthday = uiBirthday,
-      showDeleteConfirm = showDeleteConfirm,
       playConfetti = shouldPlayConfetti,
       canShowAnimation = false,
       tags = tagChips,
@@ -114,7 +105,7 @@ internal class PreviewBirthdayViewModel(
   }
 
   sealed interface ViewModelEvent {
-    data object MoveBack : ViewModelEvent
+    data class Deleted(val id: String) : ViewModelEvent
 
     data class SendSms(val number: String) : ViewModelEvent
 

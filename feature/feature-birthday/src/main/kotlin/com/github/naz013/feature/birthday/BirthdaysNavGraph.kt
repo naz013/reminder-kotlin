@@ -23,11 +23,14 @@ import com.github.naz013.feature.birthday.list.BirthdaysViewModel
 import com.github.naz013.feature.birthday.preview.PreviewBirthdayScreen
 import com.github.naz013.feature.birthday.preview.PreviewBirthdayState
 import com.github.naz013.feature.birthday.preview.PreviewBirthdayViewModel
+import com.github.naz013.feature.common.viewmodel.PendingEntity
+import com.github.naz013.navigation.popDeleted
 import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
 import com.github.naz013.ui.common.compose.foundation.navigation.sidePanelSupporting
+import com.github.naz013.ui.common.compose.foundation.snackbar.PendingDeleteHost
 import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.github.naz013.ui.common.livedata.ObserveEvent
@@ -79,6 +82,11 @@ private fun ListEntry(
   val viewModel = koinViewModel<BirthdaysViewModel>()
   val snackbarHostState = remember { SnackbarHostState() }
   UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
+  PendingDeleteHost(
+    coordinator = viewModel.pendingDeleteCoordinator,
+    type = PendingEntity.BIRTHDAY,
+    snackbarHostState = snackbarHostState,
+  )
 
   val selectedItemId =
     backStack.lastOrNull()?.let { key ->
@@ -140,9 +148,7 @@ private fun PreviewEntry(
 
   viewModel.event.ObserveEvent { event ->
     when (event) {
-      is PreviewBirthdayViewModel.ViewModelEvent.MoveBack -> {
-        if (backStack.size > 1) backStack.removeLastOrNull()
-      }
+      is PreviewBirthdayViewModel.ViewModelEvent.Deleted -> backStack.popDeletedBirthday(event.id)
 
       is PreviewBirthdayViewModel.ViewModelEvent.MakeCall -> {
         permissionRequester.request(Permissions.CALL_PHONE, onGranted = { onCallClick(event.number) })
@@ -165,8 +171,6 @@ private fun PreviewEntry(
     // naturally reveals Preview again afterward, in both single-pane and two-pane.
     onEditClick = { backStack.add(BirthdaysNavKey.Edit(key.id)) },
     onDeleteClick = viewModel::onDeleteClick,
-    onDeleteConfirmed = viewModel::onDeleteConfirmed,
-    onDeleteDismiss = viewModel::onDeleteDismiss,
     onCallClick = viewModel::onCallClicked,
     onSmsClick = viewModel::onSmsClicked,
     adsContent = adsContent,
@@ -193,6 +197,8 @@ private fun EditEntry(
   viewModel.event.ObserveEvent { event ->
     when (event) {
       is EditBirthdayViewModel.ViewModelEvent.MoveBack -> if (backStack.size > 1) backStack.removeLastOrNull()
+
+      is EditBirthdayViewModel.ViewModelEvent.Deleted -> backStack.popDeletedBirthday(event.id)
 
       is EditBirthdayViewModel.ViewModelEvent.OpenDatePicker -> {
         dateTimePicker.showDatePicker(
@@ -227,7 +233,6 @@ private fun EditEntry(
     onPickContactClick = {
       permissionRequester.request(Permissions.READ_CONTACTS, onGranted = { pickContact() })
     },
-    onDeleteConfirmed = viewModel::onDeleteConfirmed,
     onCopyKeepClick = viewModel::onCopyKeepClick,
     onCopyReplaceClick = viewModel::onCopyReplaceClick,
     onDialogDismiss = viewModel::onDialogDismiss,
@@ -235,6 +240,12 @@ private fun EditEntry(
     onManageTagsClick = viewModel::onManageTagsClick,
     adsContent = adsContent,
   )
+}
+
+private fun MutableList<NavKey>.popDeletedBirthday(id: String) {
+  popDeleted { key ->
+    (key is BirthdaysNavKey.Preview && key.id == id) || (key is BirthdaysNavKey.Edit && key.id == id)
+  }
 }
 
 /** Best-effort IME dismiss for a promoted Nav3 screen leaving composition - no Fragment needed. */

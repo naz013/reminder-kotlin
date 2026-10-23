@@ -12,9 +12,17 @@ import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.ui.tag.TagChipStateAdapter
+import com.github.naz013.common.TextProvider
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
+import com.github.naz013.ui.common.R
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -33,11 +41,17 @@ class PreviewBirthdayViewModelTest : BaseTest() {
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>()
   private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
 
+  private val pendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
+  private val textProvider = mockk<TextProvider>()
+
   private lateinit var viewModel: PreviewBirthdayViewModel
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.BIRTHDAY) } returns pendingIds
+    every { textProvider.getText(R.string.birthday_deleted) } returns "Birthday deleted"
     // PreviewBirthdayViewModel.state re-subscribes to observeById() on every fresh collection
     // (stateInWhileSubscribed) - every test collects state at least once (even ones only
     // exercising delete-dialog toggles), so a default stub avoids an unstubbed-call failure.
@@ -58,6 +72,8 @@ class PreviewBirthdayViewModelTest : BaseTest() {
       deleteBirthdayUseCase = deleteBirthdayUseCase,
       tagAssignmentRepository = tagAssignmentRepository,
       tagChipStateAdapter = tagChipStateAdapter,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
+      textProvider = textProvider,
     )
 
   private fun uiBirthday(hasBirthdayToday: Boolean = false) =
@@ -110,33 +126,45 @@ class PreviewBirthdayViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onDeleteClick shows the delete confirmation dialog`() =
+  fun `onDeleteClick marks the birthday pending and posts Deleted without deleting`() =
     runTest {
       viewModel.onDeleteClick()
 
-      assertEquals(true, viewModel.state.first().showDeleteConfirm)
+      verify(exactly = 1) {
+        pendingDeleteCoordinator.markPending(PendingEntity.BIRTHDAY, "42", "Birthday deleted", any())
+      }
+      coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
+      val event = viewModel.event.getOrAwaitValue()
+      assertEquals(PreviewBirthdayViewModel.ViewModelEvent.Deleted("42"), event?.getContentIfNotHandled())
     }
 
   @Test
-  fun `onDeleteDismiss hides the delete confirmation dialog`() =
+  fun `committing the pending delete deletes the birthday exactly once`() =
     runTest {
+      val onCommit = slot<suspend () -> Unit>()
+      every { pendingDeleteCoordinator.markPending(any(), any(), any(), capture(onCommit)) } just runs
       viewModel.onDeleteClick()
 
-      viewModel.onDeleteDismiss()
-
-      assertEquals(false, viewModel.state.first().showDeleteConfirm)
-    }
-
-  @Test
-  fun `onDeleteConfirmed deletes the birthday and posts MoveBack`() =
-    runTest {
-      viewModel.onDeleteClick()
-
-      viewModel.onDeleteConfirmed()
+      onCommit.captured.invoke()
 
       coVerify(exactly = 1) { deleteBirthdayUseCase("42") }
-      assertEquals(false, viewModel.state.first().showDeleteConfirm)
-      val event = viewModel.event.getOrAwaitValue()
-      assertEquals(PreviewBirthdayViewModel.ViewModelEvent.MoveBack, event?.getContentIfNotHandled())
+    }
+
+  @Test
+  fun `onDeleteClick does nothing when the birthday is already pending`() =
+    runTest {
+      pendingIds.value = setOf("42")
+
+      viewModel.onDeleteClick()
+
+      verify(exactly = 0) { pendingDeleteCoordinator.markPending(any(), any(), any(), any()) }
+    }
+
+  @Test
+  fun `treats a pending birthday as not found`() =
+    runTest {
+      pendingIds.value = setOf("42")
+
+      assertEquals(null, viewModel.state.first().birthday)
     }
 }

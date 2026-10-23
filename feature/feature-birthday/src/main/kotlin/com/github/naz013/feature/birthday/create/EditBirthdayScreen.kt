@@ -24,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,7 +44,6 @@ import com.github.naz013.ui.common.compose.foundation.component.FormItem
 import com.github.naz013.ui.common.compose.foundation.component.FormSwitchItem
 import com.github.naz013.ui.common.compose.foundation.component.PhoneNumberVisualTransformation
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
-import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.tag.TagChipPicker
 import com.github.naz013.ui.tag.TagChipState
 
@@ -65,7 +63,6 @@ internal fun EditBirthdayScreen(
   onDateFieldClick: () -> Unit,
   onNumberChange: (String) -> Unit,
   onPickContactClick: () -> Unit,
-  onDeleteConfirmed: () -> Unit,
   onCopyKeepClick: () -> Unit,
   onCopyReplaceClick: () -> Unit,
   onDialogDismiss: () -> Unit,
@@ -231,20 +228,6 @@ internal fun EditBirthdayScreen(
     }
   }
 
-  val dialogDispatcher = rememberDialogDispatcher()
-
-  LaunchedEffect(state.dialog) {
-    if (state.dialog == EditBirthdayDialog.DeleteConfirm) {
-      dialogDispatcher.showDialog(
-        textRes = R.string.are_you_sure,
-        positiveButtonRes = R.string.yes,
-        negativeButtonRes = R.string.no,
-        onPositive = onDeleteConfirmed,
-        onNegative = onDialogDismiss,
-      )
-    }
-  }
-
   // Kept as a plain AlertDialog rather than DialogDispatcher: DialogDispatcher maps an
   // outside-tap dismiss to the negative button's action, which here would silently trigger the
   // destructive "replace" action instead of a no-op cancel.
@@ -281,7 +264,6 @@ private fun EditBirthdayScreenPreview() {
       onDateFieldClick = {},
       onNumberChange = {},
       onPickContactClick = {},
-      onDeleteConfirmed = {},
       onCopyKeepClick = {},
       onCopyReplaceClick = {},
       onDialogDismiss = {},
