@@ -1318,4 +1318,5 @@
     <string name="restore">Відновити</string>
     <string name="reminder_restored">Нагадування відновлено</string>
     <string name="delete_routine_confirmation">Видалити цю рутину? Цю дію не можна скасувати.</string>
+    <string name="reminder_restored_inactive">Нагадування відновлено, але воно неактивне, бо його час уже минув</string>
 </resources>

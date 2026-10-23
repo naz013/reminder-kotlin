@@ -102,10 +102,12 @@ class RemindersArchiveViewModel(
         Logger.e(TAG, "Cannot restore reminder with id = $id. Not found.")
         return@launch
       }
-      activateReminderUseCase(reminder.copy(isRemoved = false))
-      Logger.i(TAG, "Restored reminder: $id")
+      val restored = activateReminderUseCase(reminder.copy(isRemoved = false))
+      Logger.i(TAG, "Restored reminder: $id, active: ${restored.isActive}")
       withContext(dispatcherProvider.main()) {
-        event.emit(NavigationEvent.ReminderRestored)
+        event.emit(
+          if (restored.isActive) NavigationEvent.ReminderRestored else NavigationEvent.ReminderRestoredInactive
+        )
       }
     }
   }
@@ -208,6 +210,8 @@ class RemindersArchiveViewModel(
     data object ArchiveEmptied : NavigationEvent
 
     data object ReminderRestored : NavigationEvent
+
+    data object ReminderRestoredInactive : NavigationEvent
 
     data class ShowUndoDelete(
       val batchKey: String,

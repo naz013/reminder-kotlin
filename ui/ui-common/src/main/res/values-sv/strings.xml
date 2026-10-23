@@ -1310,4 +1310,5 @@
     <string name="restore">Återställ</string>
     <string name="reminder_restored">Påminnelsen har återställts</string>
     <string name="delete_routine_confirmation">Ta bort den här rutinen? Detta kan inte ångras.</string>
+    <string name="reminder_restored_inactive">Påminnelsen har återställts, men är inaktiv eftersom tiden har passerat</string>
 </resources>

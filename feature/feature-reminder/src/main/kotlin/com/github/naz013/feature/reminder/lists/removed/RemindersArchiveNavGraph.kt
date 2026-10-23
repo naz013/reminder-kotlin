@@ -87,6 +87,10 @@ private fun ListEntry(
         toastDispatcher.showToast(messageRes = R.string.reminder_restored)
       }
 
+      RemindersArchiveViewModel.NavigationEvent.ReminderRestoredInactive -> {
+        toastDispatcher.showToast(messageRes = R.string.reminder_restored_inactive)
+      }
+
       is RemindersArchiveViewModel.NavigationEvent.ShowUndoDelete -> {
         undoSnackbarDispatcher.showUndoSnackbar(
           message = event.message,

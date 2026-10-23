@@ -1305,4 +1305,5 @@
     <string name="restore">恢复</string>
     <string name="reminder_restored">提醒已恢复</string>
     <string name="delete_routine_confirmation">删除此例程？此操作无法撤销。</string>
+    <string name="reminder_restored_inactive">提醒已恢复，但因时间已过而处于未激活状态</string>
 </resources>

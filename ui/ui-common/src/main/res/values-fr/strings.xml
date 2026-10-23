@@ -1315,4 +1315,5 @@
     <string name="restore">Restaurer</string>
     <string name="reminder_restored">Rappel restauré</string>
     <string name="delete_routine_confirmation">Supprimer cette routine ? Cette action est irréversible.</string>
+    <string name="reminder_restored_inactive">Rappel restauré, mais inactif car son heure est déjà passée</string>
 </resources>

@@ -1310,4 +1310,5 @@
     <string name="restore">Herstellen</string>
     <string name="reminder_restored">Herinnering hersteld</string>
     <string name="delete_routine_confirmation">Deze routine verwijderen? Dit kan niet ongedaan worden gemaakt.</string>
+    <string name="reminder_restored_inactive">Herinnering hersteld, maar inactief omdat de tijd al voorbij is</string>
 </resources>

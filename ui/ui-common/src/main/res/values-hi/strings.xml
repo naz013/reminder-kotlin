@@ -1308,4 +1308,5 @@
     <string name="restore">पुनर्स्थापित करें</string>
     <string name="reminder_restored">रिमाइंडर पुनर्स्थापित किया गया</string>
     <string name="delete_routine_confirmation">इस रूटीन को हटाएं? इसे पूर्ववत नहीं किया जा सकता।</string>
+    <string name="reminder_restored_inactive">रिमाइंडर पुनर्स्थापित किया गया, लेकिन समय बीत चुका होने के कारण यह निष्क्रिय है</string>
 </resources>

@@ -1307,4 +1307,5 @@
     <string name="restore">Khôi phục</string>
     <string name="reminder_restored">Đã khôi phục lời nhắc</string>
     <string name="delete_routine_confirmation">Xóa thói quen này? Không thể hoàn tác thao tác này.</string>
+    <string name="reminder_restored_inactive">Đã khôi phục lời nhắc, nhưng lời nhắc không hoạt động vì đã quá giờ</string>
 </resources>

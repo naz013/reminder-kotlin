@@ -161,13 +161,31 @@ class RemindersArchiveViewModelTest : BaseTest() {
   fun `onMenuAction RESTORE activates the reminder as not removed and emits ReminderRestored`() =
     runTest {
       val target = reminderV2("7").copy(isRemoved = true)
+      val activated = target.copy(isRemoved = false, isActive = true)
       coEvery { reminderV2Repository.getById("7") } returns target
+      coEvery { activateReminderUseCase(target.copy(isRemoved = false)) } returns activated
 
       viewModel.onMenuAction(uiReminderList("7"), ArchiveReminderMenuAction.RESTORE)
 
       coVerify(exactly = 1) { activateReminderUseCase(target.copy(isRemoved = false)) }
       assertEquals(
         RemindersArchiveViewModel.NavigationEvent.ReminderRestored,
+        viewModel.event.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `onMenuAction RESTORE emits ReminderRestoredInactive when the reminder ends up inactive`() =
+    runTest {
+      val target = reminderV2("7").copy(isRemoved = true)
+      coEvery { reminderV2Repository.getById("7") } returns target
+      coEvery { activateReminderUseCase(target.copy(isRemoved = false)) } returns
+        target.copy(isRemoved = false, isActive = false)
+
+      viewModel.onMenuAction(uiReminderList("7"), ArchiveReminderMenuAction.RESTORE)
+
+      assertEquals(
+        RemindersArchiveViewModel.NavigationEvent.ReminderRestoredInactive,
         viewModel.event.value?.peekContent(),
       )
     }
