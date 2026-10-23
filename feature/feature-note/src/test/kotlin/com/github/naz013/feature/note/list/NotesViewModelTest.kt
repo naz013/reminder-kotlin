@@ -470,6 +470,25 @@ class NotesViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `a delete replacing a pending archive commits the archive once and deletes only its own note`() =
+    runTest {
+      every { textProvider.getString(R.string.note_moved_to_archive) } returns "Archived"
+      val (viewModel, _) = readyViewModel(listOf("1", "2"))
+      viewModel.onNoteMenuAction(uiItem(id = "1"), NoteMenuAction.ARCHIVE)
+
+      viewModel.onNoteMenuAction(uiItem(id = "2"), NoteMenuAction.DELETE)
+
+      coVerify(exactly = 1) { changeNoteArchiveStateUseCase("1", true) }
+      coVerify(exactly = 0) { deleteNoteUseCase(any()) }
+
+      viewModel.undoDelete.commit("2")
+
+      coVerify(exactly = 1) { deleteNoteUseCase("2") }
+      coVerify(exactly = 1) { changeNoteArchiveStateUseCase(any(), any()) }
+      coVerify(exactly = 0) { deleteNoteUseCase("1") }
+    }
+
+  @Test
   fun `onImageClick sets the current images and posts OpenImagePreview at the matching position`() {
     val images = listOf(UiNoteImage(id = 1, fileName = "a.jpg"), UiNoteImage(id = 2, fileName = "b.jpg"))
     val item = uiItem(id = "7", images = images, backgroundColor = Color.Red)
