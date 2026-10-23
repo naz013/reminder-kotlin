@@ -1316,4 +1316,6 @@
     <string name="place_deleted">Local excluído</string>
     <string name="tag_deleted">Tag excluída</string>
     <string name="tags_deleted_count">%1$d tags excluídas</string>
+    <string name="group_deleted">Grupo excluído</string>
+    <string name="groups_deleted_count">%1$d grupos excluídos</string>
 </resources>

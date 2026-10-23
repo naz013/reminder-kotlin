@@ -1,5 +1,6 @@
 package com.github.naz013.group
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
@@ -26,6 +27,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
+import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import com.github.naz013.ui.common.compose.hideKeyboard
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.theme.ThemeProvider
@@ -77,6 +79,8 @@ private fun GroupsListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<GroupsViewModel>()
 
   val dialogDispatcher = rememberDialogDispatcher()
+  val snackbarHostState = remember { SnackbarHostState() }
+  UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
 
   val selectedItemId =
     backStack.lastOrNull()?.let { key ->
@@ -127,6 +131,7 @@ private fun GroupsListEntry(backStack: MutableList<NavKey>) {
   val state by viewModel.state.collectAsState(GroupsScreenState())
   GroupsScreen(
     state = state,
+    snackbarHostState = snackbarHostState,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onAddClick = viewModel::onAddClick,
     onGroupClick = viewModel::onGroupClick,

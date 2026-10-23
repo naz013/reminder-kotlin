@@ -3,6 +3,7 @@ package com.github.naz013.group.list
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.common.viewmodel.UndoEvent
 import com.github.naz013.logic.group.DeleteGroupUseCase
 import com.github.naz013.logic.group.MakeGroupDefaultUseCase
 import com.github.naz013.logic.group.SaveGroupUseCase
@@ -37,7 +38,7 @@ class GroupsViewModelTest : BaseTest() {
   private val makeGroupDefaultUseCase = mockk<MakeGroupDefaultUseCase>(relaxed = true)
   private val saveGroupUseCase = mockk<SaveGroupUseCase>(relaxed = true)
   private val reminderV2Repository = mockk<ReminderV2Repository>()
-  private val textProvider = mockk<TextProvider>()
+  private val textProvider = mockk<TextProvider>(relaxed = true)
 
   private lateinit var viewModel: GroupsViewModel
 
@@ -214,14 +215,71 @@ class GroupsViewModelTest : BaseTest() {
       viewModel.deleteGroup("missing")
 
       coVerify(exactly = 0) { deleteGroupUseCase(any()) }
+      assertTrue(viewModel.undoDelete.pendingIds.value.isEmpty())
     }
 
   @Test
-  fun `deleteGroup deletes the group when it exists`() =
+  fun `deleteGroup does nothing for the default group`() =
     runTest {
-      coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1")
+      coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1", isDefault = true)
 
       viewModel.deleteGroup("1")
+      viewModel.undoDelete.commit("1")
+
+      coVerify(exactly = 0) { deleteGroupUseCase(any()) }
+      assertTrue(viewModel.undoDelete.pendingIds.value.isEmpty())
+    }
+
+  @Test
+  fun `deleteGroup marks the group pending without cascading yet`() =
+    runTest {
+      coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1")
+      every { textProvider.getText(R.string.group_deleted) } returns "Group deleted"
+
+      viewModel.deleteGroup("1")
+
+      coVerify(exactly = 0) { deleteGroupUseCase(any()) }
+      assertEquals(
+        UndoEvent(batchKey = "1", message = "Group deleted", token = 1L),
+        viewModel.undoDelete.undoEvents.first(),
+      )
+    }
+
+  @Test
+  fun `pending group is hidden from the list and restored on undo without deleting`() =
+    runTest {
+      val (vm, state) = readyGroups(listOf("1", "2"))
+      coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1")
+
+      vm.deleteGroup("1")
+      val hiddenIds = (state().listState as ListState.Ready).groups.map { it.id }
+      vm.undoDelete.undo("1")
+      val restoredIds = (state().listState as ListState.Ready).groups.map { it.id }
+
+      assertEquals(listOf("2"), hiddenIds)
+      assertEquals(listOf("1", "2"), restoredIds)
+      coVerify(exactly = 0) { deleteGroupUseCase(any()) }
+    }
+
+  @Test
+  fun `commit runs the delete cascade exactly once`() =
+    runTest {
+      coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1")
+      viewModel.deleteGroup("1")
+
+      viewModel.undoDelete.commit("1")
+      viewModel.undoDelete.commit("1")
+
+      coVerify(exactly = 1) { deleteGroupUseCase("1") }
+    }
+
+  @Test
+  fun `clearing the view model commits a pending group delete`() =
+    runTest {
+      coEvery { groupV2Repository.getById("1") } returns groupV2(id = "1")
+      viewModel.deleteGroup("1")
+
+      GroupsViewModel::class.java.getDeclaredMethod("onCleared").apply { isAccessible = true }.invoke(viewModel)
 
       coVerify(exactly = 1) { deleteGroupUseCase("1") }
     }
@@ -308,17 +366,57 @@ class GroupsViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `deleteSelectedGroups deletes each group and clears selection`() =
+  fun `deleteSelectedGroups clears selection, hides the groups and does not cascade yet`() =
     runTest {
-      val (vm, state) = readyGroups(listOf("1", "2"))
+      every { textProvider.getText(R.string.groups_deleted_count, 2) } returns "2 groups deleted"
+      val (vm, state) = readyGroups(listOf("1", "2", "3"))
       vm.onGroupLongClick("1")
       vm.onGroupClick("2")
 
       vm.deleteSelectedGroups(setOf("1", "2"))
 
+      assertEquals(0, state().selectedCount)
+      assertEquals(listOf("3"), (state().listState as ListState.Ready).groups.map { it.id })
+      assertEquals("2 groups deleted", vm.undoDelete.undoEvents.first().message)
+      coVerify(exactly = 0) { deleteGroupUseCase(any()) }
+    }
+
+  @Test
+  fun `commit after a bulk delete cascades each group`() =
+    runTest {
+      every { textProvider.getText(R.string.groups_deleted_count, 2) } returns "2 groups deleted"
+      val (vm, _) = readyGroups(listOf("1", "2"))
+      vm.deleteSelectedGroups(setOf("1", "2"))
+
+      vm.undoDelete.commit(vm.undoDelete.undoEvents.first().batchKey)
+
       coVerify(exactly = 1) { deleteGroupUseCase("1") }
       coVerify(exactly = 1) { deleteGroupUseCase("2") }
-      assertEquals(0, state().selectedCount)
+    }
+
+  @Test
+  fun `undo after a bulk delete restores the groups and never deletes them`() =
+    runTest {
+      every { textProvider.getText(R.string.groups_deleted_count, 2) } returns "2 groups deleted"
+      val (vm, state) = readyGroups(listOf("1", "2"))
+      vm.deleteSelectedGroups(setOf("1", "2"))
+
+      vm.undoDelete.undo(vm.undoDelete.undoEvents.first().batchKey)
+
+      assertEquals(listOf("1", "2"), (state().listState as ListState.Ready).groups.map { it.id })
+      coVerify(exactly = 0) { deleteGroupUseCase(any()) }
+    }
+
+  @Test
+  fun `deleteSelectedGroups does nothing when the default group is included`() =
+    runTest {
+      val (vm, _) = readyGroups(listOf("1", "2"), defaultId = "1")
+
+      vm.deleteSelectedGroups(setOf("1", "2"))
+      vm.undoDelete.commit("x")
+
+      assertTrue(vm.undoDelete.pendingIds.value.isEmpty())
+      coVerify(exactly = 0) { deleteGroupUseCase(any()) }
     }
 
   @Test

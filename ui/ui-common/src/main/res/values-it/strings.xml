@@ -1316,4 +1316,6 @@
     <string name="place_deleted">Luogo eliminato</string>
     <string name="tag_deleted">Tag eliminato</string>
     <string name="tags_deleted_count">%1$d tag eliminati</string>
+    <string name="group_deleted">Gruppo eliminato</string>
+    <string name="groups_deleted_count">%1$d gruppi eliminati</string>
 </resources>

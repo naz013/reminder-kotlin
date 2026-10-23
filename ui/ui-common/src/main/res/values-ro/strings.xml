@@ -1316,4 +1316,6 @@
     <string name="place_deleted">Locul a fost șters</string>
     <string name="tag_deleted">Eticheta a fost ștearsă</string>
     <string name="tags_deleted_count">%1$d etichete șterse</string>
+    <string name="group_deleted">Grup șters</string>
+    <string name="groups_deleted_count">%1$d grupuri șterse</string>
 </resources>

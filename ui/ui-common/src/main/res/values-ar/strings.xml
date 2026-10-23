@@ -1323,4 +1323,6 @@
     <string name="place_deleted">تم حذف المكان</string>
     <string name="tag_deleted">تم حذف الوسم</string>
     <string name="tags_deleted_count">تم حذف %1$d وسوم</string>
+    <string name="group_deleted">تم حذف المجموعة</string>
+    <string name="groups_deleted_count">تم حذف %1$d مجموعات</string>
 </resources>

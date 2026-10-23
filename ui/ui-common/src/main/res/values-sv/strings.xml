@@ -1311,4 +1311,6 @@
     <string name="place_deleted">Plats raderad</string>
     <string name="tag_deleted">Tagg raderad</string>
     <string name="tags_deleted_count">%1$d taggar raderade</string>
+    <string name="group_deleted">Grupp borttagen</string>
+    <string name="groups_deleted_count">%1$d grupper borttagna</string>
 </resources>

@@ -1309,4 +1309,6 @@
     <string name="place_deleted">स्थान हटा दिया गया</string>
     <string name="tag_deleted">टैग हटा दिया गया</string>
     <string name="tags_deleted_count">%1$d टैग हटाए गए</string>
+    <string name="group_deleted">समूह हटाया गया</string>
+    <string name="groups_deleted_count">%1$d समूह हटाए गए</string>
 </resources>

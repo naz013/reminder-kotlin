@@ -1308,4 +1308,6 @@
     <string name="place_deleted">Đã xóa địa điểm</string>
     <string name="tag_deleted">Đã xóa thẻ</string>
     <string name="tags_deleted_count">Đã xóa %1$d thẻ</string>
+    <string name="group_deleted">Đã xóa nhóm</string>
+    <string name="groups_deleted_count">Đã xóa %1$d nhóm</string>
 </resources>

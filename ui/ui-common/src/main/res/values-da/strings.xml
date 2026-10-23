@@ -1311,4 +1311,6 @@
     <string name="place_deleted">Sted slettet</string>
     <string name="tag_deleted">Tag slettet</string>
     <string name="tags_deleted_count">%1$d tags slettet</string>
+    <string name="group_deleted">Gruppe slettet</string>
+    <string name="groups_deleted_count">%1$d grupper slettet</string>
 </resources>

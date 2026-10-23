@@ -1306,4 +1306,6 @@
     <string name="place_deleted">장소가 삭제되었습니다</string>
     <string name="tag_deleted">태그가 삭제되었습니다</string>
     <string name="tags_deleted_count">태그 %1$d개가 삭제되었습니다</string>
+    <string name="group_deleted">그룹이 삭제되었습니다</string>
+    <string name="groups_deleted_count">그룹 %1$d개가 삭제되었습니다</string>
 </resources>

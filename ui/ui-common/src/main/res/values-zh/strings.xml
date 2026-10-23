@@ -1306,4 +1306,6 @@
     <string name="place_deleted">地点已删除</string>
     <string name="tag_deleted">标签已删除</string>
     <string name="tags_deleted_count">已删除 %1$d 个标签</string>
+    <string name="group_deleted">群组已删除</string>
+    <string name="groups_deleted_count">已删除 %1$d 个群组</string>
 </resources>

@@ -1313,4 +1313,6 @@
     <string name="place_deleted">Yer silindi</string>
     <string name="tag_deleted">Etiket silindi</string>
     <string name="tags_deleted_count">%1$d etiket silindi</string>
+    <string name="group_deleted">Grup silindi</string>
+    <string name="groups_deleted_count">%1$d grup silindi</string>
 </resources>

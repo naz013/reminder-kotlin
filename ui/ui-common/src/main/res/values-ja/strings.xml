@@ -1306,4 +1306,6 @@
     <string name="place_deleted">場所を削除しました</string>
     <string name="tag_deleted">タグを削除しました</string>
     <string name="tags_deleted_count">%1$d 件のタグを削除しました</string>
+    <string name="group_deleted">グループを削除しました</string>
+    <string name="groups_deleted_count">%1$d 件のグループを削除しました</string>
 </resources>

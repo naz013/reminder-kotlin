@@ -1319,4 +1319,6 @@
     <string name="place_deleted">Místo smazáno</string>
     <string name="tag_deleted">Štítek smazán</string>
     <string name="tags_deleted_count">Smazáno štítků: %1$d</string>
+    <string name="group_deleted">Skupina smazána</string>
+    <string name="groups_deleted_count">Smazáno skupin: %1$d</string>
 </resources>

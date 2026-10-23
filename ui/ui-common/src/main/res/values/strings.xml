@@ -1329,4 +1329,6 @@
     <string name="place_deleted">Place deleted</string>
     <string name="tag_deleted">Tag deleted</string>
     <string name="tags_deleted_count">%1$d tags deleted</string>
+    <string name="group_deleted">Group deleted</string>
+    <string name="groups_deleted_count">%1$d groups deleted</string>
 </resources>

@@ -1318,4 +1318,6 @@
     <string name="place_deleted">Место удалено</string>
     <string name="tag_deleted">Тег удалён</string>
     <string name="tags_deleted_count">Удалено тегов: %1$d</string>
+    <string name="group_deleted">Группа удалена</string>
+    <string name="groups_deleted_count">Удалено групп: %1$d</string>
 </resources>

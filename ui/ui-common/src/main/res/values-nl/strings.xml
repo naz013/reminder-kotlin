@@ -1311,4 +1311,6 @@
     <string name="place_deleted">Plaats verwijderd</string>
     <string name="tag_deleted">Tag verwijderd</string>
     <string name="tags_deleted_count">%1$d tags verwijderd</string>
+    <string name="group_deleted">Groep verwijderd</string>
+    <string name="groups_deleted_count">%1$d groepen verwijderd</string>
 </resources>

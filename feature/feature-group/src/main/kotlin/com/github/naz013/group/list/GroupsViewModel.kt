@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
@@ -28,6 +29,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
 
 internal class GroupsViewModel(
   private val dispatcherProvider: DispatcherProvider,
@@ -45,10 +47,13 @@ internal class GroupsViewModel(
   val state = combine(_state, _selectedItemId, GroupsScreenState::withSelectedItem)
     .stateInWhileSubscribed(GroupsScreenState())
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
+  val undoDelete = UndoDeleteController(viewModelScope, dispatcherProvider.io())
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
-      groupV2Repository.observeAll().collect { groups -> applyGroups(groups) }
+      combine(groupV2Repository.observeAll(), undoDelete.pendingIds) { groups, pendingIds ->
+        groups.filterNot { it.uuId in pendingIds }
+      }.collect { groups -> applyGroups(groups) }
     }
   }
 
@@ -105,13 +110,27 @@ internal class GroupsViewModel(
   }
 
   fun deleteSelectedGroups(ids: Set<String>) {
-    // Clear selection before the deletes run: the reactive list-refresh coroutine can
-    // synchronously empty listState, and updateSelection is a no-op once listState is no
-    // longer Ready - clearing first avoids a stuck selectedCount.
+    if (ids.isEmpty() || defaultGroupIn(ids)) return
+    // Clear selection before marking pending: the pendingIds update can synchronously empty
+    // listState, and updateSelection is a no-op once listState is no longer Ready - clearing
+    // first avoids a stuck selectedCount.
     onSelectionCancel()
-    viewModelScope.launch(dispatcherProvider.io()) {
+    undoDelete.markPending(
+      batchKey = UUID.randomUUID().toString(),
+      ids = ids,
+      message = textProvider.getText(R.string.groups_deleted_count, ids.size),
+    ) {
       ids.forEach { deleteGroupUseCase(it) }
     }
+  }
+
+  private fun defaultGroupIn(ids: Set<String>): Boolean =
+    (_state.value.listState as? ListState.Ready)?.groups.orEmpty()
+      .any { it.id in ids && it.isDefaultGroup }
+
+  override fun onCleared() {
+    super.onCleared()
+    undoDelete.commitAllDetached(dispatcherProvider.io())
   }
 
   fun applySelectedColor(colorPosition: Int) {
@@ -155,7 +174,17 @@ internal class GroupsViewModel(
         Logger.e(TAG, "Group not found: $id")
         return@launch
       }
-      deleteGroupUseCase(id)
+      if (group.isDefault) {
+        Logger.e(TAG, "Default group cannot be deleted: $id")
+        return@launch
+      }
+      undoDelete.markPending(
+        batchKey = id,
+        ids = setOf(id),
+        message = textProvider.getText(R.string.group_deleted),
+      ) {
+        deleteGroupUseCase(id)
+      }
     }
   }
 

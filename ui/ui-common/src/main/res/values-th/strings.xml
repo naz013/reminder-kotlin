@@ -1304,4 +1304,6 @@
     <string name="place_deleted">ลบสถานที่แล้ว</string>
     <string name="tag_deleted">ลบแท็กแล้ว</string>
     <string name="tags_deleted_count">ลบแท็กแล้ว %1$d รายการ</string>
+    <string name="group_deleted">ลบกลุ่มแล้ว</string>
+    <string name="groups_deleted_count">ลบ %1$d กลุ่มแล้ว</string>
 </resources>
