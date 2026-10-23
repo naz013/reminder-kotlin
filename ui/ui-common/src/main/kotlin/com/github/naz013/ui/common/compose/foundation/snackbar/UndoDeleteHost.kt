@@ -4,7 +4,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
+import com.github.naz013.feature.common.viewmodel.UndoEvent
 import androidx.compose.ui.res.stringResource
 import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.ui.common.R
@@ -23,14 +27,30 @@ fun UndoDeleteHost(
   val dispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
   val actionLabel = stringResource(R.string.undo)
   val currentController by rememberUpdatedState(controller)
+  var shownEvent by remember { mutableStateOf<UndoEvent?>(null) }
   LaunchedEffect(controller) {
     controller.undoEvents.collect { event ->
+      shownEvent = event
       dispatcher.showUndoSnackbar(
         message = event.message,
         actionLabel = actionLabel,
-        onUndo = { currentController.undo(event) },
-        onTimeout = { currentController.commit(event) },
+        onUndo = {
+          if (shownEvent == event) shownEvent = null
+          currentController.undo(event)
+        },
+        onTimeout = {
+          if (shownEvent == event) shownEvent = null
+          currentController.commit(event)
+        },
       )
+    }
+  }
+  LaunchedEffect(controller) {
+    controller.latestEvent.collect { latest ->
+      if (latest == null && shownEvent != null) {
+        shownEvent = null
+        snackbarHostState.currentSnackbarData?.dismiss()
+      }
     }
   }
 }

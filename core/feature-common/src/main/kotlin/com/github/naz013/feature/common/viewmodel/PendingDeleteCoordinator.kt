@@ -2,12 +2,14 @@ package com.github.naz013.feature.common.viewmodel
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.EnumMap
+import java.util.concurrent.ConcurrentHashMap
 
 /** Length of the undo window; the undo Snackbar's `SnackbarDuration.Short` is 4 seconds too. */
 const val UNDO_WINDOW_MS = 4_000L
@@ -52,10 +54,14 @@ internal class PendingDeleteCoordinatorImpl(
   private val controllers = EnumMap<PendingEntity, UndoDeleteController>(PendingEntity::class.java)
   private val hosts = EnumMap<PendingEntity, MutableStateFlow<Int>>(PendingEntity::class.java)
 
+  private val watchdogs = ConcurrentHashMap<Pair<PendingEntity, Long>, Job>()
+
   init {
-    PendingEntity.entries.forEach {
-      controllers[it] = UndoDeleteController(scope, commitDispatcher)
-      hosts[it] = MutableStateFlow(0)
+    PendingEntity.entries.forEach { type ->
+      controllers[type] = UndoDeleteController(scope, commitDispatcher) { event ->
+        watchdogs.remove(type to event.token)?.cancel()
+      }
+      hosts[type] = MutableStateFlow(0)
     }
   }
 
@@ -71,8 +77,10 @@ internal class PendingDeleteCoordinatorImpl(
   ) {
     val controller = controller(type)
     val event = controller.markPending(id, setOf(id), message, onCommit)
-    scope.launch {
+    val key = type to event.token
+    watchdogs[key] = scope.launch {
       delay(UNDO_WINDOW_MS + UNDO_WATCHDOG_GRACE_MS)
+      watchdogs.remove(key)
       controller.commit(event)
     }
   }

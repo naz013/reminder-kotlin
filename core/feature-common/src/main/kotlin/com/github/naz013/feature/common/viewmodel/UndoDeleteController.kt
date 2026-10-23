@@ -34,6 +34,7 @@ data class UndoEvent(
 class UndoDeleteController(
   private val scope: CoroutineScope,
   private val commitDispatcher: CoroutineDispatcher,
+  private val onResolved: (UndoEvent) -> Unit = {},
 ) {
   private val tracker = PendingDeleteTracker()
   private val lock = Any()
@@ -45,6 +46,9 @@ class UndoDeleteController(
 
   /** Exactly one `UndoDeleteHost` should collect this per controller. */
   val undoEvents: Flow<UndoEvent> = latest.filterNotNull()
+
+  /** Null once the latest event was resolved or cleared; hosts use it to dismiss a stale Snackbar. */
+  val latestEvent: StateFlow<UndoEvent?> = latest
 
   fun markPending(
     batchKey: String,
@@ -82,19 +86,25 @@ class UndoDeleteController(
   }
 
   fun commitAllDetached(dispatcher: CoroutineDispatcher) {
-    synchronized(lock) {
+    val cleared = synchronized(lock) {
+      val events = unresolved.values.toList()
       unresolved.clear()
       latest.value = null
+      events
     }
+    cleared.forEach(onResolved)
     tracker.commitAllDetached(dispatcher)
   }
 
-  private fun resolve(event: UndoEvent): Boolean =
-    synchronized(lock) {
+  private fun resolve(event: UndoEvent): Boolean {
+    val removed = synchronized(lock) {
       val removed = unresolved.remove(event.token) != null
       if (latest.value == event) latest.value = null
       removed
     }
+    if (removed) onResolved(event)
+    return removed
+  }
 
   private fun unresolvedFor(batchKey: String): List<UndoEvent> =
     synchronized(lock) { unresolved.values.filter { it.batchKey == batchKey } }

@@ -53,6 +53,9 @@ their own controller.
 - Watchdog: `markPending` also starts a timer of `UNDO_WINDOW_MS + UNDO_WATCHDOG_GRACE_MS` that commits
   the exact event if nobody resolved it (no host ever appeared). Commit is idempotent. `UNDO_WINDOW_MS`
   (4 s) mirrors `SnackbarDuration.Short` used by `UndoSnackbarDispatcher`; keep them in sync.
+  There is one watchdog job per event, cancelled as soon as the event is undone or committed.
+  `UndoDeleteHost` dismisses its shown Snackbar when the controller's `latestEvent` becomes null
+  (resolved by the watchdog or `commitAll()`), so a stale Undo button never lingers.
 - Commit on background: `ReminderApp` observes `ProcessLifecycleOwner` and calls `commitAll()` on
   `ON_STOP`, so no delete stays hidden-but-uncommitted if the process is killed.
 - Navigation: `MutableList<NavKey>.popDeleted(isSameItem)` (`core:navigation-api`) removes trailing

@@ -1,6 +1,7 @@
 package com.github.naz013.feature.common.viewmodel
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceTimeBy
@@ -191,5 +192,30 @@ class PendingDeleteCoordinatorTest {
     PendingEntity.entries.forEach {
       assertEquals(emptySet<String>(), coordinator.pendingIds(it).value)
     }
+  }
+
+  @Test
+  fun `undo cancels the watchdog`() = runTest {
+    val coordinator = coordinator()
+    coordinator.markPending(PendingEntity.NOTE, "1", "m") { }
+    runCurrent()
+    assertEquals(1, coroutineContext[Job]!!.children.count())
+
+    coordinator.controller(PendingEntity.NOTE).undo("1")
+    runCurrent()
+
+    assertEquals(0, coroutineContext[Job]!!.children.count())
+  }
+
+  @Test
+  fun `latest event clears when the delete is resolved elsewhere`() = runTest {
+    val coordinator = coordinator()
+    val controller = coordinator.controller(PendingEntity.NOTE)
+    coordinator.markPending(PendingEntity.NOTE, "1", "m") { }
+    assertEquals("1", controller.latestEvent.value?.batchKey)
+
+    coordinator.commitAll()
+
+    assertEquals(null, controller.latestEvent.value)
   }
 }

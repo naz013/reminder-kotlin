@@ -10,7 +10,7 @@ android {
 dependencies {
   implementation(project(":core:logging-api"))
   implementation(libs.koin.android)
-  implementation(libs.androidx.navigation3.runtime)
+  api(libs.androidx.navigation3.runtime)
 
   testImplementation(libs.junit)
   testImplementation(libs.androidx.test.core)
