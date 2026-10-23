@@ -130,4 +130,66 @@ class PendingDeleteCoordinatorTest {
     assertEquals(1, coordinator.hostCount(PendingEntity.NOTE).value)
     assertEquals(0, coordinator.hostCount(PendingEntity.TAG).value)
   }
+
+  @Test
+  fun `host count stays at zero when unregistered without a register`() = runTest {
+    val coordinator = coordinator()
+
+    coordinator.unregisterHost(PendingEntity.NOTE)
+    assertEquals(0, coordinator.hostCount(PendingEntity.NOTE).value)
+
+    coordinator.registerHost(PendingEntity.NOTE)
+    assertEquals(1, coordinator.hostCount(PendingEntity.NOTE).value)
+  }
+
+  @Test
+  fun `watchdog does not commit again after the host already committed`() = runTest {
+    val coordinator = coordinator()
+    var commits = 0
+    coordinator.markPending(PendingEntity.NOTE, "1", "Deleted") { commits++ }
+    coordinator.controller(PendingEntity.NOTE).commit("1")
+    runCurrent()
+
+    advanceTimeBy(UNDO_WINDOW_MS + UNDO_WATCHDOG_GRACE_MS + 1)
+    runCurrent()
+
+    assertEquals(1, commits)
+  }
+
+  @Test
+  fun `watchdog of an older mark does not commit a newer mark of the same id`() = runTest {
+    val coordinator = coordinator()
+    var olderCommits = 0
+    var newerCommits = 0
+    coordinator.markPending(PendingEntity.NOTE, "1", "m") { olderCommits++ }
+    advanceTimeBy(2_000)
+    runCurrent()
+
+    coordinator.markPending(PendingEntity.NOTE, "1", "m") { newerCommits++ }
+    runCurrent()
+    assertEquals(1, olderCommits)
+
+    advanceTimeBy(UNDO_WINDOW_MS + UNDO_WATCHDOG_GRACE_MS - 2_000 + 1)
+    runCurrent()
+    assertEquals(0, newerCommits)
+    assertEquals(setOf("1"), coordinator.pendingIds(PendingEntity.NOTE).value)
+
+    advanceTimeBy(2_000)
+    runCurrent()
+    assertEquals(1, newerCommits)
+    assertEquals(1, olderCommits)
+    assertEquals(emptySet<String>(), coordinator.pendingIds(PendingEntity.NOTE).value)
+  }
+
+  @Test
+  fun `commitAll with nothing pending leaves every type empty`() = runTest {
+    val coordinator = coordinator()
+
+    coordinator.commitAll()
+    advanceUntilIdle()
+
+    PendingEntity.entries.forEach {
+      assertEquals(emptySet<String>(), coordinator.pendingIds(it).value)
+    }
+  }
 }
