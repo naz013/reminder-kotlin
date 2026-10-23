@@ -26,8 +26,8 @@ on commit.
 Migrated screens: Agenda, Birthdays, Reminders archive, Notes (delete and archive/unarchive, single and
 bulk; list and archive each own a controller and a `SnackbarHostState`), Places list (undo only, no
 confirm), Tags list and Groups list (confirm kept, cascade runs on commit), Workflow rules (gallery,
-group and reminder scopes; undo only, no confirm). Still on confirm until card 5/6: the preview and
-edit screens. Other remaining screens: see the unified delete-undo Trello series.
+group and reminder scopes; undo only, no confirm). Preview/edit screens are covered in the section
+below.
 
 Bulk selection flows: see [multiselect.md](multiselect.md).
 
@@ -61,4 +61,21 @@ their own controller.
 - Navigation: `MutableList<NavKey>.popDeleted(isSameItem)` (`core:navigation-api`) removes trailing
   back stack entries of the deleted item (always keeping one) so the user lands on the list.
 
-The preview/edit screens adopt this in following chunks; none use it yet.
+### Usage in a preview/edit screen
+
+1. ViewModel: inject `PendingDeleteCoordinator` and call `markPending(type, id, message, onCommit)` with
+   the real delete in `onCommit`; the lambda outlives the ViewModel. Guard with
+   `id in coordinator.pendingIds(type).value` so a repeat tap does nothing, then emit a `Deleted(id)` event.
+   Preview screens that load a single item skip updates while the id is pending.
+2. Nav graph: on `Deleted(id)` call `backStack.popDeleted { key -> key is Preview/Edit/Details && key.id == id }`.
+3. The list the user lands on: expose `val pendingDeleteCoordinator` from its ViewModel, filter
+   `pendingIds(type)` out of the list flow (next to its own `undoDelete` filter) and compose a
+   `PendingDeleteHost` with the list's `SnackbarHostState`.
+
+Migrated: Reminder preview (archived reminders only; moving an active reminder to the archive keeps its
+confirm), Birthday preview and edit, Note preview and edit, Group edit and details, Tag edit and details,
+Place edit. Group and tag edit/details keep the confirm dialog (cascade) and the cascade runs inside
+`onCommit`; the rest delete without a confirm.
+
+Not migrated: Routine, Habit and Google Task previews/editors have no list-level undo home yet, so they
+keep their confirm dialogs and delete immediately.
