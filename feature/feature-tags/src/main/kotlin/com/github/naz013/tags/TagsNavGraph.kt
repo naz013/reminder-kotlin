@@ -11,6 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.feature.common.viewmodel.PendingEntity
+import com.github.naz013.navigation.popDeleted
 import com.github.naz013.tags.compose.TagEditScreen
 import com.github.naz013.tags.compose.TagEditState
 import com.github.naz013.tags.compose.TagEditViewModel
@@ -24,6 +26,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
+import com.github.naz013.ui.common.compose.foundation.snackbar.PendingDeleteHost
 import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.theme.ThemeProvider
@@ -80,6 +83,11 @@ private fun TagsManageEntry(backStack: MutableList<NavKey>) {
   val dialogDispatcher = rememberDialogDispatcher()
   val snackbarHostState = remember { SnackbarHostState() }
   UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
+  PendingDeleteHost(
+    coordinator = viewModel.pendingDeleteCoordinator,
+    type = PendingEntity.TAG,
+    snackbarHostState = snackbarHostState,
+  )
 
   val selectedItemId =
     backStack.lastOrNull()?.let { key ->
@@ -161,6 +169,7 @@ private fun TagsEditEntry(
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       TagEditViewModel.NavigationEvent.Back -> if (backStack.size > 1) backStack.removeLastOrNull()
+      is TagEditViewModel.NavigationEvent.Deleted -> backStack.popDeletedTag(event.id)
     }
   }
 
@@ -210,7 +219,7 @@ private fun TagsDetailsEntry(
         )
       }
 
-      TagDetailsViewModel.NavigationEvent.Deleted -> if (backStack.size > 1) backStack.removeLastOrNull()
+      is TagDetailsViewModel.NavigationEvent.Deleted -> backStack.popDeletedTag(event.id)
       is TagDetailsViewModel.NavigationEvent.OpenReminderPreview -> onReminderPreviewClick(event.id)
       is TagDetailsViewModel.NavigationEvent.OpenNotePreview -> onNotePreviewClick(event.id)
       is TagDetailsViewModel.NavigationEvent.OpenBirthdayPreview -> onBirthdayPreviewClick(event.id)
@@ -257,5 +266,11 @@ private fun MutableList<NavKey>.navigateToEditDetailPane(key: NavKey, isSameItem
     add(key)
   } else {
     navigateToDetailPane(key)
+  }
+}
+
+private fun MutableList<NavKey>.popDeletedTag(id: String) {
+  popDeleted { key ->
+    (key is TagsNavKey.Edit && key.id == id) || (key is TagsNavKey.Details && key.id == id)
   }
 }

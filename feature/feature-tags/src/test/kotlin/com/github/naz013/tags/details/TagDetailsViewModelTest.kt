@@ -3,6 +3,7 @@ package com.github.naz013.tags.details
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.GoogleTask
+import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.note.Note
@@ -11,6 +12,8 @@ import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -23,6 +26,7 @@ import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.birthday.UiBirthdayList
 import com.github.naz013.ui.birthday.UiBirthdayListAdapter
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.text.UiTextElement
 import com.github.naz013.ui.common.text.UiTextFormat
 import com.github.naz013.ui.common.theme.ThemeProvider
@@ -40,6 +44,8 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -64,6 +70,9 @@ class TagDetailsViewModelTest : BaseTest() {
   private val googleTaskListRepository = mockk<GoogleTaskListRepository>()
   private val googleTaskItemStateAdapter = mockk<GoogleTaskItemStateAdapter>()
   private val themeProvider = mockk<ThemeProvider>()
+  private val textProvider = mockk<TextProvider>(relaxed = true)
+  private val pendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   private lateinit var viewModel: TagDetailsViewModel
 
@@ -144,11 +153,15 @@ class TagDetailsViewModelTest : BaseTest() {
     googleTaskListRepository = googleTaskListRepository,
     googleTaskItemStateAdapter = googleTaskItemStateAdapter,
     themeProvider = themeProvider,
+    textProvider = textProvider,
+    pendingDeleteCoordinator = pendingDeleteCoordinator,
   )
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.TAG) } returns pendingIds
+    every { textProvider.getText(R.string.tag_deleted) } returns "Tag deleted"
     every { tagRepository.observeById("1") } returns flowOf(tag())
     every { tagAssignmentRepository.observeItemIdsForTag(any(), any()) } returns flowOf(emptyList())
     coEvery { groupV2Repository.getAll() } returns emptyList()
@@ -303,15 +316,40 @@ class TagDetailsViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onDeleteConfirmed detaches all assignments, deletes the tag and emits Deleted`() = runTest {
+  fun `onDeleteConfirmed marks the tag pending without deleting and emits Deleted`() = runTest {
     viewModel.state.first()
 
     viewModel.onDeleteConfirmed()
 
+    verify(exactly = 1) {
+      pendingDeleteCoordinator.markPending(PendingEntity.TAG, "1", "Tag deleted", any())
+    }
+    coVerify(exactly = 0) { tagRepository.delete(any()) }
+    val event = viewModel.navigationEvent.value?.peekContent()
+    assertEquals(TagDetailsViewModel.NavigationEvent.Deleted("1"), event)
+  }
+
+  @Test
+  fun `committing the pending tag delete detaches assignments and deletes the tag once`() = runTest {
+    val onCommit = slot<suspend () -> Unit>()
+    every { pendingDeleteCoordinator.markPending(any(), any(), any(), capture(onCommit)) } just Runs
+    viewModel.state.first()
+    viewModel.onDeleteConfirmed()
+
+    onCommit.captured.invoke()
+
     coVerify(exactly = 1) { tagAssignmentRepository.detachAllForTag("1") }
     coVerify(exactly = 1) { tagRepository.delete("1") }
-    val event = viewModel.navigationEvent.value?.peekContent()
-    assertEquals(TagDetailsViewModel.NavigationEvent.Deleted, event)
+  }
+
+  @Test
+  fun `onDeleteConfirmed does nothing when the tag is already pending`() = runTest {
+    viewModel.state.first()
+    pendingIds.value = setOf("1")
+
+    viewModel.onDeleteConfirmed()
+
+    verify(exactly = 0) { pendingDeleteCoordinator.markPending(any(), any(), any(), any()) }
   }
 
   @Test

@@ -3,11 +3,14 @@ package com.github.naz013.tags.details
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
@@ -20,6 +23,7 @@ import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.birthday.UiBirthdayListAdapter
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.theme.ThemeProvider
 import com.github.naz013.ui.googletask.GoogleTaskItemStateAdapter
 import com.github.naz013.ui.note.UiNoteListItemAdapter
@@ -46,6 +50,8 @@ internal class TagDetailsViewModel(
   private val googleTaskListRepository: GoogleTaskListRepository,
   private val googleTaskItemStateAdapter: GoogleTaskItemStateAdapter,
   private val themeProvider: ThemeProvider,
+  private val textProvider: TextProvider,
+  private val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(TagDetailsState())
@@ -100,14 +106,17 @@ internal class TagDetailsViewModel(
   }
 
   fun onDeleteConfirmed() {
-    viewModelScope.launch(dispatcherProvider.io()) {
+    if (id in pendingDeleteCoordinator.pendingIds(PendingEntity.TAG).value) return
+    pendingDeleteCoordinator.markPending(
+      type = PendingEntity.TAG,
+      id = id,
+      message = textProvider.getText(R.string.tag_deleted),
+    ) {
       tagAssignmentRepository.detachAllForTag(id)
       tagRepository.delete(id)
       Logger.i(TAG, "Deleted tag, id: $id")
-      withContext(dispatcherProvider.main()) {
-        navigationEvent.emit(NavigationEvent.Deleted)
-      }
     }
+    navigationEvent.emit(NavigationEvent.Deleted(id))
   }
 
   fun onItemClick(item: TagDetailItem) {
@@ -195,7 +204,7 @@ internal class TagDetailsViewModel(
 
     data object ConfirmDelete : NavigationEvent
 
-    data object Deleted : NavigationEvent
+    data class Deleted(val id: String) : NavigationEvent
 
     data class OpenReminderPreview(val id: String) : NavigationEvent
 

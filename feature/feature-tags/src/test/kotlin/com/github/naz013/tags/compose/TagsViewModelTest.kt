@@ -3,6 +3,8 @@ package com.github.naz013.tags.compose
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.Tag
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoEvent
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
@@ -32,6 +34,8 @@ class TagsViewModelTest : BaseTest() {
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
   private val themeProvider = mockk<ThemeProvider>()
   private val textProvider = mockk<TextProvider>(relaxed = true)
+  private val coordinatorPendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   private lateinit var viewModel: TagsViewModel
 
@@ -44,6 +48,7 @@ class TagsViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.TAG) } returns coordinatorPendingIds
     every { tagRepository.observeAll() } returns flowOf(emptyList())
     every { themeProvider.themedColor(any<Int>()) } returns Color.Red
     coEvery { tagRepository.delete(any()) } returns Unit
@@ -58,6 +63,7 @@ class TagsViewModelTest : BaseTest() {
       tagRepository = tagRepository,
       tagAssignmentRepository = tagAssignmentRepository,
       themeProvider = themeProvider,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
 
   /** Loads a ready list of tags (ids in order) and subscribes once so selection mutations made

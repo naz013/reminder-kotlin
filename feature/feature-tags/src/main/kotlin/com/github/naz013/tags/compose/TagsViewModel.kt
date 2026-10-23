@@ -7,6 +7,8 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.Tag
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
@@ -35,6 +37,7 @@ internal class TagsViewModel(
   private val tagRepository: TagRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val themeProvider: ThemeProvider,
+  val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(TagsScreenState())
@@ -50,8 +53,12 @@ internal class TagsViewModel(
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
-      combine(tagRepository.observeAll(), undoDelete.pendingIds) { tags, pendingIds ->
-        tags.filterNot { it.id in pendingIds }.map { toTagState(it) }
+      combine(
+        tagRepository.observeAll(),
+        undoDelete.pendingIds,
+        pendingDeleteCoordinator.pendingIds(PendingEntity.TAG),
+      ) { tags, pendingIds, coordinatorPendingIds ->
+        tags.filterNot { it.id in pendingIds || it.id in coordinatorPendingIds }.map { toTagState(it) }
       }.collectLatest { tags ->
         _state.update {
           it.copy(listState = if (tags.isEmpty()) TagsListState.Empty else TagsListState.Ready(tags))
