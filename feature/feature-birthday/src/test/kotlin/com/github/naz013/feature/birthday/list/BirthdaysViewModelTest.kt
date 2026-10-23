@@ -337,4 +337,22 @@ class BirthdaysViewModelTest : BaseTest() {
       coVerify(exactly = 1) { deleteBirthdayUseCase("1") }
       coVerify(exactly = 1) { deleteBirthdayUseCase("2") }
     }
+
+  @Test
+  fun `undo after a bulk delete restores both birthdays and never deletes them`() =
+    runTest {
+      val vm = readyViewModelWithTwoBirthdays()
+      vm.onItemLongClick("1")
+      vm.onItemClick(uiBirthday(id = "2"))
+      vm.onDeleteSelectedClick()
+      val batchKey = vm.undoDelete.undoEvents.first().batchKey
+      val hiddenState = vm.state.first().listState
+
+      vm.undoDelete.undo(batchKey)
+
+      val restoredItems = (vm.state.first().listState as ListState.Ready).items
+      assertEquals(ListState.Empty, hiddenState)
+      assertEquals(listOf("1", "2"), restoredItems.map { it.id }.sorted())
+      coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
+    }
 }
