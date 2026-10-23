@@ -24,7 +24,7 @@ import com.github.naz013.logic.reminder.AgendaViewMode
 import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
-import com.github.naz013.feature.common.viewmodel.PendingDeleteTracker
+import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logic.reminder.smartlist.ReminderSmartListPredicate
@@ -82,10 +82,11 @@ internal class AgendaViewModel(
 
   private val _agendaScreenState = MutableStateFlow(AgendaScreenState(viewMode = reminderPreferences.agendaViewMode))
   private val _selectedItemId = MutableStateFlow<String?>(null)
-  private val pendingDeleteTracker = PendingDeleteTracker()
+
+  val undoDelete = UndoDeleteController(viewModelScope, dispatcherProvider.io())
 
   val agendaScreenState =
-    combine(_agendaScreenState, _selectedItemId, pendingDeleteTracker.pendingIds) { state, selectedItemId, pendingIds ->
+    combine(_agendaScreenState, _selectedItemId, undoDelete.pendingIds) { state, selectedItemId, pendingIds ->
       state.withSelectedItem(selectedItemId).withoutItems(pendingIds)
     }.stateInWhileSubscribed(AgendaScreenState())
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
@@ -346,13 +347,14 @@ internal class AgendaViewModel(
     // empty listState, and updateSelection is a no-op once listState is no longer Ready.
     onSelectionCancel()
     val batchKey = UUID.randomUUID().toString()
-    pendingDeleteTracker.markPending(batchKey = batchKey, ids = reminderIds + birthdayIds) {
+    undoDelete.markPending(
+      batchKey = batchKey,
+      ids = reminderIds + birthdayIds,
+      message = bulkDeleteMessage(reminderIds, birthdayIds),
+    ) {
       deleteReminders(reminderIds)
       birthdayIds.forEach { deleteBirthdayUseCase(it) }
     }
-    navigationEvent.value = Event(
-      NavigationEvent.ShowUndoAction(batchKey = batchKey, message = bulkDeleteMessage(reminderIds, birthdayIds)),
-    )
   }
 
   fun onArchiveSelectedClick() {
@@ -360,15 +362,13 @@ internal class AgendaViewModel(
     if (ids.isEmpty()) return
     onSelectionCancel()
     val batchKey = UUID.randomUUID().toString()
-    pendingDeleteTracker.markPending(batchKey = batchKey, ids = ids) {
+    undoDelete.markPending(
+      batchKey = batchKey,
+      ids = ids,
+      message = textProvider.getText(R.string.reminders_archived_count, ids.size),
+    ) {
       ids.forEach { moveReminderToArchiveUseCase(it) }
     }
-    navigationEvent.value = Event(
-      NavigationEvent.ShowUndoAction(
-        batchKey = batchKey,
-        message = textProvider.getText(R.string.reminders_archived_count, ids.size),
-      ),
-    )
   }
 
   private fun bulkDeleteMessage(
@@ -457,45 +457,38 @@ internal class AgendaViewModel(
   }
 
   private fun moveReminderToArchive(id: String) {
-    pendingDeleteTracker.markPending(batchKey = id, ids = setOf(id)) {
+    undoDelete.markPending(
+      batchKey = id,
+      ids = setOf(id),
+      message = textProvider.getText(R.string.reminder_archived),
+    ) {
       moveReminderToArchiveUseCase(id)
     }
-    navigationEvent.value = Event(
-      NavigationEvent.ShowUndoAction(batchKey = id, message = textProvider.getText(R.string.reminder_archived)),
-    )
   }
 
   private fun deleteReminder(id: String) {
-    pendingDeleteTracker.markPending(batchKey = id, ids = setOf(id)) {
+    undoDelete.markPending(
+      batchKey = id,
+      ids = setOf(id),
+      message = textProvider.getText(R.string.reminder_deleted),
+    ) {
       deleteReminders(setOf(id))
     }
-    navigationEvent.value = Event(
-      NavigationEvent.ShowUndoAction(batchKey = id, message = textProvider.getText(R.string.reminder_deleted)),
-    )
   }
 
   private fun deleteBirthday(id: String) {
-    pendingDeleteTracker.markPending(batchKey = id, ids = setOf(id)) {
+    undoDelete.markPending(
+      batchKey = id,
+      ids = setOf(id),
+      message = textProvider.getText(R.string.birthday_deleted),
+    ) {
       deleteBirthdayUseCase(id)
-    }
-    navigationEvent.value = Event(
-      NavigationEvent.ShowUndoAction(batchKey = id, message = textProvider.getText(R.string.birthday_deleted)),
-    )
-  }
-
-  fun undoPendingAction(batchKey: String) {
-    pendingDeleteTracker.undo(batchKey)
-  }
-
-  fun commitPendingAction(batchKey: String) {
-    viewModelScope.launch(dispatcherProvider.io()) {
-      pendingDeleteTracker.commit(batchKey)
     }
   }
 
   public override fun onCleared() {
     super.onCleared()
-    pendingDeleteTracker.commitAllDetached(dispatcherProvider.io())
+    undoDelete.commitAllDetached(dispatcherProvider.io())
   }
 
   fun onAddReminderClick() {
@@ -567,11 +560,6 @@ internal class AgendaViewModel(
 
     data class RequestGpsPermission(
       val id: String,
-    ) : NavigationEvent
-
-    data class ShowUndoAction(
-      val batchKey: String,
-      val message: String,
     ) : NavigationEvent
   }
 

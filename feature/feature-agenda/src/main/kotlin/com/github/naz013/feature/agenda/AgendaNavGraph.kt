@@ -17,7 +17,7 @@ import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlace
 import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.common.Permissions
-import com.github.naz013.ui.common.compose.foundation.snackbar.rememberUndoSnackbarDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -80,8 +80,7 @@ private fun AgendaEntry(
   val viewModel = koinViewModel<AgendaViewModel>()
   val permissionRequester = rememberPermissionRequesterRationale()
   val snackbarHostState = remember { SnackbarHostState() }
-  val undoSnackbarDispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
-  val undoActionLabel = stringResource(R.string.undo)
+  UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
 
   LaunchedEffect(selectedItemId) { viewModel.onSelectedItemIdChanged(selectedItemId) }
 
@@ -131,15 +130,6 @@ private fun AgendaEntry(
         permissionRequester.request(
           listOf(Permissions.FOREGROUND_SERVICE, Permissions.FOREGROUND_SERVICE_LOCATION),
           onGranted = { viewModel.toggleReminder(event.id) },
-        )
-      }
-
-      is AgendaViewModel.NavigationEvent.ShowUndoAction -> {
-        undoSnackbarDispatcher.showUndoSnackbar(
-          message = event.message,
-          actionLabel = undoActionLabel,
-          onUndo = { viewModel.undoPendingAction(event.batchKey) },
-          onTimeout = { viewModel.commitPendingAction(event.batchKey) },
         )
       }
     }

@@ -50,6 +50,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import com.github.naz013.feature.common.viewmodel.UndoEvent
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -568,7 +569,7 @@ class AgendaViewModelTest : BaseTest() {
       val state = vm.agendaScreenState.first()
       assertEquals(ListState.Empty, state.listState)
       assertEquals(0, state.selectedCount)
-      val event = vm.navigationEvent.value?.peekContent() as AgendaViewModel.NavigationEvent.ShowUndoAction
+      val event = vm.undoDelete.undoEvents.first()
       assertEquals("2 items deleted", event.message)
       coVerify(exactly = 0) { deleteReminderUseCase(any()) }
       coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
@@ -581,7 +582,7 @@ class AgendaViewModelTest : BaseTest() {
       selectReminderAndBirthday(vm)
       vm.onDeleteSelectedClick()
 
-      vm.undoPendingAction(lastBatchKey(vm))
+      vm.undoDelete.undo(lastBatchKey(vm))
 
       val items = (vm.agendaScreenState.first().listState as ListState.Ready).items
       assertEquals(setOf("r1", "b1"), items.map { it.id }.toSet())
@@ -601,8 +602,8 @@ class AgendaViewModelTest : BaseTest() {
       vm.onDeleteSelectedClick()
       val batchKey = lastBatchKey(vm)
 
-      vm.commitPendingAction(batchKey)
-      vm.commitPendingAction(batchKey)
+      vm.undoDelete.commit(batchKey)
+      vm.undoDelete.commit(batchKey)
 
       coVerify(exactly = 1) { deleteReminderUseCase(reminder) }
       coVerify(exactly = 1) { deleteBirthdayUseCase("b1") }
@@ -631,7 +632,7 @@ class AgendaViewModelTest : BaseTest() {
       val state = vm.agendaScreenState.first()
       assertEquals(listOf("b1"), (state.listState as ListState.Ready).items.map { it.id })
       assertEquals(0, state.selectedCount)
-      val event = vm.navigationEvent.value?.peekContent() as AgendaViewModel.NavigationEvent.ShowUndoAction
+      val event = vm.undoDelete.undoEvents.first()
       assertEquals("1 reminders archived", event.message)
       coVerify(exactly = 0) { moveReminderToArchiveUseCase(any()) }
     }
@@ -645,8 +646,8 @@ class AgendaViewModelTest : BaseTest() {
       vm.onArchiveSelectedClick()
       val batchKey = lastBatchKey(vm)
 
-      vm.commitPendingAction(batchKey)
-      vm.commitPendingAction(batchKey)
+      vm.undoDelete.commit(batchKey)
+      vm.undoDelete.commit(batchKey)
 
       coVerify(exactly = 1) { moveReminderToArchiveUseCase("r1") }
     }
@@ -661,10 +662,7 @@ class AgendaViewModelTest : BaseTest() {
 
       val items = (vm.agendaScreenState.first().listState as ListState.Ready).items
       assertEquals(listOf("b1"), items.map { it.id })
-      assertEquals(
-        AgendaViewModel.NavigationEvent.ShowUndoAction(batchKey = "r1", message = "Reminder deleted"),
-        vm.navigationEvent.value?.peekContent(),
-      )
+      assertEquals(UndoEvent(batchKey = "r1", message = "Reminder deleted", token = 1L), vm.undoDelete.undoEvents.first())
       coVerify(exactly = 0) { deleteReminderUseCase(any()) }
     }
 
@@ -674,8 +672,8 @@ class AgendaViewModelTest : BaseTest() {
       val vm = readyViewModelWithReminderAndBirthday()
       vm.onAgendaMenuAction(fakeReminderItem("r1"), AgendaMenuAction.DELETE)
 
-      vm.undoPendingAction("r1")
-      vm.undoPendingAction("r1")
+      vm.undoDelete.undo("r1")
+      vm.undoDelete.undo("r1")
 
       val items = (vm.agendaScreenState.first().listState as ListState.Ready).items
       assertEquals(setOf("r1", "b1"), items.map { it.id }.toSet())
@@ -691,9 +689,9 @@ class AgendaViewModelTest : BaseTest() {
       val vm = readyViewModelWithReminderAndBirthday()
       vm.onAgendaMenuAction(fakeReminderItem("r1"), AgendaMenuAction.DELETE)
 
-      vm.commitPendingAction("r1")
-      vm.commitPendingAction("r1")
-      vm.undoPendingAction("r1")
+      vm.undoDelete.commit("r1")
+      vm.undoDelete.commit("r1")
+      vm.undoDelete.undo("r1")
 
       coVerify(exactly = 1) { deleteReminderUseCase(reminder) }
     }
@@ -708,13 +706,10 @@ class AgendaViewModelTest : BaseTest() {
       vm.onAgendaMenuAction(fakeReminderItem("r1"), AgendaMenuAction.ARCHIVE)
 
       assertEquals(listOf("b1"), (vm.agendaScreenState.first().listState as ListState.Ready).items.map { it.id })
-      assertEquals(
-        AgendaViewModel.NavigationEvent.ShowUndoAction(batchKey = "r1", message = "Reminder archived"),
-        vm.navigationEvent.value?.peekContent(),
-      )
+      assertEquals(UndoEvent(batchKey = "r1", message = "Reminder archived", token = 1L), vm.undoDelete.undoEvents.first())
       coVerify(exactly = 0) { moveReminderToArchiveUseCase(any()) }
 
-      vm.commitPendingAction("r1")
+      vm.undoDelete.commit("r1")
 
       coVerify(exactly = 1) { moveReminderToArchiveUseCase("r1") }
     }
@@ -731,8 +726,8 @@ class AgendaViewModelTest : BaseTest() {
       assertEquals(listOf("r1"), (vm.agendaScreenState.first().listState as ListState.Ready).items.map { it.id })
       coVerify(exactly = 0) { deleteBirthdayUseCase(any()) }
 
-      vm.undoPendingAction("b1")
-      vm.commitPendingAction("b1")
+      vm.undoDelete.undo("b1")
+      vm.undoDelete.commit("b1")
 
       assertEquals(
         setOf("r1", "b1"),
@@ -748,8 +743,8 @@ class AgendaViewModelTest : BaseTest() {
       val vm = readyViewModelWithReminderAndBirthday()
       vm.onAgendaMenuAction(fakeBirthdayItem("b1"), AgendaMenuAction.DELETE)
 
-      vm.commitPendingAction("b1")
-      vm.commitPendingAction("b1")
+      vm.undoDelete.commit("b1")
+      vm.undoDelete.commit("b1")
 
       coVerify(exactly = 1) { deleteBirthdayUseCase("b1") }
     }
@@ -763,7 +758,7 @@ class AgendaViewModelTest : BaseTest() {
 
       vm.onDeleteSelectedClick()
 
-      val event = vm.navigationEvent.value?.peekContent() as AgendaViewModel.NavigationEvent.ShowUndoAction
+      val event = vm.undoDelete.undoEvents.first()
       assertEquals("1 reminders deleted", event.message)
     }
 
@@ -776,7 +771,7 @@ class AgendaViewModelTest : BaseTest() {
 
       vm.onDeleteSelectedClick()
 
-      val event = vm.navigationEvent.value?.peekContent() as AgendaViewModel.NavigationEvent.ShowUndoAction
+      val event = vm.undoDelete.undoEvents.first()
       assertEquals("1 birthdays deleted", event.message)
     }
 
@@ -787,7 +782,7 @@ class AgendaViewModelTest : BaseTest() {
       vm.onItemLongClick("r1")
       vm.onArchiveSelectedClick()
 
-      vm.undoPendingAction(lastBatchKey(vm))
+      vm.undoDelete.undo(lastBatchKey(vm))
 
       val items = (vm.agendaScreenState.first().listState as ListState.Ready).items
       assertEquals(setOf("r1", "b1"), items.map { it.id }.toSet())
@@ -801,8 +796,8 @@ class AgendaViewModelTest : BaseTest() {
       val vm = readyViewModelWithReminderAndBirthday()
       vm.onAgendaMenuAction(fakeReminderItem("r1"), AgendaMenuAction.ARCHIVE)
 
-      vm.undoPendingAction("r1")
-      vm.commitPendingAction("r1")
+      vm.undoDelete.undo("r1")
+      vm.undoDelete.commit("r1")
 
       val items = (vm.agendaScreenState.first().listState as ListState.Ready).items
       assertEquals(setOf("r1", "b1"), items.map { it.id }.toSet())
@@ -821,7 +816,7 @@ class AgendaViewModelTest : BaseTest() {
       vm.onAgendaMenuAction(fakeBirthdayItem("b1"), AgendaMenuAction.DELETE)
 
       vm.onCleared()
-      vm.commitPendingAction("r1")
+      vm.undoDelete.commit("r1")
       vm.onCleared()
 
       coVerify(exactly = 1) { deleteReminderUseCase(reminder) }
@@ -833,7 +828,7 @@ class AgendaViewModelTest : BaseTest() {
     runTest {
       val vm = readyViewModelWithReminderAndBirthday()
       vm.onAgendaMenuAction(fakeReminderItem("r1"), AgendaMenuAction.DELETE)
-      vm.undoPendingAction("r1")
+      vm.undoDelete.undo("r1")
 
       vm.onCleared()
 
@@ -847,8 +842,8 @@ class AgendaViewModelTest : BaseTest() {
     vm.onItemClick(birthdayItem)
   }
 
-  private fun lastBatchKey(vm: AgendaViewModel): String =
-    (vm.navigationEvent.value?.peekContent() as AgendaViewModel.NavigationEvent.ShowUndoAction).batchKey
+  private suspend fun lastBatchKey(vm: AgendaViewModel): String =
+    vm.undoDelete.undoEvents.first().batchKey
 
   private fun reminderV2(
     id: String,
