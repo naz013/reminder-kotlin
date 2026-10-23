@@ -1314,4 +1314,6 @@
     <string name="delete_routine_confirmation">Eliminare questa routine? L\'operazione non può essere annullata.</string>
     <string name="reminder_restored_inactive">Promemoria ripristinato, ma è inattivo perché l\'orario è già passato</string>
     <string name="place_deleted">Luogo eliminato</string>
+    <string name="tag_deleted">Tag eliminato</string>
+    <string name="tags_deleted_count">%1$d tag eliminati</string>
 </resources>

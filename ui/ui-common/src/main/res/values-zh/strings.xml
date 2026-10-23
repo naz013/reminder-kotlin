@@ -1304,4 +1304,6 @@
     <string name="delete_routine_confirmation">删除此例程？此操作无法撤销。</string>
     <string name="reminder_restored_inactive">提醒已恢复，但因时间已过而处于未激活状态</string>
     <string name="place_deleted">地点已删除</string>
+    <string name="tag_deleted">标签已删除</string>
+    <string name="tags_deleted_count">已删除 %1$d 个标签</string>
 </resources>

@@ -1304,4 +1304,6 @@
     <string name="delete_routine_confirmation">이 루틴을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</string>
     <string name="reminder_restored_inactive">알림이 복원되었지만 시간이 지나 비활성 상태입니다</string>
     <string name="place_deleted">장소가 삭제되었습니다</string>
+    <string name="tag_deleted">태그가 삭제되었습니다</string>
+    <string name="tags_deleted_count">태그 %1$d개가 삭제되었습니다</string>
 </resources>

@@ -3,6 +3,7 @@ package com.github.naz013.tags.compose
 import androidx.compose.ui.graphics.Color
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.Tag
+import com.github.naz013.feature.common.viewmodel.UndoEvent
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.testing.BaseTest
@@ -30,7 +31,7 @@ class TagsViewModelTest : BaseTest() {
   private val tagRepository = mockk<TagRepository>()
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
   private val themeProvider = mockk<ThemeProvider>()
-  private val textProvider = mockk<TextProvider>()
+  private val textProvider = mockk<TextProvider>(relaxed = true)
 
   private lateinit var viewModel: TagsViewModel
 
@@ -115,9 +116,55 @@ class TagsViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `deleteTag detaches assignments and deletes the tag`() =
+  fun `deleteTag marks the tag pending without detaching or deleting yet`() =
+    runTest {
+      every { textProvider.getText(R.string.tag_deleted) } returns "Tag deleted"
+
+      viewModel.deleteTag("1")
+
+      coVerify(exactly = 0) { tagAssignmentRepository.detachAllForTag(any()) }
+      coVerify(exactly = 0) { tagRepository.delete(any()) }
+      assertEquals(
+        UndoEvent(batchKey = "1", message = "Tag deleted", token = 1L),
+        viewModel.undoDelete.undoEvents.first(),
+      )
+    }
+
+  @Test
+  fun `pending tag is hidden from the list and restored on undo`() =
+    runTest {
+      val (vm, state) = readyTags(listOf("1", "2"))
+      every { textProvider.getText(R.string.tag_deleted) } returns "Tag deleted"
+
+      vm.deleteTag("1")
+      val hiddenIds = (state().listState as TagsListState.Ready).tags.map { it.id }
+      vm.undoDelete.undo("1")
+      val restoredIds = (state().listState as TagsListState.Ready).tags.map { it.id }
+
+      assertEquals(listOf("2"), hiddenIds)
+      assertEquals(listOf("1", "2"), restoredIds)
+      coVerify(exactly = 0) { tagAssignmentRepository.detachAllForTag(any()) }
+      coVerify(exactly = 0) { tagRepository.delete(any()) }
+    }
+
+  @Test
+  fun `commit detaches assignments and deletes the tag exactly once`() =
     runTest {
       viewModel.deleteTag("1")
+
+      viewModel.undoDelete.commit("1")
+      viewModel.undoDelete.commit("1")
+
+      coVerify(exactly = 1) { tagAssignmentRepository.detachAllForTag("1") }
+      coVerify(exactly = 1) { tagRepository.delete("1") }
+    }
+
+  @Test
+  fun `clearing the view model commits a pending tag delete`() =
+    runTest {
+      viewModel.deleteTag("1")
+
+      TagsViewModel::class.java.getDeclaredMethod("onCleared").apply { isAccessible = true }.invoke(viewModel)
 
       coVerify(exactly = 1) { tagAssignmentRepository.detachAllForTag("1") }
       coVerify(exactly = 1) { tagRepository.delete("1") }
@@ -193,19 +240,49 @@ class TagsViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `deleteSelectedTags detaches assignments, deletes each tag and clears selection`() =
+  fun `deleteSelectedTags clears selection, hides the tags and does not detach or delete yet`() =
     runTest {
-      val (vm, state) = readyTags(listOf("1", "2"))
+      every { textProvider.getText(R.string.tags_deleted_count, 2) } returns "2 tags deleted"
+      val (vm, state) = readyTags(listOf("1", "2", "3"))
       vm.onTagLongClick("1")
       vm.onTagClick("2")
 
       vm.deleteSelectedTags(setOf("1", "2"))
 
+      assertEquals(0, state().selectedCount)
+      assertEquals(listOf("3"), (state().listState as TagsListState.Ready).tags.map { it.id })
+      assertEquals("2 tags deleted", vm.undoDelete.undoEvents.first().message)
+      coVerify(exactly = 0) { tagAssignmentRepository.detachAllForTag(any()) }
+      coVerify(exactly = 0) { tagRepository.delete(any()) }
+    }
+
+  @Test
+  fun `commit after a bulk delete detaches assignments and deletes each tag`() =
+    runTest {
+      every { textProvider.getText(R.string.tags_deleted_count, 2) } returns "2 tags deleted"
+      val (vm, _) = readyTags(listOf("1", "2"))
+      vm.deleteSelectedTags(setOf("1", "2"))
+
+      vm.undoDelete.commit(vm.undoDelete.undoEvents.first().batchKey)
+
       coVerify(exactly = 1) { tagAssignmentRepository.detachAllForTag("1") }
       coVerify(exactly = 1) { tagRepository.delete("1") }
       coVerify(exactly = 1) { tagAssignmentRepository.detachAllForTag("2") }
       coVerify(exactly = 1) { tagRepository.delete("2") }
-      assertEquals(0, state().selectedCount)
+    }
+
+  @Test
+  fun `undo after a bulk delete restores the tags and never deletes them`() =
+    runTest {
+      every { textProvider.getText(R.string.tags_deleted_count, 2) } returns "2 tags deleted"
+      val (vm, state) = readyTags(listOf("1", "2"))
+      vm.deleteSelectedTags(setOf("1", "2"))
+
+      vm.undoDelete.undo(vm.undoDelete.undoEvents.first().batchKey)
+
+      assertEquals(listOf("1", "2"), (state().listState as TagsListState.Ready).tags.map { it.id })
+      coVerify(exactly = 0) { tagAssignmentRepository.detachAllForTag(any()) }
+      coVerify(exactly = 0) { tagRepository.delete(any()) }
     }
 
   @Test

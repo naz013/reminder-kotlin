@@ -1309,4 +1309,6 @@
     <string name="delete_routine_confirmation">Slet denne rutine? Det kan ikke fortrydes.</string>
     <string name="reminder_restored_inactive">Påmindelsen er gendannet, men er inaktiv, fordi tidspunktet er passeret</string>
     <string name="place_deleted">Sted slettet</string>
+    <string name="tag_deleted">Tag slettet</string>
+    <string name="tags_deleted_count">%1$d tags slettet</string>
 </resources>

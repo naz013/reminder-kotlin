@@ -1302,4 +1302,6 @@
     <string name="delete_routine_confirmation">ลบกิจวัตรนี้หรือไม่ การดำเนินการนี้ไม่สามารถย้อนกลับได้</string>
     <string name="reminder_restored_inactive">กู้คืนการเตือนแล้ว แต่ยังไม่ทำงานเพราะเลยเวลาแล้ว</string>
     <string name="place_deleted">ลบสถานที่แล้ว</string>
+    <string name="tag_deleted">ลบแท็กแล้ว</string>
+    <string name="tags_deleted_count">ลบแท็กแล้ว %1$d รายการ</string>
 </resources>

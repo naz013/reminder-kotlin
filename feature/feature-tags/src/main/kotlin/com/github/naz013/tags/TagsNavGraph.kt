@@ -2,6 +2,7 @@ package com.github.naz013.tags
 
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,6 +24,7 @@ import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
+import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import com.github.naz013.ui.common.livedata.ObserveEvent
 import com.github.naz013.ui.common.theme.ThemeProvider
 import org.koin.compose.koinInject
@@ -76,6 +78,8 @@ fun EntryProviderScope<NavKey>.tagsEntries(
 private fun TagsManageEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<TagsViewModel>()
   val dialogDispatcher = rememberDialogDispatcher()
+  val snackbarHostState = remember { SnackbarHostState() }
+  UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
 
   val selectedItemId =
     backStack.lastOrNull()?.let { key ->
@@ -125,6 +129,7 @@ private fun TagsManageEntry(backStack: MutableList<NavKey>) {
   val state by viewModel.state.collectAsState(TagsScreenState())
   TagsScreen(
     state = state,
+    snackbarHostState = snackbarHostState,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onAddClick = viewModel::onAddClick,
     onTagClick = viewModel::onTagClick,

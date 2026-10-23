@@ -1314,4 +1314,6 @@
     <string name="delete_routine_confirmation">Ștergi această rutină? Acțiunea nu poate fi anulată.</string>
     <string name="reminder_restored_inactive">Memento restaurat, dar inactiv deoarece ora a trecut deja</string>
     <string name="place_deleted">Locul a fost șters</string>
+    <string name="tag_deleted">Eticheta a fost ștearsă</string>
+    <string name="tags_deleted_count">%1$d etichete șterse</string>
 </resources>

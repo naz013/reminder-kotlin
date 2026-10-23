@@ -1306,4 +1306,6 @@
     <string name="delete_routine_confirmation">Hapus rutinitas ini? Tindakan ini tidak dapat dibatalkan.</string>
     <string name="reminder_restored_inactive">Pengingat dipulihkan, tetapi tidak aktif karena waktunya sudah lewat</string>
     <string name="place_deleted">Tempat dihapus</string>
+    <string name="tag_deleted">Tag dihapus</string>
+    <string name="tags_deleted_count">%1$d tag dihapus</string>
 </resources>

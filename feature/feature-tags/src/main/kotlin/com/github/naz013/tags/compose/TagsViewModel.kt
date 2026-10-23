@@ -7,6 +7,7 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.Tag
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
 
 internal class TagsViewModel(
   private val dispatcherProvider: DispatcherProvider,
@@ -40,6 +42,7 @@ internal class TagsViewModel(
   val state = combine(_state, _selectedItemId, TagsScreenState::withSelectedItem)
     .stateInWhileSubscribed(TagsScreenState())
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
+  val undoDelete = UndoDeleteController(viewModelScope, dispatcherProvider.io())
 
   fun onSelectedItemIdChanged(id: String?) {
     _selectedItemId.value = id
@@ -47,8 +50,8 @@ internal class TagsViewModel(
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
-      tagRepository.observeAll().map { tags ->
-        tags.map { toTagState(it) }
+      combine(tagRepository.observeAll(), undoDelete.pendingIds) { tags, pendingIds ->
+        tags.filterNot { it.id in pendingIds }.map { toTagState(it) }
       }.collectLatest { tags ->
         _state.update {
           it.copy(listState = if (tags.isEmpty()) TagsListState.Empty else TagsListState.Ready(tags))
@@ -101,16 +104,23 @@ internal class TagsViewModel(
   }
 
   fun deleteSelectedTags(ids: Set<String>) {
-    // Clear selection before the deletes run: the reactive list-refresh coroutine can
-    // synchronously empty listState, and updateSelection is a no-op once listState is no
-    // longer Ready - clearing first avoids a stuck selectedCount.
+    if (ids.isEmpty()) return
+    // Clear selection before marking pending: the pendingIds update can synchronously empty
+    // listState, and updateSelection is a no-op once listState is no longer Ready - clearing
+    // first avoids a stuck selectedCount.
     onSelectionCancel()
-    viewModelScope.launch(dispatcherProvider.io()) {
-      ids.forEach { id ->
-        tagAssignmentRepository.detachAllForTag(id)
-        tagRepository.delete(id)
-      }
+    undoDelete.markPending(
+      batchKey = UUID.randomUUID().toString(),
+      ids = ids,
+      message = textProvider.getText(R.string.tags_deleted_count, ids.size),
+    ) {
+      ids.forEach { id -> deleteTagWithAssignments(id) }
     }
+  }
+
+  override fun onCleared() {
+    super.onCleared()
+    undoDelete.commitAllDetached(dispatcherProvider.io())
   }
 
   fun applySelectedColor(colorPosition: Int) {
@@ -139,11 +149,19 @@ internal class TagsViewModel(
   }
 
   fun deleteTag(id: String) {
-    viewModelScope.launch(dispatcherProvider.io()) {
-      tagAssignmentRepository.detachAllForTag(id)
-      tagRepository.delete(id)
-      Logger.i(TAG, "Deleted tag, id: $id")
+    undoDelete.markPending(
+      batchKey = id,
+      ids = setOf(id),
+      message = textProvider.getText(R.string.tag_deleted),
+    ) {
+      deleteTagWithAssignments(id)
     }
+  }
+
+  private suspend fun deleteTagWithAssignments(id: String) {
+    tagAssignmentRepository.detachAllForTag(id)
+    tagRepository.delete(id)
+    Logger.i(TAG, "Deleted tag, id: $id")
   }
 
   private fun toTagState(tag: Tag): TagState {

@@ -1316,4 +1316,6 @@
     <string name="delete_routine_confirmation">Удалить эту рутину? Это действие нельзя отменить.</string>
     <string name="reminder_restored_inactive">Напоминание восстановлено, но неактивно, так как его время уже прошло</string>
     <string name="place_deleted">Место удалено</string>
+    <string name="tag_deleted">Тег удалён</string>
+    <string name="tags_deleted_count">Удалено тегов: %1$d</string>
 </resources>

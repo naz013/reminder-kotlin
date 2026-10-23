@@ -1327,4 +1327,6 @@
     <string name="delete_routine_confirmation">Delete this routine? This cannot be undone.</string>
     <string name="reminder_restored_inactive">Reminder restored, but it is inactive because its time has passed</string>
     <string name="place_deleted">Place deleted</string>
+    <string name="tag_deleted">Tag deleted</string>
+    <string name="tags_deleted_count">%1$d tags deleted</string>
 </resources>

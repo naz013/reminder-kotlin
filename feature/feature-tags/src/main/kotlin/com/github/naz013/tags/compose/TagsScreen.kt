@@ -22,6 +22,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -61,6 +63,7 @@ internal fun TagsScreen(
   onSelectionCancel: () -> Unit,
   onDeleteSelectedClick: () -> Unit,
   onChangeColorClick: () -> Unit,
+  snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
   val isSelectionMode = state.selectedCount > 0
 
@@ -68,6 +71,7 @@ internal fun TagsScreen(
 
   Scaffold(
     modifier = modifier,
+    snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
       if (isSelectionMode) {
         TagsSelectionTopBar(

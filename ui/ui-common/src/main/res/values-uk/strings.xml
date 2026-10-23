@@ -1317,4 +1317,6 @@
     <string name="delete_routine_confirmation">Видалити цю рутину? Цю дію не можна скасувати.</string>
     <string name="reminder_restored_inactive">Нагадування відновлено, але воно неактивне, бо його час уже минув</string>
     <string name="place_deleted">Місце видалено</string>
+    <string name="tag_deleted">Тег видалено</string>
+    <string name="tags_deleted_count">Видалено тегів: %1$d</string>
 </resources>

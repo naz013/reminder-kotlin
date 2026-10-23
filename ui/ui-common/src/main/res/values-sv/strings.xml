@@ -1309,4 +1309,6 @@
     <string name="delete_routine_confirmation">Ta bort den här rutinen? Detta kan inte ångras.</string>
     <string name="reminder_restored_inactive">Påminnelsen har återställts, men är inaktiv eftersom tiden har passerat</string>
     <string name="place_deleted">Plats raderad</string>
+    <string name="tag_deleted">Tagg raderad</string>
+    <string name="tags_deleted_count">%1$d taggar raderade</string>
 </resources>

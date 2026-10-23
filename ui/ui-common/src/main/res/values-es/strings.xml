@@ -1314,4 +1314,6 @@
     <string name="delete_routine_confirmation">¿Eliminar esta rutina? Esta acción no se puede deshacer.</string>
     <string name="reminder_restored_inactive">Recordatorio restaurado, pero está inactivo porque su hora ya pasó</string>
     <string name="place_deleted">Lugar eliminado</string>
+    <string name="tag_deleted">Etiqueta eliminada</string>
+    <string name="tags_deleted_count">%1$d etiquetas eliminadas</string>
 </resources>

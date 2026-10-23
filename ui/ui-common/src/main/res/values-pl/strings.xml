@@ -1317,4 +1317,6 @@
     <string name="delete_routine_confirmation">Usunąć tę rutynę? Tej operacji nie można cofnąć.</string>
     <string name="reminder_restored_inactive">Przypomnienie zostało przywrócone, ale jest nieaktywne, ponieważ jego czas minął</string>
     <string name="place_deleted">Miejsce usunięte</string>
+    <string name="tag_deleted">Tag usunięty</string>
+    <string name="tags_deleted_count">Usunięto tagów: %1$d</string>
 </resources>

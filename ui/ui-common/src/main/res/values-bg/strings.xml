@@ -1311,4 +1311,6 @@
     <string name="delete_routine_confirmation">Да се изтрие ли тази рутина? Действието не може да бъде отменено.</string>
     <string name="reminder_restored_inactive">Напомнянето е възстановено, но е неактивно, защото времето му е минало</string>
     <string name="place_deleted">Мястото е изтрито</string>
+    <string name="tag_deleted">Етикетът е изтрит</string>
+    <string name="tags_deleted_count">%1$d етикета са изтрити</string>
 </resources>

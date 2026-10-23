@@ -1307,4 +1307,6 @@
     <string name="delete_routine_confirmation">Diese Routine löschen? Dies kann nicht rückgängig gemacht werden.</string>
     <string name="reminder_restored_inactive">Erinnerung wiederhergestellt, ist aber inaktiv, da die Zeit bereits vergangen ist</string>
     <string name="place_deleted">Ort gelöscht</string>
+    <string name="tag_deleted">Tag gelöscht</string>
+    <string name="tags_deleted_count">%1$d Tags gelöscht</string>
 </resources>

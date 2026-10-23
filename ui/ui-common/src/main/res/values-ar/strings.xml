@@ -1321,4 +1321,6 @@
     <string name="delete_routine_confirmation">هل تريد حذف هذا الروتين؟ لا يمكن التراجع عن هذا الإجراء.</string>
     <string name="reminder_restored_inactive">تمت استعادة التذكير، لكنه غير نشط لأن وقته قد مضى</string>
     <string name="place_deleted">تم حذف المكان</string>
+    <string name="tag_deleted">تم حذف الوسم</string>
+    <string name="tags_deleted_count">تم حذف %1$d وسوم</string>
 </resources>

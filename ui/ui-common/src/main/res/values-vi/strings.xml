@@ -1306,4 +1306,6 @@
     <string name="delete_routine_confirmation">Xóa thói quen này? Không thể hoàn tác thao tác này.</string>
     <string name="reminder_restored_inactive">Đã khôi phục lời nhắc, nhưng lời nhắc không hoạt động vì đã quá giờ</string>
     <string name="place_deleted">Đã xóa địa điểm</string>
+    <string name="tag_deleted">Đã xóa thẻ</string>
+    <string name="tags_deleted_count">Đã xóa %1$d thẻ</string>
 </resources>

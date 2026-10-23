@@ -1314,4 +1314,6 @@
     <string name="delete_routine_confirmation">Supprimer cette routine ? Cette action est irréversible.</string>
     <string name="reminder_restored_inactive">Rappel restauré, mais inactif car son heure est déjà passée</string>
     <string name="place_deleted">Lieu supprimé</string>
+    <string name="tag_deleted">Étiquette supprimée</string>
+    <string name="tags_deleted_count">%1$d étiquettes supprimées</string>
 </resources>
