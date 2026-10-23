@@ -254,18 +254,9 @@ internal class NoteEditViewModelEditingTest : NoteEditViewModelTestSupport() {
   }
 
   @Test
-  fun `onDeleteRequested opens the delete confirmation dialog`() {
-    val viewModel = buildViewModel()
-
-    viewModel.onDeleteRequested()
-
-    assertEquals(NoteEditDialog.DELETE, viewModel.state.value.activeDialog)
-  }
-
-  @Test
   fun `onDialogDismissed clears the active dialog`() {
     val viewModel = buildViewModel()
-    viewModel.onDeleteRequested()
+    viewModel.onShareClick()
 
     viewModel.onDialogDismissed()
 

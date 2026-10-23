@@ -36,9 +36,12 @@ import com.github.naz013.ui.note.NotePreferences
 import com.github.naz013.ui.note.UiNoteImage
 import com.github.naz013.ui.note.UiNoteImageState
 import com.github.naz013.ui.tag.TagChipStateAdapter
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Before
 import org.threeten.bp.LocalDate
@@ -86,11 +89,15 @@ internal open class NoteEditViewModelTestSupport : BaseTest() {
   protected val saveNoteVersionUseCase = mockk<SaveNoteVersionUseCase>(relaxed = true)
   protected val noteShareContentBuilder = NoteShareContentBuilder { listOf("Roboto Black", "Roboto Bold") }
 
+  protected val pendingIds = MutableStateFlow<Set<String>>(emptySet())
+  protected val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
+
   protected val fakeContext = mockk<Context>(relaxed = true)
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.NOTE) } returns pendingIds
 
     // android.util.Patterns.WEB_URL is a real static final field that is left null by the
     // android-stub jar used for JVM unit tests (verified empirically - referencing it directly
@@ -234,5 +241,6 @@ internal open class NoteEditViewModelTestSupport : BaseTest() {
       tagChipStateAdapter = tagChipStateAdapter,
       saveNoteVersionUseCase = saveNoteVersionUseCase,
       noteShareContentBuilder = noteShareContentBuilder,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
 }

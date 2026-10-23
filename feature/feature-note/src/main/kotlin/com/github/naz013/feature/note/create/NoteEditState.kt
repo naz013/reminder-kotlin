@@ -73,7 +73,7 @@ internal data class ActiveTextFormat(
 internal enum class EditTab { COLOR, REMINDER, IMAGE, TAGS, TEXT_FORMAT, TEXT_COLOR }
 
 /** Which modal dialog (if any) is currently shown above [NoteEditScreen]. */
-internal enum class NoteEditDialog { DELETE, SAME_NOTE, SHARE_AS }
+internal enum class NoteEditDialog { SAME_NOTE, SHARE_AS }
 
 internal enum class SpeechUiState { IDLE, STARTED, SPEAKING, STOPPED }
 

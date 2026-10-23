@@ -19,6 +19,7 @@ import com.github.naz013.common.speech.SpeechEngine
 import com.github.naz013.common.speech.SpeechEngineCallback
 import com.github.naz013.common.speech.SpeechError
 import com.github.naz013.common.speech.SpeechText
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.note.compare.CompareNoteVersionScreen
 import com.github.naz013.feature.note.compare.CompareNoteVersionViewModel
 import com.github.naz013.feature.note.create.EditTab
@@ -37,10 +38,12 @@ import com.github.naz013.feature.note.preview.PreviewNoteActions
 import com.github.naz013.feature.note.preview.PreviewNoteScreen
 import com.github.naz013.feature.note.preview.PreviewNoteState
 import com.github.naz013.feature.note.preview.PreviewNoteViewModel
+import com.github.naz013.navigation.popDeleted
 import com.github.naz013.tags.TagsNavKey
 import com.github.naz013.ui.common.compose.foundation.dialog.DialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.PendingDeleteHost
 import com.github.naz013.ui.common.compose.foundation.snackbar.ToastDispatcher
 import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
@@ -147,6 +150,11 @@ private fun NotesListEntry(
   val toastDispatcher = rememberToastDispatcher()
   val snackbarHostState = remember { SnackbarHostState() }
   UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
+  PendingDeleteHost(
+    coordinator = viewModel.pendingDeleteCoordinator,
+    type = PendingEntity.NOTE,
+    snackbarHostState = snackbarHostState,
+  )
   val noteIntentSender = rememberNoteIntentSender(applicationId)
   val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
   val noteColorEngine = koinInject<NoteColorEngine>()
@@ -203,6 +211,11 @@ private fun NotesArchiveEntry(backStack: MutableList<NavKey>, applicationId: Str
   val toastDispatcher = rememberToastDispatcher()
   val snackbarHostState = remember { SnackbarHostState() }
   UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
+  PendingDeleteHost(
+    coordinator = viewModel.pendingDeleteCoordinator,
+    type = PendingEntity.NOTE,
+    snackbarHostState = snackbarHostState,
+  )
   val noteIntentSender = rememberNoteIntentSender(applicationId)
   val colorPickerDialogDispatcher = rememberColorPickerDialogDispatcher()
   val noteColorEngine = koinInject<NoteColorEngine>()
@@ -263,7 +276,6 @@ private fun NotePreviewEntry(
   val permissionRequester = rememberPermissionRequesterRationale()
   val noteIntentSender = rememberNoteIntentSender(applicationId)
   val toastDispatcher = rememberToastDispatcher()
-  val dialogDispatcher = rememberDialogDispatcher()
 
   viewModel.event.ObserveEvent { event ->
     when (event) {
@@ -301,14 +313,7 @@ private fun NotePreviewEntry(
         noteIntentSender.sendText(event.content)
       }
 
-      is PreviewNoteViewModel.ViewModelEvent.Delete -> {
-        dialogDispatcher.showDialog(
-          titleRes = R.string.delete_this_note,
-          positiveButtonRes = R.string.delete,
-          negativeButtonRes = R.string.cancel,
-          onPositive = { viewModel.onDeleteConfirmed() }
-        )
-      }
+      is PreviewNoteViewModel.ViewModelEvent.Deleted -> backStack.popDeletedNote(event.id)
     }
   }
 
@@ -409,6 +414,8 @@ private fun NoteEditEntry(
         if (backStack.size > 1) backStack.removeLastOrNull()
       }
 
+      is NoteEditViewModel.ViewModelEvent.Deleted -> backStack.popDeletedNote(event.id)
+
       is NoteEditViewModel.ViewModelEvent.Error -> {
         toastDispatcher.showToast(message = event.message)
       }
@@ -488,7 +495,6 @@ private fun NoteEditEntry(
       onImageOpen = { position -> viewModel.onImageOpen(position) },
       onImageRemove = viewModel::removeImage,
       onFontStyleSelected = viewModel::onFontStyleChanged,
-      onDeleteConfirmed = viewModel::onDeleteConfirmed,
       onSameNoteKeep = { viewModel.saveNote(newId = true) },
       onSameNoteReplace = { viewModel.saveNote() },
       onDialogDismiss = viewModel::onDialogDismissed,
@@ -551,4 +557,10 @@ private fun NoteImagePreviewEntry(
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onPageChanged = viewModel::onPageChanged,
   )
+}
+
+private fun MutableList<NavKey>.popDeletedNote(id: String) {
+  popDeleted { key ->
+    (key is NotesNavKey.Preview && key.id == id) || (key is NotesNavKey.Edit && key.id == id)
+  }
 }

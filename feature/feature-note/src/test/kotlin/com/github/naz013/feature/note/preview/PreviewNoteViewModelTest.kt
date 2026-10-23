@@ -36,6 +36,8 @@ import com.github.naz013.repository.NoteRepository
 import com.github.naz013.repository.NoteVersionRepository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.note.NoteColorEngine
@@ -46,7 +48,10 @@ import com.github.naz013.ui.tag.TagChipStateAdapter
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -86,10 +91,14 @@ class PreviewNoteViewModelTest : BaseTest() {
   private val restoreNoteVersionUseCase = mockk<RestoreNoteVersionUseCase>()
   private val dateTimeManager = mockk<DateTimeManager>()
   private val noteShareContentBuilder = NoteShareContentBuilder { listOf("Roboto Black", "Roboto Bold") }
+  private val pendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.NOTE) } returns pendingIds
+    every { textProvider.getText(R.string.note_deleted) } returns "Note deleted"
     // PreviewNoteViewModel's init block eagerly observes the note and its tags via Flow, and
     // separately loads attached reminders once - default stubs avoid unstubbed-call failures for
     // tests that don't care about note/reminder/tag details but still collect state at least once.
@@ -163,6 +172,7 @@ class PreviewNoteViewModelTest : BaseTest() {
       restoreNoteVersionUseCase = restoreNoteVersionUseCase,
       dateTimeManager = dateTimeManager,
       noteShareContentBuilder = noteShareContentBuilder,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
 
   @Test
@@ -358,23 +368,41 @@ class PreviewNoteViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onDeleteClick posts a Delete confirmation event`() {
-    val viewModel = createViewModel()
-
-    viewModel.onDeleteClick()
-
-    assertEquals(PreviewNoteViewModel.ViewModelEvent.Delete, viewModel.event.value?.peekContent())
-  }
-
-  @Test
-  fun `onDeleteConfirmed deletes the note and posts MoveBack`() =
+  fun `onDeleteClick marks the note pending without a dialog or delete and posts Deleted`() =
     runTest {
       val viewModel = createViewModel()
 
-      viewModel.onDeleteConfirmed()
+      viewModel.onDeleteClick()
+
+      verify(exactly = 1) {
+        pendingDeleteCoordinator.markPending(PendingEntity.NOTE, key, "Note deleted", any())
+      }
+      coVerify(exactly = 0) { deleteNoteUseCase(any()) }
+      assertEquals(PreviewNoteViewModel.ViewModelEvent.Deleted(key), viewModel.event.value?.peekContent())
+    }
+
+  @Test
+  fun `committing the pending note delete deletes it exactly once`() =
+    runTest {
+      val onCommit = slot<suspend () -> Unit>()
+      every { pendingDeleteCoordinator.markPending(any(), any(), any(), capture(onCommit)) } just runs
+      val viewModel = createViewModel()
+      viewModel.onDeleteClick()
+
+      onCommit.captured.invoke()
 
       coVerify(exactly = 1) { deleteNoteUseCase(key) }
-      assertEquals(PreviewNoteViewModel.ViewModelEvent.MoveBack, viewModel.event.value?.peekContent())
+    }
+
+  @Test
+  fun `onDeleteClick does nothing when the note is already pending`() =
+    runTest {
+      val viewModel = createViewModel()
+      pendingIds.value = setOf(key)
+
+      viewModel.onDeleteClick()
+
+      verify(exactly = 0) { pendingDeleteCoordinator.markPending(any(), any(), any(), any()) }
     }
 
   @Test

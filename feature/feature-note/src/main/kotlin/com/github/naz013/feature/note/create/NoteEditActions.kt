@@ -35,7 +35,6 @@ internal data class NoteEditActions(
   val onImageRemove: (Int) -> Unit = {},
   val onFontStyleSelected: (Int) -> Unit = {},
   val onPaletteSelected: (Int) -> Unit = {},
-  val onDeleteConfirmed: () -> Unit = {},
   val onSameNoteKeep: () -> Unit = {},
   val onSameNoteReplace: () -> Unit = {},
   val onDialogDismiss: () -> Unit = {},

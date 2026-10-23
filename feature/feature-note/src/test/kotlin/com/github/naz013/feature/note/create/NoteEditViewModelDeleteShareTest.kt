@@ -4,75 +4,79 @@ import androidx.compose.ui.text.input.TextFieldValue
 import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.note.R
 import com.github.naz013.feature.note.share.NoteShareFormat
 import com.github.naz013.feature.note.share.NoteShareText
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.slot
 import io.mockk.verify
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 import java.io.File
 
 /**
- * Covers [NoteEditViewModel.onDeleteConfirmed] (delete) and [NoteEditViewModel.onShareClick]
+ * Covers [NoteEditViewModel.onDeleteRequested] (delete) and [NoteEditViewModel.onShareClick]
  * (share). Both talk to their own mocked use case / repository and post a one-shot [event].
  */
 internal class NoteEditViewModelDeleteShareTest : NoteEditViewModelTestSupport() {
 
   @Test
-  fun `onDeleteConfirmed does nothing for a note that was never saved`() {
+  fun `onDeleteRequested does nothing for a note that was never saved`() {
     val viewModel = buildViewModel(id = null)
 
-    viewModel.onDeleteConfirmed()
+    viewModel.onDeleteRequested()
 
-    coVerify(exactly = 0) { deleteNoteUseCase(any()) }
+    verify(exactly = 0) { pendingDeleteCoordinator.markPending(any(), any(), any(), any()) }
     assertNull(viewModel.event.value)
   }
 
   @Test
-  fun `onDeleteConfirmed shows an error when the note no longer exists in the repository`() {
-    every { textProvider.getText(R.string.default_error_msg) } returns "Not found"
-    coEvery { noteRepository.getById("42") } returns null
+  fun `onDeleteRequested marks the note pending without a dialog or delete and posts Deleted`() {
+    every { textProvider.getText(R.string.note_deleted) } returns "Note deleted"
     val viewModel = buildViewModel(id = "42")
 
-    viewModel.onDeleteConfirmed()
+    viewModel.onDeleteRequested()
 
+    verify(exactly = 1) {
+      pendingDeleteCoordinator.markPending(PendingEntity.NOTE, "42", "Note deleted", any())
+    }
     coVerify(exactly = 0) { deleteNoteUseCase(any()) }
+    assertNull(viewModel.state.value.activeDialog)
     val event = viewModel.event.value?.getContentIfNotHandled()
-    assertEquals(NoteEditViewModel.ViewModelEvent.Error("Not found"), event)
+    assertEquals(NoteEditViewModel.ViewModelEvent.Deleted("42"), event)
   }
 
   @Test
-  fun `onDeleteConfirmed deletes the note, updates the widgets and posts MoveBack`() {
-    val noteWithImages = NoteWithImages(note = Note(key = "42", syncState = SyncState.Synced))
-    coEvery { noteRepository.getById("42") } returns noteWithImages
-    every { uiNoteEditAdapter.convert(noteWithImages) } returns uiNoteEdit(id = "42")
+  fun `committing the pending note delete deletes it and updates the widgets`() {
+    val onCommit = slot<suspend () -> Unit>()
+    every { pendingDeleteCoordinator.markPending(any(), any(), any(), capture(onCommit)) } just runs
     val viewModel = buildViewModel(id = "42")
+    viewModel.onDeleteRequested()
 
-    viewModel.onDeleteConfirmed()
+    runBlocking { onCommit.captured.invoke() }
 
     coVerify(exactly = 1) { deleteNoteUseCase("42") }
     verify(exactly = 1) { appWidgetUpdater.updateNotesWidget() }
     verify(exactly = 1) { appWidgetUpdater.updateAllWidgets() }
-    val event = viewModel.event.value?.getContentIfNotHandled()
-    assertEquals(NoteEditViewModel.ViewModelEvent.MoveBack, event)
   }
 
   @Test
-  fun `onDeleteConfirmed clears the active dialog before deleting`() {
-    val noteWithImages = NoteWithImages(note = Note(key = "42", syncState = SyncState.Synced))
-    coEvery { noteRepository.getById("42") } returns noteWithImages
-    every { uiNoteEditAdapter.convert(noteWithImages) } returns uiNoteEdit(id = "42")
+  fun `onDeleteRequested does nothing when the note is already pending`() {
     val viewModel = buildViewModel(id = "42")
+    pendingIds.value = setOf("42")
+
     viewModel.onDeleteRequested()
 
-    viewModel.onDeleteConfirmed()
-
-    assertNull(viewModel.state.value.activeDialog)
+    verify(exactly = 0) { pendingDeleteCoordinator.markPending(any(), any(), any(), any()) }
+    assertNull(viewModel.event.value)
   }
 
   @Test

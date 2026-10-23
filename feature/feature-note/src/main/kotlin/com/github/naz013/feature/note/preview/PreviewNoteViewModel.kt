@@ -16,6 +16,8 @@ import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.feature.note.R
@@ -70,6 +72,7 @@ internal class PreviewNoteViewModel(
   private val restoreNoteVersionUseCase: RestoreNoteVersionUseCase,
   private val dateTimeManager: DateTimeManager,
   private val noteShareContentBuilder: NoteShareContentBuilder,
+  private val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(PreviewNoteState(id = key))
@@ -83,8 +86,10 @@ internal class PreviewNoteViewModel(
       combine(
         noteRepository.observeById(key),
         tagAssignmentRepository.observeTagsForItem(key, TaggedItemType.NOTE),
-      ) { noteWithImages, tags -> noteWithImages to tags }
-        .collect { (noteWithImages, tags) ->
+        pendingDeleteCoordinator.pendingIds(PendingEntity.NOTE),
+      ) { noteWithImages, tags, pendingIds -> Triple(noteWithImages, tags, pendingIds) }
+        .collect { (noteWithImages, tags, pendingIds) ->
+          if (key in pendingIds) return@collect
           val tagChips = tags.map { tagChipStateAdapter(it) }
           if (noteWithImages == null) {
             withContext(dispatcherProvider.main()) {
@@ -172,16 +177,16 @@ internal class PreviewNoteViewModel(
   }
 
   fun onDeleteClick() {
-    event.emit(ViewModelEvent.Delete)
-  }
-
-  fun onDeleteConfirmed() {
-    viewModelScope.launch(dispatcherProvider.default()) {
+    if (key in pendingDeleteCoordinator.pendingIds(PendingEntity.NOTE).value) return
+    Logger.i(TAG, "Deleting note, id: $key")
+    pendingDeleteCoordinator.markPending(
+      type = PendingEntity.NOTE,
+      id = key,
+      message = textProvider.getText(R.string.note_deleted),
+    ) {
       deleteNoteUseCase(key)
-      withContext(dispatcherProvider.main()) {
-        event.emit(ViewModelEvent.MoveBack)
-      }
     }
+    event.emit(ViewModelEvent.Deleted(key))
   }
 
   fun onShareClick() {
@@ -352,7 +357,7 @@ internal class PreviewNoteViewModel(
 
     data object MoveBack : ViewModelEvent
 
-    data object Delete : ViewModelEvent
+    data class Deleted(val id: String) : ViewModelEvent
   }
 
   companion object {

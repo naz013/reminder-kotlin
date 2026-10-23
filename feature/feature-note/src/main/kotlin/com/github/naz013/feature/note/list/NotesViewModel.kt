@@ -14,6 +14,8 @@ import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
@@ -77,6 +79,7 @@ internal class NotesViewModel(
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val tagChipStateAdapter: TagChipStateAdapter,
   private val noteColorEngine: NoteColorEngine,
+  val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   private val _notesScreenState = MutableStateFlow(
@@ -128,6 +131,9 @@ internal class NotesViewModel(
           }
         }
         .combine(undoDelete.pendingIds) { notes, pendingIds ->
+          notes.filterNot { it.note?.key in pendingIds }
+        }
+        .combine(pendingDeleteCoordinator.pendingIds(PendingEntity.NOTE)) { notes, pendingIds ->
           notes.filterNot { it.note?.key in pendingIds }
         }
         .collect { applyList(it) }

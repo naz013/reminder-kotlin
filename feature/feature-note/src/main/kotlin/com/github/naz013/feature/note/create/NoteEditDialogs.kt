@@ -9,30 +9,6 @@ import androidx.compose.ui.res.stringResource
 import com.github.naz013.feature.note.R
 
 @Composable
-internal fun DeleteNoteDialog(
-  onDismiss: () -> Unit,
-  onConfirm: () -> Unit,
-) {
-  AlertDialog(
-    onDismissRequest = onDismiss,
-    text = { Text(stringResource(R.string.delete_this_note)) },
-    confirmButton = {
-      TextButton(onClick = {
-        onConfirm()
-        onDismiss()
-      }) {
-        Text(stringResource(R.string.yes))
-      }
-    },
-    dismissButton = {
-      TextButton(onClick = onDismiss) {
-        Text(stringResource(R.string.no))
-      }
-    },
-  )
-}
-
-@Composable
 internal fun SameNoteDialog(
   onDismiss: () -> Unit,
   onKeep: () -> Unit,

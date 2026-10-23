@@ -87,12 +87,14 @@ val featureNoteModule = module {
       get(),
       get(),
       get(),
+      get(),
     )
   }
   viewModel { (position: Int) -> ImagePreviewViewModel(position, get(), get()) }
   viewModel { (isArchived: Boolean) ->
     NotesViewModel(
       isArchived = isArchived,
+      get(),
       get(),
       get(),
       get(),
@@ -121,6 +123,7 @@ val featureNoteModule = module {
   viewModel { (id: String) ->
     PreviewNoteViewModel(
       id,
+      get(),
       get(),
       get(),
       get(),

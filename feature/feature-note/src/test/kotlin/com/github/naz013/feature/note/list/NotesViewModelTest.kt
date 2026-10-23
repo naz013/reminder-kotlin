@@ -11,6 +11,8 @@ import com.github.naz013.domain.note.Note
 import com.github.naz013.domain.note.NoteDocument
 import com.github.naz013.domain.note.NoteWithImages
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoEvent
 import com.github.naz013.feature.note.R
 import com.github.naz013.feature.note.UiNoteNotification
@@ -73,11 +75,14 @@ class NotesViewModelTest : BaseTest() {
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
   private val tagChipStateAdapter = mockk<TagChipStateAdapter>()
   private val noteColorEngine = NoteColorEngine(mockk<ThemeProvider>(relaxed = true), mockk(relaxed = true))
+  private val coordinatorPendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   @Before
   override fun setUp() {
     super.setUp()
     every { notePreferences.notesLayoutMode } returns ListLayoutMode.LIST
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.NOTE) } returns coordinatorPendingIds
     every { notePreferences.noteOrder } returns NoteSortProcessor.DATE_ZA
     // NotesViewModel's init block eagerly observes the repository's notes flow as soon as the
     // view model is constructed, independent of state collection - a default stub avoids an
@@ -142,6 +147,7 @@ class NotesViewModelTest : BaseTest() {
       tagAssignmentRepository = tagAssignmentRepository,
       tagChipStateAdapter = tagChipStateAdapter,
       noteColorEngine = noteColorEngine,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
 
   @Test
@@ -372,6 +378,17 @@ class NotesViewModelTest : BaseTest() {
       viewModel.navigationEvent.value?.peekContent(),
     )
   }
+
+  @Test
+  fun `excludes notes pending delete in the coordinator`() =
+    runTest {
+      coordinatorPendingIds.value = setOf("2")
+      val (_, state) = readyViewModel(listOf("1", "2"))
+
+      val ready = state().listState as ListState.Ready
+
+      assertEquals(listOf("1"), ready.notes.map { it.id })
+    }
 
   @Test
   fun `onNoteMenuAction DELETE marks the note pending without a confirm event`() =

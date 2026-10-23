@@ -218,12 +218,6 @@ internal fun NoteEditScreen(
   }
 
   when (state.activeDialog) {
-    NoteEditDialog.DELETE ->
-      DeleteNoteDialog(
-        onDismiss = actions.onDialogDismiss,
-        onConfirm = actions.onDeleteConfirmed,
-      )
-
     NoteEditDialog.SAME_NOTE ->
       SameNoteDialog(
         onDismiss = actions.onDialogDismiss,

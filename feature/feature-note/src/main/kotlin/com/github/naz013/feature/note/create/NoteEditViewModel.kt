@@ -39,6 +39,8 @@ import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.livedata.toLiveData
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.mutableLiveDataOf
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.note.R
@@ -123,6 +125,7 @@ internal class NoteEditViewModel(
   private val tagChipStateAdapter: TagChipStateAdapter,
   private val saveNoteVersionUseCase: SaveNoteVersionUseCase,
   private val noteShareContentBuilder: NoteShareContentBuilder,
+  private val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   val is24HourFormat: Boolean = notePreferences.is24HourFormat
@@ -398,7 +401,7 @@ internal class NoteEditViewModel(
   }
 
   fun onDeleteRequested() {
-    _state.update { it.copy(activeDialog = NoteEditDialog.DELETE) }
+    deleteNote()
   }
 
   fun onDialogDismissed() {
@@ -411,11 +414,6 @@ internal class NoteEditViewModel(
     } else {
       saveNote()
     }
-  }
-
-  fun onDeleteConfirmed() {
-    _state.update { it.copy(activeDialog = null) }
-    deleteNote()
   }
 
   /** True when saving should first confirm overwrite-vs-keep, because this came from an
@@ -706,22 +704,20 @@ internal class NoteEditViewModel(
         Logger.w(TAG, "Note id is null")
         return
       }
-    viewModelScope.launch(dispatcherProvider.io()) {
-      noteRepository.getById(id) ?: run {
-        withContext(dispatcherProvider.main()) {
-          event.value = Event(ViewModelEvent.Error(textProvider.getText(R.string.default_error_msg)))
-        }
-        return@launch
-      }
-
+    if (id in pendingDeleteCoordinator.pendingIds(PendingEntity.NOTE).value) return
+    Logger.i(TAG, "Deleting note, id: $id")
+    pendingDeleteCoordinator.markPending(
+      type = PendingEntity.NOTE,
+      id = id,
+      message = textProvider.getText(R.string.note_deleted),
+    ) {
       deleteNoteUseCase(id)
-
       withContext(dispatcherProvider.main()) {
         appWidgetUpdater.updateNotesWidget()
         appWidgetUpdater.updateAllWidgets()
-        event.value = Event(ViewModelEvent.MoveBack)
       }
     }
+    event.value = Event(ViewModelEvent.Deleted(id))
   }
 
   /**
@@ -929,6 +925,8 @@ internal class NoteEditViewModel(
     ) : ViewModelEvent
 
     data object MoveBack : ViewModelEvent
+
+    data class Deleted(val id: String) : ViewModelEvent
 
     data class ShareNote(
       val text: String,
