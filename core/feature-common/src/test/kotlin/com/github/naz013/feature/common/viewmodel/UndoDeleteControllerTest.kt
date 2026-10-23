@@ -1,5 +1,6 @@
 package com.github.naz013.feature.common.viewmodel
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -9,11 +10,21 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import kotlin.coroutines.CoroutineContext
 
 class UndoDeleteControllerTest {
 
   private fun controller(scope: CoroutineScope = CoroutineScope(Job())) =
     UndoDeleteController(scope, Dispatchers.Unconfined)
+
+  private class RecordingDispatcher : CoroutineDispatcher() {
+    var dispatchCount = 0
+
+    override fun dispatch(context: CoroutineContext, block: Runnable) {
+      dispatchCount++
+      block.run()
+    }
+  }
 
   @Test
   fun `markPending hides the ids and emits one undo event`() =
@@ -82,4 +93,30 @@ class UndoDeleteControllerTest {
 
       assertEquals(2, commits)
     }
+
+  @Test
+  fun `re-marking a batch key replaces its ids and emits a second undo event`() =
+    runBlocking {
+      val controller = controller()
+
+      controller.markPending("k", setOf("1"), "first") { }
+      controller.markPending("k", setOf("2"), "second") { }
+
+      assertEquals(setOf("2"), controller.pendingIds.value)
+      assertEquals(UndoEvent("k", "first"), withTimeout(1000) { controller.undoEvents.first() })
+      assertEquals(UndoEvent("k", "second"), withTimeout(1000) { controller.undoEvents.first() })
+    }
+
+  @Test
+  fun `commit runs the commit action on the provided commit dispatcher`() {
+    val dispatcher = RecordingDispatcher()
+    val controller = UndoDeleteController(CoroutineScope(Job()), dispatcher)
+    var commits = 0
+    controller.markPending("k", setOf("1"), "m") { commits++ }
+
+    controller.commit("k")
+
+    assertEquals(1, dispatcher.dispatchCount)
+    assertEquals(1, commits)
+  }
 }
