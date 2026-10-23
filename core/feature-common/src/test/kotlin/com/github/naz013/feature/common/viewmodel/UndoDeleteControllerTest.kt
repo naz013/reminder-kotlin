@@ -1,6 +1,5 @@
 package com.github.naz013.feature.common.viewmodel
 
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -10,21 +9,14 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import kotlin.coroutines.CoroutineContext
 
 class UndoDeleteControllerTest {
 
   private fun controller(scope: CoroutineScope = CoroutineScope(Job())) =
     UndoDeleteController(scope, Dispatchers.Unconfined)
 
-  private class RecordingDispatcher : CoroutineDispatcher() {
-    var dispatchCount = 0
-
-    override fun dispatch(context: CoroutineContext, block: Runnable) {
-      dispatchCount++
-      block.run()
-    }
-  }
+  private suspend fun UndoDeleteController.currentEvent() =
+    withTimeout(1000) { undoEvents.first() }
 
   @Test
   fun `markPending hides the ids and emits one undo event`() =
@@ -34,7 +26,9 @@ class UndoDeleteControllerTest {
       controller.markPending("k", setOf("1", "2"), "Deleted") { }
 
       assertEquals(setOf("1", "2"), controller.pendingIds.value)
-      assertEquals(UndoEvent("k", "Deleted"), withTimeout(1000) { controller.undoEvents.first() })
+      val event = controller.currentEvent()
+      assertEquals("k", event.batchKey)
+      assertEquals("Deleted", event.message)
     }
 
   @Test
@@ -69,9 +63,8 @@ class UndoDeleteControllerTest {
     var committedA = 0
     var committedB = 0
     controller.markPending("a", setOf("1"), "m") { committedA++ }
-    controller.markPending("b", setOf("2"), "m") { committedB++ }
-
     controller.undo("a")
+    controller.markPending("b", setOf("2"), "m") { committedB++ }
     controller.commit("b")
 
     assertEquals(0, committedA)
@@ -95,28 +88,41 @@ class UndoDeleteControllerTest {
     }
 
   @Test
-  fun `re-marking a batch key replaces its ids and emits a second undo event`() =
+  fun `re-marking the same key commits the earlier batch and does not drop it`() {
+    val controller = controller()
+    val committed = mutableListOf<String>()
+    controller.markPending("k", setOf("1"), "m") { committed += "first" }
+    controller.markPending("k", setOf("2"), "m") { committed += "second" }
+
+    assertEquals(listOf("first"), committed)
+    assertEquals(setOf("2"), controller.pendingIds.value)
+  }
+
+  @Test
+  fun `stale snackbar timeout does not commit the newer batch`() =
     runBlocking {
       val controller = controller()
+      var secondCommits = 0
+      controller.markPending("k", setOf("1"), "m") { }
+      val stale = controller.currentEvent()
+      controller.markPending("k", setOf("2"), "m") { secondCommits++ }
 
-      controller.markPending("k", setOf("1"), "first") { }
-      controller.markPending("k", setOf("2"), "second") { }
+      controller.commit(stale)
 
+      assertEquals(0, secondCommits)
       assertEquals(setOf("2"), controller.pendingIds.value)
-      assertEquals(UndoEvent("k", "first"), withTimeout(1000) { controller.undoEvents.first() })
-      assertEquals(UndoEvent("k", "second"), withTimeout(1000) { controller.undoEvents.first() })
     }
 
   @Test
-  fun `commit runs the commit action on the provided commit dispatcher`() {
-    val dispatcher = RecordingDispatcher()
-    val controller = UndoDeleteController(CoroutineScope(Job()), dispatcher)
-    var commits = 0
-    controller.markPending("k", setOf("1"), "m") { commits++ }
+  fun `unresolved event is replayed to a newly attached host`() =
+    runBlocking {
+      val controller = controller()
+      controller.markPending("k", setOf("1"), "Deleted") { }
+      val firstHost = controller.currentEvent()
 
-    controller.commit("k")
+      val secondHost = controller.currentEvent()
 
-    assertEquals(1, dispatcher.dispatchCount)
-    assertEquals(1, commits)
-  }
+      assertEquals(firstHost, secondHost)
+      assertEquals(setOf("1"), controller.pendingIds.value)
+    }
 }

@@ -108,7 +108,7 @@ class PendingDeleteTrackerTest {
   }
 
   @Test
-  fun `re-marking the same batch key replaces its ids and commit action`() =
+  fun `re-marking the same batch key keeps both ids and runs both commit actions`() =
     runBlocking {
       val tracker = PendingDeleteTracker()
       var firstCommitted = false
@@ -116,10 +116,36 @@ class PendingDeleteTrackerTest {
       tracker.markPending(batchKey = "1", ids = setOf("1")) { firstCommitted = true }
 
       tracker.markPending(batchKey = "1", ids = setOf("2")) { secondCommitted = true }
+      assertEquals(setOf("1", "2"), tracker.pendingIds.value)
       tracker.commit("1")
 
-      assertTrue(!firstCommitted)
+      assertTrue(firstCommitted)
       assertTrue(secondCommitted)
       assertEquals(emptySet<String>(), tracker.pendingIds.value)
     }
+
+  @Test
+  fun `racing commit and commitAllDetached runs each batch exactly once`() {
+    repeat(200) {
+      val tracker = PendingDeleteTracker()
+      val runs = java.util.concurrent.atomic.AtomicInteger()
+      tracker.markPending(batchKey = "a", ids = setOf("1")) { runs.incrementAndGet() }
+      val start = java.util.concurrent.CountDownLatch(1)
+      val committer = Thread {
+        start.await()
+        runBlocking { tracker.commit("a") }
+      }
+      val detached = Thread {
+        start.await()
+        runBlocking { tracker.commitAll() }
+      }
+      committer.start()
+      detached.start()
+      start.countDown()
+      committer.join()
+      detached.join()
+
+      assertEquals(1, runs.get())
+    }
+  }
 }

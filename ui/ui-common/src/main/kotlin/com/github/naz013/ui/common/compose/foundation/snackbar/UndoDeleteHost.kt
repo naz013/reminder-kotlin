@@ -12,6 +12,8 @@ import com.github.naz013.ui.common.R
 /**
  * Shows an undo Snackbar for every [UndoDeleteController.undoEvents] emission and routes the
  * outcome back: action tap -> [UndoDeleteController.undo], timeout -> [UndoDeleteController.commit].
+ * Use exactly one host per controller. Leaving composition resolves nothing; the controller replays
+ * the unresolved event to the next host, so items are never left hidden without undo UI.
  */
 @Composable
 fun UndoDeleteHost(
@@ -26,8 +28,8 @@ fun UndoDeleteHost(
       dispatcher.showUndoSnackbar(
         message = event.message,
         actionLabel = actionLabel,
-        onUndo = { currentController.undo(event.batchKey) },
-        onTimeout = { currentController.commit(event.batchKey) },
+        onUndo = { currentController.undo(event) },
+        onTimeout = { currentController.commit(event) },
       )
     }
   }
