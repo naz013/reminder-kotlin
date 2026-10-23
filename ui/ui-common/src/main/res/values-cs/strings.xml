@@ -1322,4 +1322,6 @@
     <string name="group_deleted">Skupina smazána</string>
     <string name="groups_deleted_count">Smazáno skupin: %1$d</string>
     <string name="workflow_rule_deleted">Pravidlo smazáno</string>
+    <string name="notes_moved_to_archive_count">Poznámek přesunuto do archívu: %1$d</string>
+    <string name="notes_reverted_from_archive_count">Poznámek obnoveno z archívu: %1$d</string>
 </resources>

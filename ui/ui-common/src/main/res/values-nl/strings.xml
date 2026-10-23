@@ -1314,4 +1314,6 @@
     <string name="group_deleted">Groep verwijderd</string>
     <string name="groups_deleted_count">%1$d groepen verwijderd</string>
     <string name="workflow_rule_deleted">Regel verwijderd</string>
+    <string name="notes_moved_to_archive_count">%1$d notities verplaatst naar archief</string>
+    <string name="notes_reverted_from_archive_count">%1$d notities hersteld uit archief</string>
 </resources>

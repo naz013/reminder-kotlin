@@ -244,17 +244,20 @@ internal class NotesViewModel(
   fun onArchiveSelectedClick() {
     val ids = selectedIds()
     if (ids.isEmpty()) return
-    viewModelScope.launch(dispatcherProvider.default()) {
-      ids.forEach { changeNoteArchiveStateUseCase(it, !isArchived) }
-
-      withContext(dispatcherProvider.main()) {
-        onSelectionCancel()
-      }
-
-      withContext(dispatcherProvider.main()) {
-        appWidgetUpdater.updateNotesWidget()
-      }
-    }
+    onSelectionCancel()
+    markArchiveStatePending(
+      batchKey = UUID.randomUUID().toString(),
+      ids = ids.toList(),
+      archive = !isArchived,
+      message = textProvider.getText(
+        if (isArchived) {
+          R.string.notes_reverted_from_archive_count
+        } else {
+          R.string.notes_moved_to_archive_count
+        },
+        ids.size,
+      ),
+    )
   }
 
   fun applySelectedColor(colorIndex: Int) {
@@ -342,18 +345,38 @@ internal class NotesViewModel(
   }
 
   private fun moveToArchive(id: String) {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      changeNoteArchiveStateUseCase(id, true)
-
-      withContext(dispatcherProvider.main()) {
-        appWidgetUpdater.updateNotesWidget()
-      }
-    }
+    markArchiveStatePending(
+      batchKey = id,
+      ids = listOf(id),
+      archive = true,
+      message = textProvider.getString(R.string.note_moved_to_archive),
+    )
   }
 
   private fun unarchive(id: String) {
-    viewModelScope.launch(dispatcherProvider.default()) {
-      changeNoteArchiveStateUseCase(id, false)
+    markArchiveStatePending(
+      batchKey = id,
+      ids = listOf(id),
+      archive = false,
+      message = textProvider.getString(R.string.note_reverted_from_archive),
+    )
+  }
+
+  private fun markArchiveStatePending(
+    batchKey: String,
+    ids: List<String>,
+    archive: Boolean,
+    message: String,
+  ) {
+    undoDelete.markPending(
+      batchKey = batchKey,
+      ids = ids.toSet(),
+      message = message,
+    ) {
+      ids.forEach { changeNoteArchiveStateUseCase(it, archive) }
+      withContext(dispatcherProvider.main()) {
+        appWidgetUpdater.updateNotesWidget()
+      }
     }
   }
 

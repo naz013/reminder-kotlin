@@ -1316,4 +1316,6 @@
     <string name="group_deleted">Групата е изтрита</string>
     <string name="groups_deleted_count">Изтрити групи: %1$d</string>
     <string name="workflow_rule_deleted">Правилото е изтрито</string>
+    <string name="notes_moved_to_archive_count">%1$d бележки са преместени в архива</string>
+    <string name="notes_reverted_from_archive_count">%1$d бележки са възстановени от архива</string>
 </resources>

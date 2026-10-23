@@ -1322,4 +1322,6 @@
     <string name="group_deleted">Grupa usunięta</string>
     <string name="groups_deleted_count">Usunięto grup: %1$d</string>
     <string name="workflow_rule_deleted">Reguła usunięta</string>
+    <string name="notes_moved_to_archive_count">Przeniesiono %1$d notatek do archiwum</string>
+    <string name="notes_reverted_from_archive_count">Przywrócono %1$d notatek z archiwum</string>
 </resources>

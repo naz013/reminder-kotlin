@@ -1326,4 +1326,6 @@
     <string name="group_deleted">تم حذف المجموعة</string>
     <string name="groups_deleted_count">تم حذف %1$d مجموعات</string>
     <string name="workflow_rule_deleted">تم حذف القاعدة</string>
+    <string name="notes_moved_to_archive_count">تم نقل %1$d ملاحظات إلى الأرشيف</string>
+    <string name="notes_reverted_from_archive_count">تمت استعادة %1$d ملاحظات من الأرشيف</string>
 </resources>

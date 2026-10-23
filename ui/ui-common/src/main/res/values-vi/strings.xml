@@ -1311,4 +1311,6 @@
     <string name="group_deleted">Đã xóa nhóm</string>
     <string name="groups_deleted_count">Đã xóa %1$d nhóm</string>
     <string name="workflow_rule_deleted">Đã xóa quy tắc</string>
+    <string name="notes_moved_to_archive_count">Đã chuyển %1$d ghi chú vào lưu trữ</string>
+    <string name="notes_reverted_from_archive_count">Đã khôi phục %1$d ghi chú từ lưu trữ</string>
 </resources>

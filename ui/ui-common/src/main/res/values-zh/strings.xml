@@ -1309,4 +1309,6 @@
     <string name="group_deleted">群组已删除</string>
     <string name="groups_deleted_count">已删除 %1$d 个群组</string>
     <string name="workflow_rule_deleted">规则已删除</string>
+    <string name="notes_moved_to_archive_count">已将 %1$d 条笔记移至归档</string>
+    <string name="notes_reverted_from_archive_count">已从归档恢复 %1$d 条笔记</string>
 </resources>

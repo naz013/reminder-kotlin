@@ -1332,4 +1332,6 @@
     <string name="group_deleted">Group deleted</string>
     <string name="groups_deleted_count">%1$d groups deleted</string>
     <string name="workflow_rule_deleted">Rule deleted</string>
+    <string name="notes_moved_to_archive_count">%1$d notes moved to archive</string>
+    <string name="notes_reverted_from_archive_count">%1$d notes reverted from archive</string>
 </resources>

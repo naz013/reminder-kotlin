@@ -1319,4 +1319,6 @@
     <string name="group_deleted">Grup șters</string>
     <string name="groups_deleted_count">%1$d grupuri șterse</string>
     <string name="workflow_rule_deleted">Regula a fost ștearsă</string>
+    <string name="notes_moved_to_archive_count">%1$d notițe mutate în arhivă</string>
+    <string name="notes_reverted_from_archive_count">%1$d notițe restaurate din arhivă</string>
 </resources>

@@ -386,14 +386,35 @@ class NotesViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onNoteMenuAction ARCHIVE archives the note, refreshes the list and updates the widget`() =
+  fun `onNoteMenuAction ARCHIVE hides the note and archives only after commit`() =
     runTest {
-      val viewModel = createViewModel()
+      every { textProvider.getString(R.string.note_moved_to_archive) } returns "Archived"
+      val (viewModel, state) = readyViewModel(listOf("7"))
 
       viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.ARCHIVE)
 
+      assertEquals(ListState.Empty, state().listState)
+      coVerify(exactly = 0) { changeNoteArchiveStateUseCase(any(), any()) }
+      verify(exactly = 0) { appWidgetUpdater.updateNotesWidget() }
+      val event = viewModel.undoDelete.undoEvents.first()
+      assertEquals("Archived", event.message)
+      viewModel.undoDelete.commit("7")
       coVerify(exactly = 1) { changeNoteArchiveStateUseCase("7", true) }
       verify(exactly = 1) { appWidgetUpdater.updateNotesWidget() }
+    }
+
+  @Test
+  fun `undo of a single archive restores the note and never archives it`() =
+    runTest {
+      val (viewModel, state) = readyViewModel(listOf("7"))
+      viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.ARCHIVE)
+
+      viewModel.undoDelete.undo("7")
+      viewModel.undoDelete.commit("7")
+
+      assertEquals(listOf("7"), (state().listState as ListState.Ready).notes.map { it.id })
+      coVerify(exactly = 0) { changeNoteArchiveStateUseCase(any(), any()) }
+      verify(exactly = 0) { appWidgetUpdater.updateNotesWidget() }
     }
 
   @Test
@@ -408,14 +429,44 @@ class NotesViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onNoteMenuAction UNARCHIVE unarchives the note without touching the widget`() =
+  fun `onNoteMenuAction UNARCHIVE hides the note and unarchives only after commit`() =
     runTest {
-      val viewModel = createViewModel()
+      every { textProvider.getString(R.string.note_reverted_from_archive) } returns "Reverted"
+      val (viewModel, state) = readyViewModel(listOf("7"), isArchived = true)
 
       viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.UNARCHIVE)
 
+      assertEquals(ListState.Empty, state().listState)
+      coVerify(exactly = 0) { changeNoteArchiveStateUseCase(any(), any()) }
+      val event = viewModel.undoDelete.undoEvents.first()
+      assertEquals("Reverted", event.message)
+      viewModel.undoDelete.commit("7")
       coVerify(exactly = 1) { changeNoteArchiveStateUseCase("7", false) }
-      verify(exactly = 0) { appWidgetUpdater.updateNotesWidget() }
+      verify(exactly = 1) { appWidgetUpdater.updateNotesWidget() }
+    }
+
+  @Test
+  fun `undo of a single unarchive keeps the note archived`() =
+    runTest {
+      val (viewModel, state) = readyViewModel(listOf("7"), isArchived = true)
+      viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.UNARCHIVE)
+
+      viewModel.undoDelete.undo("7")
+      viewModel.undoDelete.commit("7")
+
+      assertEquals(listOf("7"), (state().listState as ListState.Ready).notes.map { it.id })
+      coVerify(exactly = 0) { changeNoteArchiveStateUseCase(any(), any()) }
+    }
+
+  @Test
+  fun `clearing the view model commits a pending archive`() =
+    runTest {
+      val viewModel = createViewModel()
+      viewModel.onNoteMenuAction(uiItem(id = "7"), NoteMenuAction.ARCHIVE)
+
+      NotesViewModel::class.java.getDeclaredMethod("onCleared").apply { isAccessible = true }.invoke(viewModel)
+
+      coVerify(exactly = 1) { changeNoteArchiveStateUseCase("7", true) }
     }
 
   @Test
@@ -852,29 +903,71 @@ class NotesViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onArchiveSelectedClick archives selected notes and clears selection`() =
+  fun `onArchiveSelectedClick hides notes and clears selection without archiving yet`() =
     runTest {
+      every { textProvider.getText(R.string.notes_moved_to_archive_count, 2) } returns "2 archived"
       val (viewModel, state) = readyViewModel(listOf("1", "2"), isArchived = false)
       viewModel.onNoteLongClick("1")
       viewModel.onNoteClick("2")
 
       viewModel.onArchiveSelectedClick()
 
+      assertEquals(ListState.Empty, state().listState)
+      assertEquals(0, state().selectedCount)
+      assertEquals("2 archived", viewModel.undoDelete.undoEvents.first().message)
+      coVerify(exactly = 0) { changeNoteArchiveStateUseCase(any(), any()) }
+      verify(exactly = 0) { appWidgetUpdater.updateNotesWidget() }
+    }
+
+  @Test
+  fun `commit after a bulk archive archives each note once and updates the widget`() =
+    runTest {
+      val (viewModel, _) = readyViewModel(listOf("1", "2"), isArchived = false)
+      viewModel.onNoteLongClick("1")
+      viewModel.onNoteClick("2")
+      viewModel.onArchiveSelectedClick()
+      val batchKey = viewModel.undoDelete.undoEvents.first().batchKey
+
+      viewModel.undoDelete.commit(batchKey)
+
       coVerify(exactly = 1) { changeNoteArchiveStateUseCase("1", true) }
       coVerify(exactly = 1) { changeNoteArchiveStateUseCase("2", true) }
-      assertEquals(0, state().selectedCount)
       verify(exactly = 1) { appWidgetUpdater.updateNotesWidget() }
     }
 
   @Test
-  fun `onArchiveSelectedClick unarchives selected notes on the archive screen`() =
+  fun `undo after a bulk archive restores the notes and never archives them`() =
     runTest {
-      val (viewModel, _) = readyViewModel(listOf("1"), isArchived = true)
+      val (viewModel, state) = readyViewModel(listOf("1", "2"), isArchived = false)
+      viewModel.onNoteLongClick("1")
+      viewModel.onNoteClick("2")
+      viewModel.onArchiveSelectedClick()
+      val batchKey = viewModel.undoDelete.undoEvents.first().batchKey
+
+      viewModel.undoDelete.undo(batchKey)
+      viewModel.undoDelete.commit(batchKey)
+
+      assertEquals(listOf("1", "2"), (state().listState as ListState.Ready).notes.map { it.id })
+      coVerify(exactly = 0) { changeNoteArchiveStateUseCase(any(), any()) }
+      verify(exactly = 0) { appWidgetUpdater.updateNotesWidget() }
+    }
+
+  @Test
+  fun `onArchiveSelectedClick on the archive screen unarchives only after commit`() =
+    runTest {
+      every { textProvider.getText(R.string.notes_reverted_from_archive_count, 1) } returns "1 reverted"
+      val (viewModel, state) = readyViewModel(listOf("1"), isArchived = true)
       viewModel.onNoteLongClick("1")
 
       viewModel.onArchiveSelectedClick()
 
+      assertEquals(ListState.Empty, state().listState)
+      coVerify(exactly = 0) { changeNoteArchiveStateUseCase(any(), any()) }
+      val event = viewModel.undoDelete.undoEvents.first()
+      assertEquals("1 reverted", event.message)
+      viewModel.undoDelete.commit(event.batchKey)
       coVerify(exactly = 1) { changeNoteArchiveStateUseCase("1", false) }
+      verify(exactly = 1) { appWidgetUpdater.updateNotesWidget() }
     }
 
   @Test

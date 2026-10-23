@@ -1321,4 +1321,6 @@
     <string name="group_deleted">Группа удалена</string>
     <string name="groups_deleted_count">Удалено групп: %1$d</string>
     <string name="workflow_rule_deleted">Правило удалено</string>
+    <string name="notes_moved_to_archive_count">Заметок перемещено в архив: %1$d</string>
+    <string name="notes_reverted_from_archive_count">Заметок восстановлено из архива: %1$d</string>
 </resources>

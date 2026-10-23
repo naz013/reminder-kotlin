@@ -1322,4 +1322,6 @@
     <string name="group_deleted">Групу видалено</string>
     <string name="groups_deleted_count">Видалено груп: %1$d</string>
     <string name="workflow_rule_deleted">Правило видалено</string>
+    <string name="notes_moved_to_archive_count">Нотаток переміщено в архів: %1$d</string>
+    <string name="notes_reverted_from_archive_count">Нотаток відновлено з архіву: %1$d</string>
 </resources>

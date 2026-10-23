@@ -1311,4 +1311,6 @@
     <string name="group_deleted">Grup dihapus</string>
     <string name="groups_deleted_count">%1$d grup dihapus</string>
     <string name="workflow_rule_deleted">Aturan dihapus</string>
+    <string name="notes_moved_to_archive_count">%1$d catatan dipindahkan ke arsip</string>
+    <string name="notes_reverted_from_archive_count">%1$d catatan dikembalikan dari arsip</string>
 </resources>

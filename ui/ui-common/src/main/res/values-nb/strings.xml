@@ -1314,4 +1314,6 @@
     <string name="group_deleted">Gruppe slettet</string>
     <string name="groups_deleted_count">%1$d grupper slettet</string>
     <string name="workflow_rule_deleted">Regel slettet</string>
+    <string name="notes_moved_to_archive_count">%1$d notater ble flyttet til arkivet</string>
+    <string name="notes_reverted_from_archive_count">%1$d notater ble gjenopprettet fra arkivet</string>
 </resources>

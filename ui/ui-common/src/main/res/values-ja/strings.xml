@@ -1309,4 +1309,6 @@
     <string name="group_deleted">グループを削除しました</string>
     <string name="groups_deleted_count">%1$d 件のグループを削除しました</string>
     <string name="workflow_rule_deleted">ルールを削除しました</string>
+    <string name="notes_moved_to_archive_count">%1$d 件のメモをアーカイブに移動しました</string>
+    <string name="notes_reverted_from_archive_count">%1$d 件のメモをアーカイブから復元しました</string>
 </resources>

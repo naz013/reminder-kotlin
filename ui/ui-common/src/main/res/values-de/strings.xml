@@ -1312,4 +1312,6 @@
     <string name="group_deleted">Gruppe gelöscht</string>
     <string name="groups_deleted_count">%1$d Gruppen gelöscht</string>
     <string name="workflow_rule_deleted">Regel gelöscht</string>
+    <string name="notes_moved_to_archive_count">%1$d Notizen ins Archiv verschoben</string>
+    <string name="notes_reverted_from_archive_count">%1$d Notizen aus dem Archiv wiederhergestellt</string>
 </resources>
