@@ -3,6 +3,7 @@ package com.github.naz013.feature.places
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -28,6 +29,7 @@ import com.github.naz013.ui.map.MapParams
 import com.github.naz013.ui.map.SimpleMapController
 import com.github.naz013.ui.map.SimpleMapView
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
+import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import com.github.naz013.ui.common.compose.foundation.snackbar.rememberToastDispatcher
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -72,7 +74,8 @@ fun EntryProviderScope<NavKey>.placesEntries(
 private fun PlacesListEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<PlacesViewModel>()
 
-  val dialogDispatcher = rememberDialogDispatcher()
+  val snackbarHostState = remember { SnackbarHostState() }
+  UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
   val toastDispatcher = rememberToastDispatcher()
   val sendIntentResolver = rememberSendIntentResolver()
 
@@ -84,15 +87,6 @@ private fun PlacesListEntry(backStack: MutableList<NavKey>) {
 
       is PlacesViewModel.NavigationEvent.ShareFile -> {
         sendIntentResolver.resolve(event.intent, event.name)
-      }
-
-      is PlacesViewModel.NavigationEvent.ConfirmDelete -> {
-        dialogDispatcher.showDialog(
-          textRes = R.string.are_you_sure,
-          positiveButtonRes = R.string.yes,
-          negativeButtonRes = R.string.cancel,
-          onPositive = { viewModel.deletePlace(event.id) },
-        )
       }
 
       is PlacesViewModel.NavigationEvent.MoveBack -> {
@@ -108,6 +102,7 @@ private fun PlacesListEntry(backStack: MutableList<NavKey>) {
   val state by viewModel.screenState.collectAsState(PlacesScreenState())
   PlacesScreen(
     state = state,
+    snackbarHostState = snackbarHostState,
     onBackClick = viewModel::onBackClicked,
     onSearchQueryChange = viewModel::onSearchQueryChange,
     onAddClick = viewModel::onAddClick,

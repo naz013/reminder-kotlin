@@ -11,6 +11,7 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.intent.IntentFactory
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.common.viewmodel.UndoEvent
 import com.github.naz013.repository.PlaceRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -140,12 +141,61 @@ class PlacesViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onPlaceMenuAction DELETE posts ConfirmDelete navigation event`() {
-    viewModel.onPlaceMenuAction("7", PlaceMenuAction.DELETE)
+  fun `onPlaceMenuAction DELETE marks the place pending without confirmation or deleting yet`() =
+    runTest {
+      every { textProvider.getText(R.string.place_deleted) } returns "Place deleted"
 
-    val event = viewModel.navigationEvent.value?.peekContent()
-    assertEquals(PlacesViewModel.NavigationEvent.ConfirmDelete("7"), event)
-  }
+      viewModel.onPlaceMenuAction("7", PlaceMenuAction.DELETE)
+
+      coVerify(exactly = 0) { deletePlaceUseCase(any()) }
+      assertEquals(
+        UndoEvent(batchKey = "7", message = "Place deleted", token = 1L),
+        viewModel.undoDelete.undoEvents.first(),
+      )
+      assertEquals(null, viewModel.navigationEvent.value)
+    }
+
+  @Test
+  fun `pending place is hidden from the list and restored on undo`() =
+    runTest {
+      every { placeRepository.observeAll() } returns
+        flowOf(listOf(place(id = "1", name = "Home"), place(id = "2", name = "Work")))
+      viewModel = createViewModel()
+      viewModel.screenState.first()
+
+      viewModel.onPlaceMenuAction("1", PlaceMenuAction.DELETE)
+      val hidden = viewModel.screenState.first { state ->
+        (state.listState as? ListState.Ready)?.places?.map { it.id } == listOf("2")
+      }
+      viewModel.undoDelete.undo("1")
+      val restored = viewModel.screenState.first { state ->
+        (state.listState as? ListState.Ready)?.places?.size == 2
+      }
+
+      assertEquals(listOf("2"), (hidden.listState as ListState.Ready).places.map { it.id })
+      assertEquals(2, (restored.listState as ListState.Ready).places.size)
+      coVerify(exactly = 0) { deletePlaceUseCase(any()) }
+    }
+
+  @Test
+  fun `undo cancels the pending place delete`() =
+    runTest {
+      viewModel.onPlaceMenuAction("7", PlaceMenuAction.DELETE)
+
+      viewModel.undoDelete.undo("7")
+
+      coVerify(exactly = 0) { deletePlaceUseCase(any()) }
+    }
+
+  @Test
+  fun `clearing the view model commits a pending place delete`() =
+    runTest {
+      viewModel.onPlaceMenuAction("7", PlaceMenuAction.DELETE)
+
+      PlacesViewModel::class.java.getDeclaredMethod("onCleared").apply { isAccessible = true }.invoke(viewModel)
+
+      coVerify(exactly = 1) { deletePlaceUseCase("7") }
+    }
 
   @Test
   fun `onPlaceMenuAction SHARE shows an error toast when the place is not found`() =
@@ -190,9 +240,12 @@ class PlacesViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `deletePlace delegates to the use case`() =
+  fun `commit deletes the place exactly once after the undo window`() =
     runTest {
-      viewModel.deletePlace("1")
+      viewModel.onPlaceMenuAction("1", PlaceMenuAction.DELETE)
+
+      viewModel.undoDelete.commit("1")
+      viewModel.undoDelete.commit("1")
 
       coVerify(exactly = 1) { deletePlaceUseCase("1") }
     }

@@ -15,6 +15,7 @@ import com.github.naz013.domain.Place
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.repository.PlaceRepository
@@ -45,13 +46,17 @@ internal class PlacesViewModel(
   val navigationEvent: LiveData<Event<NavigationEvent>> field = mutableLiveEventOf()
 
   private val searchQuery = MutableStateFlow("")
+  val undoDelete = UndoDeleteController(viewModelScope, dispatcherProvider.io())
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
       combine(
         placeRepository.observeAll(),
         searchQuery.debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS },
-      ) { places, query -> mergeForQuery(places, query) }
+        undoDelete.pendingIds,
+      ) { places, query, pendingIds ->
+        mergeForQuery(places.filterNot { it.id in pendingIds }, query)
+      }
         .collect { applyList(it) }
     }
   }
@@ -80,12 +85,21 @@ internal class PlacesViewModel(
     when (action) {
       PlaceMenuAction.EDIT -> onPlaceClick(id)
       PlaceMenuAction.SHARE -> sharePlace(id)
-      PlaceMenuAction.DELETE -> navigationEvent.emit(NavigationEvent.ConfirmDelete(id))
+      PlaceMenuAction.DELETE -> deletePlace(id)
     }
   }
 
-  fun deletePlace(id: String) {
-    viewModelScope.launch(dispatcherProvider.default()) {
+  override fun onCleared() {
+    super.onCleared()
+    undoDelete.commitAllDetached(dispatcherProvider.io())
+  }
+
+  private fun deletePlace(id: String) {
+    undoDelete.markPending(
+      batchKey = id,
+      ids = setOf(id),
+      message = textProvider.getText(R.string.place_deleted),
+    ) {
       deletePlaceUseCase(id)
     }
   }
@@ -178,10 +192,6 @@ internal class PlacesViewModel(
     data class ShareFile(
       val intent: Intent,
       val name: String,
-    ) : NavigationEvent
-
-    data class ConfirmDelete(
-      val id: String,
     ) : NavigationEvent
 
     data object MoveBack : NavigationEvent

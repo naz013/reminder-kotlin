@@ -1308,4 +1308,5 @@
     <string name="reminder_restored">Påmindelsen er gendannet</string>
     <string name="delete_routine_confirmation">Slet denne rutine? Det kan ikke fortrydes.</string>
     <string name="reminder_restored_inactive">Påmindelsen er gendannet, men er inaktiv, fordi tidspunktet er passeret</string>
+    <string name="place_deleted">Sted slettet</string>
 </resources>

@@ -1310,4 +1310,5 @@
     <string name="reminder_restored">Hatırlatıcı geri yüklendi</string>
     <string name="delete_routine_confirmation">Bu rutin silinsin mi? Bu işlem geri alınamaz.</string>
     <string name="reminder_restored_inactive">Hatırlatıcı geri yüklendi, ancak zamanı geçtiği için etkin değil</string>
+    <string name="place_deleted">Yer silindi</string>
 </resources>

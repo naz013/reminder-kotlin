@@ -1306,4 +1306,5 @@
     <string name="reminder_restored">Erinnerung wiederhergestellt</string>
     <string name="delete_routine_confirmation">Diese Routine löschen? Dies kann nicht rückgängig gemacht werden.</string>
     <string name="reminder_restored_inactive">Erinnerung wiederhergestellt, ist aber inaktiv, da die Zeit bereits vergangen ist</string>
+    <string name="place_deleted">Ort gelöscht</string>
 </resources>

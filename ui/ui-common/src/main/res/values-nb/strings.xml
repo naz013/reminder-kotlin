@@ -1308,4 +1308,5 @@
     <string name="reminder_restored">Påminnelsen er gjenopprettet</string>
     <string name="delete_routine_confirmation">Slette denne rutinen? Dette kan ikke angres.</string>
     <string name="reminder_restored_inactive">Påminnelsen er gjenopprettet, men er inaktiv fordi tidspunktet har passert</string>
+    <string name="place_deleted">Sted slettet</string>
 </resources>

@@ -1316,4 +1316,5 @@
     <string name="reminder_restored">Připomenutí bylo obnoveno</string>
     <string name="delete_routine_confirmation">Smazat tuto rutinu? Tuto akci nelze vrátit zpět.</string>
     <string name="reminder_restored_inactive">Připomenutí bylo obnoveno, ale je neaktivní, protože jeho čas již uplynul</string>
+    <string name="place_deleted">Místo smazáno</string>
 </resources>

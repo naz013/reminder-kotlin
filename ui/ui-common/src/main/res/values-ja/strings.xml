@@ -1303,4 +1303,5 @@
     <string name="reminder_restored">リマインダーを復元しました</string>
     <string name="delete_routine_confirmation">このルーティンを削除しますか？この操作は元に戻せません。</string>
     <string name="reminder_restored_inactive">リマインダーを復元しましたが、時刻を過ぎているため無効です</string>
+    <string name="place_deleted">場所を削除しました</string>
 </resources>

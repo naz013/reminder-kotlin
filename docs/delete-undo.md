@@ -22,4 +22,4 @@ delete-all and cascading deletes. The helper below works with or without a prior
 5. Screen: `UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)`.
 
 Migrated screens: Agenda, Birthdays, Reminders archive, Notes (list and archive each own a controller
-and a `SnackbarHostState`). Remaining screens and docs: see the unified delete-undo Trello series.
+and a `SnackbarHostState`), Places list (undo only, no confirm). Remaining screens and docs: see the unified delete-undo Trello series.

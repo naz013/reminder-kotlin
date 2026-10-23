@@ -1310,4 +1310,5 @@
     <string name="reminder_restored">Напомнянето е възстановено</string>
     <string name="delete_routine_confirmation">Да се изтрие ли тази рутина? Действието не може да бъде отменено.</string>
     <string name="reminder_restored_inactive">Напомнянето е възстановено, но е неактивно, защото времето му е минало</string>
+    <string name="place_deleted">Мястото е изтрито</string>
 </resources>

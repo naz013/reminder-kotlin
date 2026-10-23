@@ -1301,4 +1301,5 @@
     <string name="reminder_restored">กู้คืนการเตือนแล้ว</string>
     <string name="delete_routine_confirmation">ลบกิจวัตรนี้หรือไม่ การดำเนินการนี้ไม่สามารถย้อนกลับได้</string>
     <string name="reminder_restored_inactive">กู้คืนการเตือนแล้ว แต่ยังไม่ทำงานเพราะเลยเวลาแล้ว</string>
+    <string name="place_deleted">ลบสถานที่แล้ว</string>
 </resources>

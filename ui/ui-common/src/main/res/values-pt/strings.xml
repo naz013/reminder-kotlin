@@ -1313,4 +1313,5 @@
     <string name="reminder_restored">Lembrete restaurado</string>
     <string name="delete_routine_confirmation">Excluir esta rotina? Esta ação não pode ser desfeita.</string>
     <string name="reminder_restored_inactive">Lembrete restaurado, mas inativo porque o horário já passou</string>
+    <string name="place_deleted">Local excluído</string>
 </resources>
