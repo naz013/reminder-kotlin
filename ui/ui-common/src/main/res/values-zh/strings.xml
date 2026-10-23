@@ -1308,4 +1308,5 @@
     <string name="tags_deleted_count">已删除 %1$d 个标签</string>
     <string name="group_deleted">群组已删除</string>
     <string name="groups_deleted_count">已删除 %1$d 个群组</string>
+    <string name="workflow_rule_deleted">规则已删除</string>
 </resources>

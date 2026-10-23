@@ -2,9 +2,11 @@ package com.github.naz013.feature.workflow
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.workflow.WorkflowScope
 import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
+import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.domain.workflow.WorkflowRule
 import com.github.naz013.logic.workflow.ApplyWorkflowTemplateUseCase
 import com.github.naz013.logic.workflow.DeleteWorkflowRuleUseCase
@@ -15,6 +17,7 @@ import com.github.naz013.logic.workflow.isExecutable
 import com.github.naz013.repository.WorkflowRuleRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -25,6 +28,7 @@ import kotlinx.coroutines.launch
 internal class WorkflowRulesForReminderViewModel(
   private val reminderId: String,
   private val dispatcherProvider: DispatcherProvider,
+  private val textProvider: TextProvider,
   private val getWorkflowTemplatesUseCase: GetWorkflowTemplatesUseCase,
   private val applyWorkflowTemplateUseCase: ApplyWorkflowTemplateUseCase,
   private val saveWorkflowRuleAsTemplateUseCase: SaveWorkflowRuleAsTemplateUseCase,
@@ -34,10 +38,14 @@ internal class WorkflowRulesForReminderViewModel(
 ) : ViewModel() {
 
   val state: StateFlow<WorkflowRulesForReminderState> field = MutableStateFlow(WorkflowRulesForReminderState())
+  val undoDelete = UndoDeleteController(viewModelScope, dispatcherProvider.io())
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
-      workflowRuleRepository.observeByScope(scopeType = SCOPE_TYPE_REMINDER, scopeId = reminderId)
+      combine(
+              workflowRuleRepository.observeByScope(scopeType = SCOPE_TYPE_REMINDER, scopeId = reminderId),
+        undoDelete.pendingIds,
+      ) { rules, pendingIds -> rules.filterNot { it.uuId in pendingIds } }
         .collect { rules -> applyRules(rules) }
     }
   }
@@ -50,9 +58,18 @@ internal class WorkflowRulesForReminderViewModel(
   }
 
   fun onDeleteRuleClick(ruleId: String) {
-    viewModelScope.launch(dispatcherProvider.default()) {
+    undoDelete.markPending(
+      batchKey = ruleId,
+      ids = setOf(ruleId),
+      message = textProvider.getText(R.string.workflow_rule_deleted),
+    ) {
       deleteWorkflowRuleUseCase(ruleId)
     }
+  }
+
+  override fun onCleared() {
+    super.onCleared()
+    undoDelete.commitAllDetached(dispatcherProvider.io())
   }
 
   fun onSaveRuleAsTemplateClick(ruleId: String) {

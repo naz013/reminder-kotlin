@@ -1318,4 +1318,5 @@
     <string name="tags_deleted_count">%1$d etichete șterse</string>
     <string name="group_deleted">Grup șters</string>
     <string name="groups_deleted_count">%1$d grupuri șterse</string>
+    <string name="workflow_rule_deleted">Regula a fost ștearsă</string>
 </resources>

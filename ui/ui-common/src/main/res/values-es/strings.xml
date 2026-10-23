@@ -1318,4 +1318,5 @@
     <string name="tags_deleted_count">%1$d etiquetas eliminadas</string>
     <string name="group_deleted">Grupo eliminado</string>
     <string name="groups_deleted_count">%1$d grupos eliminados</string>
+    <string name="workflow_rule_deleted">Regla eliminada</string>
 </resources>

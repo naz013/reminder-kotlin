@@ -1,5 +1,6 @@
 package com.github.naz013.feature.workflow
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import com.github.naz013.feature.workflow.builder.WorkflowRuleBuilderScreen
 import com.github.naz013.feature.workflow.builder.WorkflowRuleBuilderViewModel
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
+import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -78,9 +80,12 @@ fun EntryProviderScope<NavKey>.workflowEntries(
 @Composable
 private fun WorkflowGalleryEntry(backStack: MutableList<NavKey>) {
   val viewModel = koinViewModel<WorkflowGalleryViewModel>()
+  val snackbarHostState = remember { SnackbarHostState() }
+  UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
   val state by viewModel.state.collectAsState()
   WorkflowGalleryScreen(
     state = state,
+    snackbarHostState = snackbarHostState,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onRuleEnabledChange = viewModel::onRuleEnabledChange,
     onDeleteRuleClick = viewModel::onDeleteRuleClick,
@@ -99,9 +104,12 @@ private fun WorkflowRulesForGroupEntry(
   renderAsDetailPane: Boolean,
 ) {
   val viewModel = koinViewModel<WorkflowRulesForGroupViewModel> { parametersOf(key.groupId) }
+  val snackbarHostState = remember { SnackbarHostState() }
+  UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
   val state by viewModel.state.collectAsState()
   WorkflowRulesForGroupScreen(
     state = state,
+    snackbarHostState = snackbarHostState,
     renderAsDetailPane = renderAsDetailPane,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onRuleEnabledChange = viewModel::onRuleEnabledChange,
@@ -123,9 +131,12 @@ private fun WorkflowRulesForReminderEntry(
   renderAsDetailPane: Boolean,
 ) {
   val viewModel = koinViewModel<WorkflowRulesForReminderViewModel> { parametersOf(key.reminderId) }
+  val snackbarHostState = remember { SnackbarHostState() }
+  UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
   val state by viewModel.state.collectAsState()
   WorkflowRulesForReminderScreen(
     state = state,
+    snackbarHostState = snackbarHostState,
     renderAsDetailPane = renderAsDetailPane,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onRuleEnabledChange = viewModel::onRuleEnabledChange,

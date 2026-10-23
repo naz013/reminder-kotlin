@@ -1311,4 +1311,5 @@
     <string name="tags_deleted_count">%1$d टैग हटाए गए</string>
     <string name="group_deleted">समूह हटाया गया</string>
     <string name="groups_deleted_count">%1$d समूह हटाए गए</string>
+    <string name="workflow_rule_deleted">नियम हटा दिया गया</string>
 </resources>

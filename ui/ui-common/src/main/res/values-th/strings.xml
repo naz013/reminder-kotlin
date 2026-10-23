@@ -1306,4 +1306,5 @@
     <string name="tags_deleted_count">ลบแท็กแล้ว %1$d รายการ</string>
     <string name="group_deleted">ลบกลุ่มแล้ว</string>
     <string name="groups_deleted_count">ลบ %1$d กลุ่มแล้ว</string>
+    <string name="workflow_rule_deleted">ลบกฎแล้ว</string>
 </resources>

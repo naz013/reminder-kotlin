@@ -1318,4 +1318,5 @@
     <string name="tags_deleted_count">%1$d tags excluídas</string>
     <string name="group_deleted">Grupo excluído</string>
     <string name="groups_deleted_count">%1$d grupos excluídos</string>
+    <string name="workflow_rule_deleted">Regra excluída</string>
 </resources>

@@ -1315,4 +1315,5 @@
     <string name="tags_deleted_count">%1$d etiket silindi</string>
     <string name="group_deleted">Grup silindi</string>
     <string name="groups_deleted_count">%1$d grup silindi</string>
+    <string name="workflow_rule_deleted">Kural silindi</string>
 </resources>

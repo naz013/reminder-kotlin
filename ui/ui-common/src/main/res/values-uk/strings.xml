@@ -1321,4 +1321,5 @@
     <string name="tags_deleted_count">Видалено тегів: %1$d</string>
     <string name="group_deleted">Групу видалено</string>
     <string name="groups_deleted_count">Видалено груп: %1$d</string>
+    <string name="workflow_rule_deleted">Правило видалено</string>
 </resources>

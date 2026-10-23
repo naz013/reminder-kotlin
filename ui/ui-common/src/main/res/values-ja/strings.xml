@@ -1308,4 +1308,5 @@
     <string name="tags_deleted_count">%1$d 件のタグを削除しました</string>
     <string name="group_deleted">グループを削除しました</string>
     <string name="groups_deleted_count">%1$d 件のグループを削除しました</string>
+    <string name="workflow_rule_deleted">ルールを削除しました</string>
 </resources>

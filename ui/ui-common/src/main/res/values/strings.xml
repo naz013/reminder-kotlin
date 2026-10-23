@@ -1331,4 +1331,5 @@
     <string name="tags_deleted_count">%1$d tags deleted</string>
     <string name="group_deleted">Group deleted</string>
     <string name="groups_deleted_count">%1$d groups deleted</string>
+    <string name="workflow_rule_deleted">Rule deleted</string>
 </resources>

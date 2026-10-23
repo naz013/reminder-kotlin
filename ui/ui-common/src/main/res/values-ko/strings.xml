@@ -1308,4 +1308,5 @@
     <string name="tags_deleted_count">태그 %1$d개가 삭제되었습니다</string>
     <string name="group_deleted">그룹이 삭제되었습니다</string>
     <string name="groups_deleted_count">그룹 %1$d개가 삭제되었습니다</string>
+    <string name="workflow_rule_deleted">규칙이 삭제되었습니다</string>
 </resources>

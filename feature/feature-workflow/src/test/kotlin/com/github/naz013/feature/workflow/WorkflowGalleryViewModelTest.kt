@@ -1,5 +1,6 @@
 package com.github.naz013.feature.workflow
 
+import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.workflow.WorkflowAction
 import com.github.naz013.domain.workflow.WorkflowRule
 import com.github.naz013.domain.workflow.WorkflowScope
@@ -7,6 +8,7 @@ import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 import com.github.naz013.domain.workflow.WorkflowTrigger
+import com.github.naz013.feature.common.viewmodel.UndoEvent
 import com.github.naz013.logic.workflow.ApplyWorkflowTemplateUseCase
 import com.github.naz013.logic.workflow.DeleteWorkflowRuleUseCase
 import com.github.naz013.logic.workflow.GetWorkflowTemplatesUseCase
@@ -19,6 +21,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -33,6 +36,7 @@ class WorkflowGalleryViewModelTest : BaseTest() {
   private val saveWorkflowRuleUseCase = mockk<SaveWorkflowRuleUseCase>(relaxed = true)
   private val deleteWorkflowRuleUseCase = mockk<DeleteWorkflowRuleUseCase>(relaxed = true)
   private val workflowRuleRepository = mockk<WorkflowRuleRepository>(relaxed = true)
+  private val textProvider = mockk<TextProvider>(relaxed = true)
 
   @Before
   override fun setUp() {
@@ -44,6 +48,7 @@ class WorkflowGalleryViewModelTest : BaseTest() {
   private fun createViewModel(): WorkflowGalleryViewModel =
     WorkflowGalleryViewModel(
       dispatcherProvider = mockDispatcherProvider(),
+      textProvider = textProvider,
       getWorkflowTemplatesUseCase = getWorkflowTemplatesUseCase,
       applyWorkflowTemplateUseCase = applyWorkflowTemplateUseCase,
       saveWorkflowRuleAsTemplateUseCase = saveWorkflowRuleAsTemplateUseCase,
@@ -127,13 +132,61 @@ class WorkflowGalleryViewModelTest : BaseTest() {
     coVerify { saveWorkflowRuleUseCase(rule.copy(isEnabled = false)) }
   }
 
+  private fun rule() = WorkflowRule(
+    uuId = "rule-1",
+    scope = WorkflowScope.Global,
+    trigger = WorkflowTrigger.ReminderAgeExceeded(30),
+    action = WorkflowAction.ArchiveReminder,
+  )
+
   @Test
-  fun `onDeleteRuleClick deletes the rule`() = runTest {
+  fun `onDeleteRuleClick hides the rule without deleting it before commit`() = runTest {
+    every { textProvider.getText(R.string.workflow_rule_deleted) } returns "Rule deleted"
+    every { workflowRuleRepository.observeByScope(any(), any()) } returns flowOf(listOf(rule()))
     val viewModel = createViewModel()
 
     viewModel.onDeleteRuleClick("rule-1")
 
-    coVerify { deleteWorkflowRuleUseCase("rule-1") }
+    coVerify(exactly = 0) { deleteWorkflowRuleUseCase(any()) }
+    assertEquals(emptyList<String>(), viewModel.state.value.globalRules.map { it.id })
+    assertEquals(
+      UndoEvent(batchKey = "rule-1", message = "Rule deleted", token = 1L),
+      viewModel.undoDelete.undoEvents.first(),
+    )
+  }
+
+  @Test
+  fun `commit deletes the rule exactly once`() = runTest {
+    val viewModel = createViewModel()
+    viewModel.onDeleteRuleClick("rule-1")
+
+    viewModel.undoDelete.commit("rule-1")
+    viewModel.undoDelete.commit("rule-1")
+
+    coVerify(exactly = 1) { deleteWorkflowRuleUseCase("rule-1") }
+  }
+
+  @Test
+  fun `undo keeps the rule visible and never deletes it`() = runTest {
+    every { workflowRuleRepository.observeByScope(any(), any()) } returns flowOf(listOf(rule()))
+    val viewModel = createViewModel()
+    viewModel.onDeleteRuleClick("rule-1")
+
+    viewModel.undoDelete.undo("rule-1")
+    viewModel.undoDelete.commit("rule-1")
+
+    assertEquals(listOf("rule-1"), viewModel.state.value.globalRules.map { it.id })
+    coVerify(exactly = 0) { deleteWorkflowRuleUseCase(any()) }
+  }
+
+  @Test
+  fun `clearing the view model commits a pending rule delete`() = runTest {
+    val viewModel = createViewModel()
+    viewModel.onDeleteRuleClick("rule-1")
+
+    WorkflowGalleryViewModel::class.java.getDeclaredMethod("onCleared").apply { isAccessible = true }.invoke(viewModel)
+
+    coVerify(exactly = 1) { deleteWorkflowRuleUseCase("rule-1") }
   }
 
   @Test

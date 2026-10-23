@@ -1313,4 +1313,5 @@
     <string name="tags_deleted_count">%1$d taggar raderade</string>
     <string name="group_deleted">Grupp borttagen</string>
     <string name="groups_deleted_count">%1$d grupper borttagna</string>
+    <string name="workflow_rule_deleted">Regel raderad</string>
 </resources>

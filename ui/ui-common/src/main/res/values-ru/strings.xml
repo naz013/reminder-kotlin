@@ -1320,4 +1320,5 @@
     <string name="tags_deleted_count">Удалено тегов: %1$d</string>
     <string name="group_deleted">Группа удалена</string>
     <string name="groups_deleted_count">Удалено групп: %1$d</string>
+    <string name="workflow_rule_deleted">Правило удалено</string>
 </resources>
