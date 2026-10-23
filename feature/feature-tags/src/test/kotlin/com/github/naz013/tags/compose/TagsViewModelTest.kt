@@ -116,6 +116,16 @@ class TagsViewModelTest : BaseTest() {
   }
 
   @Test
+  fun `onTagMenuAction DELETE does not mark the tag pending before confirmation`() =
+    runTest {
+      viewModel.onTagMenuAction(TagState(id = "5", name = "Work", color = Color.Red), TagMenuAction.DELETE)
+
+      assertTrue(viewModel.undoDelete.pendingIds.value.isEmpty())
+      coVerify(exactly = 0) { tagAssignmentRepository.detachAllForTag(any()) }
+      coVerify(exactly = 0) { tagRepository.delete(any()) }
+    }
+
+  @Test
   fun `deleteTag marks the tag pending without detaching or deleting yet`() =
     runTest {
       every { textProvider.getText(R.string.tag_deleted) } returns "Tag deleted"
@@ -227,6 +237,19 @@ class TagsViewModelTest : BaseTest() {
         TagsViewModel.NavigationEvent.ConfirmDeleteSelected(setOf("1", "2"), "Delete 2 tags permanently?"),
         vm.navigationEvent.value?.peekContent(),
       )
+    }
+
+  @Test
+  fun `onDeleteSelectedClick does not mark the selected tags pending before confirmation`() =
+    runTest {
+      val (vm, _) = readyTags(listOf("1", "2"))
+      vm.onTagLongClick("1")
+      vm.onTagClick("2")
+
+      vm.onDeleteSelectedClick()
+
+      assertTrue(vm.undoDelete.pendingIds.value.isEmpty())
+      coVerify(exactly = 0) { tagRepository.delete(any()) }
     }
 
   @Test

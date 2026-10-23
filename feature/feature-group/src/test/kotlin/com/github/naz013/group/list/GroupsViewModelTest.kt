@@ -200,6 +200,15 @@ class GroupsViewModelTest : BaseTest() {
   }
 
   @Test
+  fun `onGroupMenuAction DELETE does not mark the group pending before confirmation`() =
+    runTest {
+      viewModel.onGroupMenuAction(uiGroupList(id = "1"), GroupMenuAction.DELETE)
+
+      assertTrue(viewModel.undoDelete.pendingIds.value.isEmpty())
+      coVerify(exactly = 0) { deleteGroupUseCase(any()) }
+    }
+
+  @Test
   fun `onGroupMenuAction MAKE_DEFAULT delegates to use case`() =
     runTest {
       viewModel.onGroupMenuAction(uiGroupList(id = "5"), GroupMenuAction.MAKE_DEFAULT)
@@ -341,6 +350,19 @@ class GroupsViewModelTest : BaseTest() {
         GroupsViewModel.NavigationEvent.ConfirmDeleteSelected(setOf("1", "2"), "Delete 2 groups permanently?"),
         vm.navigationEvent.value?.peekContent(),
       )
+    }
+
+  @Test
+  fun `onDeleteSelectedClick does not mark the selected groups pending before confirmation`() =
+    runTest {
+      val (vm, _) = readyGroups(listOf("1", "2"))
+      vm.onGroupLongClick("1")
+      vm.onGroupClick("2")
+
+      vm.onDeleteSelectedClick()
+
+      assertTrue(vm.undoDelete.pendingIds.value.isEmpty())
+      coVerify(exactly = 0) { deleteGroupUseCase(any()) }
     }
 
   @Test
