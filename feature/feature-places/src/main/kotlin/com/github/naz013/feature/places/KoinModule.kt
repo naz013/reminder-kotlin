@@ -14,7 +14,7 @@ val featurePlacesModule = module {
   factoryOf(::SavePlaceUseCase)
 
   viewModel { (key: PlacesNavKey.Edit) ->
-    EditPlaceViewModel(key, get(), get(), get(), get(), get(), get(), get())
+    EditPlaceViewModel(key, get(), get(), get(), get(), get(), get(), get(), get(), get())
   }
   viewModelOf(::PlacesViewModel)
 }

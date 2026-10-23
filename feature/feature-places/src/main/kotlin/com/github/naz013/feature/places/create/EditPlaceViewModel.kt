@@ -9,12 +9,15 @@ import com.github.naz013.feature.places.usecase.DeletePlaceUseCase
 import com.github.naz013.feature.places.usecase.SavePlaceUseCase
 import com.github.naz013.ui.map.MarkerState
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
@@ -38,6 +41,8 @@ internal class EditPlaceViewModel(
   private val intentDataReader: IntentDataReader,
   private val deletePlaceUseCase: DeletePlaceUseCase,
   private val savePlaceUseCase: SavePlaceUseCase,
+  private val textProvider: TextProvider,
+  private val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(EditPlaceState())
@@ -91,17 +96,17 @@ internal class EditPlaceViewModel(
   }
 
   fun onDeleteClick() {
-    navigationEvent.emit(EditPlaceEvent.ConfirmDelete)
-  }
-
-  fun deletePlace() {
-    viewModelScope.launch(dispatcherProvider.io()) {
-      deletePlaceUseCase(key.id)
-
-      withContext(dispatcherProvider.main()) {
-        navigationEvent.emit(EditPlaceEvent.MoveBack)
-      }
+    val id = key.id
+    if (id in pendingDeleteCoordinator.pendingIds(PendingEntity.PLACE).value) return
+    Logger.i(TAG, "Deleting place, id: $id")
+    pendingDeleteCoordinator.markPending(
+      type = PendingEntity.PLACE,
+      id = id,
+      message = textProvider.getText(R.string.place_deleted),
+    ) {
+      deletePlaceUseCase(id)
     }
+    navigationEvent.emit(EditPlaceEvent.Deleted(id))
   }
 
   fun onMarkerPlaced(markerState: MarkerState) {
@@ -207,7 +212,7 @@ internal class EditPlaceViewModel(
 
     data object NoLocationSelected : EditPlaceEvent
 
-    data object ConfirmDelete : EditPlaceEvent
+    data class Deleted(val id: String) : EditPlaceEvent
 
     data object AskCopySaving : EditPlaceEvent
   }

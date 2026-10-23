@@ -2,13 +2,17 @@ package com.github.naz013.feature.places.create
 
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
+import com.github.naz013.ui.common.R
 import com.github.naz013.feature.places.PlacesNavKey
 import com.github.naz013.feature.places.usecase.DeletePlaceUseCase
 import com.github.naz013.feature.places.usecase.SavePlaceUseCase
 import com.github.naz013.ui.map.MapPreferences
 import com.github.naz013.ui.map.MarkerState
 import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.IntentKeys
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.navigation.intent.IntentDataReader
@@ -17,10 +21,14 @@ import com.google.android.gms.maps.model.LatLng
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
@@ -36,6 +44,9 @@ class EditPlaceViewModelTest : BaseTest() {
   private val intentDataReader = mockk<IntentDataReader>()
   private val deletePlaceUseCase = mockk<DeletePlaceUseCase>(relaxed = true)
   private val savePlaceUseCase = mockk<SavePlaceUseCase>(relaxed = true)
+  private val textProvider = mockk<TextProvider>(relaxed = true)
+  private val pendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   private lateinit var viewModel: EditPlaceViewModel
 
@@ -58,11 +69,15 @@ class EditPlaceViewModelTest : BaseTest() {
     intentDataReader = intentDataReader,
     deletePlaceUseCase = deletePlaceUseCase,
     savePlaceUseCase = savePlaceUseCase,
+    textProvider = textProvider,
+    pendingDeleteCoordinator = pendingDeleteCoordinator,
   )
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.PLACE) } returns pendingIds
+    every { textProvider.getText(R.string.place_deleted) } returns "Place deleted"
     every { mapPreferences.markerStyle } returns 2
     every { mapPreferences.radius } returns 75
     every { dateTimeManager.getNowGmtDateTime() } returns "2026-07-24T10:00:00"
@@ -254,20 +269,37 @@ class EditPlaceViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onDeleteClick emits ConfirmDelete event`() {
-    viewModel.onDeleteClick()
+  fun `onDeleteClick marks the place pending without a dialog or delete and emits Deleted`() =
+    runTest {
+      viewModel.onDeleteClick()
 
-    val event = viewModel.navigationEvent.value?.peekContent()
-    assertEquals(EditPlaceViewModel.EditPlaceEvent.ConfirmDelete, event)
-  }
+      verify(exactly = 1) {
+        pendingDeleteCoordinator.markPending(PendingEntity.PLACE, "1", "Place deleted", any())
+      }
+      coVerify(exactly = 0) { deletePlaceUseCase(any()) }
+      val event = viewModel.navigationEvent.value?.peekContent()
+      assertEquals(EditPlaceViewModel.EditPlaceEvent.Deleted("1"), event)
+    }
 
   @Test
-  fun `deletePlace deletes the place and navigates back`() =
+  fun `committing the pending place delete deletes it exactly once`() =
     runTest {
-      viewModel.deletePlace()
+      val onCommit = slot<suspend () -> Unit>()
+      every { pendingDeleteCoordinator.markPending(any(), any(), any(), capture(onCommit)) } just runs
+      viewModel.onDeleteClick()
+
+      onCommit.captured.invoke()
 
       coVerify(exactly = 1) { deletePlaceUseCase("1") }
-      val event = viewModel.navigationEvent.value?.peekContent()
-      assertEquals(EditPlaceViewModel.EditPlaceEvent.MoveBack, event)
+    }
+
+  @Test
+  fun `onDeleteClick does nothing when the place is already pending`() =
+    runTest {
+      pendingIds.value = setOf("1")
+
+      viewModel.onDeleteClick()
+
+      verify(exactly = 0) { pendingDeleteCoordinator.markPending(any(), any(), any(), any()) }
     }
 }

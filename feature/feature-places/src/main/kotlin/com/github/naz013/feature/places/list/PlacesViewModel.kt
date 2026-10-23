@@ -15,6 +15,8 @@ import com.github.naz013.domain.Place
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
@@ -39,6 +41,7 @@ internal class PlacesViewModel(
   private val dateTimeManager: DateTimeManager,
   private val textProvider: TextProvider,
   private val intentFactory: IntentFactory,
+  val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   private val _screenState = MutableStateFlow(PlacesScreenState())
@@ -54,8 +57,9 @@ internal class PlacesViewModel(
         placeRepository.observeAll(),
         searchQuery.debounce { if (it.isEmpty()) 0L else SEARCH_DEBOUNCE_MS },
         undoDelete.pendingIds,
-      ) { places, query, pendingIds ->
-        mergeForQuery(places.filterNot { it.id in pendingIds }, query)
+        pendingDeleteCoordinator.pendingIds(PendingEntity.PLACE),
+      ) { places, query, pendingIds, coordinatorPendingIds ->
+        mergeForQuery(places.filterNot { it.id in pendingIds || it.id in coordinatorPendingIds }, query)
       }
         .collect { applyList(it) }
     }

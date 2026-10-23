@@ -11,6 +11,8 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.intent.IntentFactory
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoEvent
 import com.github.naz013.repository.PlaceRepository
 import io.mockk.coEvery
@@ -36,6 +38,8 @@ class PlacesViewModelTest : BaseTest() {
   private val dateTimeManager = mockk<DateTimeManager>()
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val intentFactory = mockk<IntentFactory>()
+  private val coordinatorPendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   private lateinit var viewModel: PlacesViewModel
 
@@ -47,6 +51,7 @@ class PlacesViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.PLACE) } returns coordinatorPendingIds
     every { placeRepository.observeAll() } returns flowOf(emptyList())
     every { dateTimeManager.getPlaceDateTimeFromGmt(any()) } returns null
 
@@ -63,6 +68,7 @@ class PlacesViewModelTest : BaseTest() {
       dateTimeManager = dateTimeManager,
       textProvider = textProvider,
       intentFactory = intentFactory,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
 
   @Test
@@ -175,6 +181,19 @@ class PlacesViewModelTest : BaseTest() {
       assertEquals(listOf("2"), (hidden.listState as ListState.Ready).places.map { it.id })
       assertEquals(2, (restored.listState as ListState.Ready).places.size)
       coVerify(exactly = 0) { deletePlaceUseCase(any()) }
+    }
+
+  @Test
+  fun `excludes places pending delete in the coordinator`() =
+    runTest {
+      every { placeRepository.observeAll() } returns
+        flowOf(listOf(place(id = "1", name = "Home"), place(id = "2", name = "Work")))
+      coordinatorPendingIds.value = setOf("2")
+      viewModel = createViewModel()
+
+      val ready = viewModel.screenState.first { it.listState is ListState.Ready }.listState as ListState.Ready
+
+      assertEquals(listOf("1"), ready.places.map { it.id })
     }
 
   @Test
