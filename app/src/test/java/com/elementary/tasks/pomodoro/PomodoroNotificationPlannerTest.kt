@@ -24,7 +24,7 @@ class PomodoroNotificationPlannerTest {
 
   @Test
   fun `computes end time and elapsed progress while running`() {
-    val plan = PomodoroNotificationPlanner.plan(state(), nowMillis = 10_000L, sdkInt = 36)
+    val plan = PomodoroNotificationPlanner.plan(state(), nowMillis = 10_000L, sdkInt = 36, canPostPromoted = true)
 
     assertTrue(plan.useChronometer)
     assertEquals(10_000L + 600_000L, plan.endTimeMillis)
@@ -35,14 +35,14 @@ class PomodoroNotificationPlannerTest {
 
   @Test
   fun `disables chronometer when paused`() {
-    val plan = PomodoroNotificationPlanner.plan(state(paused = true), 0L, 36)
+    val plan = PomodoroNotificationPlanner.plan(state(paused = true), 0L, 36, canPostPromoted = true)
 
     assertFalse(plan.useChronometer)
   }
 
   @Test
   fun `skips progress and promotion below API 36`() {
-    val plan = PomodoroNotificationPlanner.plan(state(), 0L, 35)
+    val plan = PomodoroNotificationPlanner.plan(state(), 0L, 35, canPostPromoted = true)
 
     assertFalse(plan.promoted)
     assertFalse(plan.showProgress)
@@ -70,7 +70,7 @@ class PomodoroNotificationPlannerTest {
 
   @Test
   fun `skips progress when total is unknown`() {
-    val plan = PomodoroNotificationPlanner.plan(state(remaining = 0, total = 0), 0L, 36)
+    val plan = PomodoroNotificationPlanner.plan(state(remaining = 0, total = 0), 0L, 36, canPostPromoted = true)
 
     assertFalse(plan.showProgress)
     assertTrue(plan.promoted)

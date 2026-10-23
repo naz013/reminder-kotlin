@@ -22,8 +22,9 @@ singletons that keep ticking; the services only reflect their state.
 ## Foreground services
 
 `PomodoroTimerService` and `RoutineRunService` are declared in `AndroidManifest.xml` with
-`foregroundServiceType="specialUse"`. Starting foreground can be refused (Android 12+
-`ForegroundServiceStartNotAllowedException`); the services log it and stop themselves.
+`foregroundServiceType="specialUse"`. Starting foreground can be refused: `PomodoroTimerService`
+catches `ForegroundServiceStartNotAllowedException` (Android 12+) and `RoutineRunService` catches
+`IllegalStateException`; both log it and stop themselves.
 
 ## Actions
 

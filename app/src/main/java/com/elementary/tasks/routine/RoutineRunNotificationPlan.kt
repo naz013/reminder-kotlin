@@ -43,7 +43,7 @@ internal object RoutineRunNotificationPlanner {
     state: RoutineRunState.Running,
     nowMillis: Long,
     sdkInt: Int,
-    canPostPromoted: Boolean = true,
+    canPostPromoted: Boolean,
   ): RoutineRunNotificationPlan {
     val supportsLiveUpdate = sdkInt >= LIVE_UPDATE_SDK && canPostPromoted
     val remaining = state.remainingSeconds.coerceAtLeast(0)
@@ -93,6 +93,8 @@ internal object RoutineRunNotificationPlanner {
   }
 
   fun formatTime(remainingSeconds: Int): String {
-    return String.format(Locale.ROOT, "%02d:%02d", remainingSeconds / SECONDS_PER_MINUTE, remainingSeconds % SECONDS_PER_MINUTE)
+    val minutes = remainingSeconds / SECONDS_PER_MINUTE
+    val seconds = remainingSeconds % SECONDS_PER_MINUTE
+    return String.format(Locale.ROOT, "%02d:%02d", minutes, seconds)
   }
 }

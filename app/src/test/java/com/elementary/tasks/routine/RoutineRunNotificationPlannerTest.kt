@@ -35,7 +35,7 @@ class RoutineRunNotificationPlannerTest {
 
   @Test
   fun `running timed step uses chronometer ending at the exact step deadline`() {
-    val plan = RoutineRunNotificationPlanner.plan(state(remaining = 90, endsAt = 123_456L), nowMillis = 10_000L, sdkInt = 35)
+    val plan = RoutineRunNotificationPlanner.plan(state(remaining = 90, endsAt = 123_456L), nowMillis = 10_000L, sdkInt = 35, canPostPromoted = true)
 
     assertTrue(plan.useChronometer)
     assertEquals(123_456L, plan.endTimeMillis)
@@ -46,7 +46,7 @@ class RoutineRunNotificationPlannerTest {
 
   @Test
   fun `paused timed step shows static time and no chronometer`() {
-    val plan = RoutineRunNotificationPlanner.plan(state(remaining = 75, isPaused = true), 0L, 35)
+    val plan = RoutineRunNotificationPlanner.plan(state(remaining = 75, isPaused = true), 0L, 35, canPostPromoted = true)
 
     assertFalse(plan.useChronometer)
     assertEquals("01:15", plan.pausedTimeLabel)
@@ -55,7 +55,7 @@ class RoutineRunNotificationPlannerTest {
 
   @Test
   fun `untimed step shows static text without chronometer or toggle action`() {
-    val plan = RoutineRunNotificationPlanner.plan(state(isTimed = false, remaining = 0), 0L, 35)
+    val plan = RoutineRunNotificationPlanner.plan(state(isTimed = false, remaining = 0), 0L, 35, canPostPromoted = true)
 
     assertFalse(plan.useChronometer)
     assertNull(plan.pausedTimeLabel)
@@ -64,15 +64,40 @@ class RoutineRunNotificationPlannerTest {
 
   @Test
   fun `api 35 is not promoted and has no progress`() {
-    val plan = RoutineRunNotificationPlanner.plan(state(), 0L, 35)
+    val plan = RoutineRunNotificationPlanner.plan(state(), 0L, 35, canPostPromoted = true)
 
     assertFalse(plan.promoted)
     assertFalse(plan.showProgress)
   }
 
   @Test
+  fun `api 36 without promotion permission falls back to the plain chronometer`() {
+    val plan = RoutineRunNotificationPlanner.plan(state(), 0L, 36, canPostPromoted = false)
+
+    assertFalse(plan.promoted)
+    assertFalse(plan.showProgress)
+    assertTrue(plan.useChronometer)
+  }
+
+  @Test
+  fun `formats time independent of default locale`() {
+    val previous = java.util.Locale.getDefault()
+    java.util.Locale.setDefault(java.util.Locale.forLanguageTag("ar-EG"))
+    try {
+      assertEquals("01:05", RoutineRunNotificationPlanner.formatTime(65))
+    } finally {
+      java.util.Locale.setDefault(previous)
+    }
+  }
+
+  @Test
   fun `api 36 is promoted with progress by completed steps`() {
-    val plan = RoutineRunNotificationPlanner.plan(state(completedCount = 2, stepCount = 4), 0L, 36)
+    val plan = RoutineRunNotificationPlanner.plan(
+      state(completedCount = 2, stepCount = 4),
+      0L,
+      36,
+      canPostPromoted = true,
+    )
 
     assertTrue(plan.promoted)
     assertTrue(plan.showProgress)

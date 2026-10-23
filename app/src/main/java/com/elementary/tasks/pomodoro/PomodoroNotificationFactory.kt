@@ -2,8 +2,8 @@ package com.elementary.tasks.pomodoro
 
 import android.app.Notification
 import android.app.PendingIntent
-import androidx.core.app.NotificationCompat
 import androidx.annotation.StringRes
+import androidx.core.app.NotificationCompat
 import com.elementary.tasks.R
 import com.github.naz013.feature.pomodoro.engine.PomodoroMode
 

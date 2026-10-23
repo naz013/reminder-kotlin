@@ -35,7 +35,7 @@ internal object PomodoroNotificationPlanner {
     state: PomodoroEngineState,
     nowMillis: Long,
     sdkInt: Int,
-    canPostPromoted: Boolean = true,
+    canPostPromoted: Boolean,
   ): PomodoroNotificationPlan {
     val total = state.totalSeconds
     val remaining = state.remainingSeconds.coerceIn(0, if (total > 0) total else state.remainingSeconds)
@@ -76,7 +76,9 @@ internal object PomodoroNotificationPlanner {
   }
 
   fun formatTime(remainingSeconds: Int): String {
-    return String.format(Locale.ROOT, "%02d:%02d", remainingSeconds / SECONDS_PER_MINUTE, remainingSeconds % SECONDS_PER_MINUTE)
+    val minutes = remainingSeconds / SECONDS_PER_MINUTE
+    val seconds = remainingSeconds % SECONDS_PER_MINUTE
+    return String.format(Locale.ROOT, "%02d:%02d", minutes, seconds)
   }
 
   const val LIVE_UPDATE_SDK = 36
