@@ -49,6 +49,26 @@ class PomodoroNotificationPlannerTest {
   }
 
   @Test
+  fun `falls back to plain chronometer when promoted notifications are not allowed`() {
+    val plan = PomodoroNotificationPlanner.plan(state(), 0L, 36, canPostPromoted = false)
+
+    assertFalse(plan.promoted)
+    assertFalse(plan.showProgress)
+    assertTrue(plan.useChronometer)
+  }
+
+  @Test
+  fun `formats time independent of default locale`() {
+    val previous = java.util.Locale.getDefault()
+    java.util.Locale.setDefault(java.util.Locale.forLanguageTag("ar-EG"))
+    try {
+      assertEquals("01:05", PomodoroNotificationPlanner.formatTime(65))
+    } finally {
+      java.util.Locale.setDefault(previous)
+    }
+  }
+
+  @Test
   fun `skips progress when total is unknown`() {
     val plan = PomodoroNotificationPlanner.plan(state(remaining = 0, total = 0), 0L, 36)
 

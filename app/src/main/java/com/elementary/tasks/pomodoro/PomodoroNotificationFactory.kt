@@ -3,13 +3,23 @@ package com.elementary.tasks.pomodoro
 import android.app.Notification
 import android.app.PendingIntent
 import androidx.core.app.NotificationCompat
+import androidx.annotation.StringRes
 import com.elementary.tasks.R
+import com.github.naz013.feature.pomodoro.engine.PomodoroMode
 
 internal class PomodoroNotificationTexts(
   val title: String,
   val toggleActionLabel: String,
   val stopActionLabel: String,
 )
+
+@StringRes
+internal fun PomodoroMode.labelRes(): Int = when (this) {
+  PomodoroMode.Work -> R.string.pomodoro_work
+  PomodoroMode.Break -> R.string.pomodoro_break
+  PomodoroMode.LongBreak -> R.string.pomodoro_long_break
+  PomodoroMode.Idle -> R.string.pomodoro_focus_timer
+}
 
 internal class PomodoroNotificationFactory {
 

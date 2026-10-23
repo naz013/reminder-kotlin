@@ -243,6 +243,11 @@ class Notifier(
     }
   }
 
+  fun canPostPromotedNotifications(): Boolean {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.BAKLAVA) return false
+    return getManager()?.canPostPromotedNotifications() ?: false
+  }
+
   private fun getManager(): NotificationManager? {
     createChannels()
     return systemServiceProvider.provideNotificationManager()

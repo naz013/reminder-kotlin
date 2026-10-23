@@ -2,6 +2,7 @@ package com.elementary.tasks.pomodoro
 
 import com.github.naz013.feature.pomodoro.engine.PomodoroEngineState
 import com.github.naz013.feature.pomodoro.engine.PomodoroMode
+import java.util.Locale
 
 /** Pure description of what the Pomodoro notification should show; no framework types. */
 internal data class PomodoroNotificationPlan(
@@ -30,10 +31,15 @@ internal object PomodoroNotificationPlanner {
   private const val SECONDS_PER_MINUTE = 60
   private const val MILLIS_PER_SECOND = 1_000L
 
-  fun plan(state: PomodoroEngineState, nowMillis: Long, sdkInt: Int): PomodoroNotificationPlan {
+  fun plan(
+    state: PomodoroEngineState,
+    nowMillis: Long,
+    sdkInt: Int,
+    canPostPromoted: Boolean = true,
+  ): PomodoroNotificationPlan {
     val total = state.totalSeconds
     val remaining = state.remainingSeconds.coerceIn(0, if (total > 0) total else state.remainingSeconds)
-    val supportsLiveUpdate = sdkInt >= LIVE_UPDATE_SDK
+    val supportsLiveUpdate = sdkInt >= LIVE_UPDATE_SDK && canPostPromoted
     return PomodoroNotificationPlan(
       mode = state.mode,
       isPaused = state.isPaused,
@@ -70,7 +76,7 @@ internal object PomodoroNotificationPlanner {
   }
 
   fun formatTime(remainingSeconds: Int): String {
-    return "%02d:%02d".format(remainingSeconds / SECONDS_PER_MINUTE, remainingSeconds % SECONDS_PER_MINUTE)
+    return String.format(Locale.ROOT, "%02d:%02d", remainingSeconds / SECONDS_PER_MINUTE, remainingSeconds % SECONDS_PER_MINUTE)
   }
 
   const val LIVE_UPDATE_SDK = 36

@@ -1,6 +1,7 @@
 package com.elementary.tasks.routine
 
 import com.github.naz013.feature.routine.run.RoutineRunState
+import java.util.Locale
 import kotlin.math.abs
 
 /** Pure description of what the routine run notification should show; no framework types. */
@@ -38,8 +39,13 @@ internal object RoutineRunNotificationPlanner {
   private const val SECONDS_PER_MINUTE = 60
   private const val MILLIS_PER_SECOND = 1_000L
 
-  fun plan(state: RoutineRunState.Running, nowMillis: Long, sdkInt: Int): RoutineRunNotificationPlan {
-    val supportsLiveUpdate = sdkInt >= LIVE_UPDATE_SDK
+  fun plan(
+    state: RoutineRunState.Running,
+    nowMillis: Long,
+    sdkInt: Int,
+    canPostPromoted: Boolean = true,
+  ): RoutineRunNotificationPlan {
+    val supportsLiveUpdate = sdkInt >= LIVE_UPDATE_SDK && canPostPromoted
     val remaining = state.remainingSeconds.coerceAtLeast(0)
     return RoutineRunNotificationPlan(
       routineTitle = state.routineTitle,
@@ -87,6 +93,6 @@ internal object RoutineRunNotificationPlanner {
   }
 
   fun formatTime(remainingSeconds: Int): String {
-    return "%02d:%02d".format(remainingSeconds / SECONDS_PER_MINUTE, remainingSeconds % SECONDS_PER_MINUTE)
+    return String.format(Locale.ROOT, "%02d:%02d", remainingSeconds / SECONDS_PER_MINUTE, remainingSeconds % SECONDS_PER_MINUTE)
   }
 }

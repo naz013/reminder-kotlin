@@ -14,13 +14,13 @@ class PomodoroNotificationFactoryTest {
   private val intent = mockk<PendingIntent>()
   private val texts = PomodoroNotificationTexts("Work", "Pause", "Stop")
 
-  private fun plan(paused: Boolean, promoted: Boolean) = PomodoroNotificationPlan(
+  private fun plan(paused: Boolean, promoted: Boolean, showProgress: Boolean = false) = PomodoroNotificationPlan(
     mode = PomodoroMode.Work,
     isPaused = paused,
     timeLabel = "10:00",
     useChronometer = !paused,
     endTimeMillis = 5_000L,
-    showProgress = false,
+    showProgress = showProgress,
     progressMax = 1500,
     progressElapsed = 900,
     promoted = promoted,
@@ -52,5 +52,20 @@ class PomodoroNotificationFactoryTest {
 
     verify { builder.addAction(0, "Pause", intent) }
     verify { builder.addAction(0, "Stop", intent) }
+  }
+
+  @Test
+  fun `applies progress style on a promoted device with known total`() {
+    factory.apply(builder, plan(paused = false, promoted = true, showProgress = true), texts, intent, intent)
+
+    verify { builder.setStyle(any()) }
+  }
+
+  @Test
+  fun `does not apply progress style when progress is hidden or not promoted`() {
+    factory.apply(builder, plan(paused = false, promoted = true, showProgress = false), texts, intent, intent)
+    factory.apply(builder, plan(paused = false, promoted = false), texts, intent, intent)
+
+    verify(exactly = 0) { builder.setStyle(any()) }
   }
 }

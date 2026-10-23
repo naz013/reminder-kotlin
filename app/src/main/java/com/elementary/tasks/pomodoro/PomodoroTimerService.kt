@@ -9,7 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import com.elementary.tasks.R
 import com.elementary.tasks.core.utils.Notifier
 import com.github.naz013.feature.pomodoro.engine.PomodoroEngineState
-import com.github.naz013.feature.pomodoro.engine.PomodoroMode
 import com.github.naz013.feature.pomodoro.engine.PomodoroTimerEngine
 import com.github.naz013.logging.Logger
 import kotlinx.coroutines.flow.launchIn
@@ -96,15 +95,14 @@ class PomodoroTimerService : LifecycleService() {
   }
 
   private fun buildNotification(state: PomodoroEngineState): android.app.Notification {
-    val plan = PomodoroNotificationPlanner.plan(state, System.currentTimeMillis(), Build.VERSION.SDK_INT)
-    val modeLabelRes = when (state.mode) {
-      PomodoroMode.Work -> R.string.pomodoro_work
-      PomodoroMode.Break -> R.string.pomodoro_break
-      PomodoroMode.LongBreak -> R.string.pomodoro_long_break
-      PomodoroMode.Idle -> R.string.pomodoro_focus_timer
-    }
+    val plan = PomodoroNotificationPlanner.plan(
+      state,
+      System.currentTimeMillis(),
+      Build.VERSION.SDK_INT,
+      notifier.canPostPromotedNotifications(),
+    )
     val texts = PomodoroNotificationTexts(
-      title = getString(modeLabelRes),
+      title = getString(plan.mode.labelRes()),
       toggleActionLabel = getString(if (state.isPaused) R.string.pomodoro_resume else R.string.pomodoro_pause),
       stopActionLabel = getString(R.string.pomodoro_stop),
     )
@@ -116,6 +114,7 @@ class PomodoroTimerService : LifecycleService() {
       stopIntent = servicePendingIntent(ACTION_STOP),
     )
   }
+
   private fun servicePendingIntent(action: String): PendingIntent {
     val intent = Intent(this, PomodoroTimerService::class.java).setAction(action)
     return PendingIntent.getService(

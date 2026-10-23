@@ -91,7 +91,12 @@ internal class RoutineRunService : LifecycleService() {
   }
 
   private fun buildNotification(state: RoutineRunState.Running): Notification {
-    val plan = RoutineRunNotificationPlanner.plan(state, System.currentTimeMillis(), Build.VERSION.SDK_INT)
+    val plan = RoutineRunNotificationPlanner.plan(
+      state,
+      System.currentTimeMillis(),
+      Build.VERSION.SDK_INT,
+      notifier.canPostPromotedNotifications(),
+    )
     val texts = RoutineRunNotificationTexts(
       stepOfLabel = getString(R.string.step_of_count, plan.stepNumber, plan.stepCount),
       pauseActionLabel = getString(R.string.pause),
