@@ -3,6 +3,8 @@ package com.github.naz013.group.list
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoEvent
 import com.github.naz013.logic.group.DeleteGroupUseCase
 import com.github.naz013.logic.group.MakeGroupDefaultUseCase
@@ -39,6 +41,8 @@ class GroupsViewModelTest : BaseTest() {
   private val saveGroupUseCase = mockk<SaveGroupUseCase>(relaxed = true)
   private val reminderV2Repository = mockk<ReminderV2Repository>()
   private val textProvider = mockk<TextProvider>(relaxed = true)
+  private val coordinatorPendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   private lateinit var viewModel: GroupsViewModel
 
@@ -72,6 +76,7 @@ class GroupsViewModelTest : BaseTest() {
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.GROUP) } returns coordinatorPendingIds
     every { groupV2Repository.observeAll() } returns flowOf(emptyList())
     coEvery { reminderV2Repository.countActiveByGroupId(any()) } returns 0
     every { uiGroupListAdapter.convert(any<GroupV2>(), any()) } returns uiGroupList()
@@ -89,6 +94,7 @@ class GroupsViewModelTest : BaseTest() {
       makeGroupDefaultUseCase = makeGroupDefaultUseCase,
       saveGroupUseCase = saveGroupUseCase,
       reminderV2Repository = reminderV2Repository,
+      pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
 
   /** Loads a ready list of groups (ids in order, optionally marking one as the default group) and
@@ -268,6 +274,17 @@ class GroupsViewModelTest : BaseTest() {
       assertEquals(listOf("2"), hiddenIds)
       assertEquals(listOf("1", "2"), restoredIds)
       coVerify(exactly = 0) { deleteGroupUseCase(any()) }
+    }
+
+  @Test
+  fun `excludes groups pending delete in the coordinator`() =
+    runTest {
+      coordinatorPendingIds.value = setOf("2")
+      val (_, state) = readyGroups(listOf("1", "2"))
+
+      val ids = (state().listState as ListState.Ready).groups.map { it.id }
+
+      assertEquals(listOf("1"), ids)
     }
 
   @Test

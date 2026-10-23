@@ -3,13 +3,17 @@ package com.github.naz013.group.details
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.livedata.emit
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
+import com.github.naz013.ui.common.R
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.group.DeleteGroupUseCase
 import com.github.naz013.repository.GroupV2Repository
@@ -34,6 +38,8 @@ internal class GroupDetailsViewModel(
   private val uiGroupListAdapter: UiGroupListAdapter,
   private val deleteGroupUseCase: DeleteGroupUseCase,
   private val notificationOverrideSubtitleFormatter: NotificationOverrideSubtitleFormatter,
+  private val textProvider: TextProvider,
+  private val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(GroupDetailsState())
@@ -66,13 +72,16 @@ internal class GroupDetailsViewModel(
       Logger.e(TAG, "Can't delete group, id: $id")
       return
     }
-    viewModelScope.launch(dispatcherProvider.io()) {
+    if (id in pendingDeleteCoordinator.pendingIds(PendingEntity.GROUP).value) return
+    pendingDeleteCoordinator.markPending(
+      type = PendingEntity.GROUP,
+      id = id,
+      message = textProvider.getText(R.string.group_deleted),
+    ) {
       deleteGroupUseCase(id)
       Logger.i(TAG, "Deleted group, id: $id")
-      withContext(dispatcherProvider.main()) {
-        navigationEvent.emit(NavigationEvent.Deleted)
-      }
     }
+    navigationEvent.emit(NavigationEvent.Deleted(id))
   }
 
   fun onReminderClick(reminderId: String) {
@@ -109,7 +118,7 @@ internal class GroupDetailsViewModel(
 
     data class ConfirmDelete(val id: String) : NavigationEvent
 
-    data object Deleted : NavigationEvent
+    data class Deleted(val id: String) : NavigationEvent
 
     data class OpenReminderPreview(val id: String) : NavigationEvent
 

@@ -13,6 +13,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.group.create.EditGroupScreen
 import com.github.naz013.group.create.EditGroupState
 import com.github.naz013.group.create.EditGroupViewModel
@@ -22,11 +23,13 @@ import com.github.naz013.group.details.GroupDetailsViewModel
 import com.github.naz013.group.list.GroupsScreen
 import com.github.naz013.group.list.GroupsScreenState
 import com.github.naz013.group.list.GroupsViewModel
+import com.github.naz013.navigation.popDeleted
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberColorPickerDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.dialog.rememberDialogDispatcher
 import com.github.naz013.ui.common.compose.foundation.navigation.DetailPanePlaceholder
+import com.github.naz013.ui.common.compose.foundation.snackbar.PendingDeleteHost
 import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
 import com.github.naz013.ui.common.compose.hideKeyboard
 import com.github.naz013.ui.common.livedata.ObserveEvent
@@ -81,6 +84,11 @@ private fun GroupsListEntry(backStack: MutableList<NavKey>) {
   val dialogDispatcher = rememberDialogDispatcher()
   val snackbarHostState = remember { SnackbarHostState() }
   UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
+  PendingDeleteHost(
+    coordinator = viewModel.pendingDeleteCoordinator,
+    type = PendingEntity.GROUP,
+    snackbarHostState = snackbarHostState,
+  )
 
   val selectedItemId =
     backStack.lastOrNull()?.let { key ->
@@ -167,6 +175,7 @@ private fun GroupsEditEntry(
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       is EditGroupViewModel.NavigationEvent.Back -> if (backStack.size > 1) backStack.removeLastOrNull()
+      is EditGroupViewModel.NavigationEvent.Deleted -> backStack.popDeletedGroup(event.id)
     }
   }
 
@@ -234,7 +243,7 @@ private fun GroupsDetailsEntry(
         onNewReminderClick(event.groupUuId)
       }
 
-      GroupDetailsViewModel.NavigationEvent.Deleted -> if (backStack.size > 1) backStack.removeLastOrNull()
+      is GroupDetailsViewModel.NavigationEvent.Deleted -> backStack.popDeletedGroup(event.id)
     }
   }
 
@@ -276,5 +285,11 @@ private fun MutableList<NavKey>.navigateToEditDetailPane(key: NavKey, isSameItem
     add(key)
   } else {
     navigateToDetailPane(key)
+  }
+}
+
+private fun MutableList<NavKey>.popDeletedGroup(id: String) {
+  popDeleted { key ->
+    (key is GroupsNavKey.Edit && key.id == id) || (key is GroupsNavKey.Details && key.id == id)
   }
 }

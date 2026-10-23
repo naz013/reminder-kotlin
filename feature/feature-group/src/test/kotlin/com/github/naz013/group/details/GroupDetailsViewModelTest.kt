@@ -1,15 +1,19 @@
 package com.github.naz013.group.details
 
+import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.logic.group.DeleteGroupUseCase
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.ReminderV2Repository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
+import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.text.UiTextElement
 import com.github.naz013.ui.common.text.UiTextFormat
 import com.github.naz013.ui.group.UiGroupList
@@ -23,7 +27,11 @@ import com.github.naz013.ui.reminder.UiReminderListState
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
+import io.mockk.slot
+import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -40,6 +48,9 @@ class GroupDetailsViewModelTest : BaseTest() {
   private val uiGroupListAdapter = mockk<UiGroupListAdapter>()
   private val deleteGroupUseCase = mockk<DeleteGroupUseCase>(relaxed = true)
   private val notificationOverrideSubtitleFormatter = mockk<NotificationOverrideSubtitleFormatter>()
+  private val textProvider = mockk<TextProvider>(relaxed = true)
+  private val pendingIds = MutableStateFlow<Set<String>>(emptySet())
+  private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
 
   private lateinit var viewModel: GroupDetailsViewModel
 
@@ -96,11 +107,15 @@ class GroupDetailsViewModelTest : BaseTest() {
     uiGroupListAdapter = uiGroupListAdapter,
     deleteGroupUseCase = deleteGroupUseCase,
     notificationOverrideSubtitleFormatter = notificationOverrideSubtitleFormatter,
+    textProvider = textProvider,
+    pendingDeleteCoordinator = pendingDeleteCoordinator,
   )
 
   @Before
   override fun setUp() {
     super.setUp()
+    every { pendingDeleteCoordinator.pendingIds(PendingEntity.GROUP) } returns pendingIds
+    every { textProvider.getText(R.string.group_deleted) } returns "Group deleted"
     every { groupV2Repository.observeById("1") } returns flowOf(groupV2(id = "1"))
     coEvery { groupV2Repository.countAll() } returns 2
     every { reminderV2Repository.observeActiveByGroupId("1") } returns flowOf(emptyList())
@@ -195,14 +210,39 @@ class GroupDetailsViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onDeleteConfirmed deletes the group and emits Deleted when allowed`() = runTest {
+  fun `onDeleteConfirmed marks the group pending and emits Deleted when allowed`() = runTest {
     viewModel.state.first()
 
     viewModel.onDeleteConfirmed()
 
-    coVerify(exactly = 1) { deleteGroupUseCase("1") }
+    verify(exactly = 1) {
+      pendingDeleteCoordinator.markPending(PendingEntity.GROUP, "1", "Group deleted", any())
+    }
+    coVerify(exactly = 0) { deleteGroupUseCase(any()) }
     val event = viewModel.navigationEvent.value?.peekContent()
-    assertEquals(GroupDetailsViewModel.NavigationEvent.Deleted, event)
+    assertEquals(GroupDetailsViewModel.NavigationEvent.Deleted("1"), event)
+  }
+
+  @Test
+  fun `committing the pending group delete runs the delete exactly once`() = runTest {
+    val onCommit = slot<suspend () -> Unit>()
+    every { pendingDeleteCoordinator.markPending(any(), any(), any(), capture(onCommit)) } just runs
+    viewModel.state.first()
+    viewModel.onDeleteConfirmed()
+
+    onCommit.captured.invoke()
+
+    coVerify(exactly = 1) { deleteGroupUseCase("1") }
+  }
+
+  @Test
+  fun `onDeleteConfirmed does nothing when the group is already pending`() = runTest {
+    viewModel.state.first()
+    pendingIds.value = setOf("1")
+
+    viewModel.onDeleteConfirmed()
+
+    verify(exactly = 0) { pendingDeleteCoordinator.markPending(any(), any(), any(), any()) }
   }
 
   @Test

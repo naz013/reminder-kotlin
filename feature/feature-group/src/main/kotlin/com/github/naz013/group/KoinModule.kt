@@ -37,11 +37,15 @@ val groupModule = module {
       get(),
       get(),
       get(),
+      get(),
+      get(),
     )
   }
   viewModel { (id: String) ->
     GroupDetailsViewModel(
       id,
+      get(),
+      get(),
       get(),
       get(),
       get(),

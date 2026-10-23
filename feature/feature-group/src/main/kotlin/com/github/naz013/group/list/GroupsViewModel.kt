@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
+import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
+import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
@@ -40,6 +42,7 @@ internal class GroupsViewModel(
   private val makeGroupDefaultUseCase: MakeGroupDefaultUseCase,
   private val saveGroupUseCase: SaveGroupUseCase,
   private val reminderV2Repository: ReminderV2Repository,
+  val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(GroupsScreenState())
@@ -51,8 +54,12 @@ internal class GroupsViewModel(
 
   init {
     viewModelScope.launch(dispatcherProvider.default()) {
-      combine(groupV2Repository.observeAll(), undoDelete.pendingIds) { groups, pendingIds ->
-        groups.filterNot { it.uuId in pendingIds }
+      combine(
+        groupV2Repository.observeAll(),
+        undoDelete.pendingIds,
+        pendingDeleteCoordinator.pendingIds(PendingEntity.GROUP),
+      ) { groups, pendingIds, coordinatorPendingIds ->
+        groups.filterNot { it.uuId in pendingIds || it.uuId in coordinatorPendingIds }
       }.collect { groups -> applyGroups(groups) }
     }
   }
