@@ -191,6 +191,22 @@ class RemindersArchiveViewModelTest : BaseTest() {
     }
 
   @Test
+  fun `onMenuAction RESTORE emits ReminderRestored when the reminder is parked waiting on a chain`() =
+    runTest {
+      val target = reminderV2("7").copy(isRemoved = true, startAfterReminderId = "3")
+      coEvery { reminderV2Repository.getById("7") } returns target
+      coEvery { activateReminderUseCase(target.copy(isRemoved = false)) } returns
+        target.copy(isRemoved = false, isActive = false)
+
+      viewModel.onMenuAction(uiReminderList("7"), ArchiveReminderMenuAction.RESTORE)
+
+      assertEquals(
+        RemindersArchiveViewModel.NavigationEvent.ReminderRestored,
+        viewModel.event.value?.peekContent(),
+      )
+    }
+
+  @Test
   fun `onMenuAction RESTORE does nothing when the reminder is not found`() =
     runTest {
       coEvery { reminderV2Repository.getById("7") } returns null

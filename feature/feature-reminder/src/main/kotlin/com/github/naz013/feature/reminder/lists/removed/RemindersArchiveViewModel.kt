@@ -104,9 +104,10 @@ class RemindersArchiveViewModel(
       }
       val restored = activateReminderUseCase(reminder.copy(isRemoved = false))
       Logger.i(TAG, "Restored reminder: $id, active: ${restored.isActive}")
+      val expired = !restored.isActive && restored.startAfterReminderId == null
       withContext(dispatcherProvider.main()) {
         event.emit(
-          if (restored.isActive) NavigationEvent.ReminderRestored else NavigationEvent.ReminderRestoredInactive
+          if (expired) NavigationEvent.ReminderRestoredInactive else NavigationEvent.ReminderRestored
         )
       }
     }
