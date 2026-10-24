@@ -206,13 +206,31 @@ class GroupDetailsViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `onDeleteClick emits ConfirmDelete for this group`() = runTest {
+  fun `onDeleteClick marks the group pending right away when it has no reminders`() = runTest {
     viewModel.state.first()
 
     viewModel.onDeleteClick()
 
+    verify(exactly = 1) {
+      pendingDeleteCoordinator.markPending(PendingEntity.GROUP, "1", "Group deleted", any())
+    }
     val event = viewModel.navigationEvent.value?.peekContent()
+    assertEquals(GroupDetailsViewModel.NavigationEvent.Deleted("1"), event)
+  }
+
+  @Test
+  fun `onDeleteClick emits ConfirmDelete for this group when it has reminders`() = runTest {
+    val reminder = reminderV2("r1")
+    every { reminderV2Repository.observeActiveByGroupId("1") } returns flowOf(listOf(reminder))
+    every { uiReminderListAdapter.createV2(reminder, any()) } returns uiReminderList("r1")
+    val vm = buildViewModel()
+    vm.state.first { it.reminders.isNotEmpty() }
+
+    vm.onDeleteClick()
+
+    val event = vm.navigationEvent.value?.peekContent()
     assertEquals(GroupDetailsViewModel.NavigationEvent.ConfirmDelete("1"), event)
+    verify(exactly = 0) { pendingDeleteCoordinator.markPending(any(), any(), any(), any()) }
   }
 
   @Test

@@ -1318,4 +1318,6 @@
     <string name="workflow_rule_deleted">Правилото е изтрито</string>
     <string name="notes_moved_to_archive_count">%1$d бележки са преместени в архива</string>
     <string name="notes_reverted_from_archive_count">%1$d бележки са възстановени от архива</string>
+    <string name="group_delete_in_use_message">Напомнянията в изтритите групи ще останат без група.</string>
+    <string name="tags_delete_in_use_message">Изтритите тагове ще бъдат премахнати от всеки елемент, към който са добавени.</string>
 </resources>

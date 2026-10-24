@@ -1324,4 +1324,6 @@
     <string name="workflow_rule_deleted">Pravidlo smazáno</string>
     <string name="notes_moved_to_archive_count">Poznámek přesunuto do archívu: %1$d</string>
     <string name="notes_reverted_from_archive_count">Poznámek obnoveno z archívu: %1$d</string>
+    <string name="group_delete_in_use_message">Připomenutí ve smazaných skupinách zůstanou bez skupiny.</string>
+    <string name="tags_delete_in_use_message">Smazané štítky budou odebrány ze všech položek, ke kterým jsou přiřazeny.</string>
 </resources>

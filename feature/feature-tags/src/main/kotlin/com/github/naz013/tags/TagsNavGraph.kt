@@ -123,6 +123,7 @@ private fun TagsManageEntry(backStack: MutableList<NavKey>) {
       is TagsViewModel.NavigationEvent.ConfirmDeleteSelected -> {
         dialogDispatcher.showDialog(
           title = event.title,
+          textRes = R.string.tags_delete_in_use_message,
           positiveButtonRes = R.string.yes,
           negativeButtonRes = R.string.cancel,
           onPositive = { viewModel.deleteSelectedTags(event.ids) },
@@ -169,6 +170,15 @@ private fun TagsEditEntry(
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       TagEditViewModel.NavigationEvent.Back -> if (backStack.size > 1) backStack.removeLastOrNull()
+      TagEditViewModel.NavigationEvent.ConfirmDelete -> {
+        dialogDispatcher.showDialog(
+          textRes = R.string.delete_tag_permanently,
+          positiveButtonRes = R.string.yes,
+          negativeButtonRes = R.string.cancel,
+          onPositive = { viewModel.onDeleteConfirmed() },
+        )
+      }
+
       is TagEditViewModel.NavigationEvent.Deleted -> backStack.popDeletedTag(event.id)
     }
   }
@@ -181,14 +191,7 @@ private fun TagsEditEntry(
     onNameChange = viewModel::onNameChanged,
     onColorSelected = viewModel::onColorSelected,
     onSaveClick = viewModel::onSaveClick,
-    onDeleteClick = {
-      dialogDispatcher.showDialog(
-        textRes = R.string.delete_tag_permanently,
-        positiveButtonRes = R.string.yes,
-        negativeButtonRes = R.string.cancel,
-        onPositive = viewModel::onDeleteClick
-      )
-    },
+    onDeleteClick = viewModel::onDeleteClick,
     adsContent = adsContent
   )
 }

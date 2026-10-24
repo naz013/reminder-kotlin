@@ -12,6 +12,7 @@ import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderPriority
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logic.group.DeleteGroupUseCase
+import com.github.naz013.logic.group.IsGroupInUseUseCase
 import com.github.naz013.logic.group.SaveGroupUseCase
 import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.navigation.intent.IntentDataReader
@@ -53,6 +54,7 @@ class EditGroupViewModelTest : BaseTest() {
   private val intentDataReader = mockk<IntentDataReader>()
   private val contextProvider = mockk<ContextProvider>()
   private val deleteGroupUseCase = mockk<DeleteGroupUseCase>(relaxed = true)
+  private val isGroupInUseUseCase = mockk<IsGroupInUseUseCase>().also { coEvery { it(any()) } returns true }
   private val saveGroupUseCase = mockk<SaveGroupUseCase>(relaxed = true)
   private val reminderSettingsRepository = mockk<ReminderSettingsRepository>()
   private val vibrationPlayer = mockk<VibrationPlayer>(relaxed = true)
@@ -108,6 +110,7 @@ class EditGroupViewModelTest : BaseTest() {
     workflowConfig = workflowConfig,
     textProvider = textProvider,
     pendingDeleteCoordinator = pendingDeleteCoordinator,
+    isGroupInUseUseCase = isGroupInUseUseCase,
   )
 
   @Before
@@ -317,6 +320,21 @@ class EditGroupViewModelTest : BaseTest() {
 
       assertNull(fileViewModel.state.first().dialog)
       coVerify(exactly = 1) { saveGroupUseCase(match { it.uuId == "9" }) }
+    }
+
+  @Test
+  fun `onDeleteMenuClick deletes right away when the group has no reminders`() =
+    runTest {
+      coEvery { isGroupInUseUseCase("1") } returns false
+      viewModel.state.first()
+
+      viewModel.onDeleteMenuClick()
+
+      assertNull(viewModel.state.first().dialog)
+      verify(exactly = 1) {
+        pendingDeleteCoordinator.markPending(PendingEntity.GROUP, "1", "Group deleted", any())
+      }
+      assertEquals(EditGroupViewModel.NavigationEvent.Deleted("1"), viewModel.navigationEvent.value?.peekContent())
     }
 
   @Test

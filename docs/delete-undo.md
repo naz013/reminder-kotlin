@@ -1,7 +1,7 @@
 # Delete / archive with undo
 
 Policy: reversible deletes, archives and unarchives show an undo Snackbar with no confirm dialog.
-Confirm only for delete-all and cascading deletes. The helper below works with or without a prior
+Confirm only for delete-all and for deleting a group or tag that is in use. The helper below works with or without a prior
 confirm. Undo of an archive/unarchive leaves the item as it was, since the database is only touched
 on commit.
 
@@ -25,7 +25,7 @@ on commit.
 
 Migrated screens: Agenda, Birthdays, Reminders archive, Notes (delete and archive/unarchive, single and
 bulk; list and archive each own a controller and a `SnackbarHostState`), Places list (undo only, no
-confirm), Tags list and Groups list (confirm kept, cascade runs on commit), Workflow rules (gallery,
+confirm), Tags list and Groups list (confirm only when in use, cascade runs on commit), Workflow rules (gallery,
 group and reminder scopes; undo only, no confirm). Preview/edit screens are covered in the section
 below.
 
@@ -86,8 +86,12 @@ visible there until its undo window closes, then disappears on the next data cha
 
 Migrated: Reminder preview (archived reminders only; moving an active reminder to the archive keeps its
 confirm), Birthday preview and edit, Note preview and edit, Group edit and details, Tag edit and details,
-Place edit. Group and tag edit/details keep the confirm dialog (cascade) and the cascade runs inside
-`onCommit`; the rest delete without a confirm.
+Place edit. The rest delete without a confirm. Group and tag screens (list, details, edit, and bulk
+delete) confirm only when the item is in use, with an explanation of the effect (reminders are left
+without a group, the tag is removed from every item); unused ones delete straight away with undo. "In
+use" is `IsGroupInUseUseCase` (`logic:logic-group`, active reminders in the group; group details uses
+its loaded reminder list) and `IsTagInUseUseCase` (`logic:logic-tag`, any assignment of any item type).
+The cascade runs inside `onCommit` either way, so undo restores everything.
 
 Tag deletion everywhere goes through `DeleteTagWithAssignmentsUseCase` (`logic:logic-tag`).
 

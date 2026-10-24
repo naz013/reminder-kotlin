@@ -14,6 +14,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.tag.DeleteTagWithAssignmentsUseCase
+import com.github.naz013.logic.tag.IsTagInUseUseCase
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.preferences.AppPreferences
@@ -34,6 +35,7 @@ internal class TagEditViewModel(
   private val themeProvider: ThemeProvider,
   private val textProvider: TextProvider,
   private val pendingDeleteCoordinator: PendingDeleteCoordinator,
+  private val isTagInUseUseCase: IsTagInUseUseCase,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(TagEditState(id = id, canDelete = id != null))
@@ -93,6 +95,20 @@ internal class TagEditViewModel(
 
   fun onDeleteClick() {
     val tagId = _state.value.id ?: return
+    viewModelScope.launch(dispatcherProvider.io()) {
+      val inUse = isTagInUseUseCase(tagId)
+      withContext(dispatcherProvider.main()) {
+        if (inUse) {
+          navigationEvent.emit(NavigationEvent.ConfirmDelete)
+        } else {
+          onDeleteConfirmed()
+        }
+      }
+    }
+  }
+
+  fun onDeleteConfirmed() {
+    val tagId = _state.value.id ?: return
     if (tagId in pendingDeleteCoordinator.pendingIds(PendingEntity.TAG).value) return
     pendingDeleteCoordinator.markPending(
       type = PendingEntity.TAG,
@@ -106,6 +122,8 @@ internal class TagEditViewModel(
 
   sealed interface NavigationEvent {
     data object Back : NavigationEvent
+
+    data object ConfirmDelete : NavigationEvent
 
     data class Deleted(val id: String) : NavigationEvent
   }

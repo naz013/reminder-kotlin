@@ -1313,4 +1313,6 @@
     <string name="workflow_rule_deleted">Aturan dihapus</string>
     <string name="notes_moved_to_archive_count">%1$d catatan dipindahkan ke arsip</string>
     <string name="notes_reverted_from_archive_count">%1$d catatan dikembalikan dari arsip</string>
+    <string name="group_delete_in_use_message">Pengingat di grup yang dihapus akan tidak memiliki grup.</string>
+    <string name="tags_delete_in_use_message">Tag yang dihapus akan dilepas dari semua item yang menggunakannya.</string>
 </resources>

@@ -1316,4 +1316,6 @@
     <string name="workflow_rule_deleted">Regel slettet</string>
     <string name="notes_moved_to_archive_count">%1$d notater ble flyttet til arkivet</string>
     <string name="notes_reverted_from_archive_count">%1$d notater ble gjenopprettet fra arkivet</string>
+    <string name="group_delete_in_use_message">Påminnelser i de slettede gruppene blir stående uten gruppe.</string>
+    <string name="tags_delete_in_use_message">De slettede taggene fjernes fra alle elementer de er knyttet til.</string>
 </resources>

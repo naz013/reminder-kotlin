@@ -1324,4 +1324,6 @@
     <string name="workflow_rule_deleted">Правило видалено</string>
     <string name="notes_moved_to_archive_count">Нотаток переміщено в архів: %1$d</string>
     <string name="notes_reverted_from_archive_count">Нотаток відновлено з архіву: %1$d</string>
+    <string name="group_delete_in_use_message">Нагадування у видалених групах залишаться без групи.</string>
+    <string name="tags_delete_in_use_message">Видалені теги буде знято з усіх елементів, до яких вони прив\'язані.</string>
 </resources>

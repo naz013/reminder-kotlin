@@ -9,6 +9,7 @@ import com.github.naz013.feature.common.viewmodel.UndoEvent
 import com.github.naz013.repository.TagAssignmentRepository
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.logic.tag.DeleteTagWithAssignmentsUseCase
+import com.github.naz013.logic.tag.IsTagInUseUseCase
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import com.github.naz013.ui.common.R
@@ -33,6 +34,10 @@ import org.junit.Test
 class TagsViewModelTest : BaseTest() {
   private val tagRepository = mockk<TagRepository>()
   private val deleteTagWithAssignmentsUseCase = mockk<DeleteTagWithAssignmentsUseCase>(relaxed = true)
+  private val isTagInUseUseCase = mockk<IsTagInUseUseCase>().also {
+    coEvery { it(any()) } returns true
+    coEvery { it.anyInUse(any()) } returns true
+  }
   private val themeProvider = mockk<ThemeProvider>()
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val coordinatorPendingIds = MutableStateFlow<Set<String>>(emptySet())
@@ -62,6 +67,7 @@ class TagsViewModelTest : BaseTest() {
       textProvider = textProvider,
       tagRepository = tagRepository,
       deleteTagWithAssignmentsUseCase = deleteTagWithAssignmentsUseCase,
+      isTagInUseUseCase = isTagInUseUseCase,
       themeProvider = themeProvider,
       pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
@@ -120,6 +126,21 @@ class TagsViewModelTest : BaseTest() {
     val event = viewModel.navigationEvent.value?.peekContent()
     assertEquals(TagsViewModel.NavigationEvent.ConfirmDelete("5"), event)
   }
+
+  @Test
+  fun `onTagMenuAction DELETE deletes right away when the tag is not in use`() =
+    runTest {
+      coEvery { isTagInUseUseCase("5") } returns false
+      every { textProvider.getText(R.string.tag_deleted) } returns "Tag deleted"
+
+      viewModel.onTagMenuAction(TagState(id = "5", name = "Work", color = Color.Red), TagMenuAction.DELETE)
+
+      assertEquals(null, viewModel.navigationEvent.value)
+      assertEquals(
+        UndoEvent(batchKey = "5", message = "Tag deleted", token = 1L),
+        viewModel.undoDelete.undoEvents.first(),
+      )
+    }
 
   @Test
   fun `onTagMenuAction DELETE does not mark the tag pending before confirmation`() =
@@ -238,6 +259,21 @@ class TagsViewModelTest : BaseTest() {
         TagsViewModel.NavigationEvent.ConfirmDeleteSelected(setOf("1", "2"), "Delete 2 tags permanently?"),
         vm.navigationEvent.value?.peekContent(),
       )
+    }
+
+  @Test
+  fun `onDeleteSelectedClick deletes right away when none of the selected tags is in use`() =
+    runTest {
+      coEvery { isTagInUseUseCase.anyInUse(any()) } returns false
+      every { textProvider.getText(R.string.tags_deleted_count, 2) } returns "2 tags deleted"
+      val (vm, _) = readyTags(listOf("1", "2"))
+      vm.onTagLongClick("1")
+      vm.onTagClick("2")
+
+      vm.onDeleteSelectedClick()
+
+      assertEquals(null, vm.navigationEvent.value)
+      assertEquals(setOf("1", "2"), vm.undoDelete.pendingIds.value)
     }
 
   @Test

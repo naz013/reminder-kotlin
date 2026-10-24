@@ -15,6 +15,7 @@ import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
 import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.logic.tag.DeleteTagWithAssignmentsUseCase
+import com.github.naz013.logic.tag.IsTagInUseUseCase
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -72,6 +73,7 @@ class TagDetailsViewModelTest : BaseTest() {
   private val googleTaskItemStateAdapter = mockk<GoogleTaskItemStateAdapter>()
   private val themeProvider = mockk<ThemeProvider>()
   private val deleteTagWithAssignmentsUseCase = mockk<DeleteTagWithAssignmentsUseCase>(relaxed = true)
+  private val isTagInUseUseCase = mockk<IsTagInUseUseCase>().also { coEvery { it(any()) } returns true }
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val pendingIds = MutableStateFlow<Set<String>>(emptySet())
   private val pendingReminderIds = MutableStateFlow<Set<String>>(emptySet())
@@ -161,6 +163,7 @@ class TagDetailsViewModelTest : BaseTest() {
     themeProvider = themeProvider,
     textProvider = textProvider,
     pendingDeleteCoordinator = pendingDeleteCoordinator,
+    isTagInUseUseCase = isTagInUseUseCase,
   )
 
   @Before
@@ -326,6 +329,20 @@ class TagDetailsViewModelTest : BaseTest() {
 
     val event = viewModel.navigationEvent.value?.peekContent()
     assertEquals(TagDetailsViewModel.NavigationEvent.OpenEdit("1"), event)
+  }
+
+  @Test
+  fun `onDeleteClick marks the tag pending right away when it is not in use`() = runTest {
+    coEvery { isTagInUseUseCase("1") } returns false
+    viewModel.state.first()
+
+    viewModel.onDeleteClick()
+
+    verify(exactly = 1) {
+      pendingDeleteCoordinator.markPending(PendingEntity.TAG, "1", "Tag deleted", any())
+    }
+    val event = viewModel.navigationEvent.value?.peekContent()
+    assertEquals(TagDetailsViewModel.NavigationEvent.Deleted("1"), event)
   }
 
   @Test

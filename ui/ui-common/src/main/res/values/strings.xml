@@ -1334,4 +1334,6 @@
     <string name="workflow_rule_deleted">Rule deleted</string>
     <string name="notes_moved_to_archive_count">%1$d notes moved to archive</string>
     <string name="notes_reverted_from_archive_count">%1$d notes reverted from archive</string>
+    <string name="group_delete_in_use_message">Reminders in the deleted groups will be left without a group.</string>
+    <string name="tags_delete_in_use_message">The deleted tags will be removed from every item they are assigned to.</string>
 </resources>

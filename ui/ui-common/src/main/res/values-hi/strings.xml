@@ -1314,4 +1314,6 @@
     <string name="workflow_rule_deleted">नियम हटा दिया गया</string>
     <string name="notes_moved_to_archive_count">%1$d नोट संग्रह में ले जाए गए</string>
     <string name="notes_reverted_from_archive_count">%1$d नोट संग्रह से पुनर्स्थापित किए गए</string>
+    <string name="group_delete_in_use_message">हटाए गए समूहों के रिमाइंडर बिना किसी समूह के रह जाएंगे।</string>
+    <string name="tags_delete_in_use_message">हटाए गए टैग उन सभी आइटम से हटा दिए जाएंगे जिनसे वे जुड़े हैं।</string>
 </resources>

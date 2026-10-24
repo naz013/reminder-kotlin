@@ -1314,4 +1314,6 @@
     <string name="workflow_rule_deleted">Regel gelöscht</string>
     <string name="notes_moved_to_archive_count">%1$d Notizen ins Archiv verschoben</string>
     <string name="notes_reverted_from_archive_count">%1$d Notizen aus dem Archiv wiederhergestellt</string>
+    <string name="group_delete_in_use_message">Erinnerungen in den gelöschten Gruppen bleiben ohne Gruppe.</string>
+    <string name="tags_delete_in_use_message">Die gelöschten Tags werden von allen Elementen entfernt, denen sie zugewiesen sind.</string>
 </resources>

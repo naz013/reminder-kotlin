@@ -9,8 +9,8 @@ import org.koin.dsl.module
 
 val tagsModule = module {
   viewModelOf(::TagsViewModel)
-  viewModel { (id: String?) -> TagEditViewModel(id, get(), get(), get(), get(), get(), get(), get()) }
+  viewModel { (id: String?) -> TagEditViewModel(id, get(), get(), get(), get(), get(), get(), get(), get()) }
   viewModel { (id: String) ->
-    TagDetailsViewModel(id, get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
+    TagDetailsViewModel(id, get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get(), get())
   }
 }

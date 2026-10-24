@@ -14,6 +14,7 @@ import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.domain.reminder.v2.GroupV2
 import com.github.naz013.logic.group.DeleteGroupUseCase
+import com.github.naz013.logic.group.IsGroupInUseUseCase
 import com.github.naz013.logic.group.MakeGroupDefaultUseCase
 import com.github.naz013.logic.group.SaveGroupUseCase
 import com.github.naz013.repository.GroupV2Repository
@@ -42,6 +43,7 @@ internal class GroupsViewModel(
   private val makeGroupDefaultUseCase: MakeGroupDefaultUseCase,
   private val saveGroupUseCase: SaveGroupUseCase,
   private val reminderV2Repository: ReminderV2Repository,
+  private val isGroupInUseUseCase: IsGroupInUseUseCase,
   val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
 
@@ -106,14 +108,21 @@ internal class GroupsViewModel(
   fun onDeleteSelectedClick() {
     val selected = selectedGroups()
     if (selected.isEmpty() || selected.any { it.isDefaultGroup }) return
-    navigationEvent.postValue(
-      Event(
-        NavigationEvent.ConfirmDeleteSelected(
-          ids = selected.map { it.id }.toSet(),
-          title = textProvider.getText(R.string.groups_delete_selected_permanently, selected.size),
-        ),
-      ),
-    )
+    val ids = selected.map { it.id }.toSet()
+    viewModelScope.launch(dispatcherProvider.io()) {
+      if (isGroupInUseUseCase.anyInUse(ids)) {
+        navigationEvent.postValue(
+          Event(
+            NavigationEvent.ConfirmDeleteSelected(
+              ids = ids,
+              title = textProvider.getText(R.string.groups_delete_selected_permanently, ids.size),
+            ),
+          ),
+        )
+      } else {
+        deleteSelectedGroups(ids)
+      }
+    }
   }
 
   fun deleteSelectedGroups(ids: Set<String>) {
@@ -164,7 +173,13 @@ internal class GroupsViewModel(
         navigationEvent.postValue(Event(NavigationEvent.OpenEdit(group.id)))
       }
       GroupMenuAction.DELETE -> {
-        navigationEvent.postValue(Event(NavigationEvent.ConfirmDelete(group.id)))
+        viewModelScope.launch(dispatcherProvider.io()) {
+          if (isGroupInUseUseCase(group.id)) {
+            navigationEvent.postValue(Event(NavigationEvent.ConfirmDelete(group.id)))
+          } else {
+            deleteGroup(group.id)
+          }
+        }
       }
       GroupMenuAction.MAKE_DEFAULT -> {
         viewModelScope.launch(dispatcherProvider.io()) {

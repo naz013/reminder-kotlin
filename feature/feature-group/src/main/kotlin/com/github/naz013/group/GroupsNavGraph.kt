@@ -116,6 +116,7 @@ private fun GroupsListEntry(backStack: MutableList<NavKey>) {
       is GroupsViewModel.NavigationEvent.ConfirmDelete -> {
         dialogDispatcher.showDialog(
           titleRes = R.string.delete_group_permanently,
+          textRes = R.string.group_delete_in_use_message,
           positiveButtonRes = R.string.yes,
           negativeButtonRes = R.string.cancel,
           onPositive = { viewModel.deleteGroup(event.id) }
@@ -125,6 +126,7 @@ private fun GroupsListEntry(backStack: MutableList<NavKey>) {
       is GroupsViewModel.NavigationEvent.ConfirmDeleteSelected -> {
         dialogDispatcher.showDialog(
           title = event.title,
+          textRes = R.string.group_delete_in_use_message,
           positiveButtonRes = R.string.yes,
           negativeButtonRes = R.string.cancel,
           onPositive = { viewModel.deleteSelectedGroups(event.ids) }
@@ -233,6 +235,7 @@ private fun GroupsDetailsEntry(
       is GroupDetailsViewModel.NavigationEvent.ConfirmDelete -> {
         dialogDispatcher.showDialog(
           titleRes = R.string.delete_group_permanently,
+          textRes = R.string.group_delete_in_use_message,
           positiveButtonRes = R.string.yes,
           negativeButtonRes = R.string.cancel,
           onPositive = { viewModel.onDeleteConfirmed() }

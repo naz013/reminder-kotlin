@@ -25,6 +25,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.group.DeleteGroupUseCase
+import com.github.naz013.logic.group.IsGroupInUseUseCase
 import com.github.naz013.logic.group.SaveGroupUseCase
 import com.github.naz013.logic.workflow.WorkflowConfig
 import com.github.naz013.navigation.intent.IntentDataReader
@@ -65,6 +66,7 @@ internal class EditGroupViewModel(
   private val workflowConfig: WorkflowConfig,
   private val textProvider: TextProvider,
   private val pendingDeleteCoordinator: PendingDeleteCoordinator,
+  private val isGroupInUseUseCase: IsGroupInUseUseCase,
 ) : ViewModel() {
 
   private val context get() = contextProvider.themedContext
@@ -271,7 +273,16 @@ internal class EditGroupViewModel(
   }
 
   fun onDeleteMenuClick() {
-    _state.update { it.copy(dialog = EditGroupDialog.DeleteConfirm) }
+    viewModelScope.launch(dispatcherProvider.io()) {
+      val inUse = isGroupInUseUseCase(id)
+      withContext(dispatcherProvider.main()) {
+        if (inUse) {
+          _state.update { it.copy(dialog = EditGroupDialog.DeleteConfirm) }
+        } else {
+          onDeleteConfirmed()
+        }
+      }
+    }
   }
 
   fun onDeleteConfirmed() {

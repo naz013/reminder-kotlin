@@ -1309,4 +1309,6 @@
     <string name="workflow_rule_deleted">ลบกฎแล้ว</string>
     <string name="notes_moved_to_archive_count">ย้ายโน้ต %1$d รายการไปคลังเก็บแล้ว</string>
     <string name="notes_reverted_from_archive_count">กู้คืนโน้ต %1$d รายการจากคลังเก็บแล้ว</string>
+    <string name="group_delete_in_use_message">การเตือนความจำในกลุ่มที่ลบจะไม่มีกลุ่ม</string>
+    <string name="tags_delete_in_use_message">แท็กที่ลบจะถูกนำออกจากทุกรายการที่กำหนดไว้</string>
 </resources>

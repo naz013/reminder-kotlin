@@ -254,7 +254,8 @@ internal fun EditGroupScreen(
     EditGroupDialog.DeleteConfirm -> {
       AlertDialog(
         onDismissRequest = onDialogDismiss,
-        text = { Text(stringResource(R.string.are_you_sure)) },
+        title = { Text(stringResource(R.string.delete_group_permanently)) },
+        text = { Text(stringResource(R.string.group_delete_in_use_message)) },
         confirmButton = {
           TextButton(onClick = onDeleteConfirmed) { Text(stringResource(R.string.yes)) }
         },

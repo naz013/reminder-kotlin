@@ -7,6 +7,7 @@ import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
 import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoEvent
 import com.github.naz013.logic.group.DeleteGroupUseCase
+import com.github.naz013.logic.group.IsGroupInUseUseCase
 import com.github.naz013.logic.group.MakeGroupDefaultUseCase
 import com.github.naz013.logic.group.SaveGroupUseCase
 import com.github.naz013.repository.GroupV2Repository
@@ -37,6 +38,10 @@ class GroupsViewModelTest : BaseTest() {
   private val groupV2Repository = mockk<GroupV2Repository>()
   private val uiGroupListAdapter = mockk<UiGroupListAdapter>()
   private val deleteGroupUseCase = mockk<DeleteGroupUseCase>(relaxed = true)
+  private val isGroupInUseUseCase = mockk<IsGroupInUseUseCase>().also {
+    coEvery { it(any()) } returns true
+    coEvery { it.anyInUse(any()) } returns true
+  }
   private val makeGroupDefaultUseCase = mockk<MakeGroupDefaultUseCase>(relaxed = true)
   private val saveGroupUseCase = mockk<SaveGroupUseCase>(relaxed = true)
   private val reminderV2Repository = mockk<ReminderV2Repository>()
@@ -94,6 +99,7 @@ class GroupsViewModelTest : BaseTest() {
       makeGroupDefaultUseCase = makeGroupDefaultUseCase,
       saveGroupUseCase = saveGroupUseCase,
       reminderV2Repository = reminderV2Repository,
+      isGroupInUseUseCase = isGroupInUseUseCase,
       pendingDeleteCoordinator = pendingDeleteCoordinator,
     )
 
@@ -204,6 +210,22 @@ class GroupsViewModelTest : BaseTest() {
     val event = viewModel.navigationEvent.value?.peekContent()
     assertEquals(GroupsViewModel.NavigationEvent.ConfirmDelete("5"), event)
   }
+
+  @Test
+  fun `onGroupMenuAction DELETE deletes right away when the group has no reminders`() =
+    runTest {
+      coEvery { isGroupInUseUseCase("5") } returns false
+      coEvery { groupV2Repository.getById("5") } returns groupV2(id = "5")
+      every { textProvider.getText(R.string.group_deleted) } returns "Group deleted"
+
+      viewModel.onGroupMenuAction(uiGroupList(id = "5"), GroupMenuAction.DELETE)
+
+      assertEquals(null, viewModel.navigationEvent.value)
+      assertEquals(
+        UndoEvent(batchKey = "5", message = "Group deleted", token = 1L),
+        viewModel.undoDelete.undoEvents.first(),
+      )
+    }
 
   @Test
   fun `onGroupMenuAction DELETE does not mark the group pending before confirmation`() =
@@ -367,6 +389,21 @@ class GroupsViewModelTest : BaseTest() {
         GroupsViewModel.NavigationEvent.ConfirmDeleteSelected(setOf("1", "2"), "Delete 2 groups permanently?"),
         vm.navigationEvent.value?.peekContent(),
       )
+    }
+
+  @Test
+  fun `onDeleteSelectedClick deletes right away when none of the selected groups has reminders`() =
+    runTest {
+      coEvery { isGroupInUseUseCase.anyInUse(any()) } returns false
+      every { textProvider.getText(R.string.groups_deleted_count, 2) } returns "2 groups deleted"
+      val (vm, _) = readyGroups(listOf("1", "2"))
+      vm.onGroupLongClick("1")
+      vm.onGroupClick("2")
+
+      vm.onDeleteSelectedClick()
+
+      assertEquals(null, vm.navigationEvent.value)
+      assertEquals(setOf("1", "2"), vm.undoDelete.pendingIds.value)
     }
 
   @Test

@@ -5,6 +5,7 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
 import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.logic.tag.DeleteTagWithAssignmentsUseCase
+import com.github.naz013.logic.tag.IsTagInUseUseCase
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
@@ -29,6 +30,7 @@ import org.junit.Test
 class TagEditViewModelTest : BaseTest() {
   private val tagRepository = mockk<TagRepository>(relaxed = true)
   private val deleteTagWithAssignmentsUseCase = mockk<DeleteTagWithAssignmentsUseCase>(relaxed = true)
+  private val isTagInUseUseCase = mockk<IsTagInUseUseCase>().also { coEvery { it(any()) } returns true }
   private val appPreferences = mockk<AppPreferences>(relaxed = true)
   private val themeProvider = mockk<ThemeProvider>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
@@ -53,6 +55,7 @@ class TagEditViewModelTest : BaseTest() {
       themeProvider = themeProvider,
       textProvider = textProvider,
       pendingDeleteCoordinator = pendingDeleteCoordinator,
+      isTagInUseUseCase = isTagInUseUseCase,
     )
 
   @Test
@@ -67,11 +70,39 @@ class TagEditViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onDeleteClick marks the tag pending without deleting and emits Deleted`() =
+  fun `onDeleteClick asks for confirmation when the tag is in use`() =
     runTest {
       val viewModel = createViewModel()
 
       viewModel.onDeleteClick()
+
+      assertEquals(TagEditViewModel.NavigationEvent.ConfirmDelete, viewModel.navigationEvent.value?.peekContent())
+      verify(exactly = 0) { pendingDeleteCoordinator.markPending(any(), any(), any(), any()) }
+    }
+
+  @Test
+  fun `onDeleteClick marks the tag pending right away when it is not in use`() =
+    runTest {
+      coEvery { isTagInUseUseCase("1") } returns false
+      val viewModel = createViewModel()
+
+      viewModel.onDeleteClick()
+
+      verify(exactly = 1) {
+        pendingDeleteCoordinator.markPending(PendingEntity.TAG, "1", "Tag deleted", any())
+      }
+      assertEquals(
+        TagEditViewModel.NavigationEvent.Deleted("1"),
+        viewModel.navigationEvent.value?.peekContent(),
+      )
+    }
+
+  @Test
+  fun `onDeleteConfirmed marks the tag pending without deleting and emits Deleted`() =
+    runTest {
+      val viewModel = createViewModel()
+
+      viewModel.onDeleteConfirmed()
 
       verify(exactly = 1) {
         pendingDeleteCoordinator.markPending(PendingEntity.TAG, "1", "Tag deleted", any())
@@ -89,7 +120,7 @@ class TagEditViewModelTest : BaseTest() {
       val onCommit = slot<suspend () -> Unit>()
       every { pendingDeleteCoordinator.markPending(any(), any(), any(), capture(onCommit)) } just runs
       val viewModel = createViewModel()
-      viewModel.onDeleteClick()
+      viewModel.onDeleteConfirmed()
 
       onCommit.captured.invoke()
 
@@ -97,12 +128,12 @@ class TagEditViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onDeleteClick does nothing when the tag is already pending`() =
+  fun `onDeleteConfirmed does nothing when the tag is already pending`() =
     runTest {
       val viewModel = createViewModel()
       pendingIds.value = setOf("1")
 
-      viewModel.onDeleteClick()
+      viewModel.onDeleteConfirmed()
 
       verify(exactly = 0) { pendingDeleteCoordinator.markPending(any(), any(), any(), any()) }
     }

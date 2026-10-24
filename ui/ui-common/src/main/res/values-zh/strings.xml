@@ -1311,4 +1311,6 @@
     <string name="workflow_rule_deleted">规则已删除</string>
     <string name="notes_moved_to_archive_count">已将 %1$d 条笔记移至归档</string>
     <string name="notes_reverted_from_archive_count">已从归档恢复 %1$d 条笔记</string>
+    <string name="group_delete_in_use_message">已删除分组中的提醒将不再属于任何分组。</string>
+    <string name="tags_delete_in_use_message">已删除的标签将从其所分配的所有项目中移除。</string>
 </resources>

@@ -67,7 +67,11 @@ internal class GroupDetailsViewModel(
   }
 
   fun onDeleteClick() {
-    navigationEvent.emit(NavigationEvent.ConfirmDelete(id))
+    if (_state.value.reminders.isEmpty()) {
+      onDeleteConfirmed()
+    } else {
+      navigationEvent.emit(NavigationEvent.ConfirmDelete(id))
+    }
   }
 
   fun onDeleteConfirmed() {

@@ -13,6 +13,7 @@ import com.github.naz013.feature.common.viewmodel.UndoDeleteController
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logic.tag.DeleteTagWithAssignmentsUseCase
+import com.github.naz013.logic.tag.IsTagInUseUseCase
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.TagRepository
 import com.github.naz013.ui.common.R
@@ -36,6 +37,7 @@ internal class TagsViewModel(
   private val textProvider: TextProvider,
   private val tagRepository: TagRepository,
   private val deleteTagWithAssignmentsUseCase: DeleteTagWithAssignmentsUseCase,
+  private val isTagInUseUseCase: IsTagInUseUseCase,
   private val themeProvider: ThemeProvider,
   val pendingDeleteCoordinator: PendingDeleteCoordinator,
 ) : ViewModel() {
@@ -102,12 +104,20 @@ internal class TagsViewModel(
   fun onDeleteSelectedClick() {
     val ids = selectedIds()
     if (ids.isEmpty()) return
-    navigationEvent.value = Event(
-      NavigationEvent.ConfirmDeleteSelected(
-        ids = ids,
-        title = textProvider.getText(R.string.tags_delete_selected_permanently, ids.size),
-      ),
-    )
+    viewModelScope.launch(dispatcherProvider.io()) {
+      if (isTagInUseUseCase.anyInUse(ids)) {
+        navigationEvent.postValue(
+          Event(
+            NavigationEvent.ConfirmDeleteSelected(
+              ids = ids,
+              title = textProvider.getText(R.string.tags_delete_selected_permanently, ids.size),
+            ),
+          ),
+        )
+      } else {
+        deleteSelectedTags(ids)
+      }
+    }
   }
 
   fun deleteSelectedTags(ids: Set<String>) {
@@ -151,7 +161,13 @@ internal class TagsViewModel(
   ) {
     when (action) {
       TagMenuAction.EDIT -> navigationEvent.value = Event(NavigationEvent.OpenEdit(tag.id))
-      TagMenuAction.DELETE -> navigationEvent.value = Event(NavigationEvent.ConfirmDelete(tag.id))
+      TagMenuAction.DELETE -> viewModelScope.launch(dispatcherProvider.io()) {
+        if (isTagInUseUseCase(tag.id)) {
+          navigationEvent.postValue(Event(NavigationEvent.ConfirmDelete(tag.id)))
+        } else {
+          deleteTag(tag.id)
+        }
+      }
     }
   }
 

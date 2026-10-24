@@ -16,6 +16,7 @@ import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.feature.common.viewmodel.stateInWhileSubscribed
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.tag.DeleteTagWithAssignmentsUseCase
+import com.github.naz013.logic.tag.IsTagInUseUseCase
 import com.github.naz013.repository.BirthdayRepository
 import com.github.naz013.repository.GoogleTaskListRepository
 import com.github.naz013.repository.GoogleTaskRepository
@@ -55,6 +56,7 @@ internal class TagDetailsViewModel(
   private val themeProvider: ThemeProvider,
   private val textProvider: TextProvider,
   private val pendingDeleteCoordinator: PendingDeleteCoordinator,
+  private val isTagInUseUseCase: IsTagInUseUseCase,
 ) : ViewModel() {
 
   private val _state = MutableStateFlow(TagDetailsState())
@@ -113,7 +115,16 @@ internal class TagDetailsViewModel(
   }
 
   fun onDeleteClick() {
-    navigationEvent.emit(NavigationEvent.ConfirmDelete)
+    viewModelScope.launch(dispatcherProvider.io()) {
+      val inUse = isTagInUseUseCase(id)
+      withContext(dispatcherProvider.main()) {
+        if (inUse) {
+          navigationEvent.emit(NavigationEvent.ConfirmDelete)
+        } else {
+          onDeleteConfirmed()
+        }
+      }
+    }
   }
 
   fun onDeleteConfirmed() {
