@@ -1328,6 +1328,6 @@
     <string name="workflow_rule_deleted">تم حذف القاعدة</string>
     <string name="notes_moved_to_archive_count">تم نقل %1$d ملاحظات إلى الأرشيف</string>
     <string name="notes_reverted_from_archive_count">تمت استعادة %1$d ملاحظات من الأرشيف</string>
-    <string name="group_delete_in_use_message">ستبقى التذكيرات الموجودة في المجموعات المحذوفة بدون مجموعة.</string>
+    <string name="group_delete_in_use_message">ستبقى التذكيرات التي تستخدم مجموعة محذوفة بدون مجموعة.</string>
     <string name="tags_delete_in_use_message">ستتم إزالة العلامات المحذوفة من كل عنصر مرتبطة به.</string>
 </resources>

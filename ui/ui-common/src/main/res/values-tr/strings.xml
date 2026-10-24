@@ -1318,6 +1318,6 @@
     <string name="workflow_rule_deleted">Kural silindi</string>
     <string name="notes_moved_to_archive_count">%1$d not arşive taşındı</string>
     <string name="notes_reverted_from_archive_count">%1$d not arşivden geri yüklendi</string>
-    <string name="group_delete_in_use_message">Silinen gruplardaki hatırlatıcılar grupsuz kalacak.</string>
+    <string name="group_delete_in_use_message">Silinen bir grubu kullanan hatırlatıcılar grupsuz kalacak.</string>
     <string name="tags_delete_in_use_message">Silinen etiketler, atandıkları tüm öğelerden kaldırılacak.</string>
 </resources>

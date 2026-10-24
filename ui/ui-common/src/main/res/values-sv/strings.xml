@@ -1316,6 +1316,6 @@
     <string name="workflow_rule_deleted">Regel raderad</string>
     <string name="notes_moved_to_archive_count">%1$d anteckningar flyttades till arkivet</string>
     <string name="notes_reverted_from_archive_count">%1$d anteckningar återställdes från arkivet</string>
-    <string name="group_delete_in_use_message">Påminnelser i de borttagna grupperna blir utan grupp.</string>
+    <string name="group_delete_in_use_message">Påminnelser som använder en borttagen grupp blir utan grupp.</string>
     <string name="tags_delete_in_use_message">De borttagna taggarna tas bort från alla objekt de är kopplade till.</string>
 </resources>

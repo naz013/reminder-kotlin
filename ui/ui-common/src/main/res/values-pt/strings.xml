@@ -1321,6 +1321,6 @@
     <string name="workflow_rule_deleted">Regra excluída</string>
     <string name="notes_moved_to_archive_count">%1$d notas movidas para arquivo</string>
     <string name="notes_reverted_from_archive_count">%1$d notas restauradas do arquivo</string>
-    <string name="group_delete_in_use_message">Os lembretes dos grupos excluídos ficarão sem grupo.</string>
+    <string name="group_delete_in_use_message">Os lembretes que usam um grupo excluído ficarão sem grupo.</string>
     <string name="tags_delete_in_use_message">As etiquetas excluídas serão removidas de todos os itens aos quais estão atribuídas.</string>
 </resources>

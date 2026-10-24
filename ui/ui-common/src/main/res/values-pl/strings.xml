@@ -1324,6 +1324,6 @@
     <string name="workflow_rule_deleted">Reguła usunięta</string>
     <string name="notes_moved_to_archive_count">Przeniesiono %1$d notatek do archiwum</string>
     <string name="notes_reverted_from_archive_count">Przywrócono %1$d notatek z archiwum</string>
-    <string name="group_delete_in_use_message">Przypomnienia w usuniętych grupach pozostaną bez grupy.</string>
+    <string name="group_delete_in_use_message">Przypomnienia używające usuniętej grupy pozostaną bez grupy.</string>
     <string name="tags_delete_in_use_message">Usunięte tagi zostaną usunięte ze wszystkich elementów, do których są przypisane.</string>
 </resources>

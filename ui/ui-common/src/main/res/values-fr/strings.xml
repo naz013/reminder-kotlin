@@ -1321,6 +1321,6 @@
     <string name="workflow_rule_deleted">Règle supprimée</string>
     <string name="notes_moved_to_archive_count">%1$d notes déplacées vers l\'archive</string>
     <string name="notes_reverted_from_archive_count">%1$d notes restaurées de l\'archive</string>
-    <string name="group_delete_in_use_message">Les rappels des groupes supprimés n\'auront plus de groupe.</string>
+    <string name="group_delete_in_use_message">Les rappels qui utilisent un groupe supprimé n\'auront plus de groupe.</string>
     <string name="tags_delete_in_use_message">Les étiquettes supprimées seront retirées de tous les éléments auxquels elles sont associées.</string>
 </resources>

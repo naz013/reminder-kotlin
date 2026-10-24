@@ -1321,6 +1321,6 @@
     <string name="workflow_rule_deleted">Regola eliminata</string>
     <string name="notes_moved_to_archive_count">%1$d note spostate in archivio</string>
     <string name="notes_reverted_from_archive_count">%1$d note ripristinate dall\'archivio</string>
-    <string name="group_delete_in_use_message">I promemoria nei gruppi eliminati resteranno senza gruppo.</string>
+    <string name="group_delete_in_use_message">I promemoria che usano un gruppo eliminato resteranno senza gruppo.</string>
     <string name="tags_delete_in_use_message">I tag eliminati verranno rimossi da tutti gli elementi a cui sono assegnati.</string>
 </resources>

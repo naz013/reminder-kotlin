@@ -1321,6 +1321,6 @@
     <string name="workflow_rule_deleted">Regula a fost ștearsă</string>
     <string name="notes_moved_to_archive_count">%1$d notițe mutate în arhivă</string>
     <string name="notes_reverted_from_archive_count">%1$d notițe restaurate din arhivă</string>
-    <string name="group_delete_in_use_message">Mementourile din grupurile șterse vor rămâne fără grup.</string>
+    <string name="group_delete_in_use_message">Mementourile care folosesc un grup șters vor rămâne fără grup.</string>
     <string name="tags_delete_in_use_message">Etichetele șterse vor fi eliminate din toate elementele cărora le sunt atribuite.</string>
 </resources>

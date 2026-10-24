@@ -1316,6 +1316,6 @@
     <string name="workflow_rule_deleted">Regel verwijderd</string>
     <string name="notes_moved_to_archive_count">%1$d notities verplaatst naar archief</string>
     <string name="notes_reverted_from_archive_count">%1$d notities hersteld uit archief</string>
-    <string name="group_delete_in_use_message">Herinneringen in de verwijderde groepen blijven zonder groep achter.</string>
+    <string name="group_delete_in_use_message">Herinneringen die een verwijderde groep gebruiken, blijven zonder groep achter.</string>
     <string name="tags_delete_in_use_message">De verwijderde tags worden verwijderd van alle items waaraan ze zijn toegewezen.</string>
 </resources>

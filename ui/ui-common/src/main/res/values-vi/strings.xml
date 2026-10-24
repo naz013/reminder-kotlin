@@ -1313,6 +1313,6 @@
     <string name="workflow_rule_deleted">Đã xóa quy tắc</string>
     <string name="notes_moved_to_archive_count">Đã chuyển %1$d ghi chú vào lưu trữ</string>
     <string name="notes_reverted_from_archive_count">Đã khôi phục %1$d ghi chú từ lưu trữ</string>
-    <string name="group_delete_in_use_message">Các lời nhắc trong nhóm đã xóa sẽ không còn thuộc nhóm nào.</string>
+    <string name="group_delete_in_use_message">Các lời nhắc dùng nhóm đã xóa sẽ không còn thuộc nhóm nào.</string>
     <string name="tags_delete_in_use_message">Các thẻ đã xóa sẽ bị gỡ khỏi mọi mục mà chúng được gán.</string>
 </resources>

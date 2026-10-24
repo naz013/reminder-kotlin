@@ -1321,6 +1321,6 @@
     <string name="workflow_rule_deleted">Regla eliminada</string>
     <string name="notes_moved_to_archive_count">%1$d notas movidas al archivo</string>
     <string name="notes_reverted_from_archive_count">%1$d notas restauradas del archivo</string>
-    <string name="group_delete_in_use_message">Los recordatorios de los grupos eliminados se quedarán sin grupo.</string>
+    <string name="group_delete_in_use_message">Los recordatorios que usan un grupo eliminado se quedarán sin grupo.</string>
     <string name="tags_delete_in_use_message">Las etiquetas eliminadas se quitarán de todos los elementos a los que estén asignadas.</string>
 </resources>
