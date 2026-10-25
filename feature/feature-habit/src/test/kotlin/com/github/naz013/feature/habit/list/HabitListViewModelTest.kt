@@ -4,9 +4,8 @@ import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.habit.Habit
 import com.github.naz013.domain.habit.HabitFrequency
 import com.github.naz013.logic.habit.HabitWithProgress
-import com.github.naz013.logic.habit.usecase.IncrementHabitCheckInUseCase
+import com.github.naz013.logic.habit.usecase.CheckInHabitUseCase
 import com.github.naz013.logic.habit.usecase.ObserveHabitsWithProgressUseCase
-import com.github.naz013.logic.habit.usecase.ToggleHabitCheckInUseCase
 import com.github.naz013.testing.BaseTest
 import com.github.naz013.testing.mockDispatcherProvider
 import io.mockk.coVerify
@@ -25,8 +24,7 @@ class HabitListViewModelTest : BaseTest() {
   private val observeUseCase = mockk<ObserveHabitsWithProgressUseCase> {
     every { this@mockk.invoke() } returns habits
   }
-  private val toggleUseCase = mockk<ToggleHabitCheckInUseCase>(relaxed = true)
-  private val incrementUseCase = mockk<IncrementHabitCheckInUseCase>(relaxed = true)
+  private val checkInUseCase = mockk<CheckInHabitUseCase>(relaxed = true)
   private val textProvider = mockk<TextProvider> {
     every { getString(any(), *anyVararg()) } answers { "text-" + (args[1] as Array<*>).joinToString("-") }
   }
@@ -34,8 +32,7 @@ class HabitListViewModelTest : BaseTest() {
   private fun createViewModel() = HabitListViewModel(
     dispatcherProvider = mockDispatcherProvider(),
     observeHabitsWithProgressUseCase = observeUseCase,
-    toggleHabitCheckInUseCase = toggleUseCase,
-    incrementHabitCheckInUseCase = incrementUseCase,
+    checkInHabitUseCase = checkInUseCase,
     textProvider = textProvider,
   )
 
@@ -106,48 +103,14 @@ class HabitListViewModelTest : BaseTest() {
   }
 
   @Test
-  fun `check-in toggles a single-target daily habit`() {
-    habits.value = listOf(progress(target = 1, todayCount = 0))
+  fun `check-in delegates the habit progress to the check-in use case`() {
+    val item = progress(target = 3, todayCount = 1)
+    habits.value = listOf(item)
     val viewModel = createViewModel()
 
     viewModel.onCheckInClick("h-1")
 
-    coVerify(exactly = 1) { toggleUseCase("h-1") }
-    coVerify(exactly = 0) { incrementUseCase(any()) }
-  }
-
-  @Test
-  fun `check-in increments a multi-target daily habit below target`() {
-    habits.value = listOf(progress(target = 3, todayCount = 1))
-    val viewModel = createViewModel()
-
-    viewModel.onCheckInClick("h-1")
-
-    coVerify(exactly = 1) { incrementUseCase("h-1") }
-    coVerify(exactly = 0) { toggleUseCase(any()) }
-  }
-
-  @Test
-  fun `check-in clears a multi-target daily habit that reached its target`() {
-    habits.value = listOf(progress(target = 3, todayCount = 3))
-    val viewModel = createViewModel()
-
-    viewModel.onCheckInClick("h-1")
-
-    coVerify(exactly = 1) { toggleUseCase("h-1") }
-  }
-
-  @Test
-  fun `check-in increments a weekly habit with nothing logged today and clears it otherwise`() {
-    habits.value = listOf(progress(frequency = HabitFrequency.WEEKLY, target = 3, todayCount = 0))
-    val viewModel = createViewModel()
-
-    viewModel.onCheckInClick("h-1")
-    habits.value = listOf(progress(frequency = HabitFrequency.WEEKLY, target = 3, todayCount = 1))
-    viewModel.onCheckInClick("h-1")
-
-    coVerify(exactly = 1) { incrementUseCase("h-1") }
-    coVerify(exactly = 1) { toggleUseCase("h-1") }
+    coVerify(exactly = 1) { checkInUseCase(item) }
   }
 
   @Test
@@ -156,8 +119,7 @@ class HabitListViewModelTest : BaseTest() {
 
     viewModel.onCheckInClick("missing")
 
-    coVerify(exactly = 0) { toggleUseCase(any()) }
-    coVerify(exactly = 0) { incrementUseCase(any()) }
+    coVerify(exactly = 0) { checkInUseCase(any()) }
   }
 
   private fun HabitListViewModel.currentListState() = state.value.listState

@@ -13,9 +13,8 @@ import com.github.naz013.feature.common.livedata.emit
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.habit.HabitWithProgress
-import com.github.naz013.logic.habit.usecase.IncrementHabitCheckInUseCase
+import com.github.naz013.logic.habit.usecase.CheckInHabitUseCase
 import com.github.naz013.logic.habit.usecase.ObserveHabitsWithProgressUseCase
-import com.github.naz013.logic.habit.usecase.ToggleHabitCheckInUseCase
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.routine.RoutineColors
 import com.github.naz013.ui.routine.RoutineIconSet
@@ -28,8 +27,7 @@ import kotlinx.coroutines.launch
 internal class HabitListViewModel(
   private val dispatcherProvider: DispatcherProvider,
   private val observeHabitsWithProgressUseCase: ObserveHabitsWithProgressUseCase,
-  private val toggleHabitCheckInUseCase: ToggleHabitCheckInUseCase,
-  private val incrementHabitCheckInUseCase: IncrementHabitCheckInUseCase,
+  private val checkInHabitUseCase: CheckInHabitUseCase,
   private val textProvider: TextProvider,
 ) : ViewModel() {
 
@@ -98,19 +96,7 @@ internal class HabitListViewModel(
   fun onCheckInClick(id: String) {
     val progress = progressById[id] ?: return
     viewModelScope.launch(dispatcherProvider.io()) {
-      if (shouldToggle(progress)) {
-        toggleHabitCheckInUseCase(id)
-      } else {
-        incrementHabitCheckInUseCase(id)
-      }
-    }
-  }
-
-  private fun shouldToggle(progress: HabitWithProgress): Boolean {
-    val habit = progress.habit
-    return when (habit.frequency) {
-      HabitFrequency.DAILY -> habit.targetCount <= 1 || progress.todayCount >= habit.targetCount
-      HabitFrequency.WEEKLY -> progress.todayCount > 0
+      checkInHabitUseCase(progress)
     }
   }
 
