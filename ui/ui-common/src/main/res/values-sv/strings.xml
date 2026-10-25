@@ -1318,4 +1318,11 @@
     <string name="notes_reverted_from_archive_count">%1$d anteckningar återställdes från arkivet</string>
     <string name="group_delete_in_use_message">Påminnelser som använder en borttagen grupp blir utan grupp.</string>
     <string name="tags_delete_in_use_message">De borttagna taggarna tas bort från alla objekt de är kopplade till.</string>
+    <string name="habit_current_streak">Nuvarande svit</string>
+    <string name="habit_best_streak">Bästa svit</string>
+    <string name="habit_total_check_ins">Totalt antal incheckningar</string>
+    <string name="habit_activity_title">Aktivitet</string>
+    <string name="habit_activity_description">%1$d incheckningar de senaste %2$d veckorna</string>
+    <string name="habit_legend_less">Mindre</string>
+    <string name="habit_legend_more">Mer</string>
 </resources>

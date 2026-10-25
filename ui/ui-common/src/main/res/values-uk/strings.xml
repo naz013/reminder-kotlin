@@ -1326,4 +1326,11 @@
     <string name="notes_reverted_from_archive_count">Нотаток відновлено з архіву: %1$d</string>
     <string name="group_delete_in_use_message">Нагадування, що використовують видалену групу, залишаться без групи.</string>
     <string name="tags_delete_in_use_message">Видалені теги буде знято з усіх елементів, до яких вони прив\'язані.</string>
+    <string name="habit_current_streak">Поточна серія</string>
+    <string name="habit_best_streak">Найкраща серія</string>
+    <string name="habit_total_check_ins">Усього відміток</string>
+    <string name="habit_activity_title">Активність</string>
+    <string name="habit_activity_description">Відміток за останні %2$d тижн.: %1$d</string>
+    <string name="habit_legend_less">Менше</string>
+    <string name="habit_legend_more">Більше</string>
 </resources>

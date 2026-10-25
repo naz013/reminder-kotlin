@@ -1323,4 +1323,11 @@
     <string name="notes_reverted_from_archive_count">%1$d notes restaurées de l\'archive</string>
     <string name="group_delete_in_use_message">Les rappels qui utilisent un groupe supprimé n\'auront plus de groupe.</string>
     <string name="tags_delete_in_use_message">Les étiquettes supprimées seront retirées de tous les éléments auxquels elles sont associées.</string>
+    <string name="habit_current_streak">Série actuelle</string>
+    <string name="habit_best_streak">Meilleure série</string>
+    <string name="habit_total_check_ins">Total des validations</string>
+    <string name="habit_activity_title">Activité</string>
+    <string name="habit_activity_description">%1$d validations au cours des %2$d dernières semaines</string>
+    <string name="habit_legend_less">Moins</string>
+    <string name="habit_legend_more">Plus</string>
 </resources>

@@ -1323,4 +1323,11 @@
     <string name="notes_reverted_from_archive_count">%1$d notas restauradas do arquivo</string>
     <string name="group_delete_in_use_message">Os lembretes que usam um grupo excluído ficarão sem grupo.</string>
     <string name="tags_delete_in_use_message">As etiquetas excluídas serão removidas de todos os itens aos quais estão atribuídas.</string>
+    <string name="habit_current_streak">Sequência atual</string>
+    <string name="habit_best_streak">Melhor sequência</string>
+    <string name="habit_total_check_ins">Total de registos</string>
+    <string name="habit_activity_title">Atividade</string>
+    <string name="habit_activity_description">%1$d registos nas últimas %2$d semanas</string>
+    <string name="habit_legend_less">Menos</string>
+    <string name="habit_legend_more">Mais</string>
 </resources>

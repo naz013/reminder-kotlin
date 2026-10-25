@@ -1326,4 +1326,11 @@
     <string name="notes_reverted_from_archive_count">Poznámek obnoveno z archívu: %1$d</string>
     <string name="group_delete_in_use_message">Připomenutí používající smazanou skupinu zůstanou bez skupiny.</string>
     <string name="tags_delete_in_use_message">Smazané štítky budou odebrány ze všech položek, ke kterým jsou přiřazeny.</string>
+    <string name="habit_current_streak">Aktuální série</string>
+    <string name="habit_best_streak">Nejlepší série</string>
+    <string name="habit_total_check_ins">Celkem zaznamenání</string>
+    <string name="habit_activity_title">Aktivita</string>
+    <string name="habit_activity_description">%1$d záznamů za posledních %2$d týdnů</string>
+    <string name="habit_legend_less">Méně</string>
+    <string name="habit_legend_more">Více</string>
 </resources>

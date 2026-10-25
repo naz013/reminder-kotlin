@@ -1336,4 +1336,11 @@
     <string name="notes_reverted_from_archive_count">%1$d notes reverted from archive</string>
     <string name="group_delete_in_use_message">Reminders using a deleted group will be left without a group.</string>
     <string name="tags_delete_in_use_message">The deleted tags will be removed from every item they are assigned to.</string>
+    <string name="habit_current_streak">Current streak</string>
+    <string name="habit_best_streak">Best streak</string>
+    <string name="habit_total_check_ins">Total check-ins</string>
+    <string name="habit_activity_title">Activity</string>
+    <string name="habit_activity_description">%1$d check-ins in the last %2$d weeks</string>
+    <string name="habit_legend_less">Less</string>
+    <string name="habit_legend_more">More</string>
 </resources>

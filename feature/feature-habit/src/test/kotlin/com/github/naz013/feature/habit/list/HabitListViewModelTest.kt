@@ -122,5 +122,16 @@ class HabitListViewModelTest : BaseTest() {
     coVerify(exactly = 0) { checkInUseCase(any()) }
   }
 
+  @Test
+  fun `opens the preview when a habit card is clicked`() {
+    val viewModel = createViewModel()
+    var event: HabitListViewModel.NavigationEvent? = null
+    viewModel.navigationEvent.observeForever { event = it.getContentIfNotHandled() }
+
+    viewModel.onHabitClick("h-1")
+
+    assertEquals(HabitListViewModel.NavigationEvent.OpenPreview("h-1"), event)
+  }
+
   private fun HabitListViewModel.currentListState() = state.value.listState
 }

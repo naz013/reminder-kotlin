@@ -1325,4 +1325,11 @@
     <string name="notes_reverted_from_archive_count">Заметок восстановлено из архива: %1$d</string>
     <string name="group_delete_in_use_message">Напоминания, использующие удалённую группу, останутся без группы.</string>
     <string name="tags_delete_in_use_message">Удалённые теги будут сняты со всех элементов, к которым они привязаны.</string>
+    <string name="habit_current_streak">Текущая серия</string>
+    <string name="habit_best_streak">Лучшая серия</string>
+    <string name="habit_total_check_ins">Всего отметок</string>
+    <string name="habit_activity_title">Активность</string>
+    <string name="habit_activity_description">Отметок за последние %2$d нед.: %1$d</string>
+    <string name="habit_legend_less">Меньше</string>
+    <string name="habit_legend_more">Больше</string>
 </resources>

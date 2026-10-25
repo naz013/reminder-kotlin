@@ -1323,4 +1323,11 @@
     <string name="notes_reverted_from_archive_count">%1$d notițe restaurate din arhivă</string>
     <string name="group_delete_in_use_message">Mementourile care folosesc un grup șters vor rămâne fără grup.</string>
     <string name="tags_delete_in_use_message">Etichetele șterse vor fi eliminate din toate elementele cărora le sunt atribuite.</string>
+    <string name="habit_current_streak">Serie curentă</string>
+    <string name="habit_best_streak">Cea mai bună serie</string>
+    <string name="habit_total_check_ins">Total bifări</string>
+    <string name="habit_activity_title">Activitate</string>
+    <string name="habit_activity_description">%1$d bifări în ultimele %2$d săptămâni</string>
+    <string name="habit_legend_less">Mai puțin</string>
+    <string name="habit_legend_more">Mai mult</string>
 </resources>

@@ -1320,4 +1320,11 @@
     <string name="notes_reverted_from_archive_count">%1$d not arşivden geri yüklendi</string>
     <string name="group_delete_in_use_message">Silinen bir grubu kullanan hatırlatıcılar grupsuz kalacak.</string>
     <string name="tags_delete_in_use_message">Silinen etiketler, atandıkları tüm öğelerden kaldırılacak.</string>
+    <string name="habit_current_streak">Mevcut seri</string>
+    <string name="habit_best_streak">En iyi seri</string>
+    <string name="habit_total_check_ins">Toplam işaretleme</string>
+    <string name="habit_activity_title">Etkinlik</string>
+    <string name="habit_activity_description">Son %2$d haftada %1$d işaretleme</string>
+    <string name="habit_legend_less">Az</string>
+    <string name="habit_legend_more">Çok</string>
 </resources>

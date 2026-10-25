@@ -1313,4 +1313,11 @@
     <string name="notes_reverted_from_archive_count">메모 %1$d개가 보관함에서 복원되었습니다</string>
     <string name="group_delete_in_use_message">삭제된 그룹을 사용하는 미리 알림은 그룹 없이 남게 됩니다.</string>
     <string name="tags_delete_in_use_message">삭제된 태그는 지정된 모든 항목에서 제거됩니다.</string>
+    <string name="habit_current_streak">현재 연속 기록</string>
+    <string name="habit_best_streak">최고 연속 기록</string>
+    <string name="habit_total_check_ins">총 체크인</string>
+    <string name="habit_activity_title">활동</string>
+    <string name="habit_activity_description">최근 %2$d주 동안 체크인 %1$d회</string>
+    <string name="habit_legend_less">적음</string>
+    <string name="habit_legend_more">많음</string>
 </resources>

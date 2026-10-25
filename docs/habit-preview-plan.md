@@ -1,6 +1,6 @@
 # Habit preview screen - implementation plan
 
-Status: planned, not implemented.
+Status: implemented (cards 1-4). Notes: `CheckInHabitUseCase` takes a `HabitWithProgress`; the activity grid requests 26 weeks and the bar shows as many newest weeks as fit the width.
 
 ## 1. How Habits work today
 

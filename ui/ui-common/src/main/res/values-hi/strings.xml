@@ -1316,4 +1316,11 @@
     <string name="notes_reverted_from_archive_count">%1$d नोट संग्रह से पुनर्स्थापित किए गए</string>
     <string name="group_delete_in_use_message">हटाए गए समूह का उपयोग करने वाले रिमाइंडर बिना किसी समूह के रह जाएंगे।</string>
     <string name="tags_delete_in_use_message">हटाए गए टैग उन सभी आइटम से हटा दिए जाएंगे जिनसे वे जुड़े हैं।</string>
+    <string name="habit_current_streak">मौजूदा स्ट्रीक</string>
+    <string name="habit_best_streak">सर्वश्रेष्ठ स्ट्रीक</string>
+    <string name="habit_total_check_ins">कुल चेक-इन</string>
+    <string name="habit_activity_title">गतिविधि</string>
+    <string name="habit_activity_description">पिछले %2$d हफ़्तों में %1$d चेक-इन</string>
+    <string name="habit_legend_less">कम</string>
+    <string name="habit_legend_more">ज़्यादा</string>
 </resources>

@@ -1311,4 +1311,11 @@
     <string name="notes_reverted_from_archive_count">กู้คืนโน้ต %1$d รายการจากคลังเก็บแล้ว</string>
     <string name="group_delete_in_use_message">การเตือนความจำที่ใช้กลุ่มที่ลบจะไม่มีกลุ่ม</string>
     <string name="tags_delete_in_use_message">แท็กที่ลบจะถูกนำออกจากทุกรายการที่กำหนดไว้</string>
+    <string name="habit_current_streak">สตรีคปัจจุบัน</string>
+    <string name="habit_best_streak">สตรีคที่ดีที่สุด</string>
+    <string name="habit_total_check_ins">เช็คอินทั้งหมด</string>
+    <string name="habit_activity_title">กิจกรรม</string>
+    <string name="habit_activity_description">เช็คอิน %1$d ครั้งใน %2$d สัปดาห์ที่ผ่านมา</string>
+    <string name="habit_legend_less">น้อย</string>
+    <string name="habit_legend_more">มาก</string>
 </resources>

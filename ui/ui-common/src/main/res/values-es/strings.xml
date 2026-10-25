@@ -1323,4 +1323,11 @@
     <string name="notes_reverted_from_archive_count">%1$d notas restauradas del archivo</string>
     <string name="group_delete_in_use_message">Los recordatorios que usan un grupo eliminado se quedarán sin grupo.</string>
     <string name="tags_delete_in_use_message">Las etiquetas eliminadas se quitarán de todos los elementos a los que estén asignadas.</string>
+    <string name="habit_current_streak">Racha actual</string>
+    <string name="habit_best_streak">Mejor racha</string>
+    <string name="habit_total_check_ins">Registros totales</string>
+    <string name="habit_activity_title">Actividad</string>
+    <string name="habit_activity_description">%1$d registros en las últimas %2$d semanas</string>
+    <string name="habit_legend_less">Menos</string>
+    <string name="habit_legend_more">Más</string>
 </resources>

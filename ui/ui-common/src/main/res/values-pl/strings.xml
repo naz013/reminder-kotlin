@@ -1326,4 +1326,11 @@
     <string name="notes_reverted_from_archive_count">Przywrócono %1$d notatek z archiwum</string>
     <string name="group_delete_in_use_message">Przypomnienia używające usuniętej grupy pozostaną bez grupy.</string>
     <string name="tags_delete_in_use_message">Usunięte tagi zostaną usunięte ze wszystkich elementów, do których są przypisane.</string>
+    <string name="habit_current_streak">Obecna seria</string>
+    <string name="habit_best_streak">Najlepsza seria</string>
+    <string name="habit_total_check_ins">Wszystkie odhaczenia</string>
+    <string name="habit_activity_title">Aktywność</string>
+    <string name="habit_activity_description">Odhaczenia w ostatnich %2$d tygodniach: %1$d</string>
+    <string name="habit_legend_less">Mniej</string>
+    <string name="habit_legend_more">Więcej</string>
 </resources>

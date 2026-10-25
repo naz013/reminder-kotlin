@@ -1318,4 +1318,11 @@
     <string name="notes_reverted_from_archive_count">%1$d notities hersteld uit archief</string>
     <string name="group_delete_in_use_message">Herinneringen die een verwijderde groep gebruiken, blijven zonder groep achter.</string>
     <string name="tags_delete_in_use_message">De verwijderde tags worden verwijderd van alle items waaraan ze zijn toegewezen.</string>
+    <string name="habit_current_streak">Huidige reeks</string>
+    <string name="habit_best_streak">Beste reeks</string>
+    <string name="habit_total_check_ins">Totaal aantal check-ins</string>
+    <string name="habit_activity_title">Activiteit</string>
+    <string name="habit_activity_description">%1$d check-ins in de afgelopen %2$d weken</string>
+    <string name="habit_legend_less">Minder</string>
+    <string name="habit_legend_more">Meer</string>
 </resources>

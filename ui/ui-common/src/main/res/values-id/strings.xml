@@ -1315,4 +1315,11 @@
     <string name="notes_reverted_from_archive_count">%1$d catatan dikembalikan dari arsip</string>
     <string name="group_delete_in_use_message">Pengingat yang menggunakan grup yang dihapus akan tidak memiliki grup.</string>
     <string name="tags_delete_in_use_message">Tag yang dihapus akan dilepas dari semua item yang menggunakannya.</string>
+    <string name="habit_current_streak">Rangkaian saat ini</string>
+    <string name="habit_best_streak">Rangkaian terbaik</string>
+    <string name="habit_total_check_ins">Total check-in</string>
+    <string name="habit_activity_title">Aktivitas</string>
+    <string name="habit_activity_description">%1$d check-in dalam %2$d minggu terakhir</string>
+    <string name="habit_legend_less">Lebih sedikit</string>
+    <string name="habit_legend_more">Lebih banyak</string>
 </resources>

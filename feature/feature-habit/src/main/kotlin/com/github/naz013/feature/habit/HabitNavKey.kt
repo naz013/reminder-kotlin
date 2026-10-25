@@ -8,6 +8,11 @@ sealed interface HabitNavKey : NavKey {
   data object List : HabitNavKey
 
   @Serializable
+  data class Preview(
+    val habitId: String
+  ) : HabitNavKey
+
+  @Serializable
   data class Editor(
     val habitId: String? = null
   ) : HabitNavKey

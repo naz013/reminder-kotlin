@@ -1330,4 +1330,11 @@
     <string name="notes_reverted_from_archive_count">تمت استعادة %1$d ملاحظات من الأرشيف</string>
     <string name="group_delete_in_use_message">ستبقى التذكيرات التي تستخدم مجموعة محذوفة بدون مجموعة.</string>
     <string name="tags_delete_in_use_message">ستتم إزالة العلامات المحذوفة من كل عنصر مرتبطة به.</string>
+    <string name="habit_current_streak">السلسلة الحالية</string>
+    <string name="habit_best_streak">أفضل سلسلة</string>
+    <string name="habit_total_check_ins">إجمالي التسجيلات</string>
+    <string name="habit_activity_title">النشاط</string>
+    <string name="habit_activity_description">%1$d تسجيلات في آخر %2$d أسبوعًا</string>
+    <string name="habit_legend_less">أقل</string>
+    <string name="habit_legend_more">أكثر</string>
 </resources>

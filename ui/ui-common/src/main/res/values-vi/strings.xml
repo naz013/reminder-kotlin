@@ -1315,4 +1315,11 @@
     <string name="notes_reverted_from_archive_count">Đã khôi phục %1$d ghi chú từ lưu trữ</string>
     <string name="group_delete_in_use_message">Các lời nhắc dùng nhóm đã xóa sẽ không còn thuộc nhóm nào.</string>
     <string name="tags_delete_in_use_message">Các thẻ đã xóa sẽ bị gỡ khỏi mọi mục mà chúng được gán.</string>
+    <string name="habit_current_streak">Chuỗi hiện tại</string>
+    <string name="habit_best_streak">Chuỗi tốt nhất</string>
+    <string name="habit_total_check_ins">Tổng số lần check-in</string>
+    <string name="habit_activity_title">Hoạt động</string>
+    <string name="habit_activity_description">%1$d lần check-in trong %2$d tuần qua</string>
+    <string name="habit_legend_less">Ít hơn</string>
+    <string name="habit_legend_more">Nhiều hơn</string>
 </resources>

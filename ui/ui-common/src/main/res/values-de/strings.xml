@@ -1316,4 +1316,11 @@
     <string name="notes_reverted_from_archive_count">%1$d Notizen aus dem Archiv wiederhergestellt</string>
     <string name="group_delete_in_use_message">Erinnerungen, die eine gelöschte Gruppe verwenden, bleiben ohne Gruppe.</string>
     <string name="tags_delete_in_use_message">Die gelöschten Tags werden von allen Elementen entfernt, denen sie zugewiesen sind.</string>
+    <string name="habit_current_streak">Aktuelle Serie</string>
+    <string name="habit_best_streak">Beste Serie</string>
+    <string name="habit_total_check_ins">Check-ins insgesamt</string>
+    <string name="habit_activity_title">Aktivität</string>
+    <string name="habit_activity_description">%1$d Check-ins in den letzten %2$d Wochen</string>
+    <string name="habit_legend_less">Weniger</string>
+    <string name="habit_legend_more">Mehr</string>
 </resources>

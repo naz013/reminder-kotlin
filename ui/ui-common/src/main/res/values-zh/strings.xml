@@ -1313,4 +1313,11 @@
     <string name="notes_reverted_from_archive_count">已从归档恢复 %1$d 条笔记</string>
     <string name="group_delete_in_use_message">使用已删除分组的提醒将不再属于任何分组。</string>
     <string name="tags_delete_in_use_message">已删除的标签将从其所分配的所有项目中移除。</string>
+    <string name="habit_current_streak">当前连续天数</string>
+    <string name="habit_best_streak">最佳连续记录</string>
+    <string name="habit_total_check_ins">总打卡次数</string>
+    <string name="habit_activity_title">活动</string>
+    <string name="habit_activity_description">最近%2$d周打卡%1$d次</string>
+    <string name="habit_legend_less">较少</string>
+    <string name="habit_legend_more">较多</string>
 </resources>

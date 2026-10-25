@@ -90,7 +90,7 @@ internal class HabitListViewModel(
   }
 
   fun onHabitClick(id: String) {
-    navigationEvent.emit(NavigationEvent.OpenEditor(id))
+    navigationEvent.emit(NavigationEvent.OpenPreview(id))
   }
 
   fun onCheckInClick(id: String) {
@@ -105,6 +105,10 @@ internal class HabitListViewModel(
 
     data class OpenEditor(
       val id: String?
+    ) : NavigationEvent
+
+    data class OpenPreview(
+      val id: String
     ) : NavigationEvent
   }
 

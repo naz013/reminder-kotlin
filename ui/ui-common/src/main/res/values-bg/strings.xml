@@ -1320,4 +1320,11 @@
     <string name="notes_reverted_from_archive_count">%1$d бележки са възстановени от архива</string>
     <string name="group_delete_in_use_message">Напомнянията, които използват изтрита група, ще останат без група.</string>
     <string name="tags_delete_in_use_message">Изтритите тагове ще бъдат премахнати от всеки елемент, към който са добавени.</string>
+    <string name="habit_current_streak">Текуща серия</string>
+    <string name="habit_best_streak">Най-добра серия</string>
+    <string name="habit_total_check_ins">Общо отбелязвания</string>
+    <string name="habit_activity_title">Активност</string>
+    <string name="habit_activity_description">%1$d отбелязвания през последните %2$d седмици</string>
+    <string name="habit_legend_less">По-малко</string>
+    <string name="habit_legend_more">Повече</string>
 </resources>

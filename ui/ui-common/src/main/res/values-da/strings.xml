@@ -1318,4 +1318,11 @@
     <string name="notes_reverted_from_archive_count">%1$d noter blev gendannet fra arkivet</string>
     <string name="group_delete_in_use_message">Påmindelser, der bruger en slettet gruppe, bliver uden gruppe.</string>
     <string name="tags_delete_in_use_message">De slettede tags fjernes fra alle elementer, de er tilknyttet.</string>
+    <string name="habit_current_streak">Nuværende stribe</string>
+    <string name="habit_best_streak">Bedste stribe</string>
+    <string name="habit_total_check_ins">Check-ins i alt</string>
+    <string name="habit_activity_title">Aktivitet</string>
+    <string name="habit_activity_description">%1$d check-ins i de seneste %2$d uger</string>
+    <string name="habit_legend_less">Mindre</string>
+    <string name="habit_legend_more">Mere</string>
 </resources>
