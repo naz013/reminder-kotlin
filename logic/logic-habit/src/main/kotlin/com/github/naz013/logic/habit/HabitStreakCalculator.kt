@@ -22,6 +22,25 @@ class HabitStreakCalculator {
     }
   }
 
+  /** Longest run of consecutive periods that reached the target within [checkIns]. */
+  fun longestStreak(habit: Habit, checkIns: List<HabitCheckIn>): Int {
+    val target = habit.targetCount.coerceAtLeast(1)
+    val (periods, step) = when (habit.frequency) {
+      HabitFrequency.DAILY -> checkIns.groupBy { it.date } to 1L
+      HabitFrequency.WEEKLY -> checkIns.groupBy { it.date.weekStart() } to 7L
+    }
+    val reached = periods.filterValues { items -> items.sumOf { it.count } >= target }.keys.sorted()
+    var longest = 0
+    var run = 0
+    var previous: LocalDate? = null
+    for (period in reached) {
+      run = if (previous != null && previous.plusDays(step) == period) run + 1 else 1
+      longest = maxOf(longest, run)
+      previous = period
+    }
+    return longest
+  }
+
   fun periodCount(habit: Habit, checkIns: List<HabitCheckIn>, today: LocalDate): Int {
     return when (habit.frequency) {
       HabitFrequency.DAILY -> checkIns.filter { it.date == today }.sumOf { it.count }

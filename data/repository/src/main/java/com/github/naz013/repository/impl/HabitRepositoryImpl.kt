@@ -19,6 +19,8 @@ internal class HabitRepositoryImpl(
 
   override fun observeAll(): Flow<List<Habit>> = habitDao.observeAll().map { list -> list.map { it.toDomain() } }
 
+  override fun observeById(id: String): Flow<Habit?> = habitDao.observeById(id).map { it?.toDomain() }
+
   override suspend fun getAll(): List<Habit> {
     Logger.d(TAG, "Get all habits")
     return habitDao.getAll().map { it.toDomain() }

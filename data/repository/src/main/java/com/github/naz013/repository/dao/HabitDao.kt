@@ -14,6 +14,9 @@ internal abstract class HabitDao {
   @Query("SELECT * FROM Habit ORDER BY isPinned DESC, createdAt DESC")
   abstract fun observeAll(): Flow<List<HabitEntity>>
 
+  @Query("SELECT * FROM Habit WHERE id=:id")
+  abstract fun observeById(id: String): Flow<HabitEntity?>
+
   @Query("SELECT * FROM Habit ORDER BY isPinned DESC, createdAt DESC")
   abstract fun getAll(): List<HabitEntity>
 

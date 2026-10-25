@@ -149,4 +149,36 @@ class HabitStreakCalculatorTest {
     assertEquals(2, calculator.periodCount(habit(HabitFrequency.DAILY), items, today))
     assertEquals(5, calculator.periodCount(habit(HabitFrequency.WEEKLY), items, today))
   }
+
+  @Test
+  fun `longest daily streak is zero with no check-ins`() {
+    assertEquals(0, calculator.longestStreak(habit(HabitFrequency.DAILY), emptyList()))
+  }
+
+  @Test
+  fun `longest daily streak picks the longest run across gaps`() {
+    val days = listOf(0L, 1L, 2L, 5L, 6L, 7L, 8L, 9L, 20L)
+    val items = days.map { checkIn(today.minusDays(it)) }
+
+    assertEquals(5, calculator.longestStreak(habit(HabitFrequency.DAILY), items))
+  }
+
+  @Test
+  fun `longest daily streak ignores days below the target`() {
+    val items = listOf(checkIn(today, 2), checkIn(today.minusDays(1), 1), checkIn(today.minusDays(2), 2))
+
+    assertEquals(1, calculator.longestStreak(habit(HabitFrequency.DAILY, target = 2), items))
+  }
+
+  @Test
+  fun `longest weekly streak sums each week and counts consecutive weeks`() {
+    val items = listOf(
+      checkIn(today, 1),
+      checkIn(today.minusDays(1), 1),
+      checkIn(today.minusWeeks(1), 2),
+      checkIn(today.minusWeeks(3), 2)
+    )
+
+    assertEquals(2, calculator.longestStreak(habit(HabitFrequency.WEEKLY, target = 2), items))
+  }
 }
