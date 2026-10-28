@@ -2,6 +2,7 @@ package com.github.naz013.domain.habit
 
 import com.github.naz013.domain.reminder.v2.SyncMetadata
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import java.util.UUID
 
 data class Habit(
@@ -15,6 +16,9 @@ data class Habit(
   /** Opaque icon index, same convention as `Routine.icon`; null means no icon selected. */
   val icon: Int? = null,
   val isPinned: Boolean = false,
+  /** Daily reminder time; null means no reminder. */
+  val reminderTime: LocalTime? = null,
+  val remindOnlyIfNotDone: Boolean = true,
   val createdAt: LocalDateTime,
   val updatedAt: LocalDateTime,
   val sync: SyncMetadata = SyncMetadata()

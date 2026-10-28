@@ -6,9 +6,12 @@ import com.github.naz013.domain.habit.HabitFrequency
 import com.github.naz013.domain.reminder.v2.SyncMetadata
 import com.github.naz013.domain.sync.SyncState
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 
 class HabitMapperTest {
 
@@ -29,6 +32,33 @@ class HabitMapperTest {
     )
 
     assertEquals(habit, habit.toEntity().toDomain())
+  }
+
+  @Test
+  fun `round trips a reminder time stored as seconds of day`() {
+    val habit = Habit(
+      reminderTime = LocalTime.of(7, 30),
+      remindOnlyIfNotDone = false,
+      createdAt = LocalDateTime.of(2026, 10, 1, 8, 0),
+      updatedAt = LocalDateTime.of(2026, 10, 1, 8, 0)
+    )
+
+    val entity = habit.toEntity()
+
+    assertEquals(27000, entity.reminderTime)
+    assertEquals(habit, entity.toDomain())
+  }
+
+  @Test
+  fun `maps a habit without reminder to null time and only-if-not-done true`() {
+    val entity = Habit(
+      createdAt = LocalDateTime.of(2026, 10, 1, 8, 0),
+      updatedAt = LocalDateTime.of(2026, 10, 1, 8, 0)
+    ).toEntity()
+
+    assertNull(entity.reminderTime)
+    assertTrue(entity.remindOnlyIfNotDone)
+    assertNull(entity.toDomain().reminderTime)
   }
 
   @Test

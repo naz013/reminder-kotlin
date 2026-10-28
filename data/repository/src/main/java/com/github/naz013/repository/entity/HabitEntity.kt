@@ -24,6 +24,8 @@ internal data class HabitEntity(
   val color: Int = 0,
   val icon: Int? = null,
   val isPinned: Boolean = false,
+  val reminderTime: Int? = null,
+  val remindOnlyIfNotDone: Boolean = true,
   val createdAt: Long,
   val updatedAt: Long,
   val version: Long = 0L,

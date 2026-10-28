@@ -21,6 +21,10 @@ data class HabitJson(
   val icon: Int? = null,
   @SerializedName("isPinned")
   val isPinned: Boolean = false,
+  @SerializedName("reminderTime")
+  val reminderTime: String? = null,
+  @SerializedName("remindOnlyIfNotDone")
+  val remindOnlyIfNotDone: Boolean? = null,
   @SerializedName("createdAt")
   val createdAt: String,
   @SerializedName("updatedAt")

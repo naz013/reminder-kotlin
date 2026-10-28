@@ -6,6 +6,7 @@ import com.github.naz013.domain.habit.HabitFrequency
 import com.github.naz013.domain.reminder.v2.SyncMetadata
 import com.github.naz013.domain.sync.SyncState
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
 
 internal fun Habit.toEntity(): HabitEntity = HabitEntity(
   id = id,
@@ -16,6 +17,8 @@ internal fun Habit.toEntity(): HabitEntity = HabitEntity(
   color = color,
   icon = icon,
   isPinned = isPinned,
+  reminderTime = reminderTime?.toSecondOfDay(),
+  remindOnlyIfNotDone = remindOnlyIfNotDone,
   createdAt = createdAt.toEpochMillisUtc(),
   updatedAt = updatedAt.toEpochMillisUtc(),
   version = sync.version,
@@ -31,6 +34,8 @@ internal fun HabitEntity.toDomain(): Habit = Habit(
   color = color,
   icon = icon,
   isPinned = isPinned,
+  reminderTime = reminderTime?.let { LocalTime.ofSecondOfDay(it.toLong()) },
+  remindOnlyIfNotDone = remindOnlyIfNotDone,
   createdAt = createdAt.toLocalDateTimeUtc(),
   updatedAt = updatedAt.toLocalDateTimeUtc(),
   sync = SyncMetadata(version = version, syncState = SyncState.valueOf(syncState))

@@ -70,6 +70,7 @@ import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.io.BufferedReader
 import java.io.BufferedWriter
@@ -254,6 +255,8 @@ internal fun HabitJson.toDomain(): Habit = Habit(
   color = color,
   icon = icon,
   isPinned = isPinned,
+  reminderTime = reminderTime?.let { runCatching { LocalTime.parse(it) }.getOrNull() },
+  remindOnlyIfNotDone = remindOnlyIfNotDone ?: true,
   createdAt = LocalDateTime.parse(createdAt, jsonDateTimeFormatter),
   updatedAt = LocalDateTime.parse(updatedAt, jsonDateTimeFormatter),
   sync = SyncMetadata(version = version, syncState = SyncState.Synced)
@@ -277,6 +280,8 @@ internal fun Habit.toJson(): HabitJson = HabitJson(
   color = color,
   icon = icon,
   isPinned = isPinned,
+  reminderTime = reminderTime?.toString(),
+  remindOnlyIfNotDone = remindOnlyIfNotDone,
   createdAt = createdAt.format(jsonDateTimeFormatter),
   updatedAt = updatedAt.format(jsonDateTimeFormatter),
   version = sync.version

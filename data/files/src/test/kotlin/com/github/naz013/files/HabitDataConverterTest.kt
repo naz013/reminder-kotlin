@@ -9,10 +9,12 @@ import com.github.naz013.files.model.HabitJson
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 
 class HabitDataConverterTest {
 
@@ -86,6 +88,43 @@ class HabitDataConverterTest {
 
     assertTrue(result is Habit)
     assertEquals(HabitFrequency.WEEKLY, (result as Habit).frequency)
+  }
+
+  @Test
+  fun `round trips a habit reminder time and only-if-not-done flag`() {
+    val habit = Habit(
+      reminderTime = LocalTime.of(7, 30),
+      remindOnlyIfNotDone = false,
+      createdAt = LocalDateTime.of(2026, 10, 1, 8, 0),
+      updatedAt = LocalDateTime.of(2026, 10, 1, 8, 0)
+    )
+
+    val result = habit.toJson().toDomain()
+
+    assertEquals(LocalTime.of(7, 30), result.reminderTime)
+    assertEquals(false, result.remindOnlyIfNotDone)
+  }
+
+  @Test
+  fun `defaults to no reminder and only-if-not-done for old habit json without the fields`() {
+    val raw = """{"id":"h-1","name":"Run","frequency":"DAILY","targetCount":1,"color":0,""" +
+      """"isPinned":false,"createdAt":"2026-10-01T08:00:00","updatedAt":"2026-10-01T08:00:00","versionId":2}"""
+
+    val result = parseRaw(raw) as Habit
+
+    assertNull(result.reminderTime)
+    assertTrue(result.remindOnlyIfNotDone)
+  }
+
+  @Test
+  fun `ignores an unparsable reminder time in a habit file`() {
+    val json = Habit(
+      reminderTime = LocalTime.of(7, 30),
+      createdAt = LocalDateTime.of(2026, 10, 1, 8, 0),
+      updatedAt = LocalDateTime.of(2026, 10, 1, 8, 0)
+    ).toJson().copy(reminderTime = "bad")
+
+    assertNull(json.toDomain().reminderTime)
   }
 
   @Test
