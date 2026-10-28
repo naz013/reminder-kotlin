@@ -90,6 +90,13 @@ class RecurEventManagerTest {
   }
 
   @Test
+  fun `regenerate returns null when parse throws`() {
+    every { api.parseObject("obj") } throws IllegalStateException("bad")
+
+    assertNull(manager.regenerate("obj", null))
+  }
+
+  @Test
   fun `regenerate returns null when rebuild throws`() {
     val start = LocalDateTime.of(2026, 10, 18, 9, 0)
     every { api.parseObject("obj") } returns RuleMap(mapOf(TagType.DTSTART to DateTimeStartTag(UtcDateTime(start))))

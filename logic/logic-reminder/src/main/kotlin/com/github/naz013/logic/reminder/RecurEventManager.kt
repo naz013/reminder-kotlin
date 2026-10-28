@@ -7,6 +7,7 @@ import com.github.naz013.icalendar.RecurrenceDateTimeTag
 import com.github.naz013.icalendar.TagType
 import com.github.naz013.icalendar.UtcDateTime
 import com.github.naz013.logging.Logger
+import kotlin.coroutines.cancellation.CancellationException
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
@@ -53,13 +54,15 @@ class RecurEventManager(
     zone: ZoneId?,
   ): String? {
     if (recurObject.isNullOrEmpty()) return null
-    val map = iCalendarApi.parseObject(recurObject) ?: return null
-    val start = map.getTagOrNull<DateTimeStartTag>(TagType.DTSTART) ?: return null
-    val updated = map.copy(map = map.map + (TagType.DTSTART to start.copy(timeZoneId = zone?.id)))
     return try {
+      val map = iCalendarApi.parseObject(recurObject) ?: return null
+      val start = map.getTagOrNull<DateTimeStartTag>(TagType.DTSTART) ?: return null
+      val updated = map.copy(map = map.map + (TagType.DTSTART to start.copy(timeZoneId = zone?.id)))
       iCalendarApi.createObject(updated)
+    } catch (e: CancellationException) {
+      throw e
     } catch (e: Exception) {
-      Logger.w(TAG, "Failed to regenerate recur object: ${e.message}")
+      Logger.e(TAG, "Failed to regenerate recur object", e)
       null
     }
   }
