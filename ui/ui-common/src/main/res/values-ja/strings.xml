@@ -1320,4 +1320,5 @@
     <string name="habit_activity_description">過去%2$d週間で%1$d回チェックイン</string>
     <string name="habit_legend_less">少ない</string>
     <string name="habit_legend_more">多い</string>
+    <string name="habit_nudge_text">習慣を記録する時間です</string>
 </resources>

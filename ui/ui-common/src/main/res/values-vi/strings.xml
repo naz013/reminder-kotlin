@@ -1322,4 +1322,5 @@
     <string name="habit_activity_description">%1$d lần check-in trong %2$d tuần qua</string>
     <string name="habit_legend_less">Ít hơn</string>
     <string name="habit_legend_more">Nhiều hơn</string>
+    <string name="habit_nudge_text">Đã đến lúc ghi nhận thói quen của bạn</string>
 </resources>

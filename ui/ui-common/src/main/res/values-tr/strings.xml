@@ -1327,4 +1327,5 @@
     <string name="habit_activity_description">Son %2$d haftada %1$d işaretleme</string>
     <string name="habit_legend_less">Az</string>
     <string name="habit_legend_more">Çok</string>
+    <string name="habit_nudge_text">Alışkanlığını işaretleme zamanı</string>
 </resources>

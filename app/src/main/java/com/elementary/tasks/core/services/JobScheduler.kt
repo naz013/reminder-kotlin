@@ -28,6 +28,7 @@ import com.github.naz013.feature.googletask.work.UpdateTaskTask
 import com.github.naz013.feature.routine.RoutineRecurrenceResetTask
 import com.github.naz013.feature.settings.calendar.work.ScanGoogleCalendarEventsTask
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.habit.nudge.HabitNudgeTask
 import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.workapi.PeriodicWorkRequest
 import com.github.naz013.workapi.TaskData
@@ -109,6 +110,29 @@ class JobScheduler(
       ),
     )
     Logger.i(TAG, "Scheduled routine recurrence reset check.")
+  }
+
+  override fun scheduleHabitNudge(
+    habitId: String,
+    triggerAtMillis: Long,
+  ) {
+    val delay = triggerAtMillis - System.currentTimeMillis()
+    if (delay <= 0) return
+    val tag = HabitNudgeTask.tagFor(habitId)
+    workScheduler.cancelByTag(tag)
+    workScheduler.enqueue(
+      WorkRequest(
+        taskKey = HabitNudgeTask.TASK_KEY,
+        tag = tag,
+        input = TaskData.builder().putString(HabitNudgeTask.KEY_HABIT_ID, habitId).build(),
+        initialDelayMillis = delay,
+      ),
+    )
+    Logger.i(TAG, "Scheduled habit nudge for $habitId in $delay ms.")
+  }
+
+  override fun cancelHabitNudge(habitId: String) {
+    workScheduler.cancelByTag(HabitNudgeTask.tagFor(habitId))
   }
 
   override fun scheduleGoogleCalendarScanFallbackCheck() {

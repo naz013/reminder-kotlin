@@ -1318,4 +1318,5 @@
     <string name="habit_activity_description">เช็คอิน %1$d ครั้งใน %2$d สัปดาห์ที่ผ่านมา</string>
     <string name="habit_legend_less">น้อย</string>
     <string name="habit_legend_more">มาก</string>
+    <string name="habit_nudge_text">ได้เวลาบันทึกนิสัยของคุณแล้ว</string>
 </resources>

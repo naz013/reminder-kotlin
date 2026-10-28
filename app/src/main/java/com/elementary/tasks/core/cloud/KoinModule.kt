@@ -11,7 +11,7 @@ import org.koin.dsl.module
 val cloudModule = module {
   factory { SyncSettingsImpl(get()) as SyncSettings }
   factory { CloudApiProviderImpl(get(), get(), get(), get()) as CloudApiProvider }
-  factory { DataPostProcessorImpl(get(), get(), get(), get()) as DataPostProcessor }
+  factory { DataPostProcessorImpl(get(), get(), get(), get(), get()) as DataPostProcessor }
   factory { FileCacheProviderImpl(get()) as FileCacheProvider }
   single { TagSyncTriggerImpl(get()) as TagSyncTrigger }
   factory { IsProUserUseCaseImpl(get()) as IsProUserUseCase }

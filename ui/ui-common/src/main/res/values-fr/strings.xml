@@ -1330,4 +1330,5 @@
     <string name="habit_activity_description">%1$d validations au cours des %2$d dernières semaines</string>
     <string name="habit_legend_less">Moins</string>
     <string name="habit_legend_more">Plus</string>
+    <string name="habit_nudge_text">C\'est le moment de valider votre habitude</string>
 </resources>

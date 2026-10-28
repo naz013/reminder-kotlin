@@ -5,6 +5,7 @@ import com.github.naz013.domain.habit.Habit
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.files.DataType
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.habit.nudge.ScheduleHabitNudgeUseCase
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.logic.schedule.WorkType
 import com.github.naz013.repository.HabitRepository
@@ -12,7 +13,8 @@ import com.github.naz013.repository.HabitRepository
 class SaveHabitUseCase(
   private val habitRepository: HabitRepository,
   private val nowDateTimeProvider: NowDateTimeProvider,
-  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase
+  private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
+  private val scheduleHabitNudgeUseCase: ScheduleHabitNudgeUseCase
 ) {
   suspend operator fun invoke(habit: Habit): Habit {
     val toSave = habit.copy(
@@ -23,6 +25,7 @@ class SaveHabitUseCase(
       )
     )
     habitRepository.save(toSave)
+    scheduleHabitNudgeUseCase(toSave)
     scheduleBackgroundWorkUseCase(
       workType = WorkType.Upload,
       dataType = DataType.Habits,

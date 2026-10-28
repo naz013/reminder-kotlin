@@ -1330,4 +1330,5 @@
     <string name="habit_activity_description">%1$d check-in nelle ultime %2$d settimane</string>
     <string name="habit_legend_less">Meno</string>
     <string name="habit_legend_more">Più</string>
+    <string name="habit_nudge_text">È ora di registrare la tua abitudine</string>
 </resources>

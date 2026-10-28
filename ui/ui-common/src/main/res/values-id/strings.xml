@@ -1322,4 +1322,5 @@
     <string name="habit_activity_description">%1$d check-in dalam %2$d minggu terakhir</string>
     <string name="habit_legend_less">Lebih sedikit</string>
     <string name="habit_legend_more">Lebih banyak</string>
+    <string name="habit_nudge_text">Saatnya mencatat kebiasaanmu</string>
 </resources>

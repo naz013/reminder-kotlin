@@ -8,10 +8,12 @@ import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.files.DataType
 import com.github.naz013.logic.habit.HabitStreakCalculator
 import com.github.naz013.logic.habit.HabitWithProgress
+import com.github.naz013.logic.habit.nudge.ScheduleHabitNudgeUseCase
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
 import com.github.naz013.logic.schedule.WorkType
 import com.github.naz013.repository.HabitCheckInRepository
 import com.github.naz013.repository.HabitRepository
+import com.github.naz013.scheduler.JobSchedulerApi
 import com.github.naz013.testing.mockDispatcherProvider
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -35,6 +37,8 @@ class HabitUseCasesTest {
   private val habitRepository = mockk<HabitRepository>(relaxed = true)
   private val checkInRepository = mockk<HabitCheckInRepository>(relaxed = true)
   private val schedule = mockk<ScheduleBackgroundWorkUseCase>(relaxed = true)
+  private val scheduleNudge = mockk<ScheduleHabitNudgeUseCase>(relaxed = true)
+  private val jobScheduler = mockk<JobSchedulerApi>(relaxed = true)
   private val nowProvider = mockk<NowDateTimeProvider> {
     every { nowDate() } returns today
     every { nowDateTime() } returns now
@@ -126,20 +130,22 @@ class HabitUseCasesTest {
 
   @Test
   fun `save bumps version, marks waiting for upload and schedules an upload`() = runTest {
-    val result = SaveHabitUseCase(habitRepository, nowProvider, schedule)(habit())
+    val result = SaveHabitUseCase(habitRepository, nowProvider, schedule, scheduleNudge)(habit())
 
     assertEquals(1L, result.sync.version)
     assertEquals(SyncState.WaitingForUpload, result.sync.syncState)
     assertEquals(now, result.updatedAt)
     coVerify { habitRepository.save(result) }
+    coVerify { scheduleNudge(result) }
     coVerify { schedule(workType = WorkType.Upload, dataType = DataType.Habits, id = "h-1") }
   }
 
   @Test
   fun `delete removes the habit and schedules a delete upload`() = runTest {
-    DeleteHabitUseCase(habitRepository, schedule)("h-1")
+    DeleteHabitUseCase(habitRepository, schedule, jobScheduler)("h-1")
 
     coVerify { habitRepository.delete("h-1") }
+    coVerify { jobScheduler.cancelHabitNudge("h-1") }
     coVerify { schedule(workType = WorkType.Delete, dataType = DataType.Habits, id = "h-1") }
   }
 

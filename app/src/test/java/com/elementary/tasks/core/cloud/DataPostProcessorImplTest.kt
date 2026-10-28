@@ -12,7 +12,11 @@ import com.github.naz013.repository.TagAssignmentRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import com.github.naz013.domain.habit.Habit
+import com.github.naz013.logic.habit.nudge.ScheduleHabitNudgeUseCase
+import io.mockk.verify
 import kotlinx.coroutines.test.runTest
+import org.threeten.bp.LocalDateTime
 import org.junit.Before
 import org.junit.Test
 
@@ -21,6 +25,7 @@ class DataPostProcessorImplTest {
   private val prefs = mockk<Prefs>(relaxed = true)
   private val activateReminderUseCase = mockk<ActivateReminderUseCase>(relaxed = true)
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
+  private val scheduleHabitNudgeUseCase = mockk<ScheduleHabitNudgeUseCase>(relaxed = true)
   private lateinit var processor: DataPostProcessorImpl
 
   @Before
@@ -29,8 +34,19 @@ class DataPostProcessorImplTest {
       groupV2Repository,
       prefs,
       activateReminderUseCase,
-      tagAssignmentRepository
+      tagAssignmentRepository,
+      scheduleHabitNudgeUseCase
     )
+  }
+
+  @Test
+  fun `process with a habit schedules its nudge`() = runTest {
+    val stamp = LocalDateTime.of(2026, 10, 1, 8, 0)
+    val habit = Habit(id = "h-1", createdAt = stamp, updatedAt = stamp)
+
+    processor.process(DataType.Habits, habit)
+
+    verify(exactly = 1) { scheduleHabitNudgeUseCase(habit) }
   }
 
   @Test

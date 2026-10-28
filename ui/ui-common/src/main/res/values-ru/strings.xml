@@ -1332,4 +1332,5 @@
     <string name="habit_activity_description">Отметок за последние %2$d нед.: %1$d</string>
     <string name="habit_legend_less">Меньше</string>
     <string name="habit_legend_more">Больше</string>
+    <string name="habit_nudge_text">Пора отметить привычку</string>
 </resources>

@@ -1320,4 +1320,5 @@
     <string name="habit_activity_description">最近%2$d周打卡%1$d次</string>
     <string name="habit_legend_less">较少</string>
     <string name="habit_legend_more">较多</string>
+    <string name="habit_nudge_text">该打卡你的习惯了</string>
 </resources>

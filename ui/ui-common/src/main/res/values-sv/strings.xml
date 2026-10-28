@@ -1325,4 +1325,5 @@
     <string name="habit_activity_description">%1$d incheckningar de senaste %2$d veckorna</string>
     <string name="habit_legend_less">Mindre</string>
     <string name="habit_legend_more">Mer</string>
+    <string name="habit_nudge_text">Dags att checka in din vana</string>
 </resources>

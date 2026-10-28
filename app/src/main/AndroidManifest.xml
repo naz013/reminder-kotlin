@@ -192,6 +192,8 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
             </intent-filter>
         </receiver>
 
@@ -214,6 +216,9 @@
 
         <receiver
             android:name=".core.services.BirthdayActionReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".core.services.HabitActionReceiver"
             android:exported="false" />
         <receiver
             android:name=".core.services.GoogleCalendarEventActionReceiver"

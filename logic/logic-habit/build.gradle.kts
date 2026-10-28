@@ -13,7 +13,10 @@ dependencies {
   implementation(project(":core:date-calculations"))
   implementation(project(":data:repository-api"))
   implementation(project(":data:files-api"))
+  implementation(project(":data:scheduler-api"))
+  implementation(project(":data:work-api"))
   implementation(project(":logic:logic-schedule"))
+  implementation(project(":logic:logic-routine"))
 
   implementation(libs.threetenbp)
   implementation(libs.koin.core)

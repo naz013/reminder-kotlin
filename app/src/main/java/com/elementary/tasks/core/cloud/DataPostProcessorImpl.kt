@@ -2,7 +2,9 @@ package com.elementary.tasks.core.cloud
 
 import androidx.core.content.edit
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.logic.habit.nudge.ScheduleHabitNudgeUseCase
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
+import com.github.naz013.domain.habit.Habit
 import com.github.naz013.domain.TagAssignment
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -19,6 +21,7 @@ class DataPostProcessorImpl(
   private val prefs: Prefs,
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val tagAssignmentRepository: TagAssignmentRepository,
+  private val scheduleHabitNudgeUseCase: ScheduleHabitNudgeUseCase,
 ) : DataPostProcessor {
   override suspend fun process(
     dataType: DataType,
@@ -27,6 +30,10 @@ class DataPostProcessorImpl(
     when (any) {
       is ReminderV2 -> {
         postProcessReminder(any)
+      }
+
+      is Habit -> {
+        scheduleHabitNudgeUseCase(any)
       }
 
       is SettingsModel -> {

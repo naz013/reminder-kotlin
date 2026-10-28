@@ -1333,4 +1333,5 @@
     <string name="habit_activity_description">%1$d záznamů za posledních %2$d týdnů</string>
     <string name="habit_legend_less">Méně</string>
     <string name="habit_legend_more">Více</string>
+    <string name="habit_nudge_text">Je čas zaznamenat svůj návyk</string>
 </resources>

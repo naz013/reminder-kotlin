@@ -1343,4 +1343,5 @@
     <string name="habit_activity_description">%1$d check-ins in the last %2$d weeks</string>
     <string name="habit_legend_less">Less</string>
     <string name="habit_legend_more">More</string>
+    <string name="habit_nudge_text">Time to check in on your habit</string>
 </resources>

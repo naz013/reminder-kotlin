@@ -1330,4 +1330,5 @@
     <string name="habit_activity_description">%1$d registos nas últimas %2$d semanas</string>
     <string name="habit_legend_less">Menos</string>
     <string name="habit_legend_more">Mais</string>
+    <string name="habit_nudge_text">Hora de registrar o seu hábito</string>
 </resources>

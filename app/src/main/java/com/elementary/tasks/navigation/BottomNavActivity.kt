@@ -21,6 +21,7 @@ import com.github.naz013.feature.calendar.monthview.CalendarNavKey
 import com.github.naz013.feature.calendar.preview.GoogleCalendarEventPreviewNavKey
 import com.elementary.tasks.core.os.ContextSwitcher
 import com.github.naz013.feature.googletask.GoogleTasksNavKey
+import com.github.naz013.feature.habit.HabitNavKey
 import com.github.naz013.group.GroupsNavKey
 import com.elementary.tasks.navigation.nav3.AppNavGraph
 import com.github.naz013.feature.note.NotesNavKey
@@ -44,6 +45,7 @@ import com.github.naz013.navigation.EditReminderScreen
 import com.github.naz013.navigation.SettingsScreen
 import com.github.naz013.navigation.ViewBirthdayScreen
 import com.github.naz013.navigation.ViewGoogleTaskScreen
+import com.github.naz013.navigation.ViewHabitScreen
 import com.github.naz013.navigation.ViewNoteScreen
 import com.github.naz013.navigation.ViewReminderScreen
 import com.github.naz013.ui.common.compose.BaseAuthActivity
@@ -264,6 +266,11 @@ class BottomNavActivity : BaseAuthActivity() {
         is ViewReminderScreen -> {
           val id = deepLinkDestination.id
           return if (id != null) listOf(ReminderPreviewNavKey.Preview(id)) else emptyList()
+        }
+
+        is ViewHabitScreen -> {
+          val id = deepLinkDestination.id
+          return if (id != null) listOf(HabitNavKey.List, HabitNavKey.Preview(id)) else listOf(HabitNavKey.List)
         }
 
         is DayViewScreen ->

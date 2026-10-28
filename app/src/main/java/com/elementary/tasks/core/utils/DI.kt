@@ -15,7 +15,9 @@ import com.elementary.tasks.core.notes.AppNotePreferences
 import com.elementary.tasks.core.onboarding.AppOnboardingPreferences
 import com.elementary.tasks.core.services.JobScheduler
 import com.elementary.tasks.core.services.event.AutoBackupEventTask
+import com.elementary.tasks.core.services.action.habit.HabitNudgeNotifierImpl
 import com.elementary.tasks.core.services.event.BirthdayEventTask
+import com.github.naz013.logic.habit.nudge.HabitNudgeNotifier
 import com.elementary.tasks.core.services.event.BirthdayPermanentEventTask
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.params.Prefs
@@ -78,6 +80,7 @@ val utilModule = module {
   factory { JobScheduler(get(), get(), get(), get(), get(), get()) as JobSchedulerApi }
 
   factory { ActivateAllActiveRemindersUseCase(get(), get()) }
+  factory { HabitNudgeNotifierImpl(get(), get(), get()) as HabitNudgeNotifier }
 
   factory<BackgroundTask>(named(AutoBackupEventTask.TASK_KEY)) { AutoBackupEventTask(get(), get()) }
   factory<BackgroundTask>(named(BirthdayEventTask.TASK_KEY)) { BirthdayEventTask(get()) }

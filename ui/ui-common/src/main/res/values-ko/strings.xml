@@ -1320,4 +1320,5 @@
     <string name="habit_activity_description">최근 %2$d주 동안 체크인 %1$d회</string>
     <string name="habit_legend_less">적음</string>
     <string name="habit_legend_more">많음</string>
+    <string name="habit_nudge_text">습관을 기록할 시간입니다</string>
 </resources>

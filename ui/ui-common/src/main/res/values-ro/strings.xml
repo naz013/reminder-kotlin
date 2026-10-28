@@ -1330,4 +1330,5 @@
     <string name="habit_activity_description">%1$d bifări în ultimele %2$d săptămâni</string>
     <string name="habit_legend_less">Mai puțin</string>
     <string name="habit_legend_more">Mai mult</string>
+    <string name="habit_nudge_text">E timpul să bifezi obiceiul</string>
 </resources>

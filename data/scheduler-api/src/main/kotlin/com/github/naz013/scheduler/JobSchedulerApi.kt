@@ -20,6 +20,10 @@ interface JobSchedulerApi {
 
   fun scheduleGoogleCalendarScanFallbackCheck()
 
+  fun scheduleHabitNudge(habitId: String, triggerAtMillis: Long)
+
+  fun cancelHabitNudge(habitId: String)
+
   fun scheduleBirthdayPermanent()
 
   fun cancelBirthdayPermanent()

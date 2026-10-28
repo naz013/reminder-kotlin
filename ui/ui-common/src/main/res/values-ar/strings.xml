@@ -1337,4 +1337,5 @@
     <string name="habit_activity_description">%1$d تسجيلات في آخر %2$d أسبوعًا</string>
     <string name="habit_legend_less">أقل</string>
     <string name="habit_legend_more">أكثر</string>
+    <string name="habit_nudge_text">حان وقت تسجيل عادتك</string>
 </resources>

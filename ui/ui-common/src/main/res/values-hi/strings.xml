@@ -1323,4 +1323,5 @@
     <string name="habit_activity_description">पिछले %2$d हफ़्तों में %1$d चेक-इन</string>
     <string name="habit_legend_less">कम</string>
     <string name="habit_legend_more">ज़्यादा</string>
+    <string name="habit_nudge_text">अपनी आदत दर्ज करने का समय हो गया है</string>
 </resources>

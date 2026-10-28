@@ -1325,4 +1325,5 @@
     <string name="habit_activity_description">%1$d check-ins i de seneste %2$d uger</string>
     <string name="habit_legend_less">Mindre</string>
     <string name="habit_legend_more">Mere</string>
+    <string name="habit_nudge_text">Tid til at tjekke din vane</string>
 </resources>
