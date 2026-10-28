@@ -44,7 +44,9 @@ class CompleteReminderUseCase(
         Logger.i(TAG, "Scheduling next occurrence for reminder id=${reminder.uuId} at $nextDateTime")
         val reminder =
           reminder.copy(
-            schedule = reminder.schedule.copy(eventDateTime = dateTimeManager.reminderLocalToUtc(reminder, nextDateTime)),
+            schedule = reminder.schedule.copy(
+              eventDateTime = dateTimeManager.reminderLocalToUtc(reminder, nextDateTime),
+            ),
             eventCount = reminder.eventCount + 1,
           )
         activateReminderUseCase(reminder)

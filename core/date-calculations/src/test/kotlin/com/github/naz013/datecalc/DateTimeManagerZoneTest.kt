@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.LocalDateTime
@@ -15,7 +16,6 @@ class DateTimeManagerZoneTest {
   private val originalZone: TimeZone = TimeZone.getDefault()
   private val nowProvider = mockk<NowDateTimeProvider>()
   private val berlin = ZoneId.of("Europe/Berlin")
-  private val newYork = ZoneId.of("America/New_York")
   private lateinit var manager: DateTimeManager
 
   @Before
@@ -50,7 +50,7 @@ class DateTimeManagerZoneTest {
   @Test
   fun `null zone behaves exactly like the device zone overloads`() {
     val local = LocalDateTime.of(2025, 6, 15, 12, 30)
-    val device = manager.effectiveZone(null)
+    val device = ZoneId.systemDefault()
 
     assertEquals(manager.localToUtc(local), manager.localToUtc(local, device))
     assertEquals(manager.utcToLocal(local), manager.utcToLocal(local, device))
@@ -58,13 +58,10 @@ class DateTimeManagerZoneTest {
   }
 
   @Test
-  fun `effective zone is the fixed zone for a valid id`() {
-    assertEquals(berlin, manager.effectiveZone("Europe/Berlin"))
-  }
-
-  @Test
-  fun `effective zone falls back to the device zone for an unknown id`() {
-    assertEquals(newYork, manager.effectiveZone("Not/AZone"))
+  fun `parses a valid id and treats null or unknown ids as floating`() {
+    assertEquals(berlin, DateTimeManager.parseFixedZone("Europe/Berlin"))
+    assertNull(DateTimeManager.parseFixedZone(null))
+    assertNull(DateTimeManager.parseFixedZone("Not/AZone"))
   }
 
   @Test

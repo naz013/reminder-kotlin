@@ -19,7 +19,9 @@ class YearlyRepeatStrategyV2(
   ): LocalDateTime? {
     if (reminder.isLimitExceed()) return null
     val yearly = reminder.recurrence as? RecurrenceRule.Yearly ?: return null
-    val eventDateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.reminderUtcToLocal(reminder, it) } ?: return null
+    val eventDateTime = reminder.schedule.eventDateTime
+      ?.let { dateTimeManager.reminderUtcToLocal(reminder, it) }
+      ?: return null
 
     return recurrenceCalculator.findNextYearDayDateTime(
       eventDateTime = eventDateTime,

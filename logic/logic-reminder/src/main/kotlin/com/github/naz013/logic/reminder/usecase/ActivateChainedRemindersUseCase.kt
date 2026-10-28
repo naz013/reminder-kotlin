@@ -39,7 +39,8 @@ class ActivateChainedRemindersUseCase(
     if (!strategy.canSkip(reminder) || strategy.canStartImmediately(reminder)) return reminder
     val now = dateTimeManager.reminderNow(reminder)
     val next = strategy.calculateNextOccurrence(reminder, now) ?: return reminder
-    return reminder.copy(schedule = reminder.schedule.copy(eventDateTime = dateTimeManager.reminderLocalToUtc(reminder, next)))
+    val nextUtc = dateTimeManager.reminderLocalToUtc(reminder, next)
+    return reminder.copy(schedule = reminder.schedule.copy(eventDateTime = nextUtc))
   }
 
   companion object {

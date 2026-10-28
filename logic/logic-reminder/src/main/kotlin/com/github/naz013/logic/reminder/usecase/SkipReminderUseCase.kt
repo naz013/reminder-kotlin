@@ -36,7 +36,9 @@ class SkipReminderUseCase(
       Logger.i(TAG, "Skipping reminder id=${reminder.uuId} to $nextDateTime")
       val reminder =
         reminder.copy(
-          schedule = reminder.schedule.copy(eventDateTime = dateTimeManager.reminderLocalToUtc(reminder, nextDateTime)),
+          schedule = reminder.schedule.copy(
+            eventDateTime = dateTimeManager.reminderLocalToUtc(reminder, nextDateTime),
+          ),
           eventCount = reminder.eventCount + 1,
         )
       activateReminderUseCase(reminder)

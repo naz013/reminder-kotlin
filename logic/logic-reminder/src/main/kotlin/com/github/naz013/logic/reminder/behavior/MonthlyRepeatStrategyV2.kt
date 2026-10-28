@@ -19,7 +19,9 @@ class MonthlyRepeatStrategyV2(
   ): LocalDateTime? {
     if (reminder.isLimitExceed()) return null
     val monthly = reminder.recurrence as? RecurrenceRule.Monthly ?: return null
-    val eventDateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.reminderUtcToLocal(reminder, it) } ?: return null
+    val eventDateTime = reminder.schedule.eventDateTime
+      ?.let { dateTimeManager.reminderUtcToLocal(reminder, it) }
+      ?: return null
 
     return recurrenceCalculator.findNextMonthDayDateTime(
       eventDateTime = eventDateTime,

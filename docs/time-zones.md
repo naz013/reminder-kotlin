@@ -67,7 +67,7 @@ and keep the old signatures delegating to the device zone, so non-reminder calle
 untouched.
 
 1. `DateTimeManager`: `utcToLocal(dt, zone)`, `localToUtc(dt, zone)`, `toMillis(local, zone)`,
-   `getCurrentDateTime(zone)`. Add an `effectiveZone()` helper for `ReminderV2` (fixed id, else device zone).
+   `getCurrentDateTime(zone)`. Add a `parseFixedZone(id)` helper (valid fixed zone, else null = device zone) and `getCurrentUtcDateTime()`.
 2. `EventDateTimeCalculatorV2`: use the effective zone for `utcToLocal` and `toMillis`, and "now" in that zone for
    the past check. DST rules below apply here.
 3. All strategies: `utcToLocal`, `isCurrent`, `getCurrentDateTime` and the `afterOrEqualDateTime` argument use the
@@ -133,9 +133,8 @@ Needed:
 
 DST rules (fixed and floating alike, in `EventDateTimeCalculatorV2`/`DateTimeManager`):
 
-- Gap (spring forward, wall-clock does not exist): fire at the first valid instant after the gap, which
-  `ZonedDateTime.of(local, zone)` already does. Later occurrences keep the wall-clock rule (a 02:30 weekly rule
-  stays 02:30 the next week).
+- Gap (spring forward, wall-clock does not exist): resolve with `ZonedDateTime.of(local, zone)`, which shifts the wall-clock forward by the gap length
+  (02:30 becomes 03:30 in a one-hour gap). Intended: later occurrences keep the wall-clock rule (see Known limitations).
 - Overlap (fall back, wall-clock occurs twice): use the earlier offset (the `ZonedDateTime` default); fire once.
 - Interval (`Daily`) reminders add elapsed millis and are not DST adjusted.
 - Never compute the next occurrence by adding 24 h; advance the local date, then resolve it in the zone.
@@ -143,6 +142,13 @@ DST rules (fixed and floating alike, in `EventDateTimeCalculatorV2`/`DateTimeMan
 Defaults assumed until the questions below are answered: existing reminders migrate as floating; display in the
 device zone with a label for foreign fixed reminders; snooze is zone independent (adds millis to the current
 instant, `SnoozeReminderUseCase`).
+
+## Known limitations (3a)
+
+- Gap drift: the stored value is only the resolved UTC instant, so a weekly 02:30 rule completed across the spring-forward gap is stored as 03:30 and the next occurrence is computed from 03:30, not 02:30. Fixing it needs the intended local time stored (schema change).
+- Gap resolution is the gap-shifted time (02:30 becomes 03:30 via `ZonedDateTime.of`), not the first instant after the gap (03:00).
+- RRULE reminders with a fixed zone are unsupported until card 3b: `canSkip` runs in the fixed zone while the RDATE calculation still runs in the device zone.
+- Overlap: strategies return a local time, so only the earlier offset is representable; a later-offset instant cannot be expressed.
 
 ## Open questions
 

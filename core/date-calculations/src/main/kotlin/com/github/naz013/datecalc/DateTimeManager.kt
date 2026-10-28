@@ -28,9 +28,9 @@ class DateTimeManager(
   fun getCurrentDateTime(zone: ZoneId): LocalDateTime =
     nowDateTimeProvider.nowDateTime().atZone(ZoneId.systemDefault()).withZoneSameInstant(zone).toLocalDateTime()
 
-  /** Zone a reminder with the given [timeZoneId] is evaluated in: the fixed zone, or the device zone when the id
-   * is null (floating) or unknown. */
-  fun effectiveZone(timeZoneId: String?): ZoneId = parseFixedZone(timeZoneId) ?: ZoneId.systemDefault()
+  /** Current instant as a UTC wall-clock [LocalDateTime], unambiguous even inside a DST overlap. */
+  fun getCurrentUtcDateTime(): LocalDateTime =
+    LocalDateTime.ofInstant(nowDateTimeProvider.nowInstant(), ZoneOffset.UTC)
 
   fun getCurrentDate(): LocalDate = getCurrentDateTime().toLocalDate()
 

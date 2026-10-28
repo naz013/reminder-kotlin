@@ -20,6 +20,7 @@ class RecurRepeatStrategyV2(
     return recurEventManager.getNextAfterDateTime(fromDateTime, rrule)
   }
 
+  // Fixed-zone RRULE reminders are unsupported until 3b: canSkip uses the fixed zone, the RDATE list the device zone.
   override fun canSkip(reminder: ReminderV2): Boolean {
     val rrule = (reminder.recurrence as? RecurrenceRule.ICalendar)?.rrule?.takeIf { it.isNotEmpty() } ?: return false
     val currentEventTime = reminder.schedule.eventDateTime?.let { dateTimeManager.reminderUtcToLocal(reminder, it) }

@@ -43,7 +43,7 @@ class IntervalRepeatStrategyV2(
     repeatInterval: Long,
     zone: ZoneId,
   ): LocalDateTime? {
-    val utcNow = dateTimeManager.localToUtc(dateTimeManager.getCurrentDateTime(zone), zone)
+    val utcNow = dateTimeManager.getCurrentUtcDateTime()
     val utcNext = recurrenceCalculator.findNextIntervalDateTime(
       eventDateTime = utcEventDateTime,
       intervalMillis = repeatInterval,

@@ -20,7 +20,9 @@ class WeekdayRepeatStrategyV2(
     if (reminder.isLimitExceed()) return null
     val weekly = reminder.recurrence as? RecurrenceRule.Weekly ?: return null
     if (weekly.weekdays.isEmpty()) return null
-    val eventDateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.reminderUtcToLocal(reminder, it) } ?: return null
+    val eventDateTime = reminder.schedule.eventDateTime
+      ?.let { dateTimeManager.reminderUtcToLocal(reminder, it) }
+      ?: return null
 
     return recurrenceCalculator.findNextDayOfWeekDateTime(
       eventDateTime = eventDateTime,

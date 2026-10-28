@@ -28,6 +28,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
 import java.util.TimeZone
@@ -48,6 +49,7 @@ class ReminderTimeZoneTest {
   fun setUp() {
     TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"))
     every { nowProvider.nowDateTime() } returns LocalDateTime.of(2025, 1, 6, 5, 0)
+    every { nowProvider.nowInstant() } returns Instant.parse("2025-01-06T10:00:00Z")
     manager = DateTimeManager(nowProvider, mockk(relaxed = true))
   }
 
@@ -144,6 +146,38 @@ class ReminderTimeZoneTest {
     assertEquals(eventUtc, event.captured)
     assertEquals(LocalDateTime.of(2025, 1, 6, 10, 0), after.captured)
     assertEquals(LocalDateTime.of(2025, 1, 7, 9, 0), result)
+  }
+
+  @Test
+  fun `interval strategy uses the real utc now inside the fall back overlap`() {
+    every { nowProvider.nowInstant() } returns Instant.parse("2025-10-26T01:30:00Z")
+    val after = slot<LocalDateTime>()
+    every { calculator.findNextIntervalDateTime(any(), any(), capture(after)) } returns
+      LocalDateTime.of(2025, 10, 26, 2, 0)
+    val strategy = IntervalRepeatStrategyV2(manager, calculator)
+    val rule = RecurrenceRule.Daily(repeatInterval = DateTimeManager.HOUR)
+    val event = LocalDateTime.of(2025, 10, 26, 0, 0)
+
+    val result = strategy.calculateNextOccurrence(reminder("Europe/Berlin", rule, event), event)
+
+    assertEquals(LocalDateTime.of(2025, 10, 26, 1, 30), after.captured)
+    assertEquals(LocalDateTime.of(2025, 10, 26, 3, 0), result)
+  }
+
+  @Test
+  fun `weekly strategy sees the gap shifted time not the intended wall clock after a spring gap`() {
+    // Known limitation: 02:30 Berlin was stored as 03:30 CEST (01:30Z), so the intended 02:30 is lost.
+    val event = slot<LocalDateTime>()
+    every { calculator.findNextDayOfWeekDateTime(capture(event), any(), any()) } returns eventUtc
+    val strategy = WeekdayRepeatStrategyV2(manager, calculator)
+    val stored = LocalDateTime.of(2025, 3, 30, 1, 30)
+
+    strategy.calculateNextOccurrence(
+      reminder("Europe/Berlin", RecurrenceRule.Weekly(listOf(1)), stored),
+      stored,
+    )
+
+    assertEquals(LocalDateTime.of(2025, 3, 30, 3, 30), event.captured)
   }
 
   @Test
