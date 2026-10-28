@@ -116,6 +116,10 @@ class Prefs(
     get() = getString(PrefsConstants.LAST_KNOWN_ZONE_ID, def = "").takeIf { it.isNotEmpty() }
     set(value) = putString(PrefsConstants.LAST_KNOWN_ZONE_ID, value.orEmpty())
 
+  var pendingZoneReanchor: String?
+    get() = getString(PrefsConstants.PENDING_ZONE_REANCHOR, def = "").takeIf { it.isNotEmpty() }
+    set(value) = putString(PrefsConstants.PENDING_ZONE_REANCHOR, value.orEmpty())
+
   var occurrenceMigrated: Boolean
     get() = getBoolean(PrefsConstants.OCCURRENCE_MIGRATED, def = false)
     set(value) = putBoolean(PrefsConstants.OCCURRENCE_MIGRATED, value)

@@ -8,6 +8,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.logic.habit.nudge.RescheduleHabitNudgesUseCase
 import com.github.naz013.logic.reminder.usecase.HandleZoneChangeUseCase
 import com.github.naz013.scheduler.JobSchedulerApi
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.core.component.get
@@ -25,7 +26,7 @@ class BootReceiver : BaseBroadcast() {
       rescheduleHabitNudges()
     }
     if (intent.action in REMINDER_REACTIVATE_ACTIONS) {
-      handleZoneAndReactivateReminders()
+      handleZoneAndReactivateReminders(isBoot = intent.action == Intent.ACTION_BOOT_COMPLETED)
     }
     if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
       if (prefs.isBirthdayReminderEnabled) {
@@ -56,12 +57,16 @@ class BootReceiver : BaseBroadcast() {
     }
   }
 
-  private fun handleZoneAndReactivateReminders() {
+  private fun handleZoneAndReactivateReminders(isBoot: Boolean) {
     val pendingResult = goAsync()
     CoroutineScope(get<DispatcherProvider>().io()).launch {
       try {
-        get<HandleZoneChangeUseCase>()()
-        get<ActivateAllActiveRemindersUseCase>()()
+        val zoneChanged = get<HandleZoneChangeUseCase>()()
+        if (isBoot || zoneChanged) {
+          get<ActivateAllActiveRemindersUseCase>()()
+        }
+      } catch (e: CancellationException) {
+        throw e
       } catch (e: Exception) {
         Logger.e(TAG, "Failed to handle zone change", e)
       } finally {

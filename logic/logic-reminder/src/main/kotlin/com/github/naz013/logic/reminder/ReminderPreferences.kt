@@ -42,4 +42,7 @@ interface ReminderPreferences {
 
   /** IANA id of the device zone seen by the last zone-change check, null before the first check. */
   var lastKnownZoneId: String?
+
+  /** Floating reminders whose zone re-anchoring failed, as `sourceZone=id1,id2;otherZone=id3`; null when none. */
+  var pendingZoneReanchor: String?
 }

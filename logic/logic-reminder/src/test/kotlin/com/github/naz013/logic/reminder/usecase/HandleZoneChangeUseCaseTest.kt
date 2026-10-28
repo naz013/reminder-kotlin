@@ -158,6 +158,47 @@ class HandleZoneChangeUseCaseTest {
     assertEquals(LocalDateTime.of(2020, 1, 1, 13, 0), saved.captured.schedule.eventDateTime)
   }
 
+  @Test
+  fun `keeps start date time unchanged when re-anchoring`() = runTest {
+    givenStoredZone("Europe/Berlin")
+    givenActive(reminder())
+    val saved = slot<ReminderV2>()
+
+    useCase()
+
+    coVerify { saveReminderUseCase(capture(saved)) }
+    assertEquals(EVENT_UTC, saved.captured.schedule.startDateTime)
+  }
+
+  @Test
+  fun `retries only the failed reminder and never shifts a succeeded one twice`() = runTest {
+    var stored: String? = "Europe/Berlin"
+    var pending: String? = null
+    every { preferences.lastKnownZoneId } answers { stored }
+    every { preferences.lastKnownZoneId = any() } answers { stored = firstArg() }
+    every { preferences.pendingZoneReanchor } answers { pending }
+    every { preferences.pendingZoneReanchor = any() } answers { pending = firstArg() }
+    val ok = reminder(id = "ok")
+    val bad = reminder(id = "bad")
+    givenActive(ok, bad)
+    coEvery { saveReminderUseCase(match { it.uuId == "bad" }) } throws IllegalStateException("db")
+
+    useCase()
+
+    assertEquals("America/New_York", stored)
+    assertEquals("Europe/Berlin=bad", pending)
+
+    val saved = mutableListOf<ReminderV2>()
+    coEvery { saveReminderUseCase(capture(saved)) } returns Unit
+
+    val retried = useCase()
+
+    assertTrue(retried)
+    assertEquals(listOf("bad"), saved.map { it.uuId })
+    assertEquals(LocalDateTime.of(2026, 6, 1, 13, 0), saved.single().schedule.eventDateTime)
+    assertEquals(null, pending)
+  }
+
   companion object {
     private val EVENT_UTC = LocalDateTime.of(2026, 6, 1, 7, 0)
   }

@@ -158,4 +158,8 @@ class ReminderPreferencesImpl(
   override var lastKnownZoneId: String?
     get() = prefs.lastKnownZoneId
     set(value) { prefs.lastKnownZoneId = value }
+
+  override var pendingZoneReanchor: String?
+    get() = prefs.pendingZoneReanchor
+    set(value) { prefs.pendingZoneReanchor = value }
 }
