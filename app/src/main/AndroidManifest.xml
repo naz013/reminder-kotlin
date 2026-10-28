@@ -286,6 +286,10 @@
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             tools:node="remove" />
+
+        <activity
+            android:name="com.google.android.play.core.hsdp.service.HsdpShimActivity"
+            tools:node="remove" />
     </application>
 
     <queries>
