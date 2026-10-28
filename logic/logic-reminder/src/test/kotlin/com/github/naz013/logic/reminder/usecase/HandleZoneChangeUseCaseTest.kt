@@ -15,6 +15,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import java.util.TimeZone
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -170,18 +171,26 @@ class HandleZoneChangeUseCaseTest {
     assertEquals(EVENT_UTC, saved.captured.schedule.startDateTime)
   }
 
-  @Test
-  fun `retries only the failed reminder and never shifts a succeeded one twice`() = runTest {
-    var stored: String? = "Europe/Berlin"
-    var pending: String? = null
+  private var stored: String? = null
+  private var pending: String? = null
+
+  private fun givenStatefulPrefs(zone: String?, pendingValue: String? = null) {
+    stored = zone
+    pending = pendingValue
     every { preferences.lastKnownZoneId } answers { stored }
     every { preferences.lastKnownZoneId = any() } answers { stored = firstArg() }
     every { preferences.pendingZoneReanchor } answers { pending }
     every { preferences.pendingZoneReanchor = any() } answers { pending = firstArg() }
+  }
+
+  @Test
+  fun `retries only the failed reminder from the recorded source zone`() = runTest {
+    givenStatefulPrefs("Europe/Berlin")
     val ok = reminder(id = "ok")
     val bad = reminder(id = "bad")
     givenActive(ok, bad)
     coEvery { saveReminderUseCase(match { it.uuId == "bad" }) } throws IllegalStateException("db")
+    coEvery { repository.getById("bad") } returns bad
 
     useCase()
 
@@ -190,11 +199,101 @@ class HandleZoneChangeUseCaseTest {
 
     val saved = mutableListOf<ReminderV2>()
     coEvery { saveReminderUseCase(capture(saved)) } returns Unit
+    givenActive(bad)
 
     val retried = useCase()
 
     assertTrue(retried)
     assertEquals(listOf("bad"), saved.map { it.uuId })
+    assertEquals(LocalDateTime.of(2026, 6, 1, 13, 0), saved.single().schedule.eventDateTime)
+    assertEquals(null, pending)
+  }
+
+  @Test
+  fun `uses recorded source zone when the zone changes again before retry`() = runTest {
+    givenStatefulPrefs("America/New_York", "Europe/Berlin=r")
+    TimeZone.setDefault(TimeZone.getTimeZone("Asia/Tokyo"))
+    givenActive(reminder(id = "r"))
+    val saved = slot<ReminderV2>()
+
+    useCase()
+
+    coVerify { saveReminderUseCase(capture(saved)) }
+    assertEquals(LocalDateTime.of(2026, 6, 1, 0, 0), saved.captured.schedule.eventDateTime)
+  }
+
+  @Test
+  fun `retries pending ids when zone is unchanged and returns true`() = runTest {
+    givenStatefulPrefs("America/New_York", "Europe/Berlin=r")
+    givenActive(reminder(id = "r"))
+
+    val result = useCase()
+
+    assertTrue(result)
+    coVerify(exactly = 1) { saveReminderUseCase(any()) }
+    assertEquals(null, pending)
+  }
+
+  @Test
+  fun `drops pending ids that are no longer active floating reminders`() = runTest {
+    givenStatefulPrefs("America/New_York", "Europe/Berlin=gone,fixed,inactive")
+    givenActive(reminder(id = "fixed", zone = "Asia/Tokyo"), reminder(id = "inactive", active = false))
+
+    useCase()
+
+    coVerify(exactly = 0) { saveReminderUseCase(any()) }
+    assertEquals(null, pending)
+  }
+
+  @Test
+  fun `ignores a malformed pending string`() = runTest {
+    givenStatefulPrefs("America/New_York", ";;=,x=;Bad/Zone=r;==")
+    givenActive(reminder(id = "r"))
+
+    useCase()
+
+    coVerify(exactly = 0) { saveReminderUseCase(any()) }
+  }
+
+  @Test
+  fun `rethrows cancellation and keeps pending intact`() = runTest {
+    givenStatefulPrefs("Europe/Berlin")
+    givenActive(reminder(id = "r"))
+    coEvery { saveReminderUseCase(any()) } throws CancellationException("cancelled")
+
+    val result = runCatching { useCase() }
+
+    assertTrue(result.exceptionOrNull() is CancellationException)
+    assertEquals("Europe/Berlin=r", pending)
+    assertEquals("America/New_York", stored)
+  }
+
+  @Test
+  fun `does not shift again when save threw after the row was persisted`() = runTest {
+    givenStatefulPrefs("Europe/Berlin")
+    val r = reminder(id = "r")
+    givenActive(r)
+    val shifted = r.copy(schedule = r.schedule.copy(eventDateTime = LocalDateTime.of(2026, 6, 1, 13, 0)))
+    coEvery { saveReminderUseCase(any()) } throws IllegalStateException("widget")
+    coEvery { repository.getById("r") } returns shifted
+
+    useCase()
+
+    assertEquals(null, pending)
+    coVerify(exactly = 1) { saveReminderUseCase(any()) }
+  }
+
+  @Test
+  fun `retries after a crash mid loop without shifting saved reminders again`() = runTest {
+    givenStatefulPrefs("America/New_York", "Europe/Berlin=unsaved")
+    val savedAlready = reminder(id = "saved", eventDateTime = LocalDateTime.of(2026, 6, 1, 13, 0))
+    givenActive(savedAlready, reminder(id = "unsaved"))
+    val saved = mutableListOf<ReminderV2>()
+    coEvery { saveReminderUseCase(capture(saved)) } returns Unit
+
+    useCase()
+
+    assertEquals(listOf("unsaved"), saved.map { it.uuId })
     assertEquals(LocalDateTime.of(2026, 6, 1, 13, 0), saved.single().schedule.eventDateTime)
     assertEquals(null, pending)
   }

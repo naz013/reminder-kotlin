@@ -62,7 +62,7 @@ class BootReceiver : BaseBroadcast() {
     CoroutineScope(get<DispatcherProvider>().io()).launch {
       try {
         val zoneChanged = get<HandleZoneChangeUseCase>()()
-        if (isBoot || zoneChanged) {
+        if (shouldActivateReminders(isBoot, zoneChanged)) {
           get<ActivateAllActiveRemindersUseCase>()()
         }
       } catch (e: CancellationException) {
@@ -91,3 +91,8 @@ class BootReceiver : BaseBroadcast() {
     private const val TAG = "BootReceiver"
   }
 }
+
+internal fun shouldActivateReminders(
+  isBoot: Boolean,
+  zoneChanged: Boolean,
+): Boolean = isBoot || zoneChanged
