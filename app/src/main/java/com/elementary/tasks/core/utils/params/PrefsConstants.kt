@@ -99,6 +99,7 @@ object PrefsConstants {
 
   const val WORKER_NETWORK_TYPE = "worker_network_type"
   const val LAST_KNOWN_ZONE_ID = "last_known_zone_id"
+  const val USE_FIXED_ZONE_FOR_NEW_REMINDERS = "use_fixed_zone_for_new_reminders"
   const val PENDING_ZONE_REANCHOR = "pending_zone_reanchor"
   const val OCCURRENCE_MIGRATED = "occurrence_migrated"
   const val OCCURRENCE_COUNT_REMINDERS = "occurrence_count_reminders"

@@ -1334,4 +1334,10 @@
     <string name="habit_remind_me">Amintește-mi</string>
     <string name="habit_remind_only_if_not_done">Doar dacă nu e bifat</string>
     <string name="habit_reminder_at">Memento la %1$s</string>
+    <string name="builder_time_zone">Fus orar</string>
+    <string name="builder_time_zone_description">Alege fusul orar în care este setată ora acestui memento</string>
+    <string name="time_zone_device">Fusul orar al dispozitivului</string>
+    <string name="time_zone_search_hint">Caută fusuri orare</string>
+    <string name="reminder_default_time_zone">Mementourile noi folosesc</string>
+    <string name="time_zone_fixed_to_current">Fix pe fusul orar curent</string>
 </resources>

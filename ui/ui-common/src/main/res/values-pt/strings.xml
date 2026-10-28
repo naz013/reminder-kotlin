@@ -1334,4 +1334,10 @@
     <string name="habit_remind_me">Lembrar-me</string>
     <string name="habit_remind_only_if_not_done">Somente se não registrado</string>
     <string name="habit_reminder_at">Lembrete às %1$s</string>
+    <string name="builder_time_zone">Fuso horário</string>
+    <string name="builder_time_zone_description">Escolha o fuso horário em que a hora deste lembrete é definida</string>
+    <string name="time_zone_device">Fuso horário do dispositivo</string>
+    <string name="time_zone_search_hint">Pesquisar fusos horários</string>
+    <string name="reminder_default_time_zone">Novos lembretes usam</string>
+    <string name="time_zone_fixed_to_current">Fixo no fuso horário atual</string>
 </resources>

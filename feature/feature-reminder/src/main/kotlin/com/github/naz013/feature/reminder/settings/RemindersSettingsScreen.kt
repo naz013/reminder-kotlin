@@ -29,6 +29,7 @@ fun RemindersSettingsScreen(
   onLocationClick: () -> Unit,
   onWorkflowRulesClick: () -> Unit,
   onPriorityClick: () -> Unit,
+  onNewReminderTimeZoneClick: () -> Unit,
   onAgendaViewModeToggle: () -> Unit,
   onCompletedToggle: () -> Unit,
   onWearToggle: () -> Unit,
@@ -105,6 +106,14 @@ fun RemindersSettingsScreen(
       itemKey = SettingsSearchItemKeys.REMINDERS_PRIORITY,
       dividerBottom = true,
       onClick = onPriorityClick,
+    )
+    SettingsItem(
+      title = stringResource(R.string.reminder_default_time_zone),
+      subtitle = state.newReminderTimeZoneName,
+      icon = AppIcons.Fluent.Globe,
+      itemKey = SettingsSearchItemKeys.REMINDERS_NEW_REMINDER_TIME_ZONE,
+      dividerBottom = true,
+      onClick = onNewReminderTimeZoneClick,
     )
     SettingsSwitchItem(
       title = stringResource(R.string.agenda_default_view_title),

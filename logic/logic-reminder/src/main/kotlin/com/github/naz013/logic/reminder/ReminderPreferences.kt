@@ -33,6 +33,10 @@ interface ReminderPreferences {
   var defaultNotificationCategory: String
   var isDefaultBypassDoNotDisturbEnabled: Boolean
   var isDefaultWakeScreenEnabled: Boolean
+
+  /** When true the builder pre-fills new reminders with the current device zone instead of floating. */
+  var useFixedZoneForNewReminders: Boolean
+
   var isDefaultSwipeToDismissEnabled: Boolean
   var isInAppAlertBannerEnabled: Boolean
   var defaultLockScreenVisibility: String

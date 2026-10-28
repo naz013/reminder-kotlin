@@ -1329,4 +1329,10 @@
     <string name="habit_remind_me">Påminn meg</string>
     <string name="habit_remind_only_if_not_done">Bare hvis ikke krysset av</string>
     <string name="habit_reminder_at">Påminnelse kl. %1$s</string>
+    <string name="builder_time_zone">Tidssone</string>
+    <string name="builder_time_zone_description">Velg tidssonen påminnelsens tidspunkt er angitt i</string>
+    <string name="time_zone_device">Enhetens tidssone</string>
+    <string name="time_zone_search_hint">Søk etter tidssoner</string>
+    <string name="reminder_default_time_zone">Nye påminnelser bruker</string>
+    <string name="time_zone_fixed_to_current">Fast til gjeldende tidssone</string>
 </resources>

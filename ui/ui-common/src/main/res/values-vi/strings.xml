@@ -1326,4 +1326,10 @@
     <string name="habit_remind_me">Nhắc tôi</string>
     <string name="habit_remind_only_if_not_done">Chỉ khi chưa check-in</string>
     <string name="habit_reminder_at">Nhắc lúc %1$s</string>
+    <string name="builder_time_zone">Múi giờ</string>
+    <string name="builder_time_zone_description">Chọn múi giờ mà thời gian của lời nhắc này được đặt</string>
+    <string name="time_zone_device">Múi giờ của thiết bị</string>
+    <string name="time_zone_search_hint">Tìm múi giờ</string>
+    <string name="reminder_default_time_zone">Lời nhắc mới sử dụng</string>
+    <string name="time_zone_fixed_to_current">Cố định theo múi giờ hiện tại</string>
 </resources>

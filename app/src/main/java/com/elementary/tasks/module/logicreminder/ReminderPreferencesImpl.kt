@@ -125,6 +125,10 @@ class ReminderPreferencesImpl(
     get() = prefs.isDefaultBypassDoNotDisturbEnabled
     set(value) { prefs.isDefaultBypassDoNotDisturbEnabled = value }
 
+  override var useFixedZoneForNewReminders: Boolean
+    get() = prefs.useFixedZoneForNewReminders
+    set(value) { prefs.useFixedZoneForNewReminders = value }
+
   override var isDefaultWakeScreenEnabled: Boolean
     get() = prefs.isDefaultWakeScreenEnabled
     set(value) { prefs.isDefaultWakeScreenEnabled = value }

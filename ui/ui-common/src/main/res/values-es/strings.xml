@@ -1334,4 +1334,10 @@
     <string name="habit_remind_me">Recuérdame</string>
     <string name="habit_remind_only_if_not_done">Solo si no he registrado</string>
     <string name="habit_reminder_at">Recordatorio a las %1$s</string>
+    <string name="builder_time_zone">Zona horaria</string>
+    <string name="builder_time_zone_description">Elige la zona horaria en la que se establece la hora de este recordatorio</string>
+    <string name="time_zone_device">Zona horaria del dispositivo</string>
+    <string name="time_zone_search_hint">Buscar zonas horarias</string>
+    <string name="reminder_default_time_zone">Los recordatorios nuevos usan</string>
+    <string name="time_zone_fixed_to_current">Fija en la zona horaria actual</string>
 </resources>

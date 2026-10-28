@@ -74,6 +74,15 @@ class RemindersSettingsViewModel(
     )
   }
 
+  fun onNewReminderTimeZoneClick() {
+    showChoiceDialog(
+      kind = ChoiceDialogKind.NEW_REMINDER_TIME_ZONE,
+      title = textProvider.getString(R.string.reminder_default_time_zone),
+      options = newReminderTimeZoneOptions(),
+      selectedIndex = newReminderTimeZoneIndex(),
+    )
+  }
+
   fun onCompletedToggle() {
     reminderPreferences.moveCompleted = !reminderPreferences.moveCompleted
     refreshState()
@@ -195,6 +204,8 @@ class RemindersSettingsViewModel(
     val dialog = state.value.dialog as? RemindersSettingsDialog.Choice ?: return
     when (dialog.kind) {
       ChoiceDialogKind.PRIORITY -> reminderPreferences.defaultPriority = index
+      ChoiceDialogKind.NEW_REMINDER_TIME_ZONE ->
+        reminderPreferences.useFixedZoneForNewReminders = index == FIXED_ZONE_OPTION_INDEX
       ChoiceDialogKind.LED_COLOR -> reminderPreferences.ledColor = index
       ChoiceDialogKind.DND_ACTION -> reminderPreferences.doNotDisturbAction = index
       ChoiceDialogKind.DND_IGNORE -> reminderPreferences.doNotDisturbIgnore = index
@@ -400,6 +411,7 @@ class RemindersSettingsViewModel(
     val isPermanentNotificationChecked = reminderPreferences.isSbNotificationEnabled
     return RemindersSettingsState(
       priorityName = priorityOptions()[reminderPreferences.defaultPriority.coerceIn(0, 4)],
+      newReminderTimeZoneName = newReminderTimeZoneOptions()[newReminderTimeZoneIndex()],
       isMatrixViewDefaultChecked = reminderPreferences.agendaViewMode == AgendaViewMode.MATRIX,
       isCompletedChecked = reminderPreferences.moveCompleted,
       isWearChecked = reminderPreferences.isWearEnabled,
@@ -462,6 +474,15 @@ class RemindersSettingsViewModel(
 
   private fun repeatsText(count: Int): String =
     textProvider.getString(R.string.x_repeats, count.toString())
+
+  private fun newReminderTimeZoneOptions(): List<String> =
+    listOf(
+      textProvider.getString(R.string.time_zone_device),
+      textProvider.getString(R.string.time_zone_fixed_to_current),
+    )
+
+  private fun newReminderTimeZoneIndex(): Int =
+    if (reminderPreferences.useFixedZoneForNewReminders) FIXED_ZONE_OPTION_INDEX else 0
 
   private fun priorityOptions(): List<String> =
     listOf(
@@ -527,5 +548,6 @@ class RemindersSettingsViewModel(
 
   companion object {
     private const val MAX_REPEAT_COUNT_LIMIT = 30
+    private const val FIXED_ZONE_OPTION_INDEX = 1
   }
 }

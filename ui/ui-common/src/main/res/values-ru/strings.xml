@@ -1336,4 +1336,10 @@
     <string name="habit_remind_me">Напомнить</string>
     <string name="habit_remind_only_if_not_done">Только если не отмечено</string>
     <string name="habit_reminder_at">Напоминание в %1$s</string>
+    <string name="builder_time_zone">Часовой пояс</string>
+    <string name="builder_time_zone_description">Выберите часовой пояс, в котором задано время этого напоминания</string>
+    <string name="time_zone_device">Часовой пояс устройства</string>
+    <string name="time_zone_search_hint">Поиск часовых поясов</string>
+    <string name="reminder_default_time_zone">Новые напоминания используют</string>
+    <string name="time_zone_fixed_to_current">Фиксированный текущий часовой пояс</string>
 </resources>

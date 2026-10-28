@@ -1347,4 +1347,10 @@
     <string name="habit_remind_me">Remind me</string>
     <string name="habit_remind_only_if_not_done">Only if not checked in</string>
     <string name="habit_reminder_at">Reminder at %1$s</string>
+    <string name="builder_time_zone">Time zone</string>
+    <string name="builder_time_zone_description">Choose the time zone this reminder\'s time is set in</string>
+    <string name="time_zone_device">Device time zone</string>
+    <string name="time_zone_search_hint">Search time zones</string>
+    <string name="reminder_default_time_zone">New reminders use</string>
+    <string name="time_zone_fixed_to_current">Fixed to the current time zone</string>
 </resources>

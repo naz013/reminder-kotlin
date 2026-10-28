@@ -1327,4 +1327,10 @@
     <string name="habit_remind_me">Erinnere mich</string>
     <string name="habit_remind_only_if_not_done">Nur wenn nicht abgehakt</string>
     <string name="habit_reminder_at">Erinnerung um %1$s</string>
+    <string name="builder_time_zone">Zeitzone</string>
+    <string name="builder_time_zone_description">Wähle die Zeitzone, in der die Uhrzeit dieser Erinnerung gilt</string>
+    <string name="time_zone_device">Zeitzone des Geräts</string>
+    <string name="time_zone_search_hint">Zeitzonen suchen</string>
+    <string name="reminder_default_time_zone">Neue Erinnerungen verwenden</string>
+    <string name="time_zone_fixed_to_current">Fest auf die aktuelle Zeitzone</string>
 </resources>

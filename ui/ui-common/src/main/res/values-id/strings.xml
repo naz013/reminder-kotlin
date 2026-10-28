@@ -1326,4 +1326,10 @@
     <string name="habit_remind_me">Ingatkan saya</string>
     <string name="habit_remind_only_if_not_done">Hanya jika belum check-in</string>
     <string name="habit_reminder_at">Pengingat pukul %1$s</string>
+    <string name="builder_time_zone">Zona waktu</string>
+    <string name="builder_time_zone_description">Pilih zona waktu tempat waktu pengingat ini ditetapkan</string>
+    <string name="time_zone_device">Zona waktu perangkat</string>
+    <string name="time_zone_search_hint">Cari zona waktu</string>
+    <string name="reminder_default_time_zone">Pengingat baru menggunakan</string>
+    <string name="time_zone_fixed_to_current">Tetap pada zona waktu saat ini</string>
 </resources>

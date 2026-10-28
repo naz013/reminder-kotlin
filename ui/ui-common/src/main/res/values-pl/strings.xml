@@ -1337,4 +1337,10 @@
     <string name="habit_remind_me">Przypomnij mi</string>
     <string name="habit_remind_only_if_not_done">Tylko jeśli nie odhaczono</string>
     <string name="habit_reminder_at">Przypomnienie o %1$s</string>
+    <string name="builder_time_zone">Strefa czasowa</string>
+    <string name="builder_time_zone_description">Wybierz strefę czasową, w której ustawiona jest godzina tego przypomnienia</string>
+    <string name="time_zone_device">Strefa czasowa urządzenia</string>
+    <string name="time_zone_search_hint">Szukaj stref czasowych</string>
+    <string name="reminder_default_time_zone">Nowe przypomnienia używają</string>
+    <string name="time_zone_fixed_to_current">Stała dla bieżącej strefy czasowej</string>
 </resources>

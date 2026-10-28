@@ -1327,4 +1327,10 @@
     <string name="habit_remind_me">मुझे याद दिलाएं</string>
     <string name="habit_remind_only_if_not_done">केवल अगर चेक-इन न किया हो</string>
     <string name="habit_reminder_at">%1$s बजे याद दिलाएं</string>
+    <string name="builder_time_zone">समय क्षेत्र</string>
+    <string name="builder_time_zone_description">वह समय क्षेत्र चुनें जिसमें इस रिमाइंडर का समय तय है</string>
+    <string name="time_zone_device">डिवाइस का समय क्षेत्र</string>
+    <string name="time_zone_search_hint">समय क्षेत्र खोजें</string>
+    <string name="reminder_default_time_zone">नए रिमाइंडर उपयोग करते हैं</string>
+    <string name="time_zone_fixed_to_current">वर्तमान समय क्षेत्र पर स्थिर</string>
 </resources>

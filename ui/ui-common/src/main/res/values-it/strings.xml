@@ -1334,4 +1334,10 @@
     <string name="habit_remind_me">Ricordamelo</string>
     <string name="habit_remind_only_if_not_done">Solo se non registrata</string>
     <string name="habit_reminder_at">Promemoria alle %1$s</string>
+    <string name="builder_time_zone">Fuso orario</string>
+    <string name="builder_time_zone_description">Scegli il fuso orario in cui è impostato l\'orario di questo promemoria</string>
+    <string name="time_zone_device">Fuso orario del dispositivo</string>
+    <string name="time_zone_search_hint">Cerca fusi orari</string>
+    <string name="reminder_default_time_zone">I nuovi promemoria usano</string>
+    <string name="time_zone_fixed_to_current">Fisso sul fuso orario attuale</string>
 </resources>

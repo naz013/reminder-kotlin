@@ -1322,4 +1322,10 @@
     <string name="habit_remind_me">เตือนฉัน</string>
     <string name="habit_remind_only_if_not_done">เฉพาะเมื่อยังไม่ได้เช็คอิน</string>
     <string name="habit_reminder_at">เตือนเวลา %1$s</string>
+    <string name="builder_time_zone">เขตเวลา</string>
+    <string name="builder_time_zone_description">เลือกเขตเวลาที่ใช้กำหนดเวลาของการเตือนนี้</string>
+    <string name="time_zone_device">เขตเวลาของอุปกรณ์</string>
+    <string name="time_zone_search_hint">ค้นหาเขตเวลา</string>
+    <string name="reminder_default_time_zone">การเตือนใหม่ใช้</string>
+    <string name="time_zone_fixed_to_current">ตรึงกับเขตเวลาปัจจุบัน</string>
 </resources>

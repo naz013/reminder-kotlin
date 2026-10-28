@@ -1341,4 +1341,10 @@
     <string name="habit_remind_me">ذكرني</string>
     <string name="habit_remind_only_if_not_done">فقط إذا لم أسجّل الإنجاز</string>
     <string name="habit_reminder_at">التذكير في %1$s</string>
+    <string name="builder_time_zone">المنطقة الزمنية</string>
+    <string name="builder_time_zone_description">اختر المنطقة الزمنية التي يُضبط فيها وقت هذا التذكير</string>
+    <string name="time_zone_device">المنطقة الزمنية للجهاز</string>
+    <string name="time_zone_search_hint">البحث في المناطق الزمنية</string>
+    <string name="reminder_default_time_zone">التذكيرات الجديدة تستخدم</string>
+    <string name="time_zone_fixed_to_current">ثابتة على المنطقة الزمنية الحالية</string>
 </resources>

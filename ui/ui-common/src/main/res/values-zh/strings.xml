@@ -1324,4 +1324,10 @@
     <string name="habit_remind_me">提醒我</string>
     <string name="habit_remind_only_if_not_done">仅在未打卡时</string>
     <string name="habit_reminder_at">提醒时间 %1$s</string>
+    <string name="builder_time_zone">时区</string>
+    <string name="builder_time_zone_description">选择此提醒时间所使用的时区</string>
+    <string name="time_zone_device">设备时区</string>
+    <string name="time_zone_search_hint">搜索时区</string>
+    <string name="reminder_default_time_zone">新提醒使用</string>
+    <string name="time_zone_fixed_to_current">固定为当前时区</string>
 </resources>

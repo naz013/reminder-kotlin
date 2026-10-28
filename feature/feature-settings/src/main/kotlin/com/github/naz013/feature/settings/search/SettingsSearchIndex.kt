@@ -218,6 +218,13 @@ internal object SettingsSearchIndex {
     )
     add(
       SettingsSearchEntry(
+        titleRes = R.string.reminder_default_time_zone,
+        path = remindersPath,
+        highlightItemId = SettingsSearchItemKeys.REMINDERS_NEW_REMINDER_TIME_ZONE,
+      ),
+    )
+    add(
+      SettingsSearchEntry(
         titleRes = R.string.agenda_default_view_title,
         path = remindersPath,
         highlightItemId = SettingsSearchItemKeys.REMINDERS_AGENDA_VIEW_MODE,

@@ -451,6 +451,10 @@ class Prefs(
     get() = getBoolean(PrefsConstants.DEFAULT_BYPASS_DO_NOT_DISTURB, def = false)
     set(value) = putBoolean(PrefsConstants.DEFAULT_BYPASS_DO_NOT_DISTURB, value)
 
+  var useFixedZoneForNewReminders: Boolean
+    get() = getBoolean(PrefsConstants.USE_FIXED_ZONE_FOR_NEW_REMINDERS, def = false)
+    set(value) = putBoolean(PrefsConstants.USE_FIXED_ZONE_FOR_NEW_REMINDERS, value)
+
   var isDefaultWakeScreenEnabled: Boolean
     get() = getBoolean(PrefsConstants.DEFAULT_WAKE_SCREEN, def = false)
     set(value) = putBoolean(PrefsConstants.DEFAULT_WAKE_SCREEN, value)

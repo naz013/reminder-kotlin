@@ -4,6 +4,7 @@ import org.threeten.bp.LocalTime
 
 data class RemindersSettingsState(
   val priorityName: String = "",
+  val newReminderTimeZoneName: String = "",
   val isMatrixViewDefaultChecked: Boolean = false,
   val isCompletedChecked: Boolean = false,
   val isWearChecked: Boolean = false,
@@ -43,7 +44,7 @@ data class RemindersSettingsState(
 )
 
 enum class ChoiceDialogKind {
-  PRIORITY, LED_COLOR, DND_ACTION, DND_IGNORE, CATEGORY, LOCK_SCREEN_VISIBILITY, VIBRATION_PATTERN
+  PRIORITY, NEW_REMINDER_TIME_ZONE, LED_COLOR, DND_ACTION, DND_IGNORE, CATEGORY, LOCK_SCREEN_VISIBILITY, VIBRATION_PATTERN
 }
 
 enum class SeekDialogKind { SNOOZE, REPEAT_INTERVAL, MAX_REPEAT_COUNT, ESCALATE_AFTER_REPEATS }

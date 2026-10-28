@@ -1331,4 +1331,10 @@
     <string name="habit_remind_me">Bana hatırlat</string>
     <string name="habit_remind_only_if_not_done">Yalnızca işaretlenmediyse</string>
     <string name="habit_reminder_at">Hatırlatma saati %1$s</string>
+    <string name="builder_time_zone">Saat dilimi</string>
+    <string name="builder_time_zone_description">Bu hatırlatıcının saatinin ayarlandığı saat dilimini seçin</string>
+    <string name="time_zone_device">Cihaz saat dilimi</string>
+    <string name="time_zone_search_hint">Saat dilimlerini ara</string>
+    <string name="reminder_default_time_zone">Yeni hatırlatıcılar şunu kullanır</string>
+    <string name="time_zone_fixed_to_current">Geçerli saat dilimine sabit</string>
 </resources>

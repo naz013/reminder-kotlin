@@ -1324,4 +1324,10 @@
     <string name="habit_remind_me">リマインドする</string>
     <string name="habit_remind_only_if_not_done">チェックインしていない場合のみ</string>
     <string name="habit_reminder_at">%1$s にリマインド</string>
+    <string name="builder_time_zone">タイムゾーン</string>
+    <string name="builder_time_zone_description">このリマインダーの時刻を設定するタイムゾーンを選択してください</string>
+    <string name="time_zone_device">端末のタイムゾーン</string>
+    <string name="time_zone_search_hint">タイムゾーンを検索</string>
+    <string name="reminder_default_time_zone">新しいリマインダーの設定</string>
+    <string name="time_zone_fixed_to_current">現在のタイムゾーンに固定</string>
 </resources>

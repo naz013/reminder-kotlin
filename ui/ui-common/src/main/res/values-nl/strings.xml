@@ -1329,4 +1329,10 @@
     <string name="habit_remind_me">Herinner mij</string>
     <string name="habit_remind_only_if_not_done">Alleen als niet afgevinkt</string>
     <string name="habit_reminder_at">Herinnering om %1$s</string>
+    <string name="builder_time_zone">Tijdzone</string>
+    <string name="builder_time_zone_description">Kies de tijdzone waarin de tijd van deze herinnering is ingesteld</string>
+    <string name="time_zone_device">Tijdzone van het apparaat</string>
+    <string name="time_zone_search_hint">Tijdzones zoeken</string>
+    <string name="reminder_default_time_zone">Nieuwe herinneringen gebruiken</string>
+    <string name="time_zone_fixed_to_current">Vast op de huidige tijdzone</string>
 </resources>

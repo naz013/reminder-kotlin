@@ -1337,4 +1337,10 @@
     <string name="habit_remind_me">Připomenout</string>
     <string name="habit_remind_only_if_not_done">Jen pokud není odškrtnuto</string>
     <string name="habit_reminder_at">Připomenutí v %1$s</string>
+    <string name="builder_time_zone">Časové pásmo</string>
+    <string name="builder_time_zone_description">Vyberte časové pásmo, ve kterém je čas připomínky nastaven</string>
+    <string name="time_zone_device">Časové pásmo zařízení</string>
+    <string name="time_zone_search_hint">Hledat časová pásma</string>
+    <string name="reminder_default_time_zone">Nové připomínky používají</string>
+    <string name="time_zone_fixed_to_current">Pevně nastavené na aktuální časové pásmo</string>
 </resources>
