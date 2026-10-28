@@ -34,8 +34,6 @@ import com.github.naz013.feature.reminder.build.bi.StringModifier
 import com.github.naz013.feature.reminder.build.bi.SummaryModifier
 import com.github.naz013.feature.reminder.build.bi.TimeModifier
 import com.github.naz013.feature.reminder.build.bi.TimeZoneModifier
-import com.github.naz013.feature.reminder.build.timezone.TimeZoneCatalog
-import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.feature.reminder.build.bi.TimerExclusion
 import com.github.naz013.feature.reminder.build.bi.TimerExclusionModifier
 import com.github.naz013.feature.reminder.build.bi.WebAddressModifier
@@ -70,6 +68,8 @@ import com.github.naz013.feature.reminder.build.formatter.ical.ICalFreqFormatter
 import com.github.naz013.feature.reminder.build.formatter.ical.ICalListDayValueFormatter
 import com.github.naz013.feature.reminder.build.formatter.`object`.NoteFormatter
 import com.github.naz013.feature.reminder.build.formatter.`object`.PlaceFormatter
+import com.github.naz013.feature.reminder.build.timezone.TimeZoneCatalog
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.reminder.ShopItemsFormatter
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager
 import com.github.naz013.common.Permissions

@@ -45,7 +45,6 @@ import com.github.naz013.feature.reminder.build.TimerExclusionBuilderItem
 import com.github.naz013.feature.reminder.build.VibrationPatternBuilderItem
 import com.github.naz013.feature.reminder.build.TimeZoneBuilderItem
 import com.github.naz013.feature.reminder.build.WakeScreenBuilderItem
-import com.github.naz013.feature.reminder.build.timezone.TimeZoneCatalog
 import com.github.naz013.feature.reminder.build.WebAddressBuilderItem
 import com.github.naz013.feature.reminder.build.adapter.BiTypeForUiAdapter
 import com.github.naz013.feature.reminder.build.formatter.ApplicationFormatter
@@ -73,6 +72,7 @@ import com.github.naz013.feature.reminder.build.formatter.datetime.TimerFormatte
 import com.github.naz013.feature.reminder.build.formatter.datetime.WeekdayArrayFormatter
 import com.github.naz013.feature.reminder.build.formatter.`object`.NoteFormatter
 import com.github.naz013.feature.reminder.build.formatter.`object`.PlaceFormatter
+import com.github.naz013.feature.reminder.build.timezone.TimeZoneCatalog
 import com.github.naz013.ui.reminder.ShopItemsFormatter
 import com.github.naz013.ui.map.DefaultRadiusFormatter
 import com.github.naz013.cloudapi.googletasks.GoogleTasksAuthManager

@@ -160,7 +160,9 @@ instant, `SnoozeReminderUseCase`).
 - **Display**: lists and the preview show the device-zone time, plus a label such as "09:00 Berlin" (`ReminderZoneLabelFormatter`, `UiReminderDueData.zoneLabel`) when the fixed zone differs from the device zone (open question 6, proposal).
 - **Default setting**: Settings, Reminders, "New reminders use" (`useFixedZoneForNewReminders`, floating by default). It only pre-fills the builder: the first time a zone-capable item is added to a new reminder, a zone item with the device zone is added too (`TimeZonePrefill`). Removing it afterwards sticks.
 
-Not done: the label is not shown in widgets, Agenda, calendar or Wear; Google Calendar/Tasks zone fixes from "Interactions" are untouched by this card; the reminder prediction text in the builder still shows the device-zone time.
+The builder's prediction text compares RRULE occurrences in the reminder's zone and prints them in device time.
+
+Not done: the label is not shown in widgets, Agenda, calendar or Wear; Google Calendar/Tasks zone fixes from "Interactions" are untouched by this card.
 
 ## Open questions
 

@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.github.naz013.feature.reminder.build.BuilderItem
@@ -27,7 +28,6 @@ import com.github.naz013.feature.reminder.build.TimeZoneBuilderItem
 import com.github.naz013.feature.reminder.build.timezone.UiTimeZoneOption
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
-import androidx.compose.ui.res.stringResource
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 
 private val LIST_MAX_HEIGHT = 360.dp
@@ -35,9 +35,9 @@ private val LIST_MAX_HEIGHT = 360.dp
 /** Searchable single-select list of time zones; the first row is the device (floating) option. */
 @Composable
 internal fun TimeZoneValueEditor(
+  modifier: Modifier = Modifier,
   builderItem: TimeZoneBuilderItem,
   onValueChange: (BuilderItem<*>) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   var query by remember(builderItem) { mutableStateOf("") }
   var selectedId by remember(builderItem) { mutableStateOf(builderItem.modifier.getValue()) }
@@ -68,10 +68,10 @@ internal fun TimeZoneValueEditor(
 
 @Composable
 private fun TimeZoneRow(
+  modifier: Modifier = Modifier,
   option: UiTimeZoneOption,
   selected: Boolean,
   onClick: () -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Row(
     modifier = modifier

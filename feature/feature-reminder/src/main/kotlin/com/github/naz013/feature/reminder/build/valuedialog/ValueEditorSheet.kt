@@ -94,7 +94,6 @@ import com.github.naz013.feature.reminder.build.valuedialog.editor.ICalWeekStart
 import com.github.naz013.feature.reminder.build.valuedialog.editor.LedColorValueEditor
 import com.github.naz013.feature.reminder.build.valuedialog.editor.LockScreenVisibilityValueEditor
 import com.github.naz013.feature.reminder.build.valuedialog.editor.NoteValueEditor
-import com.github.naz013.feature.reminder.build.valuedialog.editor.TimeZoneValueEditor
 import com.github.naz013.feature.reminder.build.valuedialog.editor.OtherParamsValueEditor
 import com.github.naz013.feature.reminder.build.valuedialog.editor.PhoneInputValueEditor
 import com.github.naz013.feature.reminder.build.valuedialog.editor.PriorityValueEditor
@@ -105,6 +104,7 @@ import com.github.naz013.feature.reminder.build.valuedialog.editor.SimpleTextVal
 import com.github.naz013.feature.reminder.build.valuedialog.editor.SubTasksValueEditor
 import com.github.naz013.feature.reminder.build.valuedialog.editor.TextInputValueEditor
 import com.github.naz013.feature.reminder.build.valuedialog.editor.TimeValueEditor
+import com.github.naz013.feature.reminder.build.valuedialog.editor.TimeZoneValueEditor
 import com.github.naz013.feature.reminder.build.valuedialog.editor.VibrationPatternValueEditor
 import com.github.naz013.feature.reminder.build.valuedialog.editor.WakeScreenValueEditor
 import com.github.naz013.common.PackageManagerWrapper
@@ -286,7 +286,7 @@ private fun ValueEditorContent(
     is SmsBuilderItem -> PhoneInputValueEditor(builderItem, onPickContact, onValueChange)
     is AttachmentsBuilderItem -> AttachmentsValueEditor(builderItem, attachmentFileAdapter, onPickFiles, onValueChange)
     is NoteBuilderItem -> NoteValueEditor(builderItem, onValueChange)
-    is TimeZoneBuilderItem -> TimeZoneValueEditor(builderItem, onValueChange)
+    is TimeZoneBuilderItem -> TimeZoneValueEditor(builderItem = builderItem, onValueChange = onValueChange)
     is SubTasksBuilderItem -> SubTasksValueEditor(builderItem, dateTimeManager, onValueChange, hapticFeedbackEnabled)
     is TimerExclusionBuilderItem ->
       CountdownExclusionValueEditor(builderItem, dateTimeManager, is24HourFormat, onValueChange)

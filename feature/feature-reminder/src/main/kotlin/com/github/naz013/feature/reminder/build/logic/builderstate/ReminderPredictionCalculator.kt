@@ -8,6 +8,8 @@ import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderAction
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.icalendar.ICalendarApi
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 
 internal class ReminderPredictionCalculator(
   private val dateTimeManager: DateTimeManager,
@@ -73,7 +75,7 @@ internal class ReminderPredictionCalculator(
               message =
                 textProvider.getString(R.string.builder_scheduled_at) +
                   dateTimeManager.getDateTime(dateTime) +
-                  createRecurrenceMessage(recurrence),
+                  createRecurrenceMessage(recurrence, DateTimeManager.parseFixedZone(reminder.timeZoneId)),
             )
           }
         }
@@ -81,13 +83,17 @@ internal class ReminderPredictionCalculator(
     }
   }
 
-  private fun createRecurrenceMessage(recurrence: RecurrenceRule): String {
+  private fun createRecurrenceMessage(
+    recurrence: RecurrenceRule,
+    zone: ZoneId?,
+  ): String {
     val rrule = (recurrence as? RecurrenceRule.ICalendar)?.rrule ?: return ""
 
     val rules = runCatching { iCalendarApi.parseObject(rrule) }.getOrNull() ?: return ""
     val generated = runCatching { iCalendarApi.generate(rules) }.getOrNull() ?: return ""
 
-    val nowDateTime = dateTimeManager.getCurrentDateTime().withNano(0)
+    val nowDateTime =
+      (zone?.let { dateTimeManager.getCurrentDateTime(it) } ?: dateTimeManager.getCurrentDateTime()).withNano(0)
 
     var nowSelected = false
     var position = -1
@@ -111,7 +117,7 @@ internal class ReminderPredictionCalculator(
           .mapNotNull { it.dateTime }
       if (afterRecurrences.isNotEmpty()) {
         textProvider.getString(R.string.and_will_be_repeated_at) +
-          afterRecurrences.joinToString(",\n") { dateTimeManager.getDateTime(it) }
+          afterRecurrences.joinToString(",\n") { dateTimeManager.getDateTime(toDeviceTime(it, zone)) }
       } else {
         ""
       }
@@ -119,6 +125,11 @@ internal class ReminderPredictionCalculator(
       ""
     }
   }
+
+  private fun toDeviceTime(
+    dateTime: LocalDateTime,
+    zone: ZoneId?,
+  ): LocalDateTime = zone?.let { dateTimeManager.utcToLocal(dateTimeManager.localToUtc(dateTime, it)) } ?: dateTime
 }
 
 sealed class ReminderPrediction {

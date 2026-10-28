@@ -64,7 +64,9 @@ internal class TimeZoneCatalog(
   private fun formatOffset(totalSeconds: Int): String {
     val sign = if (totalSeconds < 0) '-' else '+'
     val absolute = kotlin.math.abs(totalSeconds)
-    return String.format(Locale.ROOT, "UTC%c%02d:%02d", sign, absolute / SECONDS_IN_HOUR, absolute % SECONDS_IN_HOUR / SECONDS_IN_MINUTE)
+    val hours = absolute / SECONDS_IN_HOUR
+    val minutes = absolute % SECONDS_IN_HOUR / SECONDS_IN_MINUTE
+    return String.format(Locale.ROOT, "UTC%c%02d:%02d", sign, hours, minutes)
   }
 
   private companion object {

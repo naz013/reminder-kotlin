@@ -15,7 +15,6 @@ import com.github.naz013.feature.reminder.build.bi.BiFactory
 import com.github.naz013.feature.reminder.build.bi.BiFilter
 import com.github.naz013.feature.reminder.build.bi.constraint.PermissionConstraint
 import com.github.naz013.feature.reminder.build.logic.BuilderItemsLogic
-import com.github.naz013.feature.reminder.build.timezone.TimeZonePrefill
 import com.github.naz013.feature.reminder.build.logic.UiBuilderItemsAdapter
 import com.github.naz013.feature.reminder.build.logic.UiSelectorItemsAdapter
 import com.github.naz013.feature.reminder.build.logic.builderstate.BuilderErrorFinder
@@ -34,6 +33,7 @@ import com.github.naz013.feature.reminder.IsSimpleTodoReminderUseCase
 import com.github.naz013.feature.reminder.build.selectordialog.SelectorDialogDataHolder
 import com.github.naz013.logic.reminder.usecase.ResumeReminderUseCase
 import com.github.naz013.feature.reminder.todo.TodoSeedHolder
+import com.github.naz013.feature.reminder.build.timezone.TimeZonePrefill
 import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.AnalyticsReminderType

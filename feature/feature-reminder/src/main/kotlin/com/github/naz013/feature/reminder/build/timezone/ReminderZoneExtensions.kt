@@ -8,4 +8,7 @@ import org.threeten.bp.LocalDateTime
 internal fun DateTimeManager.utcToReminderLocal(
   reminder: ReminderV2,
   dateTime: LocalDateTime,
-): LocalDateTime = DateTimeManager.parseFixedZone(reminder.timeZoneId)?.let { utcToLocal(dateTime, it) } ?: utcToLocal(dateTime)
+): LocalDateTime {
+  val zone = DateTimeManager.parseFixedZone(reminder.timeZoneId)
+  return if (zone != null) utcToLocal(dateTime, zone) else utcToLocal(dateTime)
+}
