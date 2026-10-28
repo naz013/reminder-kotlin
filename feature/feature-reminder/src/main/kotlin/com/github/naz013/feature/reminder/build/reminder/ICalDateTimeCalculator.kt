@@ -6,6 +6,7 @@ import com.github.naz013.feature.reminder.build.ICalStartDateBuilderItem
 import com.github.naz013.feature.reminder.build.ICalStartTimeBuilderItem
 import com.github.naz013.feature.reminder.build.ICalUntilDateBuilderItem
 import com.github.naz013.feature.reminder.build.ICalUntilTimeBuilderItem
+import com.github.naz013.feature.reminder.build.TimeZoneBuilderItem
 import com.github.naz013.feature.reminder.build.bi.BiGroup
 import com.github.naz013.feature.reminder.build.bi.ProcessedBuilderItems
 import com.github.naz013.datecalc.DateTimeManager
@@ -21,6 +22,7 @@ import com.github.naz013.icalendar.UntilRecurParam
 import com.github.naz013.icalendar.UtcDateTime
 import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 
 internal class ICalDateTimeCalculator(
   private val iCalendarApi: ICalendarApi,
@@ -49,10 +51,14 @@ internal class ICalDateTimeCalculator(
       ) ?: return null
 
     val startDateTime = LocalDateTime.of(startDate, startTime)
+    val zone =
+      DateTimeManager.parseFixedZone(
+        (processedBuilderItems.typeMap[BiType.TIME_ZONE] as? TimeZoneBuilderItem)?.modifier?.getValue(),
+      )
 
     Logger.d(TAG, "Calculated startDateTime = $startDateTime")
 
-    val ruleMap = createRuleMap(startDateTime, iCalParams)
+    val ruleMap = createRuleMap(startDateTime, iCalParams, zone)
 
     Logger.d(TAG, "Generated ruleMap = $ruleMap")
 
@@ -67,7 +73,7 @@ internal class ICalDateTimeCalculator(
 
     Logger.d(TAG, "Generated dates = $dates")
 
-    val position = findPosition(dates)
+    val position = findPosition(dates, zone)
 
     Logger.i(TAG, "Calculated position = $position")
 
@@ -85,10 +91,11 @@ internal class ICalDateTimeCalculator(
   private fun createRuleMap(
     startDateTime: LocalDateTime,
     params: Map<BiType, BuilderItem<*>>,
+    zone: ZoneId?,
   ): RuleMap {
     val map =
       mutableMapOf<TagType, Tag>().apply {
-        put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime)))
+        put(TagType.DTSTART, DateTimeStartTag(UtcDateTime(startDateTime), zone?.id))
       }
 
     createRruleTag(params)?.also {
@@ -140,10 +147,14 @@ internal class ICalDateTimeCalculator(
     return RecurrenceRuleTag(recurParams)
   }
 
-  private fun findPosition(generated: List<UtcDateTime>): Int {
+  private fun findPosition(
+    generated: List<UtcDateTime>,
+    zone: ZoneId?,
+  ): Int {
     if (generated.isEmpty()) return -1
 
-    val nowDateTime = dateTimeManager.getCurrentDateTime().withNano(0)
+    val now = zone?.let { dateTimeManager.getCurrentDateTime(it) } ?: dateTimeManager.getCurrentDateTime()
+    val nowDateTime = now.withNano(0)
 
     var nowSelected = false
     var position = -1

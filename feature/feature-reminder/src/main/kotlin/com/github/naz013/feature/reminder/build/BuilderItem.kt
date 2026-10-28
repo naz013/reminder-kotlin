@@ -33,6 +33,9 @@ import com.github.naz013.feature.reminder.build.bi.ShopItemsModifier
 import com.github.naz013.feature.reminder.build.bi.StringModifier
 import com.github.naz013.feature.reminder.build.bi.SummaryModifier
 import com.github.naz013.feature.reminder.build.bi.TimeModifier
+import com.github.naz013.feature.reminder.build.bi.TimeZoneModifier
+import com.github.naz013.feature.reminder.build.timezone.TimeZoneCatalog
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.feature.reminder.build.bi.TimerExclusion
 import com.github.naz013.feature.reminder.build.bi.TimerExclusionModifier
 import com.github.naz013.feature.reminder.build.bi.WebAddressModifier
@@ -1091,6 +1094,35 @@ internal data class NoteBuilderItem(
       requiresAll(
         BiType.DATE,
         BiType.TIME,
+      )
+    }
+}
+
+internal data class TimeZoneBuilderItem(
+  override val title: String,
+  override val description: String?,
+  val catalog: TimeZoneCatalog,
+) : BuilderItem<String>() {
+  override val iconRes: Int = DrawableCatalog.Fluent.Globe
+  override val isForPro: Boolean = false
+  override val modifier: BuilderModifier<String> = TimeZoneModifier(catalog)
+  override val biType: BiType = BiType.TIME_ZONE
+  override val biGroup: BiGroup = BiGroup.PARAMS
+  override val constraints: List<BiConstraint<*>> =
+    constraints {
+      requiresAny(
+        BiType.DATE,
+        BiType.DAYS_OF_WEEK,
+        BiType.DAY_OF_MONTH,
+        BiType.DAY_OF_YEAR,
+      )
+      requiresAny(BiGroup.ICAL)
+      blockedBy(
+        BiType.COUNTDOWN_TIMER,
+        BiType.LEAVING_COORDINATES,
+        BiType.ARRIVING_COORDINATES,
+        BiType.LOCATION_DELAY_DATE,
+        BiType.LOCATION_DELAY_TIME,
       )
     }
 }

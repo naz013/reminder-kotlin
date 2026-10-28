@@ -8,6 +8,7 @@ import com.github.naz013.feature.reminder.build.reminder.decompose.ActionDecompo
 import com.github.naz013.feature.reminder.build.reminder.decompose.ExtrasDecomposer
 import com.github.naz013.feature.reminder.build.reminder.decompose.GroupDecomposer
 import com.github.naz013.feature.reminder.build.reminder.decompose.NoteDecomposer
+import com.github.naz013.feature.reminder.build.reminder.decompose.TimeZoneDecomposer
 import com.github.naz013.feature.reminder.build.reminder.decompose.TypeDecomposer
 import com.github.naz013.domain.reminder.BiType
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -20,6 +21,7 @@ internal class ReminderToBiDecomposer(
   private val groupDecomposer: GroupDecomposer,
   private val biFilter: BiFilter,
   private val noteDecomposer: NoteDecomposer,
+  private val timeZoneDecomposer: TimeZoneDecomposer,
 ) {
   suspend operator fun invoke(reminder: ReminderV2): List<BuilderItem<*>> {
     val items = mutableListOf<BuilderItem<*>>()
@@ -29,6 +31,7 @@ internal class ReminderToBiDecomposer(
     items.addAll(actionDecomposer(reminder))
     items.addAll(groupDecomposer(reminder))
     items.addAll(noteDecomposer(reminder))
+    items.addAll(timeZoneDecomposer(reminder))
 
     val itemsMap = items.associateBy { it.biType }
     val builderScheme =

@@ -1,6 +1,6 @@
 # Time zone support (design note)
 
-Status: design; model (2/4), zone-aware calculation (3a), zone-aware RDATE generation (3b) and zone-change handling (3c) are implemented. Tracked as four Trello cards (1/4 is this note).
+Status: model (2/4), zone-aware calculation (3a), zone-aware RDATE generation (3b), zone-change handling (3c) and the builder, preview and default setting (4/4) are implemented. Tracked as four Trello cards (1/4 is this note). See "Builder and UI (4/4)" for what is left.
 
 ## Problem
 
@@ -149,7 +149,18 @@ instant, `SnoozeReminderUseCase`).
 - Gap resolution is the gap-shifted time (02:30 becomes 03:30 via `ZonedDateTime.of`), not the first instant after the gap (03:00).
 - Overlap: strategies return a local time, so only the earlier offset is representable; a later-offset instant cannot be expressed.
 - Zone changes (3c) re-anchor floating reminders by shifting `eventDateTime`; floating RRULE reminders also get their RDATE list rebuilt (3b) in the same save, from the DTSTART wall-clock.
-- RRULE (3b): `ICalendarApiImpl.generate` expands in the DTSTART TZID zone (device zone when absent or unknown) and `createObject` tags the RDATE list with the same TZID. `RecurEventManager.getNextAfterDateTime` takes the reminder's fixed zone and converts by instant when it differs from the list's zone. The builder does not yet write a TZID into DTSTART (card 4/4), so a fixed reminder whose stored list is untagged is matched by instant until `RecurEventManager.regenerate` rebuilds it.
+- RRULE (3b): `ICalendarApiImpl.generate` expands in the DTSTART TZID zone (device zone when absent or unknown) and `createObject` tags the RDATE list with the same TZID. `RecurEventManager.getNextAfterDateTime` takes the reminder's fixed zone and converts by instant when it differs from the list's zone. The builder writes the TZID into DTSTART for fixed reminders (4/4); a fixed reminder saved before that, whose stored list is untagged, is matched by instant until `RecurEventManager.regenerate` rebuilds it.
+
+## Builder and UI (4/4)
+
+- **Builder item**: `BiType.TIME_ZONE` / `TimeZoneBuilderItem` (feature-reminder, `build/timezone`). Value null = "Device time zone" (floating). The editor is a searchable list of zones with the current UTC offset (`TimeZoneCatalog`); filtering and offset formatting live in the catalog, not the composable.
+- **Supported types**: constraints require a date, weekday, month day, year day or iCal item and are blocked by countdown and location items, so the item is unavailable in the selector there. The save path (`BiToReminderAdapter`) also forces `timeZoneId = null` for countdown and location rules.
+- **Wall-clock**: the builder holds zone-less date and time values and resolves the instant at save (`RecurrenceRuleCalculator`, `ICalDateTimeCalculator`), so changing the zone keeps the wall-clock time (open question 4). Editing a fixed reminder shows its date and time in its own zone (decomposers).
+- **RRULE**: `ICalDateTimeCalculator` writes `DTSTART;TZID=` for fixed reminders and `createObject` regenerates the zone-tagged RDATE list in the same save.
+- **Display**: lists and the preview show the device-zone time, plus a label such as "09:00 Berlin" (`ReminderZoneLabelFormatter`, `UiReminderDueData.zoneLabel`) when the fixed zone differs from the device zone (open question 6, proposal).
+- **Default setting**: Settings, Reminders, "New reminders use" (`useFixedZoneForNewReminders`, floating by default). It only pre-fills the builder: the first time a zone-capable item is added to a new reminder, a zone item with the device zone is added too (`TimeZonePrefill`). Removing it afterwards sticks.
+
+Not done: the label is not shown in widgets, Agenda, calendar or Wear; Google Calendar/Tasks zone fixes from "Interactions" are untouched by this card; the reminder prediction text in the builder still shows the device-zone time.
 
 ## Open questions
 
@@ -183,7 +194,7 @@ instant, `SnoozeReminderUseCase`).
     stored RDATE lists).
   - 3c: `BootReceiver` zone/time handling, `lastKnownZoneId`, floating reinterpretation, RDATE regeneration.
     Depends on open question 1.
-- **4/4 Builder, preview UI and global default**: zone picker in the reminder builder, preview/list zone label,
+- **4/4 Builder, preview UI and global default** (done): zone picker in the reminder builder, preview/list zone label,
   default setting, hidden for excluded types. Depends on 2/4; behaviour is only correct after 3a, so ship it after
   3a (or behind a feature flag).
 

@@ -14,6 +14,7 @@ import com.github.naz013.feature.reminder.build.RepeatIntervalBuilderItem
 import com.github.naz013.feature.reminder.build.RepeatLimitBuilderItem
 import com.github.naz013.feature.reminder.build.RepeatTimeBuilderItem
 import com.github.naz013.feature.reminder.build.TimeBuilderItem
+import com.github.naz013.feature.reminder.build.TimeZoneBuilderItem
 import com.github.naz013.feature.reminder.build.TimerBuilderItem
 import com.github.naz013.feature.reminder.build.bi.BiGroup
 import com.github.naz013.feature.reminder.build.bi.ProcessedBuilderItems
@@ -28,6 +29,7 @@ import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.logging.Logger
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 
 data class ComposedRecurrence(
   val rule: RecurrenceRule,
@@ -43,6 +45,7 @@ internal class RecurrenceRuleCalculator(
 ) {
   operator fun invoke(processedBuilderItems: ProcessedBuilderItems): ComposedRecurrence? {
     val itemsMap = processedBuilderItems.typeMap
+    val zone = readZone(itemsMap)
 
     val hasDateTime = itemsMap[BiType.DATE] != null && itemsMap[BiType.TIME] != null
     val hasTimer = itemsMap[BiType.COUNTDOWN_TIMER] != null
@@ -55,11 +58,11 @@ internal class RecurrenceRuleCalculator(
     val result =
       if (isOnlyOneActive) {
         when {
-          hasDateTime -> fromDate(itemsMap)
+          hasDateTime -> fromDate(itemsMap, zone)
           hasTimer -> fromTimer(itemsMap)
-          hasWeekdays -> fromWeekdays(itemsMap)
-          hasMonthDay -> fromMonthDay(itemsMap)
-          hasDayOfYear -> fromDayOfYear(itemsMap)
+          hasWeekdays -> fromWeekdays(itemsMap, zone)
+          hasMonthDay -> fromMonthDay(itemsMap, zone)
+          hasDayOfYear -> fromDayOfYear(itemsMap, zone)
           else -> null
         }
       } else if (isAllFalse(hasDateTime, hasTimer, hasWeekdays, hasMonthDay, hasDayOfYear)) {
@@ -76,7 +79,7 @@ internal class RecurrenceRuleCalculator(
           hasLocationIn -> fromLocation(itemsMap, RecurrenceRule.LocationEnter)
           hasLocationOut -> fromLocation(itemsMap, RecurrenceRule.LocationExit)
           hasLocationDelay -> fromLocation(itemsMap, RecurrenceRule.LocationEnter)
-          hasICalRecur -> fromICalendar(processedBuilderItems)
+          hasICalRecur -> fromICalendar(processedBuilderItems, zone)
           hasDate || hasTime || hasShop -> emptySchedule()
           else -> null
         }
@@ -88,11 +91,14 @@ internal class RecurrenceRuleCalculator(
     return result
   }
 
-  private fun fromDate(itemsMap: Map<BiType, BuilderItem<*>>): ComposedRecurrence? {
+  private fun fromDate(
+    itemsMap: Map<BiType, BuilderItem<*>>,
+    zone: ZoneId?,
+  ): ComposedRecurrence? {
     val date = (itemsMap[BiType.DATE] as? DateBuilderItem)?.modifier?.getValue() ?: return null
     val time = (itemsMap[BiType.TIME] as? TimeBuilderItem)?.modifier?.getValue() ?: return null
     val localDateTime = LocalDateTime.of(date, time)
-    val utcDateTime = dateTimeManager.localToUtc(localDateTime)
+    val utcDateTime = localToUtc(localDateTime, zone)
 
     val repeatInterval = (itemsMap[BiType.REPEAT_TIME] as? RepeatTimeBuilderItem)?.modifier?.getValue()
     val repeatLimit = readRepeatLimit(itemsMap)
@@ -126,7 +132,10 @@ internal class RecurrenceRuleCalculator(
     )
   }
 
-  private fun fromWeekdays(itemsMap: Map<BiType, BuilderItem<*>>): ComposedRecurrence? {
+  private fun fromWeekdays(
+    itemsMap: Map<BiType, BuilderItem<*>>,
+    zone: ZoneId?,
+  ): ComposedRecurrence? {
     val time = (itemsMap[BiType.TIME] as? TimeBuilderItem)?.modifier?.getValue() ?: return null
     val weekdays = (itemsMap[BiType.DAYS_OF_WEEK] as? DaysOfWeekBuilderItem)?.modifier?.getValue()
     if (!IntervalUtil.isWeekday(weekdays)) return null
@@ -134,14 +143,15 @@ internal class RecurrenceRuleCalculator(
 
     val repeatLimit = readRepeatLimit(itemsMap)
 
-    val localDateTime = LocalDateTime.of(LocalDate.now(), time)
+    val now = now(zone)
+    val localDateTime = LocalDateTime.of(zone?.let { now.toLocalDate() } ?: LocalDate.now(), time)
     val nextLocal =
       recurrenceCalculator.findNextDayOfWeekDateTime(
         eventDateTime = localDateTime,
         weekdays = weekdaysNonNull,
-        afterOrEqualDateTime = dateTimeManager.getCurrentDateTime(),
+        afterOrEqualDateTime = now,
       )
-    val utcDateTime = dateTimeManager.localToUtc(nextLocal)
+    val utcDateTime = localToUtc(nextLocal, zone)
 
     return ComposedRecurrence(
       rule = RecurrenceRule.Weekly(weekdays = weekdaysNonNull, repeatLimit = repeatLimit),
@@ -149,22 +159,25 @@ internal class RecurrenceRuleCalculator(
     )
   }
 
-  private fun fromMonthDay(itemsMap: Map<BiType, BuilderItem<*>>): ComposedRecurrence? {
+  private fun fromMonthDay(
+    itemsMap: Map<BiType, BuilderItem<*>>,
+    zone: ZoneId?,
+  ): ComposedRecurrence? {
     val time = (itemsMap[BiType.TIME] as? TimeBuilderItem)?.modifier?.getValue() ?: return null
     val dayOfMonth = (itemsMap[BiType.DAY_OF_MONTH] as? DayOfMonthBuilderItem)?.modifier?.getValue() ?: return null
 
     val repeatInterval = (itemsMap[BiType.REPEAT_INTERVAL] as? RepeatIntervalBuilderItem)?.modifier?.getValue() ?: 1L
     val repeatLimit = readRepeatLimit(itemsMap)
 
-    val localDateTime = LocalDateTime.of(dateTimeManager.getCurrentDate(), time)
+    val localDateTime = LocalDateTime.of(currentDate(zone), time)
     val nextLocal =
       recurrenceCalculator.findNextMonthDayDateTime(
         eventDateTime = localDateTime,
         dayOfMonth = dayOfMonth,
         interval = repeatInterval,
-        afterOrEqualDateTime = dateTimeManager.getCurrentDateTime(),
+        afterOrEqualDateTime = now(zone),
       )
-    val utcDateTime = dateTimeManager.localToUtc(nextLocal)
+    val utcDateTime = localToUtc(nextLocal, zone)
 
     return ComposedRecurrence(
       rule =
@@ -177,24 +190,27 @@ internal class RecurrenceRuleCalculator(
     )
   }
 
-  private fun fromDayOfYear(itemsMap: Map<BiType, BuilderItem<*>>): ComposedRecurrence? {
+  private fun fromDayOfYear(
+    itemsMap: Map<BiType, BuilderItem<*>>,
+    zone: ZoneId?,
+  ): ComposedRecurrence? {
     val time = (itemsMap[BiType.TIME] as? TimeBuilderItem)?.modifier?.getValue() ?: return null
     val dayOfYear = (itemsMap[BiType.DAY_OF_YEAR] as? DayOfYearBuilderItem)?.modifier?.getValue() ?: return null
-    val derivedDate = runCatching { dateTimeManager.getCurrentDate().withDayOfYear(dayOfYear) }.getOrNull() ?: return null
+    val derivedDate = runCatching { currentDate(zone).withDayOfYear(dayOfYear) }.getOrNull() ?: return null
 
     val repeatInterval = (itemsMap[BiType.REPEAT_INTERVAL] as? RepeatIntervalBuilderItem)?.modifier?.getValue() ?: 1L
     val repeatLimit = readRepeatLimit(itemsMap)
 
-    val localDateTime = LocalDateTime.of(dateTimeManager.getCurrentDate(), time)
+    val localDateTime = LocalDateTime.of(currentDate(zone), time)
     val nextLocal =
       recurrenceCalculator.findNextYearDayDateTime(
         eventDateTime = localDateTime,
         monthOfYear = derivedDate.monthValue - 1,
         dayOfMonth = derivedDate.dayOfMonth,
         interval = repeatInterval,
-        afterOrEqualDateTime = dateTimeManager.getCurrentDateTime(),
+        afterOrEqualDateTime = now(zone),
       )
-    val utcDateTime = dateTimeManager.localToUtc(nextLocal)
+    val utcDateTime = localToUtc(nextLocal, zone)
 
     return ComposedRecurrence(
       rule =
@@ -249,15 +265,32 @@ internal class RecurrenceRuleCalculator(
     )
   }
 
-  private fun fromICalendar(processedBuilderItems: ProcessedBuilderItems): ComposedRecurrence? {
+  private fun fromICalendar(
+    processedBuilderItems: ProcessedBuilderItems,
+    zone: ZoneId?,
+  ): ComposedRecurrence? {
     val eventData = iCalDateTimeCalculator(processedBuilderItems) ?: return null
-    val utcDateTime = dateTimeManager.localToUtc(eventData.startDateTime)
+    val utcDateTime = localToUtc(eventData.startDateTime, zone)
 
     return ComposedRecurrence(
       rule = RecurrenceRule.ICalendar(rrule = eventData.recurObject),
       schedule = ReminderSchedule(startDateTime = utcDateTime, eventDateTime = utcDateTime),
     )
   }
+
+  private fun readZone(itemsMap: Map<BiType, BuilderItem<*>>): ZoneId? =
+    DateTimeManager.parseFixedZone((itemsMap[BiType.TIME_ZONE] as? TimeZoneBuilderItem)?.modifier?.getValue())
+
+  private fun now(zone: ZoneId?): LocalDateTime =
+    zone?.let { dateTimeManager.getCurrentDateTime(it) } ?: dateTimeManager.getCurrentDateTime()
+
+  private fun currentDate(zone: ZoneId?): LocalDate =
+    zone?.let { now(it).toLocalDate() } ?: dateTimeManager.getCurrentDate()
+
+  private fun localToUtc(
+    dateTime: LocalDateTime,
+    zone: ZoneId?,
+  ): LocalDateTime = zone?.let { dateTimeManager.localToUtc(dateTime, it) } ?: dateTimeManager.localToUtc(dateTime)
 
   private fun readRepeatLimit(itemsMap: Map<BiType, BuilderItem<*>>): Int =
     (itemsMap[BiType.REPEAT_LIMIT] as? RepeatLimitBuilderItem)?.modifier?.getValue() ?: -1

@@ -85,6 +85,8 @@ internal class BiTypeForUiAdapter(
         textProvider.getString(R.string.note)
       }
 
+      BiType.TIME_ZONE -> textProvider.getString(R.string.builder_time_zone)
+
       else -> {
         val recurParamType = biType.toRecurParamType()
         if (BiGroup.ICAL.types.contains(biType) && recurParamType != null) {

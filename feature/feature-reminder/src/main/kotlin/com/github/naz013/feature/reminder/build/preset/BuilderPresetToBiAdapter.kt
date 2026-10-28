@@ -54,6 +54,7 @@ import com.github.naz013.feature.reminder.build.TimeBuilderItem
 import com.github.naz013.feature.reminder.build.TimerBuilderItem
 import com.github.naz013.feature.reminder.build.TimerExclusionBuilderItem
 import com.github.naz013.feature.reminder.build.VibrationPatternBuilderItem
+import com.github.naz013.feature.reminder.build.TimeZoneBuilderItem
 import com.github.naz013.feature.reminder.build.WakeScreenBuilderItem
 import com.github.naz013.feature.reminder.build.WebAddressBuilderItem
 import com.github.naz013.feature.reminder.build.bi.BiFactory
@@ -115,6 +116,7 @@ import com.github.naz013.domain.reminder.BiType.SUB_TASKS
 import com.github.naz013.domain.reminder.BiType.SUMMARY
 import com.github.naz013.domain.reminder.BiType.TIME
 import com.github.naz013.domain.reminder.BiType.VIBRATION_PATTERN
+import com.github.naz013.domain.reminder.BiType.TIME_ZONE
 import com.github.naz013.domain.reminder.BiType.WAKE_SCREEN
 
 internal class BuilderPresetToBiAdapter(
@@ -195,6 +197,7 @@ internal class BuilderPresetToBiAdapter(
       GOOGLE_CALENDAR -> create(scheme, GoogleCalendarBuilderItem::class.java)
       GOOGLE_CALENDAR_DURATION -> create(scheme, GoogleCalendarDurationBuilderItem::class.java)
       NOTE -> create(scheme, NoteBuilderItem::class.java)
+      TIME_ZONE -> create(scheme, TimeZoneBuilderItem::class.java)
       else -> error("Unknown biType: $type")
     }
 

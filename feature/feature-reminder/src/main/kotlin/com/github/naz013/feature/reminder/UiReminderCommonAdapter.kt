@@ -34,6 +34,8 @@ internal class UiReminderCommonAdapter(
   private val reminderPreferences: ReminderPreferences,
   private val modelDateTimeFormatter: ModelDateTimeFormatter,
 ) {
+  private val zoneLabelFormatter = ReminderZoneLabelFormatter(dateTimeManager)
+
   fun getPriorityTitle(priority: Int): String =
     when (priority) {
       0 -> textProvider.getText(R.string.priority_lowest)
@@ -101,6 +103,7 @@ internal class UiReminderCommonAdapter(
       recurRule = getRecurRulesV2(reminder.recurrence),
       formattedTime = dateTime?.let { dateTimeManager.getTime(it.toLocalTime()) },
       formattedDateTime = due,
+      zoneLabel = zoneLabelFormatter.format(reminder),
     )
   }
 

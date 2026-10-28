@@ -9,6 +9,7 @@ import com.github.naz013.feature.reminder.build.reminder.compose.CalendarExportC
 import com.github.naz013.feature.reminder.build.reminder.compose.ReminderActionCalculator
 import com.github.naz013.feature.reminder.build.reminder.compose.RecurrenceRuleCalculator
 import com.github.naz013.feature.reminder.build.reminder.validation.ReminderValidator
+import com.github.naz013.feature.reminder.build.timezone.supportsTimeZone
 import com.github.naz013.domain.reminder.v2.BuilderSchemeItemV2
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderV2
@@ -48,6 +49,9 @@ internal class BiToReminderAdapter(
       )
 
     updated = items.fold(updated) { acc, item -> item.modifier.putInto(acc) }
+    if (!recurrence.rule.supportsTimeZone()) {
+      updated = updated.copy(timeZoneId = null)
+    }
 
     when (val validationResult = reminderValidator(updated)) {
       is ReminderValidator.ValidationResult.Failed -> {
@@ -80,6 +84,7 @@ internal class BiToReminderAdapter(
       attachmentFiles = emptyList(),
       places = emptyList(),
       shoppingItems = emptyList(),
+      timeZoneId = null,
     )
 
   sealed class BuildResult {

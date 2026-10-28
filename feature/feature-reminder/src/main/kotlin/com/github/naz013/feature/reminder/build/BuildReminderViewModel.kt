@@ -15,6 +15,7 @@ import com.github.naz013.feature.reminder.build.bi.BiFactory
 import com.github.naz013.feature.reminder.build.bi.BiFilter
 import com.github.naz013.feature.reminder.build.bi.constraint.PermissionConstraint
 import com.github.naz013.feature.reminder.build.logic.BuilderItemsLogic
+import com.github.naz013.feature.reminder.build.timezone.TimeZonePrefill
 import com.github.naz013.feature.reminder.build.logic.UiBuilderItemsAdapter
 import com.github.naz013.feature.reminder.build.logic.UiSelectorItemsAdapter
 import com.github.naz013.feature.reminder.build.logic.builderstate.BuilderErrorFinder
@@ -193,6 +194,8 @@ internal class BuildReminderViewModel(
   private var isSaving: Boolean = false
   private var originalV2: ReminderV2? = null
   private var isFromFile: Boolean = false
+  private var timeZonePrefilled: Boolean = false
+  private val timeZonePrefill = TimeZonePrefill(reminderPreferences)
 
   private var requestedNewId = false
   private var requestedPermissionsFor: Pair<Int, BuilderItem<*>>? = null
@@ -548,6 +551,7 @@ internal class BuildReminderViewModel(
 
   private suspend fun applyQuickStart(items: List<BuilderItem<*>>) {
     builderItemsLogic.setAll(items)
+    prefillTimeZoneIfNeeded()
     updateSelector()
   }
 
@@ -555,8 +559,9 @@ internal class BuildReminderViewModel(
     Logger.i(TAG, "Add builder item, type = ${builderItem.biType}")
     viewModelScope.launch(dispatcherProvider.default()) {
       builderItemsLogic.addNew(builderItem)
+      prefillTimeZoneIfNeeded()
 
-      val position = builderItemsLogic.getUsed().size - 1
+      val position = builderItemsLogic.getUsed().indexOfFirst { it.biType == builderItem.biType }
       onItemEditedClicked(position, builderItem)
 
       updateSelector()
@@ -617,6 +622,7 @@ internal class BuildReminderViewModel(
       addDateItemToBuilder(dateTime.toLocalDate())
       addTimeItemToBuilder(dateTime.toLocalTime())
       addEmptySummaryItemToBuilderIfNeeded()
+      prefillTimeZoneIfNeeded()
       updateSelector()
     }
   }
@@ -713,7 +719,20 @@ internal class BuildReminderViewModel(
     } else {
       addEmptySummaryItemToBuilderIfNeeded()
     }
+    prefillTimeZoneIfNeeded()
     updateSelector()
+  }
+
+  /** Adds the zone item once per new reminder, so removing it afterwards sticks. */
+  private suspend fun prefillTimeZoneIfNeeded() {
+    if (timeZonePrefilled || originalV2 != null) return
+    val zoneId = timeZonePrefill.zoneIdToPrefill(builderItemsLogic.getUsed()) ?: return
+    biFactory
+      .createWithValue(BiType.TIME_ZONE, zoneId, TimeZoneBuilderItem::class.java)
+      ?.also {
+        builderItemsLogic.addNew(it)
+        timeZonePrefilled = true
+      }
   }
 
   private fun BuildReminderNavKey.Main.QuickAddDeepLink.toRecurrenceRule(): RecurrenceRule =

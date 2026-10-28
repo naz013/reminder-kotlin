@@ -12,4 +12,6 @@ data class UiReminderDueData(
   val recurRule: String? = null,
   val formattedTime: String?,
   val formattedDateTime: String?,
+  /** Time in the reminder's own zone, e.g. "09:00 Berlin"; null unless it is a fixed zone other than the device's. */
+  val zoneLabel: String? = null,
 )

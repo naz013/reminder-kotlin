@@ -59,6 +59,7 @@ import com.github.naz013.feature.reminder.build.reminder.decompose.ExtrasDecompo
 import com.github.naz013.feature.reminder.build.reminder.decompose.GroupDecomposer
 import com.github.naz013.feature.reminder.build.reminder.decompose.ICalDecomposer
 import com.github.naz013.feature.reminder.build.reminder.decompose.NoteDecomposer
+import com.github.naz013.feature.reminder.build.reminder.decompose.TimeZoneDecomposer
 import com.github.naz013.feature.reminder.build.reminder.decompose.TypeDecomposer
 import com.github.naz013.feature.reminder.build.reminder.validation.EventTimeValidator
 import com.github.naz013.feature.reminder.build.reminder.validation.PermissionValidator
@@ -313,7 +314,7 @@ val featureReminderModule = module {
 
   factory { ICalDateTimeCalculator(get(), get()) }
 
-  factory { ReminderToBiDecomposer(get(), get(), get(), get(), get(), get(), get()) }
+  factory { ReminderToBiDecomposer(get(), get(), get(), get(), get(), get(), get(), get()) }
 
   factory { TypeDecomposer(get(), get(), get(), get(), get(), get(), get()) }
   factory { ByDateDecomposer(get(), get()) }
@@ -331,6 +332,7 @@ val featureReminderModule = module {
   factory { GroupDecomposer(get(), get(), get()) }
 
   factory { NoteDecomposer(get(), get(), get()) }
+  factory { TimeZoneDecomposer(get()) }
 
   factoryOf(::LocationFilter)
   factoryOf(::BiFilter)

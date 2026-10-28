@@ -193,7 +193,7 @@ internal class UiReminderListAdapterImpl(
         return null
       }
       UiTextElement(
-        text = dueData.formattedDateTime ?: "",
+        text = listOfNotNull(dueData.formattedDateTime, dueData.zoneLabel).joinToString(separator = " · "),
         textFormat =
           UiTextFormat(
             fontSize = unitsConverter.spToPx(14f),

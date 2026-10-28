@@ -66,5 +66,7 @@ enum class BiType {
   GOOGLE_CALENDAR,
   GOOGLE_CALENDAR_DURATION,
 
-  NOTE
+  NOTE,
+
+  TIME_ZONE
 }

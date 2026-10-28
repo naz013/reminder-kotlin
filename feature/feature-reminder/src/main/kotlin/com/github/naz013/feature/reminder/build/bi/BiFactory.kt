@@ -43,7 +43,9 @@ import com.github.naz013.feature.reminder.build.TimeBuilderItem
 import com.github.naz013.feature.reminder.build.TimerBuilderItem
 import com.github.naz013.feature.reminder.build.TimerExclusionBuilderItem
 import com.github.naz013.feature.reminder.build.VibrationPatternBuilderItem
+import com.github.naz013.feature.reminder.build.TimeZoneBuilderItem
 import com.github.naz013.feature.reminder.build.WakeScreenBuilderItem
+import com.github.naz013.feature.reminder.build.timezone.TimeZoneCatalog
 import com.github.naz013.feature.reminder.build.WebAddressBuilderItem
 import com.github.naz013.feature.reminder.build.adapter.BiTypeForUiAdapter
 import com.github.naz013.feature.reminder.build.formatter.ApplicationFormatter
@@ -468,6 +470,14 @@ internal class BiFactory(
             noteRepository.getAll(isArchived = false).map {
               uiNoteListAdapter.convert(it)
             },
+        )
+      }
+
+      BiType.TIME_ZONE -> {
+        TimeZoneBuilderItem(
+          title = biTypeForUiAdapter.getUiString(biType),
+          description = context.getString(R.string.builder_time_zone_description),
+          catalog = TimeZoneCatalog(deviceLabel = context.getString(R.string.time_zone_device)),
         )
       }
 

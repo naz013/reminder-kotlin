@@ -86,6 +86,7 @@ class BiTypeToBiValue {
       BiType.APPLICATION,
       BiType.EMAIL,
       BiType.EMAIL_SUBJECT,
+      BiType.TIME_ZONE,
       -> value as? V
 
       BiType.COUNTDOWN_TIMER_EXCLUSION -> parseTimerExclusion(value) as? V

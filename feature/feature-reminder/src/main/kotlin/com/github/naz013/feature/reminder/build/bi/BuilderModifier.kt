@@ -11,6 +11,7 @@ import com.github.naz013.domain.reminder.ShopItem
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
 import com.github.naz013.domain.reminder.v2.TaskExportSettings
+import com.github.naz013.feature.reminder.build.timezone.TimeZoneCatalog
 import com.github.naz013.googlecalendar.CalendarItem
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -351,6 +352,15 @@ internal class NoteModifier(
   override fun putInto(reminder: ReminderV2): ReminderV2 = reminder.copy(noteId = storage.value?.id ?: "")
 
   override fun isCorrect(): Boolean = storage.value != null
+}
+
+internal class TimeZoneModifier(
+  private val catalog: TimeZoneCatalog,
+) : DefaultModifier<String>(DefaultBiStorage()) {
+  override fun getUiRepresentation(emptyText: String): String = catalog.label(storage.value)
+
+  override fun putInto(reminder: ReminderV2): ReminderV2 =
+    reminder.copy(timeZoneId = DateTimeManager.parseFixedZone(storage.value)?.id)
 }
 
 internal class RecurParamModifier<T>(

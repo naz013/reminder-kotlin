@@ -397,7 +397,7 @@ internal class PreviewReminderViewModel(
             status = status,
             summary = reminder.summary,
             description = reminder.description?.takeIf { d -> d.isNotEmpty() },
-            dueDateTime = due.formattedDateTime,
+            dueDateTime = due.formattedDateTime?.let { listOfNotNull(it, due.zoneLabel).joinToString(separator = " · ") },
             before = due.before.takeIf { waitingForText == null },
             repeat = due.repeat,
             repeatLimitText = repeatLimitInfo?.text,
