@@ -1338,4 +1338,7 @@
     <string name="habit_legend_less">أقل</string>
     <string name="habit_legend_more">أكثر</string>
     <string name="habit_nudge_text">حان وقت تسجيل عادتك</string>
+    <string name="habit_remind_me">ذكرني</string>
+    <string name="habit_remind_only_if_not_done">فقط إذا لم أسجّل الإنجاز</string>
+    <string name="habit_reminder_at">التذكير في %1$s</string>
 </resources>

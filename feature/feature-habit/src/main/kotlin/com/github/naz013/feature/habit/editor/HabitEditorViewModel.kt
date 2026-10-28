@@ -23,6 +23,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.threeten.bp.LocalTime
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
 import java.util.UUID
 
 internal class HabitEditorViewModel(
@@ -49,6 +52,7 @@ internal class HabitEditorViewModel(
         hapticFeedbackEnabled = appPreferences.hapticsEnabled,
         sliderColors = RoutineColors.ALL,
         targetLabel = targetLabel(it.frequency, targetCount),
+        reminderTimeLabel = formatTime(it.reminderTime),
       )
     }
     load()
@@ -71,6 +75,10 @@ internal class HabitEditorViewModel(
             frequency = habit.frequency,
             colorPosition = habit.color,
             iconIndex = habit.icon,
+            isReminderEnabled = habit.reminderTime != null,
+            reminderTime = habit.reminderTime ?: it.reminderTime,
+            reminderTimeLabel = formatTime(habit.reminderTime ?: it.reminderTime),
+            remindOnlyIfNotDone = habit.remindOnlyIfNotDone,
             canSave = habit.name.isNotBlank(),
             canDelete = true,
           ).withTargetFields()
@@ -110,6 +118,26 @@ internal class HabitEditorViewModel(
     state.update { it.copy(iconIndex = index) }
   }
 
+  fun onReminderToggle(enabled: Boolean) {
+    if (enabled) {
+      navigationEvent.emit(NavigationEvent.RequestNotificationPermission)
+    } else {
+      state.update { it.copy(isReminderEnabled = false) }
+    }
+  }
+
+  fun onNotificationPermissionGranted() {
+    state.update { it.copy(isReminderEnabled = true) }
+  }
+
+  fun onReminderTimeChange(time: LocalTime) {
+    state.update { it.copy(reminderTime = time, reminderTimeLabel = formatTime(time)) }
+  }
+
+  fun onRemindOnlyIfNotDoneChange(enabled: Boolean) {
+    state.update { it.copy(remindOnlyIfNotDone = enabled) }
+  }
+
   fun onBackClick() {
     navigationEvent.emit(NavigationEvent.Back)
   }
@@ -131,6 +159,8 @@ internal class HabitEditorViewModel(
         targetCount = targetCount,
         color = current.colorPosition,
         icon = current.iconIndex,
+        reminderTime = current.reminderTime.takeIf { current.isReminderEnabled },
+        remindOnlyIfNotDone = current.remindOnlyIfNotDone,
       )
       saveHabitUseCase(habit)
       Logger.i(TAG, "Saved habit, id: ${habit.id}")
@@ -175,8 +205,12 @@ internal class HabitEditorViewModel(
     return textProvider.getString(res, count)
   }
 
+  private fun formatTime(time: LocalTime): String = time.format(TIME_FORMATTER)
+
   sealed interface NavigationEvent {
     data object Back : NavigationEvent
+
+    data object RequestNotificationPermission : NavigationEvent
   }
 
   companion object {
@@ -185,5 +219,6 @@ internal class HabitEditorViewModel(
     private const val MIN_TARGET = 1
     private const val MAX_TARGET = 99
     private const val DEFAULT_TARGET = 1
+    private val TIME_FORMATTER = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
   }
 }

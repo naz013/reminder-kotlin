@@ -1319,4 +1319,7 @@
     <string name="habit_legend_less">น้อย</string>
     <string name="habit_legend_more">มาก</string>
     <string name="habit_nudge_text">ได้เวลาบันทึกนิสัยของคุณแล้ว</string>
+    <string name="habit_remind_me">เตือนฉัน</string>
+    <string name="habit_remind_only_if_not_done">เฉพาะเมื่อยังไม่ได้เช็คอิน</string>
+    <string name="habit_reminder_at">เตือนเวลา %1$s</string>
 </resources>

@@ -1344,4 +1344,7 @@
     <string name="habit_legend_less">Less</string>
     <string name="habit_legend_more">More</string>
     <string name="habit_nudge_text">Time to check in on your habit</string>
+    <string name="habit_remind_me">Remind me</string>
+    <string name="habit_remind_only_if_not_done">Only if not checked in</string>
+    <string name="habit_reminder_at">Reminder at %1$s</string>
 </resources>

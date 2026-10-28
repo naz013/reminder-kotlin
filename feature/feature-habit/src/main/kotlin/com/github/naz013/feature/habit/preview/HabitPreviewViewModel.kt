@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.format.FormatStyle
 import org.threeten.bp.format.TextStyle
 import java.util.Locale
 
@@ -71,6 +73,9 @@ internal class HabitPreviewViewModel(
       name = habit.name,
       description = habit.description,
       frequencyLabel = frequencyLabel(details),
+      reminderLabel = habit.reminderTime?.let {
+        textProvider.getString(R.string.habit_reminder_at, it.format(TIME_FORMATTER))
+      },
       backgroundColor = backgroundColor,
       contentColor = contentColor,
       iconRes = habit.icon?.let { RoutineIconSet.ALL.getOrNull(it) },
@@ -176,6 +181,7 @@ internal class HabitPreviewViewModel(
     private const val ACTIVITY_WEEKS = 26
     private const val DAYS_IN_WEEK = 7
     private const val CONTRAST_LUMINANCE_THRESHOLD = 0.5f
+    private val TIME_FORMATTER = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
     private val DEFAULT_COLOR = Color(0xFF86E3CE)
   }
 }

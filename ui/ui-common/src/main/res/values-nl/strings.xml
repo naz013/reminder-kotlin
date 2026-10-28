@@ -1326,4 +1326,7 @@
     <string name="habit_legend_less">Minder</string>
     <string name="habit_legend_more">Meer</string>
     <string name="habit_nudge_text">Tijd om je gewoonte af te vinken</string>
+    <string name="habit_remind_me">Herinner mij</string>
+    <string name="habit_remind_only_if_not_done">Alleen als niet afgevinkt</string>
+    <string name="habit_reminder_at">Herinnering om %1$s</string>
 </resources>

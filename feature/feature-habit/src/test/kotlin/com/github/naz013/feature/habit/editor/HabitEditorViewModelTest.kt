@@ -22,6 +22,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 
 class HabitEditorViewModelTest : BaseTest() {
   private val now = LocalDateTime.of(2026, 10, 18, 9, 0)
@@ -225,5 +226,99 @@ class HabitEditorViewModelTest : BaseTest() {
 
     assertFalse(viewModel.state.value.isDeleteConfirmationVisible)
     coVerify(exactly = 0) { deleteHabit(any()) }
+  }
+
+  @Test
+  fun `turning the reminder on asks for notification permission without enabling it yet`() {
+    val viewModel = createViewModel()
+
+    viewModel.onReminderToggle(true)
+
+    assertFalse(viewModel.state.value.isReminderEnabled)
+    assertEquals(
+      HabitEditorViewModel.NavigationEvent.RequestNotificationPermission,
+      viewModel.navigationEvent.value?.peekContent(),
+    )
+  }
+
+  @Test
+  fun `granted notification permission enables the reminder`() {
+    val viewModel = createViewModel()
+
+    viewModel.onNotificationPermissionGranted()
+
+    assertTrue(viewModel.state.value.isReminderEnabled)
+  }
+
+  @Test
+  fun `turning the reminder off disables it`() {
+    val viewModel = createViewModel()
+    viewModel.onNotificationPermissionGranted()
+
+    viewModel.onReminderToggle(false)
+
+    assertFalse(viewModel.state.value.isReminderEnabled)
+  }
+
+  @Test
+  fun `changing the reminder time updates state`() {
+    val viewModel = createViewModel()
+
+    viewModel.onReminderTimeChange(LocalTime.of(7, 30))
+
+    assertEquals(LocalTime.of(7, 30), viewModel.state.value.reminderTime)
+  }
+
+  @Test
+  fun `only if not done switch updates state`() {
+    val viewModel = createViewModel()
+
+    viewModel.onRemindOnlyIfNotDoneChange(false)
+
+    assertFalse(viewModel.state.value.remindOnlyIfNotDone)
+  }
+
+  @Test
+  fun `save maps enabled reminder time and only if not done to the habit`() {
+    val viewModel = createViewModel()
+    viewModel.onNameChange("Run")
+    viewModel.onNotificationPermissionGranted()
+    viewModel.onReminderTimeChange(LocalTime.of(7, 30))
+    viewModel.onRemindOnlyIfNotDoneChange(false)
+
+    viewModel.onSaveClick()
+
+    val habit = savedHabit()
+    assertEquals(LocalTime.of(7, 30), habit.reminderTime)
+    assertFalse(habit.remindOnlyIfNotDone)
+  }
+
+  @Test
+  fun `save leaves reminder time null when the reminder is off`() {
+    val viewModel = createViewModel()
+    viewModel.onNameChange("Run")
+    viewModel.onReminderTimeChange(LocalTime.of(7, 30))
+
+    viewModel.onSaveClick()
+
+    assertNull(savedHabit().reminderTime)
+  }
+
+  @Test
+  fun `loading a habit with a reminder enables it and restores the time`() {
+    coEvery { getHabit("h-1") } returns Habit(
+      id = "h-1",
+      name = "Read",
+      reminderTime = LocalTime.of(21, 15),
+      remindOnlyIfNotDone = false,
+      createdAt = now,
+      updatedAt = now,
+    )
+
+    val state = createViewModel("h-1").state.value
+
+    assertTrue(state.isReminderEnabled)
+    assertEquals(LocalTime.of(21, 15), state.reminderTime)
+    assertFalse(state.remindOnlyIfNotDone)
   }
 }

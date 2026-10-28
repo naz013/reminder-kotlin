@@ -1334,4 +1334,7 @@
     <string name="habit_legend_less">Méně</string>
     <string name="habit_legend_more">Více</string>
     <string name="habit_nudge_text">Je čas zaznamenat svůj návyk</string>
+    <string name="habit_remind_me">Připomenout</string>
+    <string name="habit_remind_only_if_not_done">Jen pokud není odškrtnuto</string>
+    <string name="habit_reminder_at">Připomenutí v %1$s</string>
 </resources>

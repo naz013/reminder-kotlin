@@ -1324,4 +1324,7 @@
     <string name="habit_legend_less">कम</string>
     <string name="habit_legend_more">ज़्यादा</string>
     <string name="habit_nudge_text">अपनी आदत दर्ज करने का समय हो गया है</string>
+    <string name="habit_remind_me">मुझे याद दिलाएं</string>
+    <string name="habit_remind_only_if_not_done">केवल अगर चेक-इन न किया हो</string>
+    <string name="habit_reminder_at">%1$s बजे याद दिलाएं</string>
 </resources>

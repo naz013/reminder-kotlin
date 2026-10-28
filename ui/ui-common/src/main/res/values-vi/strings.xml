@@ -1323,4 +1323,7 @@
     <string name="habit_legend_less">Ít hơn</string>
     <string name="habit_legend_more">Nhiều hơn</string>
     <string name="habit_nudge_text">Đã đến lúc ghi nhận thói quen của bạn</string>
+    <string name="habit_remind_me">Nhắc tôi</string>
+    <string name="habit_remind_only_if_not_done">Chỉ khi chưa check-in</string>
+    <string name="habit_reminder_at">Nhắc lúc %1$s</string>
 </resources>

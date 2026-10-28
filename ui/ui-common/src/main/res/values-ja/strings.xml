@@ -1321,4 +1321,7 @@
     <string name="habit_legend_less">少ない</string>
     <string name="habit_legend_more">多い</string>
     <string name="habit_nudge_text">習慣を記録する時間です</string>
+    <string name="habit_remind_me">リマインドする</string>
+    <string name="habit_remind_only_if_not_done">チェックインしていない場合のみ</string>
+    <string name="habit_reminder_at">%1$s にリマインド</string>
 </resources>

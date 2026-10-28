@@ -17,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -33,8 +34,10 @@ import com.github.naz013.ui.common.compose.TopAppbarColor
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.MenuTextButton
 import com.github.naz013.ui.common.compose.foundation.component.IconPicker
+import com.github.naz013.ui.common.datetime.rememberDateTimePicker
 import com.github.naz013.ui.routine.RoutineColorPicker
 import com.github.naz013.ui.routine.RoutineIconSet
+import org.threeten.bp.LocalTime
 
 private val MAX_CONTENT_WIDTH = 600.dp
 
@@ -51,6 +54,9 @@ internal fun HabitEditorScreen(
   onTargetIncrease: () -> Unit,
   onColorSelected: (Int) -> Unit,
   onIconSelected: (Int?) -> Unit,
+  onReminderToggle: (Boolean) -> Unit,
+  onReminderTimeChange: (LocalTime) -> Unit,
+  onRemindOnlyIfNotDoneChange: (Boolean) -> Unit,
   onSaveClick: () -> Unit,
   onDeleteClick: () -> Unit,
   onDeleteConfirmed: () -> Unit,
@@ -125,6 +131,13 @@ internal fun HabitEditorScreen(
           hapticFeedbackEnabled = state.hapticFeedbackEnabled,
           modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
         )
+        ReminderSection(
+          state = state,
+          onReminderToggle = onReminderToggle,
+          onReminderTimeChange = onReminderTimeChange,
+          onRemindOnlyIfNotDoneChange = onRemindOnlyIfNotDoneChange,
+          modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+        )
         adsContent()
       }
     }
@@ -172,6 +185,67 @@ private fun NameRow(
       onIconSelected = onIconSelected,
       modifier = Modifier.padding(start = 12.dp, top = 8.dp),
     )
+  }
+}
+
+@Composable
+private fun ReminderSection(
+  modifier: Modifier = Modifier,
+  state: HabitEditorState,
+  onReminderToggle: (Boolean) -> Unit,
+  onReminderTimeChange: (LocalTime) -> Unit,
+  onRemindOnlyIfNotDoneChange: (Boolean) -> Unit,
+) {
+  val dateTimePicker = rememberDateTimePicker()
+  val timeTitle = stringResource(R.string.time)
+  Column(modifier = modifier) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+      Text(
+        text = stringResource(R.string.habit_remind_me),
+        style = MaterialTheme.typography.titleSmall,
+        modifier = Modifier.weight(1f),
+      )
+      Switch(
+        checked = state.isReminderEnabled,
+        onCheckedChange = onReminderToggle,
+        modifier = Modifier.testTag("habit_reminder_switch"),
+      )
+    }
+    if (state.isReminderEnabled) {
+      Row(
+        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Icon(painter = AppIcons.Builder.Time, contentDescription = null)
+        TextButton(
+          onClick = {
+            dateTimePicker.showTimePicker(
+              time = state.reminderTime,
+              title = timeTitle,
+              onTimeSelected = onReminderTimeChange,
+            )
+          },
+          modifier = Modifier.testTag("habit_reminder_time"),
+        ) {
+          Text(state.reminderTimeLabel)
+        }
+      }
+      Row(
+        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Text(
+          text = stringResource(R.string.habit_remind_only_if_not_done),
+          style = MaterialTheme.typography.bodyMedium,
+          modifier = Modifier.weight(1f),
+        )
+        Switch(
+          checked = state.remindOnlyIfNotDone,
+          onCheckedChange = onRemindOnlyIfNotDoneChange,
+          modifier = Modifier.testTag("habit_only_if_not_done_switch"),
+        )
+      }
+    }
   }
 }
 

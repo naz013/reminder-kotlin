@@ -1331,4 +1331,7 @@
     <string name="habit_legend_less">Moins</string>
     <string name="habit_legend_more">Plus</string>
     <string name="habit_nudge_text">C\'est le moment de valider votre habitude</string>
+    <string name="habit_remind_me">Me le rappeler</string>
+    <string name="habit_remind_only_if_not_done">Seulement si non validé</string>
+    <string name="habit_reminder_at">Rappel à %1$s</string>
 </resources>

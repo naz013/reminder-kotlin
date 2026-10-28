@@ -1334,4 +1334,7 @@
     <string name="habit_legend_less">Менше</string>
     <string name="habit_legend_more">Більше</string>
     <string name="habit_nudge_text">Час відмітити звичку</string>
+    <string name="habit_remind_me">Нагадати</string>
+    <string name="habit_remind_only_if_not_done">Лише якщо не відмічено</string>
+    <string name="habit_reminder_at">Нагадування о %1$s</string>
 </resources>

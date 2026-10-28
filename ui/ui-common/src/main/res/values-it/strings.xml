@@ -1331,4 +1331,7 @@
     <string name="habit_legend_less">Meno</string>
     <string name="habit_legend_more">Più</string>
     <string name="habit_nudge_text">È ora di registrare la tua abitudine</string>
+    <string name="habit_remind_me">Ricordamelo</string>
+    <string name="habit_remind_only_if_not_done">Solo se non registrata</string>
+    <string name="habit_reminder_at">Promemoria alle %1$s</string>
 </resources>

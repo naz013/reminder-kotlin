@@ -1326,4 +1326,7 @@
     <string name="habit_legend_less">Mindre</string>
     <string name="habit_legend_more">Mer</string>
     <string name="habit_nudge_text">På tide å sjekke inn vanen din</string>
+    <string name="habit_remind_me">Påminn meg</string>
+    <string name="habit_remind_only_if_not_done">Bare hvis ikke krysset av</string>
+    <string name="habit_reminder_at">Påminnelse kl. %1$s</string>
 </resources>

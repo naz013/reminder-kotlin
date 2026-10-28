@@ -15,6 +15,7 @@ internal sealed interface HabitPreviewContent {
     val name: String,
     val description: String?,
     val frequencyLabel: String,
+    val reminderLabel: String?,
     val backgroundColor: Color,
     val contentColor: Color,
     @DrawableRes val iconRes: Int?,

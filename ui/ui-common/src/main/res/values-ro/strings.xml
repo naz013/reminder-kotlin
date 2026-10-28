@@ -1331,4 +1331,7 @@
     <string name="habit_legend_less">Mai puțin</string>
     <string name="habit_legend_more">Mai mult</string>
     <string name="habit_nudge_text">E timpul să bifezi obiceiul</string>
+    <string name="habit_remind_me">Amintește-mi</string>
+    <string name="habit_remind_only_if_not_done">Doar dacă nu e bifat</string>
+    <string name="habit_reminder_at">Memento la %1$s</string>
 </resources>

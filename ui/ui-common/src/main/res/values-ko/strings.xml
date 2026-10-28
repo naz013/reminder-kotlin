@@ -1321,4 +1321,7 @@
     <string name="habit_legend_less">적음</string>
     <string name="habit_legend_more">많음</string>
     <string name="habit_nudge_text">습관을 기록할 시간입니다</string>
+    <string name="habit_remind_me">알림 받기</string>
+    <string name="habit_remind_only_if_not_done">체크인하지 않은 경우에만</string>
+    <string name="habit_reminder_at">%1$s에 알림</string>
 </resources>

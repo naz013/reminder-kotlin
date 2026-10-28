@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.github.naz013.common.Permissions
 import com.github.naz013.feature.habit.editor.HabitEditorScreen
 import com.github.naz013.feature.habit.editor.HabitEditorViewModel
 import com.github.naz013.feature.habit.list.HabitListScreen
@@ -12,6 +13,7 @@ import com.github.naz013.feature.habit.list.HabitListViewModel
 import com.github.naz013.feature.habit.preview.HabitPreviewScreen
 import com.github.naz013.feature.habit.preview.HabitPreviewViewModel
 import com.github.naz013.ui.common.livedata.ObserveEvent
+import com.github.naz013.ui.common.permission.rememberPermissionRequesterRationale
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -82,9 +84,15 @@ private fun HabitEditorEntry(
 ) {
   val viewModel = koinViewModel<HabitEditorViewModel> { parametersOf(key.habitId) }
 
+  val permissionRequester = rememberPermissionRequesterRationale()
+
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       HabitEditorViewModel.NavigationEvent.Back -> backStack.popBackStack()
+      HabitEditorViewModel.NavigationEvent.RequestNotificationPermission -> permissionRequester.request(
+        Permissions.POST_NOTIFICATION,
+        onGranted = viewModel::onNotificationPermissionGranted,
+      )
     }
   }
 
@@ -99,6 +107,9 @@ private fun HabitEditorEntry(
     onTargetIncrease = viewModel::onTargetIncrease,
     onColorSelected = viewModel::onColorSelected,
     onIconSelected = viewModel::onIconSelected,
+    onReminderToggle = viewModel::onReminderToggle,
+    onReminderTimeChange = viewModel::onReminderTimeChange,
+    onRemindOnlyIfNotDoneChange = viewModel::onRemindOnlyIfNotDoneChange,
     onSaveClick = viewModel::onSaveClick,
     onDeleteClick = viewModel::onDeleteClick,
     onDeleteConfirmed = viewModel::onDeleteConfirmed,

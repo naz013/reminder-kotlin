@@ -166,6 +166,9 @@ private fun HeaderCard(
           color = content.contentColor,
           style = MaterialTheme.typography.bodyMedium,
         )
+        content.reminderLabel?.let {
+          Text(text = it, color = content.contentColor, style = MaterialTheme.typography.bodySmall)
+        }
         content.weekProgressLabel?.let {
           Text(text = it, color = content.contentColor, style = MaterialTheme.typography.bodySmall)
         }

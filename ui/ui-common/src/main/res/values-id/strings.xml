@@ -1323,4 +1323,7 @@
     <string name="habit_legend_less">Lebih sedikit</string>
     <string name="habit_legend_more">Lebih banyak</string>
     <string name="habit_nudge_text">Saatnya mencatat kebiasaanmu</string>
+    <string name="habit_remind_me">Ingatkan saya</string>
+    <string name="habit_remind_only_if_not_done">Hanya jika belum check-in</string>
+    <string name="habit_reminder_at">Pengingat pukul %1$s</string>
 </resources>

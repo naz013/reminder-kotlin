@@ -1334,4 +1334,7 @@
     <string name="habit_legend_less">Mniej</string>
     <string name="habit_legend_more">Więcej</string>
     <string name="habit_nudge_text">Czas odhaczyć swój nawyk</string>
+    <string name="habit_remind_me">Przypomnij mi</string>
+    <string name="habit_remind_only_if_not_done">Tylko jeśli nie odhaczono</string>
+    <string name="habit_reminder_at">Przypomnienie o %1$s</string>
 </resources>

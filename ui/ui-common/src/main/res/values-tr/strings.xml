@@ -1328,4 +1328,7 @@
     <string name="habit_legend_less">Az</string>
     <string name="habit_legend_more">Çok</string>
     <string name="habit_nudge_text">Alışkanlığını işaretleme zamanı</string>
+    <string name="habit_remind_me">Bana hatırlat</string>
+    <string name="habit_remind_only_if_not_done">Yalnızca işaretlenmediyse</string>
+    <string name="habit_reminder_at">Hatırlatma saati %1$s</string>
 </resources>

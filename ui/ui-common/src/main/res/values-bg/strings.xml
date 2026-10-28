@@ -1328,4 +1328,7 @@
     <string name="habit_legend_less">По-малко</string>
     <string name="habit_legend_more">Повече</string>
     <string name="habit_nudge_text">Време е да отбележите навика си</string>
+    <string name="habit_remind_me">Напомни ми</string>
+    <string name="habit_remind_only_if_not_done">Само ако не е отбелязано</string>
+    <string name="habit_reminder_at">Напомняне в %1$s</string>
 </resources>
