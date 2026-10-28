@@ -1332,4 +1332,6 @@
     <string name="time_zone_search_hint">Cari zona waktu</string>
     <string name="reminder_default_time_zone">Pengingat baru menggunakan</string>
     <string name="time_zone_fixed_to_current">Tetap pada zona waktu saat ini</string>
+    <string name="pro_trial_extend">Tambah 24 jam</string>
+    <string name="pro_trial_limit_reached">Batas maksimum masa uji coba 5 hari tercapai</string>
 </resources>

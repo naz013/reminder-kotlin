@@ -23,6 +23,7 @@ class ProTrialViewModelTest : BaseTest() {
   private val activity = mockk<Activity>()
   private val remainingMillis = MutableStateFlow(0L)
   private val adsWatched = MutableStateFlow(0)
+  private val canExtend = MutableStateFlow(false)
 
   @Before
   override fun setUp() {
@@ -30,7 +31,9 @@ class ProTrialViewModelTest : BaseTest() {
     every { proTrialController.requiredAds } returns 1
     every { proTrialController.adsWatched } returns adsWatched
     every { proTrialController.observeRemainingMillis() } returns remainingMillis
+    every { proTrialController.observeCanExtend() } returns canExtend
     coEvery { proTrialController.watchAdsAndActivate(activity) } returns ProTrialResult.SUCCESS
+    coEvery { proTrialController.watchAdsAndExtend(activity) } returns ProTrialResult.SUCCESS
   }
 
   private fun newViewModel() = ProTrialViewModel(proTrialController)
@@ -89,7 +92,61 @@ class ProTrialViewModelTest : BaseTest() {
 
     viewModel.onActivateClick()
 
-    assertEquals(ProTrialEvent.RequestActivity, viewModel.event.value?.peekContent())
+    assertEquals(
+      ProTrialEvent.RequestActivity(ProTrialAction.ACTIVATE),
+      viewModel.event.value?.peekContent()
+    )
+  }
+
+  @Test
+  fun `reflects whether the trial can be extended`() {
+    val viewModel = newViewModel()
+
+    canExtend.value = true
+
+    assertTrue(viewModel.state.value.canExtend)
+  }
+
+  @Test
+  fun `onExtendClick asks the screen for an activity to extend`() {
+    canExtend.value = true
+    val viewModel = newViewModel()
+
+    viewModel.onExtendClick()
+
+    assertEquals(
+      ProTrialEvent.RequestActivity(ProTrialAction.EXTEND),
+      viewModel.event.value?.peekContent()
+    )
+  }
+
+  @Test
+  fun `onExtendClick does nothing when the trial cannot be extended`() {
+    val viewModel = newViewModel()
+
+    viewModel.onExtendClick()
+
+    assertNull(viewModel.event.value)
+  }
+
+  @Test
+  fun `onActivityAvailable with extend action runs the extend ads flow`() {
+    val viewModel = newViewModel()
+
+    viewModel.onActivityAvailable(activity, ProTrialAction.EXTEND)
+
+    coVerify(exactly = 1) { proTrialController.watchAdsAndExtend(activity) }
+    coVerify(exactly = 0) { proTrialController.watchAdsAndActivate(activity) }
+  }
+
+  @Test
+  fun `shows the limit reached message when the trial cannot be extended further`() {
+    coEvery { proTrialController.watchAdsAndExtend(activity) } returns ProTrialResult.LIMIT_REACHED
+    val viewModel = newViewModel()
+
+    viewModel.onActivityAvailable(activity, ProTrialAction.EXTEND)
+
+    assertEquals(ProTrialMessage.LIMIT_REACHED, viewModel.state.value.message)
   }
 
   @Test

@@ -621,7 +621,7 @@ private fun ProTrialEntry(backStack: MutableList<NavKey>, renderAsDetailPane: Bo
   val state by viewModel.state.collectAsState()
   viewModel.event.ObserveEvent { event ->
     when (event) {
-      ProTrialEvent.RequestActivity -> activity?.let { viewModel.onActivityAvailable(it) }
+      is ProTrialEvent.RequestActivity -> activity?.let { viewModel.onActivityAvailable(it, event.action) }
     }
   }
 
@@ -629,6 +629,7 @@ private fun ProTrialEntry(backStack: MutableList<NavKey>, renderAsDetailPane: Bo
     state = state,
     onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
     onActivateClick = viewModel::onActivateClick,
+    onExtendClick = viewModel::onExtendClick,
     renderAsDetailPane = renderAsDetailPane,
   )
 }

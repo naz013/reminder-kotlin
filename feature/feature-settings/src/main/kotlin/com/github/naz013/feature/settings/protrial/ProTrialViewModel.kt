@@ -34,21 +34,32 @@ internal class ProTrialViewModel(
       }
     }
     viewModelScope.launch {
+      proTrialController.observeCanExtend().collect { canExtend -> _state.update { it.copy(canExtend = canExtend) } }
+    }
+    viewModelScope.launch {
       proTrialController.adsWatched.collect { watched -> _state.update { it.copy(adsWatched = watched) } }
     }
   }
 
   fun onActivateClick() {
     if (_state.value.isRunning || _state.value.isTrialActive) return
-    event.emit(ProTrialEvent.RequestActivity)
+    event.emit(ProTrialEvent.RequestActivity(ProTrialAction.ACTIVATE))
   }
 
-  fun onActivityAvailable(activity: Activity) {
+  fun onExtendClick() {
+    if (_state.value.isRunning || !_state.value.canExtend) return
+    event.emit(ProTrialEvent.RequestActivity(ProTrialAction.EXTEND))
+  }
+
+  fun onActivityAvailable(activity: Activity, action: ProTrialAction = ProTrialAction.ACTIVATE) {
     if (_state.value.isRunning) return
     _state.update { it.copy(isRunning = true, message = null) }
     viewModelScope.launch {
       try {
-        val result = proTrialController.watchAdsAndActivate(activity)
+        val result = when (action) {
+          ProTrialAction.ACTIVATE -> proTrialController.watchAdsAndActivate(activity)
+          ProTrialAction.EXTEND -> proTrialController.watchAdsAndExtend(activity)
+        }
         _state.update { it.copy(message = result.toMessage()) }
       } finally {
         _state.update { it.copy(isRunning = false) }
@@ -61,10 +72,16 @@ internal class ProTrialViewModel(
       ProTrialResult.SUCCESS -> null
       ProTrialResult.ADS_UNAVAILABLE -> ProTrialMessage.ADS_UNAVAILABLE
       ProTrialResult.CANCELLED -> ProTrialMessage.CANCELLED
+      ProTrialResult.LIMIT_REACHED -> ProTrialMessage.LIMIT_REACHED
     }
   }
 }
 
+internal enum class ProTrialAction {
+  ACTIVATE,
+  EXTEND,
+}
+
 internal sealed interface ProTrialEvent {
-  data object RequestActivity : ProTrialEvent
+  data class RequestActivity(val action: ProTrialAction) : ProTrialEvent
 }

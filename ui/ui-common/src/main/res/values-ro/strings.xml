@@ -1340,4 +1340,6 @@
     <string name="time_zone_search_hint">Caută fusuri orare</string>
     <string name="reminder_default_time_zone">Mementourile noi folosesc</string>
     <string name="time_zone_fixed_to_current">Fix pe fusul orar curent</string>
+    <string name="pro_trial_extend">Adaugă 24 de ore</string>
+    <string name="pro_trial_limit_reached">A fost atinsă durata maximă a perioadei de probă de 5 zile</string>
 </resources>

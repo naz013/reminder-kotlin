@@ -1330,4 +1330,6 @@
     <string name="time_zone_search_hint">搜索时区</string>
     <string name="reminder_default_time_zone">新提醒使用</string>
     <string name="time_zone_fixed_to_current">固定为当前时区</string>
+    <string name="pro_trial_extend">增加 24 小时</string>
+    <string name="pro_trial_limit_reached">已达到 5 天的试用时长上限</string>
 </resources>

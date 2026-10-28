@@ -20,7 +20,15 @@ internal class ProTrial(
 
   fun isExpired(expiryMillis: Long): Boolean = timeSource.nowMillis() >= expiryMillis
 
+  fun extendedExpiry(expiryMillis: Long): Long =
+    maxOf(expiryMillis, timeSource.nowMillis()) + EXTENSION_MILLIS
+
+  fun canExtend(remainingMillis: Long): Boolean =
+    remainingMillis > 0L && remainingMillis + EXTENSION_MILLIS <= MAX_REMAINING_MILLIS
+
   companion object {
     val TRIAL_DURATION_MILLIS: Long = TimeUnit.HOURS.toMillis(24)
+    val EXTENSION_MILLIS: Long = TimeUnit.HOURS.toMillis(24)
+    val MAX_REMAINING_MILLIS: Long = TimeUnit.DAYS.toMillis(5)
   }
 }

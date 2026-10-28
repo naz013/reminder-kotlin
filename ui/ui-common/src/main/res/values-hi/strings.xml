@@ -1333,4 +1333,6 @@
     <string name="time_zone_search_hint">समय क्षेत्र खोजें</string>
     <string name="reminder_default_time_zone">नए रिमाइंडर उपयोग करते हैं</string>
     <string name="time_zone_fixed_to_current">वर्तमान समय क्षेत्र पर स्थिर</string>
+    <string name="pro_trial_extend">24 घंटे जोड़ें</string>
+    <string name="pro_trial_limit_reached">ट्रायल की अधिकतम अवधि 5 दिन तक पहुँच गई है</string>
 </resources>

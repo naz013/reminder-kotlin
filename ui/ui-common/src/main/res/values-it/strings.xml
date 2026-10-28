@@ -1340,4 +1340,6 @@
     <string name="time_zone_search_hint">Cerca fusi orari</string>
     <string name="reminder_default_time_zone">I nuovi promemoria usano</string>
     <string name="time_zone_fixed_to_current">Fisso sul fuso orario attuale</string>
+    <string name="pro_trial_extend">Aggiungi 24 ore</string>
+    <string name="pro_trial_limit_reached">Raggiunta la durata massima della prova di 5 giorni</string>
 </resources>

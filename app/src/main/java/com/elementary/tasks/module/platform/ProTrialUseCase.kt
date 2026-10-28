@@ -5,6 +5,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 internal class ProTrialUseCase(
   private val prefs: Prefs,
@@ -15,6 +16,18 @@ internal class ProTrialUseCase(
   fun activate() {
     prefs.proTrialExpiryMillis = proTrial.activationExpiry()
   }
+
+  fun canExtend(): Boolean = proTrial.canExtend(proTrial.remainingMillis(prefs.proTrialExpiryMillis))
+
+  fun extend(): Boolean {
+    if (!canExtend()) return false
+    prefs.proTrialExpiryMillis = proTrial.extendedExpiry(prefs.proTrialExpiryMillis)
+    return true
+  }
+
+  fun observeCanExtend(): Flow<Boolean> = observeRemainingMillis()
+    .map { proTrial.canExtend(it) }
+    .distinctUntilChanged()
 
   fun observeRemainingMillis(): Flow<Long> = flow {
     while (true) {

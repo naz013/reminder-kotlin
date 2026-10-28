@@ -5,6 +5,7 @@ internal data class ProTrialState(
   /** Formatted `hh:mm` remaining time, empty while the trial is not active. */
   val remainingTime: String = "",
   val isRunning: Boolean = false,
+  val canExtend: Boolean = false,
   val adsWatched: Int = 0,
   val requiredAds: Int = 0,
   val message: ProTrialMessage? = null,
@@ -15,4 +16,5 @@ internal data class ProTrialState(
 internal enum class ProTrialMessage {
   ADS_UNAVAILABLE,
   CANCELLED,
+  LIMIT_REACHED,
 }

@@ -1343,4 +1343,6 @@
     <string name="time_zone_search_hint">Szukaj stref czasowych</string>
     <string name="reminder_default_time_zone">Nowe przypomnienia używają</string>
     <string name="time_zone_fixed_to_current">Stała dla bieżącej strefy czasowej</string>
+    <string name="pro_trial_extend">Dodaj 24 godziny</string>
+    <string name="pro_trial_limit_reached">Osiągnięto maksymalny czas okresu próbnego: 5 dni</string>
 </resources>

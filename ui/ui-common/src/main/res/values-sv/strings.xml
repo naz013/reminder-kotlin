@@ -1335,4 +1335,6 @@
     <string name="time_zone_search_hint">Sök tidszoner</string>
     <string name="reminder_default_time_zone">Nya påminnelser använder</string>
     <string name="time_zone_fixed_to_current">Fast till nuvarande tidszon</string>
+    <string name="pro_trial_extend">Lägg till 24 timmar</string>
+    <string name="pro_trial_limit_reached">Maximal provtid på 5 dagar har nåtts</string>
 </resources>

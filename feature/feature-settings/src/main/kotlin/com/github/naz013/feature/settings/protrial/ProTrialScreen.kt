@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +31,7 @@ internal fun ProTrialScreen(
   state: ProTrialState,
   onBackClick: () -> Unit,
   onActivateClick: () -> Unit,
+  onExtendClick: () -> Unit,
   renderAsDetailPane: Boolean = false,
 ) {
   AnimatedGradientBackground(modifier = modifier) {
@@ -72,6 +74,24 @@ internal fun ProTrialScreen(
           modifier = Modifier.fillMaxWidth(),
         ) {
           Text(text = stringResource(R.string.pro_trial_activate))
+        }
+        if (state.isTrialActive) {
+          Spacer(modifier = Modifier.height(8.dp))
+          FilledTonalButton(
+            onClick = onExtendClick,
+            enabled = state.canExtend && !state.isRunning,
+            modifier = Modifier.fillMaxWidth(),
+          ) {
+            Text(text = stringResource(R.string.pro_trial_extend))
+          }
+          if (!state.canExtend) {
+            Text(
+              text = stringResource(R.string.pro_trial_limit_reached),
+              style = MaterialTheme.typography.bodySmall,
+              color = MaterialTheme.colorScheme.onSurfaceVariant,
+              modifier = Modifier.padding(top = 8.dp),
+            )
+          }
         }
         Spacer(modifier = Modifier.height(24.dp))
       }
@@ -121,6 +141,7 @@ private fun ProTrialMessage.textRes(): Int {
   return when (this) {
     ProTrialMessage.ADS_UNAVAILABLE -> R.string.pro_trial_ads_unavailable
     ProTrialMessage.CANCELLED -> R.string.pro_trial_cancelled
+    ProTrialMessage.LIMIT_REACHED -> R.string.pro_trial_limit_reached
   }
 }
 
@@ -132,6 +153,7 @@ private fun ProTrialScreenPreview() {
       state = ProTrialState(isRunning = true, requiredAds = 1),
       onBackClick = {},
       onActivateClick = {},
+      onExtendClick = {},
     )
   }
 }
@@ -141,9 +163,23 @@ private fun ProTrialScreenPreview() {
 private fun ProTrialScreenPreview_Active() {
   AppTheme(darkTheme = true) {
     ProTrialScreen(
-      state = ProTrialState(isTrialActive = true, remainingTime = "23:40", requiredAds = 1),
+      state = ProTrialState(isTrialActive = true, canExtend = true, remainingTime = "23:40", requiredAds = 1),
       onBackClick = {},
       onActivateClick = {},
+      onExtendClick = {},
+    )
+  }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ProTrialScreenPreview_LimitReached() {
+  AppTheme(darkTheme = false) {
+    ProTrialScreen(
+      state = ProTrialState(isTrialActive = true, remainingTime = "119:40", requiredAds = 1),
+      onBackClick = {},
+      onActivateClick = {},
+      onExtendClick = {},
     )
   }
 }

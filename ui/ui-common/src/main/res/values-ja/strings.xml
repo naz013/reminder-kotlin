@@ -1330,4 +1330,6 @@
     <string name="time_zone_search_hint">タイムゾーンを検索</string>
     <string name="reminder_default_time_zone">新しいリマインダーの設定</string>
     <string name="time_zone_fixed_to_current">現在のタイムゾーンに固定</string>
+    <string name="pro_trial_extend">24時間追加</string>
+    <string name="pro_trial_limit_reached">お試し期間の上限（5日）に達しました</string>
 </resources>

@@ -15,11 +15,22 @@ internal class ProTrialControllerImpl(
 
   override fun observeRemainingMillis(): Flow<Long> = proTrialUseCase.observeRemainingMillis()
 
+  override fun observeCanExtend(): Flow<Boolean> = proTrialUseCase.observeCanExtend()
+
   override suspend fun watchAdsAndActivate(activity: Activity): ProTrialResult {
-    return when (proTrialAdsUseCase.run(activity)) {
+    return proTrialAdsUseCase.run(activity).toProTrialResult()
+  }
+
+  override suspend fun watchAdsAndExtend(activity: Activity): ProTrialResult {
+    return proTrialAdsUseCase.runExtend(activity).toProTrialResult()
+  }
+
+  private fun ProTrialAdsResult.toProTrialResult(): ProTrialResult {
+    return when (this) {
       ProTrialAdsResult.SUCCESS -> ProTrialResult.SUCCESS
       ProTrialAdsResult.ADS_UNAVAILABLE -> ProTrialResult.ADS_UNAVAILABLE
       ProTrialAdsResult.CANCELLED -> ProTrialResult.CANCELLED
+      ProTrialAdsResult.LIMIT_REACHED -> ProTrialResult.LIMIT_REACHED
     }
   }
 }

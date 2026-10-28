@@ -1335,4 +1335,6 @@
     <string name="time_zone_search_hint">Tijdzones zoeken</string>
     <string name="reminder_default_time_zone">Nieuwe herinneringen gebruiken</string>
     <string name="time_zone_fixed_to_current">Vast op de huidige tijdzone</string>
+    <string name="pro_trial_extend">24 uur toevoegen</string>
+    <string name="pro_trial_limit_reached">Maximale proefperiode van 5 dagen bereikt</string>
 </resources>

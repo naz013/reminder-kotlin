@@ -1330,4 +1330,6 @@
     <string name="time_zone_search_hint">시간대 검색</string>
     <string name="reminder_default_time_zone">새 알림 기본값</string>
     <string name="time_zone_fixed_to_current">현재 시간대로 고정</string>
+    <string name="pro_trial_extend">24시간 추가</string>
+    <string name="pro_trial_limit_reached">체험 기간 최대 5일에 도달했습니다</string>
 </resources>

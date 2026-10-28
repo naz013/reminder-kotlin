@@ -69,4 +69,25 @@ class ProTrialControllerImplTest {
 
     assertEquals(ProTrialResult.CANCELLED, controller.watchAdsAndActivate(activity))
   }
+
+  @Test
+  fun `forwards can extend from the trial use case`() = runTest {
+    every { proTrialUseCase.observeCanExtend() } returns flowOf(true, false)
+
+    assertEquals(listOf(true, false), controller.observeCanExtend().toList())
+  }
+
+  @Test
+  fun `maps a successful extend run to success result`() = runTest {
+    coEvery { proTrialAdsUseCase.runExtend(activity) } returns ProTrialAdsResult.SUCCESS
+
+    assertEquals(ProTrialResult.SUCCESS, controller.watchAdsAndExtend(activity))
+  }
+
+  @Test
+  fun `maps a limit reached extend run to limit reached result`() = runTest {
+    coEvery { proTrialAdsUseCase.runExtend(activity) } returns ProTrialAdsResult.LIMIT_REACHED
+
+    assertEquals(ProTrialResult.LIMIT_REACHED, controller.watchAdsAndExtend(activity))
+  }
 }

@@ -1337,4 +1337,6 @@
     <string name="time_zone_search_hint">Saat dilimlerini ara</string>
     <string name="reminder_default_time_zone">Yeni hatırlatıcılar şunu kullanır</string>
     <string name="time_zone_fixed_to_current">Geçerli saat dilimine sabit</string>
+    <string name="pro_trial_extend">24 saat ekle</string>
+    <string name="pro_trial_limit_reached">Maksimum 5 günlük deneme süresine ulaşıldı</string>
 </resources>

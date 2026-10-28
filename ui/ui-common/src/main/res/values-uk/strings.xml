@@ -1343,4 +1343,6 @@
     <string name="time_zone_search_hint">Пошук часових поясів</string>
     <string name="reminder_default_time_zone">Нові нагадування використовують</string>
     <string name="time_zone_fixed_to_current">Фіксований поточний часовий пояс</string>
+    <string name="pro_trial_extend">Додати 24 години</string>
+    <string name="pro_trial_limit_reached">Досягнуто максимум пробного періоду — 5 днів</string>
 </resources>

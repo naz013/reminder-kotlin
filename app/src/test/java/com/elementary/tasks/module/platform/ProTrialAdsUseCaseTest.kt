@@ -3,8 +3,10 @@ package com.elementary.tasks.module.platform
 import android.app.Activity
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.ProTrialActivatedEvent
+import com.github.naz013.analytics.ProTrialExtendedEvent
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.CancellationException
@@ -176,6 +178,65 @@ class ProTrialAdsUseCaseTest {
 
     assertEquals(0, useCase.adsWatched.value)
     verify(exactly = 0) { proTrialUseCase.activate() }
+  }
+
+  @Test
+  fun `runExtend extends the trial and sends the event after the rewarded ad`() = runTest {
+    every { proTrialUseCase.canExtend() } returns true
+    every { proTrialUseCase.extend() } returns true
+    givenAdResults(RewardedAdResult.REWARDED)
+
+    val result = useCase.runExtend(activity)
+
+    assertEquals(ProTrialAdsResult.SUCCESS, result)
+    verify(exactly = 1) { proTrialUseCase.extend() }
+    verify(exactly = 1) { analyticsEventSender.send(ProTrialExtendedEvent) }
+    verify(exactly = 0) { proTrialUseCase.activate() }
+  }
+
+  @Test
+  fun `runExtend does not show an ad when the limit is already reached`() = runTest {
+    every { proTrialUseCase.canExtend() } returns false
+
+    val result = useCase.runExtend(activity)
+
+    assertEquals(ProTrialAdsResult.LIMIT_REACHED, result)
+    coVerify(exactly = 0) { rewardedTrialAds.show(any()) }
+  }
+
+  @Test
+  fun `runExtend returns limit reached when the trial cannot be extended after the ad`() = runTest {
+    every { proTrialUseCase.canExtend() } returns true
+    every { proTrialUseCase.extend() } returns false
+    givenAdResults(RewardedAdResult.REWARDED)
+
+    val result = useCase.runExtend(activity)
+
+    assertEquals(ProTrialAdsResult.LIMIT_REACHED, result)
+    verify(exactly = 0) { analyticsEventSender.send(any()) }
+  }
+
+  @Test
+  fun `runExtend does not extend when ads are unavailable`() = runTest {
+    every { proTrialUseCase.canExtend() } returns true
+    givenAdResults(RewardedAdResult.UNAVAILABLE)
+
+    val result = useCase.runExtend(activity)
+
+    assertEquals(ProTrialAdsResult.ADS_UNAVAILABLE, result)
+    verify(exactly = 0) { proTrialUseCase.extend() }
+  }
+
+  @Test
+  fun `runExtend does not extend when user dismisses the ad`() = runTest {
+    every { proTrialUseCase.canExtend() } returns true
+    givenAdResults(RewardedAdResult.DISMISSED)
+
+    val result = useCase.runExtend(activity)
+
+    assertEquals(ProTrialAdsResult.CANCELLED, result)
+    verify(exactly = 0) { proTrialUseCase.extend() }
+    assertEquals(0, useCase.adsWatched.value)
   }
 
   private fun givenAdResults(vararg results: RewardedAdResult) {

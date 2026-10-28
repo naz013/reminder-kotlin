@@ -11,6 +11,7 @@ enum class ProTrialResult {
   SUCCESS,
   ADS_UNAVAILABLE,
   CANCELLED,
+  LIMIT_REACHED,
 }
 
 /** Temporary PRO trial: observe the remaining time and earn it by watching rewarded ads. */
@@ -23,7 +24,12 @@ interface ProTrialController {
   /** Remaining trial time in millis, `0` when the trial is not active. Re-emits as time passes. */
   fun observeRemainingMillis(): Flow<Long>
 
+  /** True while the trial is active and adding another 24 hours keeps it within the maximum. */
+  fun observeCanExtend(): Flow<Boolean>
+
   suspend fun watchAdsAndActivate(activity: Activity): ProTrialResult
+
+  suspend fun watchAdsAndExtend(activity: Activity): ProTrialResult
 }
 
 /** Formats remaining trial time as `hh:mm`, rounding a partial minute up; empty when nothing remains. */

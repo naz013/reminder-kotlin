@@ -86,4 +86,34 @@ class ProTrialTest {
   fun `never activated trial reads as expired`() {
     assertTrue(proTrial.isExpired(0L))
   }
+
+  @Test
+  fun `extended expiry adds 24 hours to the current expiry`() {
+    val expiry = proTrial.activationExpiry()
+
+    assertEquals(expiry + dayMillis, proTrial.extendedExpiry(expiry))
+  }
+
+  @Test
+  fun `extended expiry counts from now when the trial already expired`() {
+    val expiry = proTrial.activationExpiry()
+    now = expiry + 5_000L
+
+    assertEquals(now + dayMillis, proTrial.extendedExpiry(expiry))
+  }
+
+  @Test
+  fun `can extend when the result stays exactly at the maximum`() {
+    assertTrue(proTrial.canExtend(ProTrial.MAX_REMAINING_MILLIS - dayMillis))
+  }
+
+  @Test
+  fun `cannot extend when the result would exceed the maximum by one millisecond`() {
+    assertFalse(proTrial.canExtend(ProTrial.MAX_REMAINING_MILLIS - dayMillis + 1L))
+  }
+
+  @Test
+  fun `cannot extend when no time remains`() {
+    assertFalse(proTrial.canExtend(0L))
+  }
 }
