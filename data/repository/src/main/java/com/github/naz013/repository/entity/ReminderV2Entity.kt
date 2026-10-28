@@ -85,7 +85,9 @@ internal data class ReminderV2Entity(
   val iconIndex: Int? = null,
   val colorIndex: Int? = null,
 
-  val startAfterReminderId: String? = null
+  val startAfterReminderId: String? = null,
+
+  val timeZoneId: String? = null
 )
 
 data class ReminderScheduleColumns(

@@ -59,7 +59,8 @@ internal fun ReminderV2.toEntity(): ReminderV2Entity {
     isCritical = isCritical,
     iconIndex = iconIndex,
     colorIndex = colorIndex,
-    startAfterReminderId = startAfterReminderId
+    startAfterReminderId = startAfterReminderId,
+    timeZoneId = timeZoneId
   )
 }
 
@@ -93,7 +94,8 @@ internal fun ReminderV2Entity.toDomain(): ReminderV2 {
     isCritical = isCritical,
     iconIndex = iconIndex,
     colorIndex = colorIndex,
-    startAfterReminderId = startAfterReminderId
+    startAfterReminderId = startAfterReminderId,
+    timeZoneId = timeZoneId
   )
 }
 

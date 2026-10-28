@@ -19,11 +19,14 @@ data class DateTimeStampTag(
 }
 
 data class DateTimeStartTag(
-  override val value: UtcDateTime
+  override val value: UtcDateTime,
+  /** IANA zone id from the TZID parameter; null = floating. */
+  val timeZoneId: String? = null
 ) : DateTimeTag(value, TagType.DTSTART) {
 
   override fun buildString(): String {
-    return "${tagType.value}:${value.buildString()}"
+    val tzParam = timeZoneId?.let { ";${ParamType.TZID.value}=$it" } ?: ""
+    return "${tagType.value}$tzParam:${value.buildString()}"
   }
 }
 
@@ -75,7 +78,9 @@ data class ExceptionsDateTimeTag(
 
 data class RecurrenceDateTimeTag(
   val param: ValueParam?,
-  val values: List<UtcDateTime>
+  val values: List<UtcDateTime>,
+  /** IANA zone id from the TZID parameter; null = floating. */
+  val timeZoneId: String? = null
 ) : Tag(TagType.RDATE) {
 
   override fun buildString(): String {
@@ -85,7 +90,8 @@ data class RecurrenceDateTimeTag(
     } else {
       ";${param.buildString()}"
     }
-    return "${tagType.value}$paramValue:$value"
+    val tzParam = timeZoneId?.let { ";${ParamType.TZID.value}=$it" } ?: ""
+    return "${tagType.value}$paramValue$tzParam:$value"
   }
 }
 

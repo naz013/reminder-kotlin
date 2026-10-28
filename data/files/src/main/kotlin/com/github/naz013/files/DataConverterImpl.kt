@@ -27,6 +27,7 @@ import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.reminder.v2.ShopItemV2
 import com.github.naz013.domain.reminder.v2.SyncMetadata
+import com.github.naz013.domain.reminder.v2.toKnownTimeZoneIdOrNull
 import com.github.naz013.domain.reminder.v2.TaskExportSettings
 import com.github.naz013.domain.habit.Habit
 import com.github.naz013.domain.habit.HabitCheckIn
@@ -541,7 +542,8 @@ private fun ReminderV2Json.toDomain(): ReminderV2 = ReminderV2(
   isCritical = isCritical,
   iconIndex = iconIndex,
   colorIndex = colorIndex,
-  startAfterReminderId = startAfterReminderId
+  startAfterReminderId = startAfterReminderId,
+  timeZoneId = timeZoneId.toKnownTimeZoneIdOrNull()
 )
 
 private fun NotificationSettingsOverrideJson.toDomain(): NotificationSettingsOverride =
@@ -771,7 +773,8 @@ private fun ReminderV2.toJson(): ReminderV2Json {
     isCritical = isCritical,
     iconIndex = iconIndex,
     colorIndex = colorIndex,
-    startAfterReminderId = startAfterReminderId
+    startAfterReminderId = startAfterReminderId,
+    timeZoneId = timeZoneId
   )
 }
 

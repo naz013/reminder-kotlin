@@ -12,7 +12,8 @@ data class ValueParam(
 }
 
 enum class ParamType(val value: String) {
-  VALUE("VALUE")
+  VALUE("VALUE"),
+  TZID("TZID")
 }
 
 enum class ParamValueType(val value: String) {

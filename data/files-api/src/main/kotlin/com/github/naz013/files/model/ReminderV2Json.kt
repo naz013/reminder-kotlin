@@ -70,7 +70,9 @@ data class ReminderV2Json(
   @SerializedName("colorIndex")
   val colorIndex: Int? = null,
   @SerializedName("startAfterReminderId")
-  val startAfterReminderId: String? = null
+  val startAfterReminderId: String? = null,
+  @SerializedName("timeZoneId")
+  val timeZoneId: String? = null
 )
 
 /** Wire shape for [com.github.naz013.domain.reminder.v2.NotificationSettingsOverride] вЂ” every field optional. */

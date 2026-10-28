@@ -48,7 +48,9 @@ data class ReminderV2(
   val colorIndex: Int? = null,
   /** Id of the reminder this one waits for. While set, this reminder is saved inactive; completing,
    * deleting or archiving the predecessor activates it and clears the link. */
-  val startAfterReminderId: String? = null
+  val startAfterReminderId: String? = null,
+  /** IANA zone id (e.g. Europe/Berlin) the wall-clock time is interpreted in; null = floating (device zone). */
+  val timeZoneId: String? = null
 ) {
 
   fun isLimited(): Boolean = recurrence.repeatLimitOrDefault() > 0

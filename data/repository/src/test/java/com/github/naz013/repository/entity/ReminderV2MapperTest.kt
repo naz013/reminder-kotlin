@@ -37,6 +37,37 @@ class ReminderV2MapperTest {
   }
 
   @Test
+  fun `toEntity then toDomain round trips a fixed time zone`() {
+    val reminder = ReminderV2(
+      uuId = "id-zoned",
+      recurrence = RecurrenceRule.Once,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 22, 9, 0)),
+      action = ReminderAction.None,
+      timeZoneId = "Europe/Berlin"
+    )
+
+    val entity = reminder.toEntity()
+    val roundTripped = entity.toDomain()
+
+    assertEquals("Europe/Berlin", entity.timeZoneId)
+    assertEquals(reminder, roundTripped)
+  }
+
+  @Test
+  fun `toEntity then toDomain keeps a floating reminder floating`() {
+    val reminder = ReminderV2(
+      uuId = "id-floating",
+      recurrence = RecurrenceRule.Once,
+      schedule = ReminderSchedule(startDateTime = LocalDateTime.of(2026, 7, 22, 9, 0)),
+      action = ReminderAction.None
+    )
+
+    val roundTripped = reminder.toEntity().toDomain()
+
+    assertNull(roundTripped.timeZoneId)
+  }
+
+  @Test
   fun `toEntity then toDomain round trips a pinned reminder`() {
     val reminder = ReminderV2(
       uuId = "id-pinned",
