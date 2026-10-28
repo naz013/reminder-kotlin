@@ -5,6 +5,7 @@ import com.github.naz013.icalendar.parser.TagParser
 import org.junit.Assert
 import org.junit.Test
 import org.threeten.bp.LocalDateTime
+import java.util.TimeZone
 
 class ICalendarApiTest {
 
@@ -319,5 +320,89 @@ class ICalendarApiTest {
 
     Assert.assertEquals(map[TagType.DTSTART], parsed?.map?.get(TagType.DTSTART))
     Assert.assertEquals(map[TagType.RRULE], parsed?.map?.get(TagType.RRULE))
+  }
+
+  private fun weeklyRuleMap(
+    start: LocalDateTime,
+    zoneId: String?,
+    count: Int,
+  ) = RuleMap(
+    mapOf(
+      TagType.DTSTART to DateTimeStartTag(UtcDateTime(start), zoneId),
+      TagType.RRULE to RecurrenceRuleTag(
+        listOf(FreqRecurParam(FreqType.WEEKLY), IntervalRecurParam(1), CountRecurParam(count))
+      )
+    )
+  )
+
+  private fun withDefaultZone(
+    id: String,
+    block: () -> Unit,
+  ) {
+    val original = TimeZone.getDefault()
+    TimeZone.setDefault(TimeZone.getTimeZone(id))
+    try {
+      block()
+    } finally {
+      TimeZone.setDefault(original)
+    }
+  }
+
+  @Test
+  fun testGenerate_FixedZone_KeepsWallClockAcrossDst_WhenDeviceZoneDiffers() {
+    withDefaultZone("America/New_York") {
+      // Berlin leaves DST on 2026-10-25, New York on 2026-11-01.
+      val start = LocalDateTime.of(2026, 10, 18, 9, 0, 0)
+
+      val result = iCalendarApi.generate(weeklyRuleMap(start, "Europe/Berlin", 4))
+
+      Assert.assertEquals(List(4) { UtcDateTime(start.plusWeeks(it.toLong())) }, result)
+    }
+  }
+
+  @Test
+  fun testGenerate_Floating_UsesDeviceZoneWallClockAcrossDst() {
+    withDefaultZone("America/New_York") {
+      val start = LocalDateTime.of(2026, 10, 25, 9, 0, 0)
+
+      val result = iCalendarApi.generate(weeklyRuleMap(start, null, 3))
+
+      Assert.assertEquals(List(3) { UtcDateTime(start.plusWeeks(it.toLong())) }, result)
+    }
+  }
+
+  @Test
+  fun testGenerate_FloatingAfterDeviceZoneChange_StillWallClock() {
+    val start = LocalDateTime.of(2026, 3, 1, 9, 0, 0)
+    var inBerlin = emptyList<UtcDateTime>()
+    withDefaultZone("Europe/Berlin") { inBerlin = iCalendarApi.generate(weeklyRuleMap(start, null, 3)) }
+    var inNewYork = emptyList<UtcDateTime>()
+    withDefaultZone("America/New_York") { inNewYork = iCalendarApi.generate(weeklyRuleMap(start, null, 3)) }
+
+    Assert.assertEquals(List(3) { UtcDateTime(start.plusWeeks(it.toLong())) }, inBerlin)
+    Assert.assertEquals(inBerlin, inNewYork)
+  }
+
+  @Test
+  fun testCreateObject_FixedZone_WritesTzidOnRdateAndRoundTrips() {
+    val start = LocalDateTime.of(2026, 10, 18, 9, 0, 0)
+
+    val created = iCalendarApi.createObject(weeklyRuleMap(start, "Europe/Berlin", 2))
+    val parsed = iCalendarApi.parseObject(created)
+    val rdate = parsed?.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE)
+
+    Assert.assertTrue(created!!.contains("RDATE;VALUE=DATE-TIME;TZID=Europe/Berlin:20261018T090000"))
+    Assert.assertEquals("Europe/Berlin", rdate?.timeZoneId)
+    Assert.assertEquals(listOf(UtcDateTime(start), UtcDateTime(start.plusWeeks(1))), rdate?.values)
+  }
+
+  @Test
+  fun testCreateObject_UnknownZone_FallsBackToFloating() {
+    val start = LocalDateTime.of(2026, 10, 18, 9, 0, 0)
+
+    val created = iCalendarApi.createObject(weeklyRuleMap(start, "Not/AZone", 2))
+    val rdate = iCalendarApi.parseObject(created)?.getTagOrNull<RecurrenceDateTimeTag>(TagType.RDATE)
+
+    Assert.assertNull(rdate?.timeZoneId)
   }
 }

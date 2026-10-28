@@ -1,5 +1,6 @@
 package com.github.naz013.icalendar
 
+import com.github.naz013.domain.reminder.v2.toKnownTimeZoneIdOrNull
 import com.github.naz013.icalendar.builder.RuleBuilder
 import com.github.naz013.icalendar.parser.TagParser
 import com.github.naz013.logging.Logger
@@ -44,7 +45,11 @@ internal class ICalendarApiImpl(
       map = ruleMap.map.toMutableMap().apply {
         put(
           TagType.RDATE,
-          RecurrenceDateTimeTag(ValueParam(ParamValueType.DATE_TIME), generate(ruleMap))
+          RecurrenceDateTimeTag(
+            param = ValueParam(ParamValueType.DATE_TIME),
+            values = generate(ruleMap),
+            timeZoneId = knownZoneId(ruleMap)
+          )
         )
       }
     )
@@ -52,29 +57,37 @@ internal class ICalendarApiImpl(
     return ruleBuilder.buildString(newRuleMap.map.values.toList())
   }
 
+  /**
+   * Expands the rule in the DTSTART TZID zone (device zone when floating) and returns wall-clock values of that
+   * zone, so wall-clock rules keep their time across DST changes.
+   */
   override fun generate(ruleMap: RuleMap): List<UtcDateTime> {
+    val zone = knownZoneId(ruleMap)?.let { ZoneId.of(it) } ?: ZoneId.systemDefault()
+    val timeZone = TimeZone.getTimeZone(zone.id)
     val startDateTime = (ruleMap.map[TagType.DTSTART] as? DateTimeStartTag)?.value?.dateTime
-      ?.let { toMillis(it) } ?: return emptyList()
+      ?.let { toMillis(it, zone) } ?: return emptyList()
     val rrule = (ruleMap.map[TagType.RRULE] as? RecurrenceRuleTag) ?: return emptyList()
 
-    // UTC date time
-    val dateTime = DateTime(TimeZone.getDefault(), startDateTime)
+    val dateTime = DateTime(timeZone, startDateTime)
 
     val rule = RecurrenceRule(rrule.buildValueString())
     val set = RecurrenceSet(dateTime, RuleInstances(rule))
     val iterator = set.iterator()
 
-    var count = 0
     val resultList = mutableListOf<UtcDateTime>()
     while (iterator.hasNext()) {
       val next = iterator.next()
-      next?.shiftTimeZone(TimeZone.getDefault())?.toLocalDateTime()?.also {
+      next?.shiftTimeZone(timeZone)?.toLocalDateTime()?.also {
         resultList.add(UtcDateTime(it))
       }
-      count++
     }
 
     return resultList
+  }
+
+  private fun knownZoneId(ruleMap: RuleMap): String? {
+    return (ruleMap.map[TagType.DTSTART] as? DateTimeStartTag)?.timeZoneId.toKnownTimeZoneIdOrNull()
+      ?.takeIf { runCatching { ZoneId.of(it) }.isSuccess }
   }
 
   private fun DateTime.toLocalDateTime(): LocalDateTime {
@@ -84,8 +97,8 @@ internal class ICalendarApiImpl(
     )
   }
 
-  private fun toMillis(localDateTime: LocalDateTime): Long {
-    return ZonedDateTime.of(localDateTime, ZoneId.systemDefault()).toInstant().toEpochMilli()
+  private fun toMillis(localDateTime: LocalDateTime, zone: ZoneId): Long {
+    return ZonedDateTime.of(localDateTime, zone).toInstant().toEpochMilli()
   }
 
   companion object {

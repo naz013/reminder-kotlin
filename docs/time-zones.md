@@ -1,6 +1,6 @@
 # Time zone support (design note)
 
-Status: design; model (2/4), zone-aware calculation (3a) and zone-change handling (3c) are implemented. Tracked as four Trello cards (1/4 is this note).
+Status: design; model (2/4), zone-aware calculation (3a), zone-aware RDATE generation (3b) and zone-change handling (3c) are implemented. Tracked as four Trello cards (1/4 is this note).
 
 ## Problem
 
@@ -147,9 +147,9 @@ instant, `SnoozeReminderUseCase`).
 
 - Gap drift: the stored value is only the resolved UTC instant, so a weekly 02:30 rule completed across the spring-forward gap is stored as 03:30 and the next occurrence is computed from 03:30, not 02:30. Fixing it needs the intended local time stored (schema change).
 - Gap resolution is the gap-shifted time (02:30 becomes 03:30 via `ZonedDateTime.of`), not the first instant after the gap (03:00).
-- RRULE reminders with a fixed zone are unsupported until card 3b: `canSkip` runs in the fixed zone while the RDATE calculation still runs in the device zone.
 - Overlap: strategies return a local time, so only the earlier offset is representable; a later-offset instant cannot be expressed.
-- Zone changes (3c) re-anchor floating reminders by shifting `eventDateTime` only. Precomputed RDATE lists of floating RRULE reminders are not regenerated until card 3b, so they can be stale after a zone change.
+- Zone changes (3c) re-anchor floating reminders by shifting `eventDateTime`; floating RRULE reminders also get their RDATE list rebuilt (3b) in the same save, from the DTSTART wall-clock.
+- RRULE (3b): `ICalendarApiImpl.generate` expands in the DTSTART TZID zone (device zone when absent or unknown) and `createObject` tags the RDATE list with the same TZID. `RecurEventManager.getNextAfterDateTime` takes the reminder's fixed zone and converts by instant when it differs from the list's zone. The builder does not yet write a TZID into DTSTART (card 4/4), so a fixed reminder whose stored list is untagged is matched by instant until `RecurEventManager.regenerate` rebuilds it.
 
 ## Open questions
 

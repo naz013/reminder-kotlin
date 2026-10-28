@@ -118,8 +118,12 @@ internal class UiReminderListAdapterImpl(
     reminder: ReminderV2,
     rule: RecurrenceRule.ICalendar,
   ): Boolean {
-    val localEventDateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }
-    return recurEventManager.getNextAfterDateTime(localEventDateTime, rule.rrule) != null
+    val zone = DateTimeManager.parseFixedZone(reminder.timeZoneId)
+    val localEventDateTime =
+      reminder.schedule.eventDateTime?.let {
+        if (zone == null) dateTimeManager.utcToLocal(it) else dateTimeManager.utcToLocal(it, zone)
+      }
+    return recurEventManager.getNextAfterDateTime(localEventDateTime, rule.rrule, zone) != null
   }
 
   private fun createGroupBadgeV2(group: GroupV2?): UiTextElement? =

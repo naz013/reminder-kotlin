@@ -5,6 +5,7 @@ import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logging.Logger
+import com.github.naz013.logic.reminder.RecurEventManager
 import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.logic.reminder.fixedZone
 import com.github.naz013.repository.ReminderV2Repository
@@ -14,6 +15,9 @@ import org.threeten.bp.ZoneId
 /**
  * Compares the device zone with the last known one and, when it changed, re-anchors active floating reminders so
  * their wall-clock time is preserved (the instant moves). Fixed-zone reminders keep their instant.
+ *
+ * The precomputed RDATE list of RRULE reminders is rebuilt in the same save as the shift (from the stable
+ * DTSTART wall-clock, so it is idempotent and a retry cannot leave a shifted reminder with a stale list).
  *
  * Only `schedule.eventDateTime` is shifted: `startDateTime` is never used as a recurrence anchor (the strategies
  * advance from `eventDateTime`), so it keeps its creation value.
@@ -38,6 +42,7 @@ class HandleZoneChangeUseCase(
   private val saveReminderUseCase: SaveReminderUseCase,
   private val dateTimeManager: DateTimeManager,
   private val reminderPreferences: ReminderPreferences,
+  private val recurEventManager: RecurEventManager,
 ) {
   suspend operator fun invoke(): Boolean {
     val newZone = ZoneId.systemDefault()
@@ -107,9 +112,17 @@ class HandleZoneChangeUseCase(
     val old = requireNotNull(reminder.schedule.eventDateTime)
     val wallClock = dateTimeManager.utcToLocal(old, sourceZone)
     return reminder.copy(
+      recurrence = regeneratedRecurrence(reminder.recurrence),
       schedule = reminder.schedule.copy(eventDateTime = dateTimeManager.localToUtc(wallClock, newZone)),
       sync = reminder.sync.copy(version = reminder.sync.version + 1, syncState = SyncState.WaitingForUpload),
     )
+  }
+
+  /** Floating lists are built in the device zone (which is the new zone here), so the DTSTART stays untagged. */
+  private fun regeneratedRecurrence(recurrence: RecurrenceRule): RecurrenceRule {
+    if (recurrence !is RecurrenceRule.ICalendar) return recurrence
+    val rebuilt = recurEventManager.regenerate(recurrence.rrule, null)
+    return rebuilt?.let { RecurrenceRule.ICalendar(it) } ?: recurrence
   }
 
   private suspend fun save(target: ReminderV2): Boolean =

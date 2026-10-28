@@ -4,6 +4,7 @@ import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.RecurEventManager
+import com.github.naz013.logic.reminder.fixedZone
 import org.threeten.bp.LocalDateTime
 
 class RecurRepeatOccurrenceCalculatorV2(
@@ -36,6 +37,7 @@ class RecurRepeatOccurrenceCalculatorV2(
         recurEventManager.getNextAfterDateTime(
           startDateTime,
           rruleString,
+          reminder.fixedZone(),
         )
 
       if (nextOccurrence != null) {

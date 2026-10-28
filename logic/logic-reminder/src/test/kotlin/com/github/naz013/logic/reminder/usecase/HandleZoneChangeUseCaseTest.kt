@@ -6,6 +6,7 @@ import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderSchedule
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.domain.sync.SyncState
+import com.github.naz013.logic.reminder.RecurEventManager
 import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.repository.ReminderV2Repository
 import io.mockk.coEvery
@@ -29,6 +30,7 @@ class HandleZoneChangeUseCaseTest {
   private val repository = mockk<ReminderV2Repository>()
   private val saveReminderUseCase = mockk<SaveReminderUseCase>(relaxed = true)
   private val preferences = mockk<ReminderPreferences>(relaxed = true)
+  private val recurEventManager = mockk<RecurEventManager>()
   private val originalZone = TimeZone.getDefault()
 
   private val useCase =
@@ -37,11 +39,39 @@ class HandleZoneChangeUseCaseTest {
       saveReminderUseCase = saveReminderUseCase,
       dateTimeManager = DateTimeManager(mockk(relaxed = true), mockk(relaxed = true)),
       reminderPreferences = preferences,
+      recurEventManager = recurEventManager,
     )
 
   @Before
   fun setUp() {
     TimeZone.setDefault(TimeZone.getTimeZone("America/New_York"))
+    every { recurEventManager.regenerate(any(), any()) } returns null
+  }
+
+  @Test
+  fun `regenerates floating rrule list in the same save as the shift`() = runTest {
+    givenStoredZone("Europe/Berlin")
+    givenActive(reminder(recurrence = RecurrenceRule.ICalendar("old")))
+    every { recurEventManager.regenerate("old", null) } returns "new"
+    val saved = slot<ReminderV2>()
+
+    useCase()
+
+    coVerify { saveReminderUseCase(capture(saved)) }
+    assertEquals(RecurrenceRule.ICalendar("new"), saved.captured.recurrence)
+    assertEquals(LocalDateTime.of(2026, 6, 1, 13, 0), saved.captured.schedule.eventDateTime)
+  }
+
+  @Test
+  fun `keeps rrule when regeneration fails`() = runTest {
+    givenStoredZone("Europe/Berlin")
+    givenActive(reminder(recurrence = RecurrenceRule.ICalendar("old")))
+    val saved = slot<ReminderV2>()
+
+    useCase()
+
+    coVerify { saveReminderUseCase(capture(saved)) }
+    assertEquals(RecurrenceRule.ICalendar("old"), saved.captured.recurrence)
   }
 
   @After
