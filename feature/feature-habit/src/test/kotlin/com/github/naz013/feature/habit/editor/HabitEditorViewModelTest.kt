@@ -1,6 +1,8 @@
 package com.github.naz013.feature.habit.editor
 
 import com.github.naz013.common.TextProvider
+import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.datecalc.DateTimePreferences
 import com.github.naz013.datecalc.NowDateTimeProvider
 import com.github.naz013.domain.habit.Habit
 import com.github.naz013.domain.habit.HabitFrequency
@@ -42,6 +44,14 @@ class HabitEditorViewModelTest : BaseTest() {
     every { hapticsEnabled } returns true
   }
 
+  private var is24Hour = true
+  private val dateTimePreferences = mockk<DateTimePreferences> {
+    every { is24HourFormat } answers { is24Hour }
+  }
+  private val dateTimeManager = mockk<DateTimeManager> {
+    every { getTime(any()) } answers { (if (is24Hour) "24h-" else "12h-") + firstArg<LocalTime>() }
+  }
+
   private fun createViewModel(id: String? = null) = HabitEditorViewModel(
     id = id,
     dispatcherProvider = mockDispatcherProvider(),
@@ -51,6 +61,8 @@ class HabitEditorViewModelTest : BaseTest() {
     nowDateTimeProvider = nowProvider,
     textProvider = textProvider,
     appPreferences = appPreferences,
+    dateTimeManager = dateTimeManager,
+    dateTimePreferences = dateTimePreferences,
   )
 
   private fun savedHabit(): Habit {
@@ -320,5 +332,27 @@ class HabitEditorViewModelTest : BaseTest() {
     assertTrue(state.isReminderEnabled)
     assertEquals(LocalTime.of(21, 15), state.reminderTime)
     assertFalse(state.remindOnlyIfNotDone)
+  }
+
+  @Test
+  fun `reminder time label follows the 24 hour preference`() {
+    is24Hour = true
+    val viewModel = createViewModel()
+
+    viewModel.onReminderTimeChange(LocalTime.of(7, 30))
+
+    assertTrue(viewModel.state.value.is24Hour)
+    assertEquals("24h-07:30", viewModel.state.value.reminderTimeLabel)
+  }
+
+  @Test
+  fun `reminder time label follows the 12 hour preference`() {
+    is24Hour = false
+    val viewModel = createViewModel()
+
+    viewModel.onReminderTimeChange(LocalTime.of(19, 30))
+
+    assertFalse(viewModel.state.value.is24Hour)
+    assertEquals("12h-19:30", viewModel.state.value.reminderTimeLabel)
   }
 }

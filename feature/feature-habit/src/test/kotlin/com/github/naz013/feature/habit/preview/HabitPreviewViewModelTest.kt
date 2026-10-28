@@ -1,6 +1,7 @@
 package com.github.naz013.feature.habit.preview
 
 import com.github.naz013.common.TextProvider
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.habit.Habit
 import com.github.naz013.domain.habit.HabitFrequency
 import com.github.naz013.logic.habit.HabitDay
@@ -21,6 +22,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 
 class HabitPreviewViewModelTest : BaseTest() {
   private val stamp = LocalDateTime.of(2026, 10, 1, 8, 0)
@@ -36,6 +38,11 @@ class HabitPreviewViewModelTest : BaseTest() {
   }
   private val events = mutableListOf<HabitPreviewViewModel.NavigationEvent>()
 
+  private var is24Hour = true
+  private val dateTimeManager = mockk<DateTimeManager> {
+    every { getTime(any()) } answers { (if (is24Hour) "24h-" else "12h-") + firstArg<LocalTime>() }
+  }
+
   private fun createViewModel(): HabitPreviewViewModel {
     val viewModel = HabitPreviewViewModel(
       id = "h-1",
@@ -44,6 +51,7 @@ class HabitPreviewViewModelTest : BaseTest() {
       checkInHabitUseCase = checkInUseCase,
       deleteHabitUseCase = deleteUseCase,
       textProvider = textProvider,
+      dateTimeManager = dateTimeManager,
     )
     viewModel.navigationEvent.observeForever { event -> event.getContentIfNotHandled()?.let { events += it } }
     return viewModel
@@ -198,5 +206,30 @@ class HabitPreviewViewModelTest : BaseTest() {
     details.value = null
 
     assertEquals(listOf<HabitPreviewViewModel.NavigationEvent>(HabitPreviewViewModel.NavigationEvent.Back), events)
+  }
+
+  @Test
+  fun `reminder label uses the 24 hour format when enabled`() {
+    is24Hour = true
+    val base = habitDetails()
+    details.value = base.copy(habit = base.habit.copy(reminderTime = LocalTime.of(19, 30)))
+
+    assertEquals("text-24h-19:30", createViewModel().ready().reminderLabel)
+  }
+
+  @Test
+  fun `reminder label uses the 12 hour format when 24 hour is off`() {
+    is24Hour = false
+    val base = habitDetails()
+    details.value = base.copy(habit = base.habit.copy(reminderTime = LocalTime.of(19, 30)))
+
+    assertEquals("text-12h-19:30", createViewModel().ready().reminderLabel)
+  }
+
+  @Test
+  fun `reminder label is null when the habit has no reminder`() {
+    details.value = habitDetails()
+
+    assertNull(createViewModel().ready().reminderLabel)
   }
 }

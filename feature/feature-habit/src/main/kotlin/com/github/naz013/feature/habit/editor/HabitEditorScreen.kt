@@ -222,6 +222,7 @@ private fun ReminderSection(
             dateTimePicker.showTimePicker(
               time = state.reminderTime,
               title = timeTitle,
+              is24Hour = state.is24Hour,
               onTimeSelected = onReminderTimeChange,
             )
           },

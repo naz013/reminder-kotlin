@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.naz013.common.TextProvider
+import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.habit.HabitFrequency
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -25,8 +26,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.format.FormatStyle
 import org.threeten.bp.format.TextStyle
 import java.util.Locale
 
@@ -37,6 +36,7 @@ internal class HabitPreviewViewModel(
   private val checkInHabitUseCase: CheckInHabitUseCase,
   private val deleteHabitUseCase: DeleteHabitUseCase,
   private val textProvider: TextProvider,
+  private val dateTimeManager: DateTimeManager,
 ) : ViewModel() {
 
   val state: StateFlow<HabitPreviewState> field = MutableStateFlow(HabitPreviewState())
@@ -74,7 +74,7 @@ internal class HabitPreviewViewModel(
       description = habit.description,
       frequencyLabel = frequencyLabel(details),
       reminderLabel = habit.reminderTime?.let {
-        textProvider.getString(R.string.habit_reminder_at, it.format(TIME_FORMATTER))
+        textProvider.getString(R.string.habit_reminder_at, dateTimeManager.getTime(it))
       },
       backgroundColor = backgroundColor,
       contentColor = contentColor,
@@ -181,7 +181,6 @@ internal class HabitPreviewViewModel(
     private const val ACTIVITY_WEEKS = 26
     private const val DAYS_IN_WEEK = 7
     private const val CONTRAST_LUMINANCE_THRESHOLD = 0.5f
-    private val TIME_FORMATTER = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
     private val DEFAULT_COLOR = Color(0xFF86E3CE)
   }
 }

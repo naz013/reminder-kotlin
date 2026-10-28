@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.naz013.common.TextProvider
+import com.github.naz013.datecalc.DateTimeManager
+import com.github.naz013.datecalc.DateTimePreferences
 import com.github.naz013.datecalc.NowDateTimeProvider
 import com.github.naz013.domain.habit.Habit
 import com.github.naz013.domain.habit.HabitFrequency
@@ -24,8 +26,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalTime
-import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.format.FormatStyle
 import java.util.UUID
 
 internal class HabitEditorViewModel(
@@ -37,6 +37,8 @@ internal class HabitEditorViewModel(
   private val nowDateTimeProvider: NowDateTimeProvider,
   private val textProvider: TextProvider,
   private val appPreferences: AppPreferences,
+  private val dateTimeManager: DateTimeManager,
+  private val dateTimePreferences: DateTimePreferences,
 ) : ViewModel() {
 
   private val stableHabitId = id ?: UUID.randomUUID().toString()
@@ -50,6 +52,7 @@ internal class HabitEditorViewModel(
     state.update {
       it.copy(
         hapticFeedbackEnabled = appPreferences.hapticsEnabled,
+        is24Hour = dateTimePreferences.is24HourFormat,
         sliderColors = RoutineColors.ALL,
         targetLabel = targetLabel(it.frequency, targetCount),
         reminderTimeLabel = formatTime(it.reminderTime),
@@ -205,7 +208,7 @@ internal class HabitEditorViewModel(
     return textProvider.getString(res, count)
   }
 
-  private fun formatTime(time: LocalTime): String = time.format(TIME_FORMATTER)
+  private fun formatTime(time: LocalTime): String = dateTimeManager.getTime(time)
 
   sealed interface NavigationEvent {
     data object Back : NavigationEvent
@@ -219,6 +222,5 @@ internal class HabitEditorViewModel(
     private const val MIN_TARGET = 1
     private const val MAX_TARGET = 99
     private const val DEFAULT_TARGET = 1
-    private val TIME_FORMATTER = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
   }
 }

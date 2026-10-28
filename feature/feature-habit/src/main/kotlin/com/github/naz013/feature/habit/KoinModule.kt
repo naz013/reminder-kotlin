@@ -11,10 +11,10 @@ val habitModule = module {
   viewModelOf(::HabitListViewModel)
 
   viewModel { (id: String) ->
-    HabitPreviewViewModel(id, get(), get(), get(), get(), get())
+    HabitPreviewViewModel(id, get(), get(), get(), get(), get(), get())
   }
 
   viewModel { (id: String?) ->
-    HabitEditorViewModel(id, get(), get(), get(), get(), get(), get(), get())
+    HabitEditorViewModel(id, get(), get(), get(), get(), get(), get(), get(), get(), get())
   }
 }

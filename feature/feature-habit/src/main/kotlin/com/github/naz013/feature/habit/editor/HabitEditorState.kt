@@ -19,6 +19,7 @@ internal data class HabitEditorState(
   val isReminderEnabled: Boolean = false,
   val reminderTime: LocalTime = LocalTime.of(20, 0),
   val reminderTimeLabel: String = "",
+  val is24Hour: Boolean = true,
   val remindOnlyIfNotDone: Boolean = true,
   val hapticFeedbackEnabled: Boolean = true,
   val canSave: Boolean = false,
