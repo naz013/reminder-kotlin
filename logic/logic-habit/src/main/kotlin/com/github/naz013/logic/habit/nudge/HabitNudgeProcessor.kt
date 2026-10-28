@@ -10,7 +10,7 @@ import com.github.naz013.logic.routine.HabitConfig
 import com.github.naz013.repository.HabitCheckInRepository
 import com.github.naz013.repository.HabitRepository
 
-class HabitNudgeProcessor(
+class HabitNudgeProcessor internal constructor(
   private val habitRepository: HabitRepository,
   private val habitCheckInRepository: HabitCheckInRepository,
   private val streakCalculator: HabitStreakCalculator,

@@ -1,24 +1,24 @@
 package com.elementary.tasks.core.cloud
 
 import com.elementary.tasks.core.utils.params.Prefs
-import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.domain.TagAssignment
 import com.github.naz013.domain.TaggedItemType
+import com.github.naz013.domain.habit.Habit
 import com.github.naz013.files.DataType
 import com.github.naz013.files.model.TagAssignmentRowJson
 import com.github.naz013.files.model.TagAssignmentsSnapshotJson
+import com.github.naz013.logic.habit.nudge.ScheduleHabitNudgeUseCase
+import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import com.github.naz013.domain.habit.Habit
-import com.github.naz013.logic.habit.nudge.ScheduleHabitNudgeUseCase
 import io.mockk.verify
 import kotlinx.coroutines.test.runTest
-import org.threeten.bp.LocalDateTime
 import org.junit.Before
 import org.junit.Test
+import org.threeten.bp.LocalDateTime
 
 class DataPostProcessorImplTest {
   private val groupV2Repository = mockk<GroupV2Repository>()

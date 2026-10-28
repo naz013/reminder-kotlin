@@ -5,7 +5,7 @@ import com.github.naz013.domain.habit.HabitFrequency
 import com.github.naz013.logic.habit.HabitWithProgress
 import org.threeten.bp.LocalDateTime
 
-class HabitNudgeCalculator {
+internal class HabitNudgeCalculator {
 
   /** Next local moment after [now] at the habit's reminder time; weekly habits are nudged daily too. */
   fun nextTrigger(habit: Habit, now: LocalDateTime): LocalDateTime? {

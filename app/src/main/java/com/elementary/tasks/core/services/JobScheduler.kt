@@ -116,10 +116,10 @@ class JobScheduler(
     habitId: String,
     triggerAtMillis: Long,
   ) {
-    val delay = triggerAtMillis - System.currentTimeMillis()
-    if (delay <= 0) return
     val tag = HabitNudgeTask.tagFor(habitId)
     workScheduler.cancelByTag(tag)
+    val delay = triggerAtMillis - System.currentTimeMillis()
+    if (delay <= 0) return
     workScheduler.enqueue(
       WorkRequest(
         taskKey = HabitNudgeTask.TASK_KEY,

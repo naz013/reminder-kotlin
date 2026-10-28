@@ -6,7 +6,7 @@ import com.github.naz013.logic.routine.HabitConfig
 import com.github.naz013.scheduler.JobSchedulerApi
 import org.threeten.bp.ZoneId
 
-class ScheduleHabitNudgeUseCase(
+class ScheduleHabitNudgeUseCase internal constructor(
   private val jobScheduler: JobSchedulerApi,
   private val calculator: HabitNudgeCalculator,
   private val nowDateTimeProvider: NowDateTimeProvider,

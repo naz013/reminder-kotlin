@@ -14,10 +14,9 @@ import com.elementary.tasks.core.notes.AppNoteNotifier
 import com.elementary.tasks.core.notes.AppNotePreferences
 import com.elementary.tasks.core.onboarding.AppOnboardingPreferences
 import com.elementary.tasks.core.services.JobScheduler
-import com.elementary.tasks.core.services.event.AutoBackupEventTask
 import com.elementary.tasks.core.services.action.habit.HabitNudgeNotifierImpl
+import com.elementary.tasks.core.services.event.AutoBackupEventTask
 import com.elementary.tasks.core.services.event.BirthdayEventTask
-import com.github.naz013.logic.habit.nudge.HabitNudgeNotifier
 import com.elementary.tasks.core.services.event.BirthdayPermanentEventTask
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.params.Prefs
@@ -33,6 +32,7 @@ import com.github.naz013.googlecalendar.GoogleCalendarApi
 import com.github.naz013.holidaysapi.HolidaySettingsGate
 import com.github.naz013.logic.birthday.BirthdayNotifier
 import com.github.naz013.logic.birthday.BirthdayPreferences
+import com.github.naz013.logic.habit.nudge.HabitNudgeNotifier
 import com.github.naz013.logic.reminder.RecurEventManager
 import com.github.naz013.notification.NotificationApi
 import com.github.naz013.onboarding.OnboardingPreferences
