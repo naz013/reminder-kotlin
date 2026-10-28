@@ -154,4 +154,8 @@ class ReminderPreferencesImpl(
   override var agendaViewMode: AgendaViewMode
     get() = runCatching { AgendaViewMode.valueOf(prefs.agendaViewMode) }.getOrDefault(AgendaViewMode.LIST)
     set(value) { prefs.agendaViewMode = value.name }
+
+  override var lastKnownZoneId: String?
+    get() = prefs.lastKnownZoneId
+    set(value) { prefs.lastKnownZoneId = value }
 }

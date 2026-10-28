@@ -1,6 +1,6 @@
 # Time zone support (design note)
 
-Status: design only, nothing is implemented. Tracked as four Trello cards (1/4 is this note).
+Status: design; model (2/4), zone-aware calculation (3a) and zone-change handling (3c) are implemented. Tracked as four Trello cards (1/4 is this note).
 
 ## Problem
 
@@ -149,6 +149,7 @@ instant, `SnoozeReminderUseCase`).
 - Gap resolution is the gap-shifted time (02:30 becomes 03:30 via `ZonedDateTime.of`), not the first instant after the gap (03:00).
 - RRULE reminders with a fixed zone are unsupported until card 3b: `canSkip` runs in the fixed zone while the RDATE calculation still runs in the device zone.
 - Overlap: strategies return a local time, so only the earlier offset is representable; a later-offset instant cannot be expressed.
+- Zone changes (3c) re-anchor floating reminders by shifting `eventDateTime` only. Precomputed RDATE lists of floating RRULE reminders are not regenerated until card 3b, so they can be stale after a zone change.
 
 ## Open questions
 

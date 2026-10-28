@@ -98,6 +98,7 @@ object PrefsConstants {
   const val GOOGLE_TASKS_ADOPTED = "google_tasks_adopted"
 
   const val WORKER_NETWORK_TYPE = "worker_network_type"
+  const val LAST_KNOWN_ZONE_ID = "last_known_zone_id"
   const val OCCURRENCE_MIGRATED = "occurrence_migrated"
   const val OCCURRENCE_COUNT_REMINDERS = "occurrence_count_reminders"
   const val OCCURRENCE_COUNT_BIRTHDAYS = "occurrence_count_birthdays"

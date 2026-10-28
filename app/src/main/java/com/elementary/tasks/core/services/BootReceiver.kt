@@ -6,6 +6,7 @@ import com.elementary.tasks.core.utils.ActivateAllActiveRemindersUseCase
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.habit.nudge.RescheduleHabitNudgesUseCase
+import com.github.naz013.logic.reminder.usecase.HandleZoneChangeUseCase
 import com.github.naz013.scheduler.JobSchedulerApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -23,8 +24,10 @@ class BootReceiver : BaseBroadcast() {
     if (intent.action in HABIT_RESCHEDULE_ACTIONS) {
       rescheduleHabitNudges()
     }
+    if (intent.action in REMINDER_REACTIVATE_ACTIONS) {
+      handleZoneAndReactivateReminders()
+    }
     if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
-      get<ActivateAllActiveRemindersUseCase>().run()
       if (prefs.isBirthdayReminderEnabled) {
         jobScheduler.scheduleDailyBirthday()
       }
@@ -53,7 +56,27 @@ class BootReceiver : BaseBroadcast() {
     }
   }
 
+  private fun handleZoneAndReactivateReminders() {
+    val pendingResult = goAsync()
+    CoroutineScope(get<DispatcherProvider>().io()).launch {
+      try {
+        get<HandleZoneChangeUseCase>()()
+        get<ActivateAllActiveRemindersUseCase>()()
+      } catch (e: Exception) {
+        Logger.e(TAG, "Failed to handle zone change", e)
+      } finally {
+        pendingResult.finish()
+      }
+    }
+  }
+
   companion object {
+    private val REMINDER_REACTIVATE_ACTIONS =
+      setOf(
+        Intent.ACTION_BOOT_COMPLETED,
+        Intent.ACTION_TIME_CHANGED,
+        Intent.ACTION_TIMEZONE_CHANGED,
+      )
     private val HABIT_RESCHEDULE_ACTIONS =
       setOf(
         Intent.ACTION_BOOT_COMPLETED,

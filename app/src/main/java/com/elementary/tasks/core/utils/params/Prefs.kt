@@ -112,6 +112,10 @@ class Prefs(
     get() = getInt(PrefsConstants.AI_DIGEST_HOUR, def = 8)
     set(value) = putInt(PrefsConstants.AI_DIGEST_HOUR, value)
 
+  var lastKnownZoneId: String?
+    get() = getString(PrefsConstants.LAST_KNOWN_ZONE_ID, def = "").takeIf { it.isNotEmpty() }
+    set(value) = putString(PrefsConstants.LAST_KNOWN_ZONE_ID, value.orEmpty())
+
   var occurrenceMigrated: Boolean
     get() = getBoolean(PrefsConstants.OCCURRENCE_MIGRATED, def = false)
     set(value) = putBoolean(PrefsConstants.OCCURRENCE_MIGRATED, value)

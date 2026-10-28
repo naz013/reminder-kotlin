@@ -36,8 +36,12 @@ class GoogleCalendarUtils(
     val export = reminder.calendarExport ?: return
     val mId = export.calendarId
     if (mId != 0L) {
-      val tz = TimeZone.getDefault()
-      val timeZone = tz.displayName
+      val timeZone =
+        CalendarEventZone.resolveId(
+          reminderZoneId = reminder.timeZoneId,
+          allDay = export.allDay,
+          deviceZoneId = TimeZone.getDefault().id,
+        )
       val cr = context.contentResolver
       val values = ContentValues()
       val startTime =

@@ -39,4 +39,7 @@ interface ReminderPreferences {
   var initPresets: Boolean
   var initDefaultPresets: Boolean
   var agendaViewMode: AgendaViewMode
+
+  /** IANA id of the device zone seen by the last zone-change check, null before the first check. */
+  var lastKnownZoneId: String?
 }

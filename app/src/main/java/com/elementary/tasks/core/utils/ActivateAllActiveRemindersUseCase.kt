@@ -13,10 +13,12 @@ class ActivateAllActiveRemindersUseCase(
   private val coroutineScope = CoroutineScope(Dispatchers.IO)
 
   fun run() {
-    coroutineScope.launch {
-      reminderV2Repository.getAll(active = true, removed = false).forEach {
-        activateReminderUseCase(it)
-      }
+    coroutineScope.launch { invoke() }
+  }
+
+  suspend operator fun invoke() {
+    reminderV2Repository.getAll(active = true, removed = false).forEach {
+      activateReminderUseCase(it)
     }
   }
 }
