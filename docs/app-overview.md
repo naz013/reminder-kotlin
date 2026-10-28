@@ -39,6 +39,7 @@ Remote Config.
   Smart Lists on the home list (Today, Overdue, This week, No group).
 - **Chained reminders:** start a reminder only after another one is completed; it waits inactive and starts
   automatically (or when the predecessor is deleted or archived). See [chained-reminders.md](chained-reminders.md).
+- **Time zones (planned):** per-reminder fixed zone vs floating device zone. Design only, see [time-zones.md](time-zones.md).
 - **Quick add:** type a phrase and the on-device parser (`logic-quickadd`) builds the reminder.
 - **Notification customization:** every notification parameter (sound, vibration, priority, category, DND bypass,
   wake screen, lock-screen visibility, repeat) resolves Reminder, then Group, then global default. An opt-in
