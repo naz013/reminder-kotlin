@@ -4,6 +4,9 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.behavior.BehaviorStrategyResolverV2
+import com.github.naz013.logic.reminder.reminderLocalToUtc
+import com.github.naz013.logic.reminder.reminderNow
+import com.github.naz013.logic.reminder.reminderUtcToLocal
 import com.github.naz013.scheduler.JobSchedulerApi
 
 /**
@@ -31,8 +34,8 @@ class CompleteReminderUseCase(
     addReminderToHistoryUseCase(reminder)
     val completed = if (strategy.canSkip(reminder)) {
       val fromDateTime =
-        reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }
-          ?: dateTimeManager.getCurrentDateTime()
+        reminder.schedule.eventDateTime?.let { dateTimeManager.reminderUtcToLocal(reminder, it) }
+          ?: dateTimeManager.reminderNow(reminder)
       val nextDateTime = strategy.calculateNextOccurrence(reminder, fromDateTime)
       if (nextDateTime == null) {
         Logger.i(TAG, "No next occurrence found, deactivating reminder id=${reminder.uuId}")
@@ -41,7 +44,7 @@ class CompleteReminderUseCase(
         Logger.i(TAG, "Scheduling next occurrence for reminder id=${reminder.uuId} at $nextDateTime")
         val reminder =
           reminder.copy(
-            schedule = reminder.schedule.copy(eventDateTime = dateTimeManager.localToUtc(nextDateTime)),
+            schedule = reminder.schedule.copy(eventDateTime = dateTimeManager.reminderLocalToUtc(reminder, nextDateTime)),
             eventCount = reminder.eventCount + 1,
           )
         activateReminderUseCase(reminder)

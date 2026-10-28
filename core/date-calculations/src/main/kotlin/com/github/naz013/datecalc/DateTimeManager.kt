@@ -25,6 +25,13 @@ class DateTimeManager(
 
   fun getCurrentDateTime(): LocalDateTime = nowDateTimeProvider.nowDateTime()
 
+  fun getCurrentDateTime(zone: ZoneId): LocalDateTime =
+    nowDateTimeProvider.nowDateTime().atZone(ZoneId.systemDefault()).withZoneSameInstant(zone).toLocalDateTime()
+
+  /** Zone a reminder with the given [timeZoneId] is evaluated in: the fixed zone, or the device zone when the id
+   * is null (floating) or unknown. */
+  fun effectiveZone(timeZoneId: String?): ZoneId = parseFixedZone(timeZoneId) ?: ZoneId.systemDefault()
+
   fun getCurrentDate(): LocalDate = getCurrentDateTime().toLocalDate()
 
   fun getPlaceDateTimeFromGmt(dateTime: String?): LocalDate? =
@@ -66,6 +73,17 @@ class DateTimeManager(
    * convert to this device's local wall-clock before displaying or comparing against [getCurrentDateTime]. */
   fun utcToLocal(dateTime: LocalDateTime): LocalDateTime =
     dateTime.atZone(ZoneOffset.UTC).withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime()
+
+  fun utcToLocal(
+    dateTime: LocalDateTime,
+    zone: ZoneId,
+  ): LocalDateTime = dateTime.atZone(ZoneOffset.UTC).withZoneSameInstant(zone).toLocalDateTime()
+
+  /** Gap wall-clock times are shifted forward and overlap ones use the earlier offset ([ZonedDateTime.of]). */
+  fun localToUtc(
+    dateTime: LocalDateTime,
+    zone: ZoneId,
+  ): LocalDateTime = dateTime.atZone(zone).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()
 
   /** Inverse of [utcToLocal] - converts a local wall-clock [org.threeten.bp.LocalDateTime] into the UTC wall-clock
    * form `ReminderV2`'s schedule fields (and range queries against them) expect. */
@@ -161,6 +179,11 @@ class DateTimeManager(
 
   fun toMillis(localDateTime: LocalDateTime): Long =
     ZonedDateTime.of(localDateTime, ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+  fun toMillis(
+    localDateTime: LocalDateTime,
+    zone: ZoneId,
+  ): Long = ZonedDateTime.of(localDateTime, zone).toInstant().toEpochMilli()
 
   fun toMillis(zonedDateTime: ZonedDateTime): Long = zonedDateTime.toInstant().toEpochMilli()
 
@@ -349,6 +372,17 @@ class DateTimeManager(
     const val WEEK: Long = DAY * 7
 
     private const val GMT = "GMT"
+
+    /** The zone for a valid IANA [timeZoneId]; null for a null (floating) or unknown id. */
+    fun parseFixedZone(timeZoneId: String?): ZoneId? {
+      if (timeZoneId.isNullOrBlank()) return null
+      return try {
+        ZoneId.of(timeZoneId)
+      } catch (e: Throwable) {
+        Logger.w(TAG, "Unknown time zone id: $timeZoneId, treating as floating")
+        null
+      }
+    }
 
     private val BIRTH_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.US)
     private val GMT_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSZZZ", Locale.US)

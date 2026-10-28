@@ -6,6 +6,9 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.behavior.BehaviorStrategyResolverV2
 import com.github.naz013.logic.reminder.behavior.TimerRepeatStrategyV2
+import com.github.naz013.logic.reminder.reminderNow
+import com.github.naz013.logic.reminder.reminderToMillis
+import com.github.naz013.logic.reminder.reminderUtcToLocal
 
 /**
  * `ReminderV2`-typed mirror of the legacy V1 `EventDateTimeCalculator`.
@@ -23,7 +26,7 @@ class EventDateTimeCalculatorV2(
       Logger.w(TAG, "No event time set for reminder id=${reminder.uuId}")
       return null
     }
-    var due = dateTimeManager.utcToLocal(eventDateTime)
+    var due = dateTimeManager.reminderUtcToLocal(reminder, eventDateTime)
     val remindBefore = reminder.notification.remindBefore
     if (remindBefore != null && remindBefore != 0L) {
       due = due.minusMillis(remindBefore)
@@ -33,8 +36,8 @@ class EventDateTimeCalculatorV2(
       due = due.withSecond(0)
     }
     Logger.i(TAG, "Calculated event time: ${dateTimeManager.logDateTime(due)}")
-    val millis = dateTimeManager.toMillis(due)
-    val nowMillis = dateTimeManager.toMillis(dateTimeManager.getCurrentDateTime())
+    val millis = dateTimeManager.reminderToMillis(reminder, due)
+    val nowMillis = dateTimeManager.reminderToMillis(reminder, dateTimeManager.reminderNow(reminder))
     if (millis < nowMillis - PAST_TOLERANCE_MILLIS) {
       Logger.w(TAG, "Calculated event time is in the past: $due")
       return null

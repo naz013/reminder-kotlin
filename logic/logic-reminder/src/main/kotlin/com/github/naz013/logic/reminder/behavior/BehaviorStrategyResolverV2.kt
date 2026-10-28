@@ -4,6 +4,7 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.RecurrenceCalculator
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.logic.reminder.isEventInFuture
 import com.github.naz013.logic.reminder.RecurEventManager
 
 /**
@@ -77,7 +78,7 @@ class BehaviorStrategyResolverV2(
   private fun hasEventTime(reminder: ReminderV2): Boolean = reminder.schedule.eventDateTime != null
 
   private fun hasCurrentEventTime(reminder: ReminderV2): Boolean =
-    reminder.schedule.eventDateTime?.let { dateTimeManager.isCurrent(dateTimeManager.utcToLocal(it)) } ?: false
+    dateTimeManager.isEventInFuture(reminder)
 
   private fun hasRecurProperties(reminder: ReminderV2): Boolean =
     (reminder.recurrence as? RecurrenceRule.ICalendar)?.rrule?.isNotEmpty() == true

@@ -2,6 +2,7 @@ package com.github.naz013.logic.reminder.behavior
 
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.logic.reminder.isEventInFuture
 import org.threeten.bp.LocalDateTime
 
 class SimpleDateStrategyV2(
@@ -17,5 +18,5 @@ class SimpleDateStrategyV2(
   override fun canSnooze(reminder: ReminderV2): Boolean = true
 
   override fun canStartImmediately(reminder: ReminderV2): Boolean =
-    reminder.schedule.eventDateTime?.let { dateTimeManager.isCurrent(dateTimeManager.utcToLocal(it)) } ?: false
+    dateTimeManager.isEventInFuture(reminder)
 }

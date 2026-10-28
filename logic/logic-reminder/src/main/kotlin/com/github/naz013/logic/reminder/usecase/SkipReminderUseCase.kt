@@ -6,6 +6,9 @@ import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.behavior.BehaviorStrategyResolverV2
 import com.github.naz013.logic.reminder.behavior.LocationBasedStrategyV2
+import com.github.naz013.logic.reminder.reminderLocalToUtc
+import com.github.naz013.logic.reminder.reminderNow
+import com.github.naz013.logic.reminder.reminderUtcToLocal
 
 /**
  * Use case to skip a reminder to its next occurrence.
@@ -23,8 +26,8 @@ class SkipReminderUseCase(
     }
     return if (strategy.canSkip(reminder)) {
       val fromDateTime =
-        reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) }?.plusMillis(1000L)
-          ?: dateTimeManager.getCurrentDateTime()
+        reminder.schedule.eventDateTime?.let { dateTimeManager.reminderUtcToLocal(reminder, it) }?.plusMillis(1000L)
+          ?: dateTimeManager.reminderNow(reminder)
       val nextDateTime = strategy.calculateNextOccurrence(reminder, fromDateTime)
       if (nextDateTime == null) {
         Logger.i(TAG, "No next occurrence found, deactivating reminder id=${reminder.uuId}")
@@ -33,7 +36,7 @@ class SkipReminderUseCase(
       Logger.i(TAG, "Skipping reminder id=${reminder.uuId} to $nextDateTime")
       val reminder =
         reminder.copy(
-          schedule = reminder.schedule.copy(eventDateTime = dateTimeManager.localToUtc(nextDateTime)),
+          schedule = reminder.schedule.copy(eventDateTime = dateTimeManager.reminderLocalToUtc(reminder, nextDateTime)),
           eventCount = reminder.eventCount + 1,
         )
       activateReminderUseCase(reminder)

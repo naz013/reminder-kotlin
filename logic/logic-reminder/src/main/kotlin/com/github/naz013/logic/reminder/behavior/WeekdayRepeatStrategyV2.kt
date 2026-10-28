@@ -4,6 +4,9 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.RecurrenceCalculator
 import com.github.naz013.domain.reminder.v2.RecurrenceRule
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.logic.reminder.isEventInFuture
+import com.github.naz013.logic.reminder.reminderNow
+import com.github.naz013.logic.reminder.reminderUtcToLocal
 import org.threeten.bp.LocalDateTime
 
 class WeekdayRepeatStrategyV2(
@@ -17,12 +20,12 @@ class WeekdayRepeatStrategyV2(
     if (reminder.isLimitExceed()) return null
     val weekly = reminder.recurrence as? RecurrenceRule.Weekly ?: return null
     if (weekly.weekdays.isEmpty()) return null
-    val eventDateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.utcToLocal(it) } ?: return null
+    val eventDateTime = reminder.schedule.eventDateTime?.let { dateTimeManager.reminderUtcToLocal(reminder, it) } ?: return null
 
     return recurrenceCalculator.findNextDayOfWeekDateTime(
       eventDateTime = eventDateTime,
       weekdays = weekly.weekdays,
-      afterOrEqualDateTime = dateTimeManager.getCurrentDateTime(),
+      afterOrEqualDateTime = dateTimeManager.reminderNow(reminder),
     )
   }
 
@@ -34,5 +37,5 @@ class WeekdayRepeatStrategyV2(
   override fun canSnooze(reminder: ReminderV2): Boolean = true
 
   override fun canStartImmediately(reminder: ReminderV2): Boolean =
-    reminder.schedule.eventDateTime?.let { dateTimeManager.isCurrent(dateTimeManager.utcToLocal(it)) } ?: false
+    dateTimeManager.isEventInFuture(reminder)
 }

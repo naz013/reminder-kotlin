@@ -4,6 +4,8 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.domain.reminder.v2.ReminderV2
 import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.behavior.BehaviorStrategyResolverV2
+import com.github.naz013.logic.reminder.reminderLocalToUtc
+import com.github.naz013.logic.reminder.reminderNow
 import com.github.naz013.repository.ReminderV2Repository
 
 /**
@@ -35,9 +37,9 @@ class ActivateChainedRemindersUseCase(
   private fun withFreshFireTime(reminder: ReminderV2): ReminderV2 {
     val strategy = strategyResolver.resolve(reminder)
     if (!strategy.canSkip(reminder) || strategy.canStartImmediately(reminder)) return reminder
-    val now = dateTimeManager.getCurrentDateTime()
+    val now = dateTimeManager.reminderNow(reminder)
     val next = strategy.calculateNextOccurrence(reminder, now) ?: return reminder
-    return reminder.copy(schedule = reminder.schedule.copy(eventDateTime = dateTimeManager.localToUtc(next)))
+    return reminder.copy(schedule = reminder.schedule.copy(eventDateTime = dateTimeManager.reminderLocalToUtc(reminder, next)))
   }
 
   companion object {
