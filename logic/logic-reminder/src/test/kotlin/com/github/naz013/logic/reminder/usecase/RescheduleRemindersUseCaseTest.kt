@@ -31,7 +31,6 @@ class RescheduleRemindersUseCaseTest {
   private val repository = mockk<ReminderV2Repository>()
   private val strategyResolver = mockk<BehaviorStrategyResolverV2>()
   private val strategy = mockk<ReminderBehaviorStrategyV2>()
-  private val skipReminderUseCase = mockk<SkipReminderUseCase>()
   private val activateReminderUseCase = mockk<ActivateReminderUseCase>()
   private val activated = slot<ReminderV2>()
 
@@ -51,7 +50,6 @@ class RescheduleRemindersUseCaseTest {
     useCase = RescheduleRemindersUseCase(
       reminderRepository = repository,
       strategyResolver = strategyResolver,
-      skipReminderUseCase = skipReminderUseCase,
       activateReminderUseCase = activateReminderUseCase,
       dateTimeManager = DateTimeManager(nowProvider, mockk(relaxed = true)),
     )
@@ -127,49 +125,97 @@ class RescheduleRemindersUseCaseTest {
       assertEquals(LocalDateTime.of(2025, 3, 30, 1, 30), activated.captured.schedule.eventDateTime)
     }
 
+  private fun nextDailyAtNine() {
+    every { strategy.canSkip(any()) } returns true
+    every { strategy.calculateNextOccurrence(any(), any()) } answers {
+      secondArg<LocalDateTime>().toLocalDate().plusDays(1).atTime(9, 0)
+    }
+  }
+
   @Test
-  fun `skips recurring reminder forward through several overdue cycles`() =
+  fun `skips recurring reminder forward through several overdue cycles with one activation`() =
     runTest {
-      val recurring = reminder(event = LocalDateTime.of(2025, 3, 6, 9, 0), recurrence = RecurrenceRule.Daily())
-      every { strategy.canSkip(any()) } returns true
-      coEvery { skipReminderUseCase(any()) } answers {
-        val current = firstArg<ReminderV2>()
-        current.copy(
-          schedule = current.schedule.copy(eventDateTime = current.schedule.eventDateTime!!.plusDays(1)),
-          eventCount = current.eventCount + 1,
-        )
-      }
+      reminder(event = LocalDateTime.of(2025, 3, 6, 9, 0), recurrence = RecurrenceRule.Daily())
+      nextDailyAtNine()
 
       val summary = useCase(listOf("1"), Target.Tomorrow)
 
       assertEquals(1, summary.moved)
-      coVerify(exactly = 5) { skipReminderUseCase(any()) }
-      coVerify(exactly = 0) { activateReminderUseCase(any(), any(), any()) }
-      assertEquals(recurring.uuId, "1")
+      coVerify(exactly = 1) { activateReminderUseCase(any(), any(), any()) }
+      assertEquals(LocalDateTime.of(2025, 3, 11, 9, 0), activated.captured.schedule.eventDateTime)
+      assertEquals(1L, activated.captured.eventCount)
     }
 
   @Test
-  fun `reports recurring reminder as nothing to move when skipping changes nothing`() =
+  fun `reports recurring reminder that is not overdue as nothing to move`() =
     runTest {
-      reminder(recurrence = RecurrenceRule.Daily())
-      every { strategy.canSkip(any()) } returns true
-      coEvery { skipReminderUseCase(any()) } answers { firstArg() }
+      reminder(event = LocalDateTime.of(2025, 3, 12, 9, 0), recurrence = RecurrenceRule.Daily())
+      nextDailyAtNine()
 
       val summary = useCase(listOf("1"), Target.Today)
 
-      assertEquals(0, summary.moved)
       assertEquals(SkipReason.NOTHING_TO_MOVE, summary.skipped.single().reason)
     }
 
   @Test
-  fun `reports recurring reminder that cannot skip as unsupported`() =
+  fun `reports recurring reminder without next occurrence as nothing to move`() =
+    runTest {
+      reminder(recurrence = RecurrenceRule.Daily())
+      every { strategy.canSkip(any()) } returns true
+      every { strategy.calculateNextOccurrence(any(), any()) } returns null
+
+      val summary = useCase(listOf("1"), Target.Today)
+
+      assertEquals(SkipReason.NOTHING_TO_MOVE, summary.skipped.single().reason)
+    }
+
+  @Test
+  fun `reports recurring reminder that stays overdue after the skip limit`() =
+    runTest {
+      reminder(recurrence = RecurrenceRule.Daily())
+      every { strategy.canSkip(any()) } returns true
+      every { strategy.calculateNextOccurrence(any(), any()) } answers { secondArg<LocalDateTime>().plusSeconds(1) }
+
+      val summary = useCase(listOf("1"), Target.Today)
+
+      assertEquals(SkipReason.STILL_OVERDUE, summary.skipped.single().reason)
+      coVerify(exactly = 0) { activateReminderUseCase(any(), any(), any()) }
+    }
+
+  @Test
+  fun `reports recurring reminder that cannot skip as nothing to move`() =
     runTest {
       reminder(recurrence = RecurrenceRule.Daily())
 
       val summary = useCase(listOf("1"), Target.Today)
 
-      assertEquals(SkipReason.UNSUPPORTED_TYPE, summary.skipped.single().reason)
-      coVerify(exactly = 0) { skipReminderUseCase(any()) }
+      assertEquals(SkipReason.NOTHING_TO_MOVE, summary.skipped.single().reason)
+      coVerify(exactly = 0) { activateReminderUseCase(any(), any(), any()) }
+    }
+
+  @Test
+  fun `rejects picked target in the past`() =
+    runTest {
+      reminder()
+
+      val summary = useCase(listOf("1"), Target.Picked(LocalDateTime.of(2025, 3, 9, 8, 0)))
+
+      assertEquals(SkipReason.TARGET_IN_PAST, summary.skipped.single().reason)
+      coVerify(exactly = 0) { activateReminderUseCase(any(), any(), any()) }
+    }
+
+  @Test
+  fun `reports reminder as not activated when activation leaves it inactive`() =
+    runTest {
+      reminder()
+      coEvery { activateReminderUseCase(capture(activated), any(), any()) } answers {
+        activated.captured.copy(isActive = false)
+      }
+
+      val summary = useCase(listOf("1"), Target.Tomorrow)
+
+      assertEquals(0, summary.moved)
+      assertEquals(SkipReason.NOT_ACTIVATED, summary.skipped.single().reason)
     }
 
   @Test

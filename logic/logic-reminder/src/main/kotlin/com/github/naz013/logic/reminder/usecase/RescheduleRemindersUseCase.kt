@@ -7,6 +7,7 @@ import com.github.naz013.logging.Logger
 import com.github.naz013.logic.reminder.behavior.BehaviorStrategyResolverV2
 import com.github.naz013.logic.reminder.behavior.LocationBasedStrategyV2
 import com.github.naz013.logic.reminder.behavior.NoReminderStrategyV2
+import com.github.naz013.logic.reminder.behavior.ReminderBehaviorStrategyV2
 import com.github.naz013.logic.reminder.reminderLocalToUtc
 import com.github.naz013.logic.reminder.reminderNow
 import com.github.naz013.logic.reminder.reminderUtcToLocal
@@ -20,7 +21,6 @@ import org.threeten.bp.LocalDateTime
 class RescheduleRemindersUseCase(
   private val reminderRepository: ReminderV2Repository,
   private val strategyResolver: BehaviorStrategyResolverV2,
-  private val skipReminderUseCase: SkipReminderUseCase,
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val dateTimeManager: DateTimeManager,
 ) {
@@ -55,8 +55,8 @@ class RescheduleRemindersUseCase(
         reminder.recurrence is RecurrenceRule.Countdown
     return when {
       unsupported -> SkipReason.UNSUPPORTED_TYPE
-      strategy.canSkip(reminder) -> skipForward(reminder)
-      reminder.recurrence != RecurrenceRule.Once -> SkipReason.UNSUPPORTED_TYPE
+      strategy.canSkip(reminder) -> skipForward(reminder, strategy)
+      reminder.recurrence != RecurrenceRule.Once -> SkipReason.NOTHING_TO_MOVE
       else -> moveOneTime(reminder, target)
     }
   }
@@ -68,10 +68,9 @@ class RescheduleRemindersUseCase(
     val now = dateTimeManager.reminderNow(reminder)
     val newLocal = resolveTarget(reminder, target, now)
     val newUtc = dateTimeManager.reminderLocalToUtc(reminder, newLocal)
+    if (!newLocal.isAfter(now)) return SkipReason.TARGET_IN_PAST
     if (newUtc == reminder.schedule.eventDateTime) return SkipReason.NOTHING_TO_MOVE
-    val updated = reminder.copy(schedule = reminder.schedule.copy(eventDateTime = newUtc))
-    activateReminderUseCase(updated)
-    return null
+    return activateAt(reminder, newUtc, countEvent = false)
   }
 
   private fun resolveTarget(
@@ -99,17 +98,37 @@ class RescheduleRemindersUseCase(
       .reminderUtcToLocal(reminder, reminder.schedule.eventDateTime ?: reminder.schedule.startDateTime)
       .toLocalTime()
 
-  private suspend fun skipForward(reminder: ReminderV2): SkipReason? {
-    var current = reminder
+  private suspend fun skipForward(
+    reminder: ReminderV2,
+    strategy: ReminderBehaviorStrategyV2,
+  ): SkipReason? {
+    if (isInFuture(reminder)) return SkipReason.NOTHING_TO_MOVE
+    val now = dateTimeManager.reminderNow(reminder)
+    var from = reminder.schedule.eventDateTime
+      ?.let { dateTimeManager.reminderUtcToLocal(reminder, it) }
+      ?.plusSeconds(1)
+      ?: now
     repeat(MAX_SKIPS) {
-      if (isInFuture(current)) return if (current === reminder) SkipReason.NOTHING_TO_MOVE else null
-      val next = skipReminderUseCase(current)
-      if (next.schedule.eventDateTime == current.schedule.eventDateTime) {
-        return if (current === reminder) SkipReason.NOTHING_TO_MOVE else null
+      val next = strategy.calculateNextOccurrence(reminder, from) ?: return SkipReason.NOTHING_TO_MOVE
+      if (next.isAfter(now)) {
+        return activateAt(reminder, dateTimeManager.reminderLocalToUtc(reminder, next), countEvent = true)
       }
-      current = next
+      from = next.plusSeconds(1)
     }
-    return if (current === reminder) SkipReason.NOTHING_TO_MOVE else null
+    return SkipReason.STILL_OVERDUE
+  }
+
+  private suspend fun activateAt(
+    reminder: ReminderV2,
+    eventUtc: LocalDateTime,
+    countEvent: Boolean,
+  ): SkipReason? {
+    val updated = reminder.copy(
+      schedule = reminder.schedule.copy(eventDateTime = eventUtc),
+      eventCount = if (countEvent) reminder.eventCount + 1 else reminder.eventCount,
+    )
+    val result = activateReminderUseCase(updated)
+    return if (result.isActive && result.schedule.eventDateTime == eventUtc) null else SkipReason.NOT_ACTIVATED
   }
 
   private fun isInFuture(reminder: ReminderV2): Boolean {
@@ -129,6 +148,9 @@ class RescheduleRemindersUseCase(
     UNSUPPORTED_TYPE,
     NOT_FOUND,
     NOTHING_TO_MOVE,
+    STILL_OVERDUE,
+    TARGET_IN_PAST,
+    NOT_ACTIVATED,
   }
 
   data class Skipped(
