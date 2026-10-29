@@ -1,5 +1,6 @@
 package com.github.naz013.feature.agenda
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,8 @@ import com.github.naz013.logic.birthday.BirthdaySmartListPredicate
 import com.github.naz013.logic.birthday.DeleteBirthdayUseCase
 import com.github.naz013.logic.reminder.usecase.ResolveWaitingTitlesUseCase
 import com.github.naz013.logic.reminder.filter.ReminderV2QueryFilterInstance
+import com.github.naz013.logic.reminder.usecase.RescheduleRemindersUseCase
+import com.github.naz013.logic.reminder.usecase.RestoreReminderStatesUseCase
 import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
 import com.github.naz013.logic.reminder.usecase.ToggleReminderStateUseCase
 import com.github.naz013.logic.reminder.usecase.TogglePinnedReminderUseCase
@@ -59,6 +62,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.threeten.bp.LocalDateTime
 import java.util.UUID
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -82,7 +87,12 @@ internal class AgendaViewModel(
   private val deleteBirthdayUseCase: DeleteBirthdayUseCase,
   private val reminderPreferences: ReminderPreferences,
   val pendingDeleteCoordinator: PendingDeleteCoordinator,
+  private val rescheduleRemindersUseCase: RescheduleRemindersUseCase,
+  private val restoreReminderStatesUseCase: RestoreReminderStatesUseCase,
 ) : ViewModel() {
+
+  @Volatile
+  private var lastRescheduledStates: List<RestoreReminderStatesUseCase.State> = emptyList()
 
   private val _agendaScreenState = MutableStateFlow(AgendaScreenState(viewMode = reminderPreferences.agendaViewMode))
   private val _selectedItemId = MutableStateFlow<String?>(null)
@@ -380,6 +390,75 @@ internal class AgendaViewModel(
     }
   }
 
+  fun onRescheduleSelectedToday() {
+    rescheduleSelected(RescheduleRemindersUseCase.Target.Today)
+  }
+
+  fun onRescheduleSelectedTomorrow() {
+    rescheduleSelected(RescheduleRemindersUseCase.Target.Tomorrow)
+  }
+
+  fun onRescheduleSelectedPicked(dateTime: LocalDateTime) {
+    rescheduleSelected(RescheduleRemindersUseCase.Target.Picked(dateTime))
+  }
+
+  fun onRescheduleUndoClicked() {
+    val states = lastRescheduledStates
+    lastRescheduledStates = emptyList()
+    if (states.isEmpty()) return
+    viewModelScope.launch(dispatcherProvider.default()) {
+      restoreReminderStatesUseCase(states)
+    }
+  }
+
+  private fun rescheduleSelected(target: RescheduleRemindersUseCase.Target) {
+    val ids = selectedReminderIds().toList()
+    if (ids.isEmpty()) return
+    onSelectionCancel()
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val before = restoreReminderStatesUseCase.capture(ids)
+      val summary = rescheduleRemindersUseCase(ids, target)
+      val skippedIds = summary.skipped.map { it.id }.toSet()
+      lastRescheduledStates = before.filter { it.id !in skippedIds }
+      val message = rescheduleMessage(summary)
+      val canUndo = lastRescheduledStates.isNotEmpty()
+      withContext(dispatcherProvider.main()) {
+        navigationEvent.value = Event(NavigationEvent.ShowRescheduleResult(message = message, canUndo = canUndo))
+      }
+    }
+  }
+
+  private fun rescheduleMessage(summary: RescheduleRemindersUseCase.Summary): String {
+    if (summary.moved == 0 && summary.skipped.isEmpty()) {
+      return textProvider.getString(R.string.reschedule_summary_nothing_moved)
+    }
+    val movedText = if (summary.moved > 0) {
+      textProvider.getQuantityString(R.plurals.reschedule_summary_moved, summary.moved)
+    } else {
+      null
+    }
+    val skippedText = if (summary.skipped.isNotEmpty()) {
+      val count = textProvider.getQuantityString(R.plurals.reschedule_summary_skipped, summary.skipped.size)
+      summary.mostCommonSkipReason?.let {
+        textProvider.getString(R.string.reschedule_summary_with_reason, count, textProvider.getString(skipReasonRes(it)))
+      } ?: count
+    } else {
+      null
+    }
+    return listOfNotNull(movedText, skippedText).joinToString(SUMMARY_PART_SEPARATOR)
+  }
+
+  @StringRes
+  private fun skipReasonRes(reason: RescheduleRemindersUseCase.SkipReason): Int =
+    when (reason) {
+      RescheduleRemindersUseCase.SkipReason.UNSUPPORTED_TYPE -> R.string.reschedule_skip_unsupported_type
+      RescheduleRemindersUseCase.SkipReason.NOT_FOUND -> R.string.reschedule_skip_not_found
+      RescheduleRemindersUseCase.SkipReason.NOTHING_TO_MOVE -> R.string.reschedule_skip_nothing_to_move
+      RescheduleRemindersUseCase.SkipReason.STILL_OVERDUE -> R.string.reschedule_skip_still_overdue
+      RescheduleRemindersUseCase.SkipReason.TARGET_IN_PAST -> R.string.reschedule_skip_target_in_past
+      RescheduleRemindersUseCase.SkipReason.NOT_ACTIVATED -> R.string.reschedule_skip_not_activated
+    }
+
   private fun bulkDeleteMessage(
     reminderIds: Set<String>,
     birthdayIds: Set<String>,
@@ -570,10 +649,16 @@ internal class AgendaViewModel(
     data class RequestGpsPermission(
       val id: String,
     ) : NavigationEvent
+
+    data class ShowRescheduleResult(
+      val message: String,
+      val canUndo: Boolean,
+    ) : NavigationEvent
   }
 
   companion object {
     private const val TAG = "AgendaViewModel"
     private const val SEARCH_DEBOUNCE_MS = 300L
+    private const val SUMMARY_PART_SEPARATOR = ", "
   }
 }

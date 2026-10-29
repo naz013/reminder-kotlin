@@ -15,6 +15,7 @@ data class HomeScreenState(
   val addMenuItems: List<ScheduleHomeViewModel.EventType> = emptyList(),
   val listState: ListState = ListState.Loading,
   val bannerState: BannerState? = null,
+  val isRescheduleSheetVisible: Boolean = false,
 )
 
 fun HomeScreenState.withSelectedEvent(selectedEventId: String?): HomeScreenState {

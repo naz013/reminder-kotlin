@@ -72,8 +72,10 @@ import com.github.naz013.ui.common.compose.foundation.component.AppModalBottomSh
 import com.github.naz013.ui.common.compose.foundation.component.BottomSheetHeader
 import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.compose.foundation.component.RescheduleTargetSheet
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
 import com.github.naz013.ui.common.icon.DrawableCatalog
+import org.threeten.bp.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,6 +101,9 @@ internal fun AgendaScreen(
   onSelectionCancel: () -> Unit,
   onDeleteSelectedClick: () -> Unit,
   onArchiveSelectedClick: () -> Unit,
+  onRescheduleTodayClick: () -> Unit,
+  onRescheduleTomorrowClick: () -> Unit,
+  onReschedulePicked: (LocalDateTime) -> Unit,
   onViewModeToggle: () -> Unit,
   modifier: Modifier = Modifier,
   snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
@@ -114,6 +119,7 @@ internal fun AgendaScreen(
     label = "agendaHeaderContainerColor",
   )
   var showFilterSheet by remember { mutableStateOf(false) }
+  var showRescheduleSheet by remember { mutableStateOf(false) }
   // Seeded from the ViewModel-persisted flag rather than always starting false, since navigating
   // away to a reminder/birthday preview and back tears down and recreates this composable - a
   // plain `remember { false }` here would forget that today was already scrolled to and jump
@@ -155,6 +161,7 @@ internal fun AgendaScreen(
           onCancelClick = onSelectionCancel,
           onDeleteClick = onDeleteSelectedClick,
           onArchiveClick = onArchiveSelectedClick,
+          onRescheduleClick = { showRescheduleSheet = true },
         )
       } else {
         Surface(color = headerContainerColor) {
@@ -258,6 +265,23 @@ internal fun AgendaScreen(
       onSmartListSelected = onSmartListSelected,
       onTagFilterSelected = onTagFilterSelected,
       onGroupFilterSelected = onGroupFilterSelected,
+    )
+  }
+  if (showRescheduleSheet) {
+    RescheduleTargetSheet(
+      onDismissRequest = { showRescheduleSheet = false },
+      onTodayClick = {
+        showRescheduleSheet = false
+        onRescheduleTodayClick()
+      },
+      onTomorrowClick = {
+        showRescheduleSheet = false
+        onRescheduleTomorrowClick()
+      },
+      onPicked = {
+        showRescheduleSheet = false
+        onReschedulePicked(it)
+      },
     )
   }
 }
@@ -620,7 +644,7 @@ private fun FilterChipLabel(
   )
 }
 
-private enum class AgendaSelectionAction { ARCHIVE, DELETE }
+private enum class AgendaSelectionAction { RESCHEDULE, ARCHIVE, DELETE }
 
 @Composable
 private fun AgendaSelectionTopBar(
@@ -629,12 +653,20 @@ private fun AgendaSelectionTopBar(
   onCancelClick: () -> Unit,
   onDeleteClick: () -> Unit,
   onArchiveClick: () -> Unit,
+  onRescheduleClick: () -> Unit,
 ) {
   SelectionTopBar(
     title = stringResource(R.string.selected_count, selectedCount),
     onCancelClick = onCancelClick,
     actions = buildList {
       if (canArchiveSelection) {
+        add(
+          PopupMenuItem(
+            id = AgendaSelectionAction.RESCHEDULE.ordinal,
+            title = stringResource(R.string.reschedule_action),
+            iconRes = DrawableCatalog.Fluent.ClockAlarm,
+          ),
+        )
         add(
           PopupMenuItem(
             id = AgendaSelectionAction.ARCHIVE.ordinal,
@@ -653,6 +685,7 @@ private fun AgendaSelectionTopBar(
     },
     onActionClick = { id ->
       when (AgendaSelectionAction.entries[id]) {
+        AgendaSelectionAction.RESCHEDULE -> onRescheduleClick()
         AgendaSelectionAction.ARCHIVE -> onArchiveClick()
         AgendaSelectionAction.DELETE -> onDeleteClick()
       }
@@ -819,6 +852,9 @@ private fun AgendaScreenEmptyPreview() {
       onSelectionCancel = {},
       onDeleteSelectedClick = {},
       onArchiveSelectedClick = {},
+      onRescheduleTodayClick = {},
+      onRescheduleTomorrowClick = {},
+      onReschedulePicked = {},
       onViewModeToggle = {},
     )
   }

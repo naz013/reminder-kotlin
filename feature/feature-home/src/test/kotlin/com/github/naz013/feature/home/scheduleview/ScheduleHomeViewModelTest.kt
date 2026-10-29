@@ -28,7 +28,9 @@ import com.github.naz013.legal.LegalDocumentRepository
 import com.github.naz013.legal.LegalDocumentType
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.Runs
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
@@ -42,6 +44,8 @@ import com.github.naz013.domain.Birthday
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logic.reminder.today.TodayBucket
 import com.github.naz013.logic.reminder.today.TodayItem
+import com.github.naz013.logic.reminder.usecase.RescheduleRemindersUseCase
+import com.github.naz013.logic.reminder.usecase.RestoreReminderStatesUseCase
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -67,6 +71,8 @@ class ScheduleHomeViewModelTest : BaseTest() {
   private val textProvider = mockk<TextProvider>()
   private val hasAnyUserContentUseCase = mockk<HasAnyUserContentUseCase>()
   private val proTrialController = mockk<ProTrialController>()
+  private val rescheduleRemindersUseCase = mockk<RescheduleRemindersUseCase>()
+  private val restoreReminderStatesUseCase = mockk<RestoreReminderStatesUseCase>()
   private val remainingMillis = MutableStateFlow(0L)
 
   private lateinit var viewModel: ScheduleHomeViewModel
@@ -119,6 +125,8 @@ class ScheduleHomeViewModelTest : BaseTest() {
         textProvider = textProvider,
         hasAnyUserContentUseCase = hasAnyUserContentUseCase,
         proTrialController = proTrialController,
+        rescheduleRemindersUseCase = rescheduleRemindersUseCase,
+        restoreReminderStatesUseCase = restoreReminderStatesUseCase,
       )
   }
 
@@ -720,6 +728,126 @@ class ScheduleHomeViewModelTest : BaseTest() {
       viewModel.event.value?.peekContent(),
     )
   }
+
+  private fun stubOverdueAndTexts(vararg ids: String) {
+    stubSchedule(ids.map { overdueReminder(it) })
+    every { textProvider.getQuantityString(any(), any()) } answers {
+      val label = when (firstArg<Int>()) {
+        R.plurals.reschedule_summary_moved -> "moved"
+        R.plurals.reschedule_summary_skipped -> "skipped"
+        else -> "other"
+      }
+      "$label ${secondArg<Int>()}"
+    }
+    every { textProvider.getString(any()) } answers { "s${firstArg<Int>()}" }
+    every { textProvider.getString(any(), *anyVararg()) } answers { "f${firstArg<Int>()}" }
+  }
+
+  private val before = RestoreReminderStatesUseCase.State(
+    id = "late",
+    eventDateTime = LocalDateTime.of(2025, 3, 8, 9, 0),
+    eventCount = 3L,
+    isActive = true,
+  )
+
+  @Test
+  fun `reschedule all shows the target sheet only when there are overdue reminders`() =
+    runTest {
+      stubOverdueAndTexts("late")
+      viewModel.state.first()
+
+      viewModel.onRescheduleAllClicked()
+
+      assertTrue(viewModel.state.first().isRescheduleSheetVisible)
+    }
+
+  @Test
+  fun `reschedule all does nothing when nothing is overdue`() =
+    runTest {
+      stubSchedule(emptyList())
+      viewModel.state.first()
+
+      viewModel.onRescheduleAllClicked()
+
+      assertFalse(viewModel.state.first().isRescheduleSheetVisible)
+    }
+
+  @Test
+  fun `rescheduling moves all overdue reminders and reports a moved summary with undo`() =
+    runTest {
+      stubOverdueAndTexts("late", "later")
+      viewModel.state.first()
+      coEvery { restoreReminderStatesUseCase.capture(listOf("late", "later")) } returns
+        listOf(before, before.copy(id = "later"))
+      coEvery { rescheduleRemindersUseCase(listOf("late", "later"), RescheduleRemindersUseCase.Target.Today) } returns
+        RescheduleRemindersUseCase.Summary(moved = 2, skipped = emptyList())
+
+      viewModel.onRescheduleTodayClicked()
+
+      coVerify(exactly = 1) {
+        rescheduleRemindersUseCase(listOf("late", "later"), RescheduleRemindersUseCase.Target.Today)
+      }
+      val result = viewModel.event.value!!.peekContent() as ScheduleHomeViewModel.ViewModelEvent.ShowRescheduleResult
+      assertEquals("moved 2", result.message)
+      assertTrue(result.canUndo)
+      assertFalse(viewModel.state.first().isRescheduleSheetVisible)
+    }
+
+  @Test
+  fun `rescheduling with skipped reminders appends the skip summary and undoes only moved ones`() =
+    runTest {
+      stubOverdueAndTexts("late", "loc")
+      viewModel.state.first()
+      coEvery { restoreReminderStatesUseCase.capture(any()) } returns listOf(before, before.copy(id = "loc"))
+      coEvery { rescheduleRemindersUseCase(any(), any()) } returns
+        RescheduleRemindersUseCase.Summary(
+          moved = 1,
+          skipped = listOf(RescheduleRemindersUseCase.Skipped("loc", RescheduleRemindersUseCase.SkipReason.UNSUPPORTED_TYPE)),
+        )
+      coEvery { restoreReminderStatesUseCase(any()) } just Runs
+
+      viewModel.onRescheduleTomorrowClicked()
+      viewModel.onRescheduleUndoClicked()
+
+      val result = viewModel.event.value!!.peekContent() as ScheduleHomeViewModel.ViewModelEvent.ShowRescheduleResult
+      assertTrue(result.message.startsWith("moved 1, "))
+      coVerify(exactly = 1) { restoreReminderStatesUseCase(listOf(before)) }
+    }
+
+  @Test
+  fun `picked date time is passed to the use case as the picked target`() =
+    runTest {
+      stubOverdueAndTexts("late")
+      viewModel.state.first()
+      val picked = LocalDateTime.of(2025, 4, 1, 10, 30)
+      coEvery { restoreReminderStatesUseCase.capture(any()) } returns listOf(before)
+      coEvery { rescheduleRemindersUseCase(any(), any()) } returns
+        RescheduleRemindersUseCase.Summary(moved = 1, skipped = emptyList())
+
+      viewModel.onReschedulePicked(picked)
+
+      coVerify { rescheduleRemindersUseCase(listOf("late"), RescheduleRemindersUseCase.Target.Picked(picked)) }
+    }
+
+  @Test
+  fun `nothing moved offers no undo`() =
+    runTest {
+      stubOverdueAndTexts("late")
+      viewModel.state.first()
+      coEvery { restoreReminderStatesUseCase.capture(any()) } returns listOf(before)
+      coEvery { rescheduleRemindersUseCase(any(), any()) } returns
+        RescheduleRemindersUseCase.Summary(
+          moved = 0,
+          skipped = listOf(RescheduleRemindersUseCase.Skipped("late", RescheduleRemindersUseCase.SkipReason.TARGET_IN_PAST)),
+        )
+
+      viewModel.onRescheduleTodayClicked()
+      viewModel.onRescheduleUndoClicked()
+
+      val result = viewModel.event.value!!.peekContent() as ScheduleHomeViewModel.ViewModelEvent.ShowRescheduleResult
+      assertFalse(result.canUndo)
+      coVerify(exactly = 0) { restoreReminderStatesUseCase(any()) }
+    }
 
   private fun snapshot(vararg items: TodayItem) = TodaySnapshot(items.toList(), NOW)
 

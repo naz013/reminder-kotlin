@@ -15,6 +15,8 @@ import com.github.naz013.feature.home.ListState
 import com.github.naz013.feature.home.TimeSection
 import com.github.naz013.feature.home.TodaySchedule
 import com.github.naz013.logic.reminder.today.TodayBucket
+import com.github.naz013.logic.reminder.usecase.RescheduleRemindersUseCase
+import com.github.naz013.logic.reminder.usecase.RestoreReminderStatesUseCase
 import com.github.naz013.logic.reminder.today.TodayItem
 import com.github.naz013.feature.home.withSelectedEvent
 import com.github.naz013.analytics.AnalyticsEventSender
@@ -46,6 +48,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDateTime
 
 class ScheduleHomeViewModel internal constructor(
@@ -65,8 +68,11 @@ class ScheduleHomeViewModel internal constructor(
   private val textProvider: TextProvider,
   private val hasAnyUserContentUseCase: HasAnyUserContentUseCase,
   private val proTrialController: ProTrialController,
+  private val rescheduleRemindersUseCase: RescheduleRemindersUseCase,
+  private val restoreReminderStatesUseCase: RestoreReminderStatesUseCase,
 ) : ViewModel() {
   private var proTrialJob: Job? = null
+  private var lastRescheduledStates: List<RestoreReminderStatesUseCase.State> = emptyList()
   private var headerItemsJob: Job? = null
 
   private val _state = MutableStateFlow(HomeScreenState())
@@ -208,6 +214,90 @@ class ScheduleHomeViewModel internal constructor(
     Logger.i(TAG, "On overdue toggled")
     _isOverdueExpanded.update { !it }
   }
+
+  fun onRescheduleAllClicked() {
+    Logger.i(TAG, "On reschedule all clicked")
+    if (overdueIds().isEmpty()) return
+    _state.update { it.copy(isRescheduleSheetVisible = true) }
+  }
+
+  fun onRescheduleDismissed() {
+    _state.update { it.copy(isRescheduleSheetVisible = false) }
+  }
+
+  fun onRescheduleTodayClicked() {
+    reschedule(RescheduleRemindersUseCase.Target.Today)
+  }
+
+  fun onRescheduleTomorrowClicked() {
+    reschedule(RescheduleRemindersUseCase.Target.Tomorrow)
+  }
+
+  fun onReschedulePicked(dateTime: LocalDateTime) {
+    reschedule(RescheduleRemindersUseCase.Target.Picked(dateTime))
+  }
+
+  fun onRescheduleUndoClicked() {
+    Logger.i(TAG, "On reschedule undo clicked")
+    val states = lastRescheduledStates
+    lastRescheduledStates = emptyList()
+    if (states.isEmpty()) return
+    viewModelScope.launch(dispatcherProvider.default()) {
+      restoreReminderStatesUseCase(states)
+    }
+  }
+
+  private fun overdueIds(): List<String> =
+    (_state.value.listState as? ListState.Ready)?.schedule?.overdue.orEmpty().map { it.id }
+
+  private fun reschedule(target: RescheduleRemindersUseCase.Target) {
+    Logger.i(TAG, "Reschedule overdue: target=$target")
+    _state.update { it.copy(isRescheduleSheetVisible = false) }
+    val ids = overdueIds()
+    if (ids.isEmpty()) return
+    viewModelScope.launch(dispatcherProvider.default()) {
+      val before = restoreReminderStatesUseCase.capture(ids)
+      val summary = rescheduleRemindersUseCase(ids, target)
+      val skippedIds = summary.skipped.map { it.id }.toSet()
+      lastRescheduledStates = before.filter { it.id !in skippedIds }
+      val message = rescheduleMessage(summary)
+      val canUndo = lastRescheduledStates.isNotEmpty()
+      withContext(dispatcherProvider.main()) {
+        event.emit(ViewModelEvent.ShowRescheduleResult(message = message, canUndo = canUndo))
+      }
+    }
+  }
+
+  private fun rescheduleMessage(summary: RescheduleRemindersUseCase.Summary): String {
+    if (summary.moved == 0 && summary.skipped.isEmpty()) {
+      return textProvider.getString(R.string.reschedule_summary_nothing_moved)
+    }
+    val movedText = if (summary.moved > 0) {
+      textProvider.getQuantityString(R.plurals.reschedule_summary_moved, summary.moved)
+    } else {
+      null
+    }
+    val skippedText = if (summary.skipped.isNotEmpty()) {
+      val count = textProvider.getQuantityString(R.plurals.reschedule_summary_skipped, summary.skipped.size)
+      summary.mostCommonSkipReason?.let {
+        textProvider.getString(R.string.reschedule_summary_with_reason, count, textProvider.getString(skipReasonRes(it)))
+      } ?: count
+    } else {
+      null
+    }
+    return listOfNotNull(movedText, skippedText).joinToString(SUMMARY_PART_SEPARATOR)
+  }
+
+  @StringRes
+  private fun skipReasonRes(reason: RescheduleRemindersUseCase.SkipReason): Int =
+    when (reason) {
+      RescheduleRemindersUseCase.SkipReason.UNSUPPORTED_TYPE -> R.string.reschedule_skip_unsupported_type
+      RescheduleRemindersUseCase.SkipReason.NOT_FOUND -> R.string.reschedule_skip_not_found
+      RescheduleRemindersUseCase.SkipReason.NOTHING_TO_MOVE -> R.string.reschedule_skip_nothing_to_move
+      RescheduleRemindersUseCase.SkipReason.STILL_OVERDUE -> R.string.reschedule_skip_still_overdue
+      RescheduleRemindersUseCase.SkipReason.TARGET_IN_PAST -> R.string.reschedule_skip_target_in_past
+      RescheduleRemindersUseCase.SkipReason.NOT_ACTIVATED -> R.string.reschedule_skip_not_activated
+    }
 
   fun onSelectedEventIdChanged(id: String?) {
     _selectedEventId.value = id
@@ -447,6 +537,11 @@ class ScheduleHomeViewModel internal constructor(
     ) : ViewModelEvent
 
     data object OpenCreateTodo : ViewModelEvent
+
+    data class ShowRescheduleResult(
+      val message: String,
+      val canUndo: Boolean,
+    ) : ViewModelEvent
   }
 
   enum class EventType(
@@ -463,5 +558,6 @@ class ScheduleHomeViewModel internal constructor(
   companion object {
     private const val TAG = "ScheduleHomeViewModel"
     private const val SUMMARY_SEPARATOR = " · "
+    private const val SUMMARY_PART_SEPARATOR = ", "
   }
 }

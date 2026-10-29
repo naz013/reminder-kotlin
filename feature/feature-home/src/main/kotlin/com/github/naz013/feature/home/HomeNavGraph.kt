@@ -4,18 +4,28 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.github.naz013.feature.home.dayoverview.DayOverviewPane
 import com.github.naz013.feature.home.scheduleview.ScheduleHomeViewModel
+import com.github.naz013.ui.common.R
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberUndoSnackbarDispatcher
 import com.github.naz013.ui.common.livedata.ObserveEvent
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -117,6 +127,10 @@ private fun HomeEntry(
   onEventAction: (ResolvedEventAction) -> Unit,
 ) {
   val viewModel = koinViewModel<ScheduleHomeViewModel>()
+  val snackbarHostState = remember { SnackbarHostState() }
+  val undoSnackbarDispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
+  val snackbarScope = rememberCoroutineScope()
+  val undoLabel = stringResource(R.string.undo)
 
   LaunchedEffect(selectedEventId) { viewModel.onSelectedEventIdChanged(selectedEventId) }
 
@@ -227,6 +241,22 @@ private fun HomeEntry(
       is ScheduleHomeViewModel.ViewModelEvent.OpenCreateTodo -> {
         onOpenCreateTodo()
       }
+
+      is ScheduleHomeViewModel.ViewModelEvent.ShowRescheduleResult -> {
+        if (event.canUndo) {
+          undoSnackbarDispatcher.showUndoSnackbar(
+            message = event.message,
+            actionLabel = undoLabel,
+            onUndo = { viewModel.onRescheduleUndoClicked() },
+            onTimeout = {},
+          )
+        } else {
+          snackbarScope.launch {
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(message = event.message, duration = SnackbarDuration.Short)
+          }
+        }
+      }
     }
   }
 
@@ -258,7 +288,16 @@ private fun HomeEntry(
         onEventActionClick = { viewModel.onEventActionClicked(it) },
         onEarlierTodayClick = { viewModel.onEarlierTodayToggled() },
         onOverdueClick = { viewModel.onOverdueToggled() },
+        onRescheduleAllClick = { viewModel.onRescheduleAllClicked() },
+        onRescheduleDismiss = { viewModel.onRescheduleDismissed() },
+        onRescheduleTodayClick = { viewModel.onRescheduleTodayClicked() },
+        onRescheduleTomorrowClick = { viewModel.onRescheduleTomorrowClicked() },
+        onReschedulePicked = { viewModel.onReschedulePicked(it) },
         onAddMenuItemClick = { viewModel.onEventTypeSelected(it) },
+      )
+      SnackbarHost(
+        hostState = snackbarHostState,
+        modifier = Modifier.align(Alignment.BottomCenter),
       )
     },
   )

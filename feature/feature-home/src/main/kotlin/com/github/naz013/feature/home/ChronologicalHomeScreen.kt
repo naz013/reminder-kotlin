@@ -44,6 +44,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -70,11 +71,13 @@ import com.github.naz013.ui.common.compose.AppShapes
 import com.github.naz013.ui.common.compose.foundation.MenuIconButton
 import com.github.naz013.ui.common.compose.foundation.component.AppDropdownMenu
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
+import com.github.naz013.ui.common.compose.foundation.component.RescheduleTargetSheet
 import com.github.naz013.ui.common.compose.foundation.isDesktopScreen
 import com.github.naz013.ui.common.compose.foundation.isTabletScreen
 import com.github.naz013.ui.common.icon.DrawableCatalog
 import kotlinx.coroutines.delay
 import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -98,6 +101,11 @@ fun ChronologicalHomeScreen(
   onEventActionClick: (HomeEvent.EventAction) -> Unit,
   onEarlierTodayClick: () -> Unit,
   onOverdueClick: () -> Unit,
+  onRescheduleAllClick: () -> Unit,
+  onRescheduleDismiss: () -> Unit,
+  onRescheduleTodayClick: () -> Unit,
+  onRescheduleTomorrowClick: () -> Unit,
+  onReschedulePicked: (LocalDateTime) -> Unit,
 ) {
   // On Medium+ width, PersistentNavRailSceneDecoratorStrategy already wraps this screen in a
   // navigation rail carrying the same destinations - showing the grid/row too would be
@@ -156,6 +164,7 @@ fun ChronologicalHomeScreen(
             schedule = state.listState.schedule,
             onEarlierTodayClick = onEarlierTodayClick,
             onOverdueClick = onOverdueClick,
+            onRescheduleAllClick = onRescheduleAllClick,
             onEventClick = onEventClick,
             onEventActionClick = onEventActionClick,
           )
@@ -177,24 +186,41 @@ fun ChronologicalHomeScreen(
       }
     }
   }
+  if (state.isRescheduleSheetVisible) {
+    RescheduleTargetSheet(
+      onDismissRequest = onRescheduleDismiss,
+      onTodayClick = onRescheduleTodayClick,
+      onTomorrowClick = onRescheduleTomorrowClick,
+      onPicked = onReschedulePicked,
+    )
+  }
 }
 
 private fun LazyListScope.scheduleItems(
   schedule: TodaySchedule,
   onEarlierTodayClick: () -> Unit,
   onOverdueClick: () -> Unit,
+  onRescheduleAllClick: () -> Unit,
   onEventClick: (HomeEvent) -> Unit,
   onEventActionClick: (HomeEvent.EventAction) -> Unit,
 ) {
   if (schedule.overdue.isNotEmpty()) {
     item(key = "overdue_header") {
-      CollapsibleHeader(
+      Row(
         modifier = Modifier.padding(horizontal = 16.dp),
-        text = stringResource(R.string.home_overdue_title, schedule.overdueCount),
-        color = MaterialTheme.colorScheme.error,
-        isExpanded = schedule.isOverdueExpanded,
-        onClick = onOverdueClick,
-      )
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        CollapsibleHeader(
+          modifier = Modifier.weight(1f),
+          text = stringResource(R.string.home_overdue_title, schedule.overdueCount),
+          color = MaterialTheme.colorScheme.error,
+          isExpanded = schedule.isOverdueExpanded,
+          onClick = onOverdueClick,
+        )
+        TextButton(onClick = onRescheduleAllClick) {
+          Text(text = stringResource(R.string.reschedule_all))
+        }
+      }
     }
     if (schedule.isOverdueExpanded) {
       items(schedule.overdue, key = { "overdue_${it.id}" }) { event ->

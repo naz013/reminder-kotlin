@@ -40,6 +40,8 @@ import com.github.naz013.ui.agenda.UiAgendaItem
 import com.github.naz013.ui.agenda.UiAgendaItemAdapter
 import com.github.naz013.ui.agenda.UiAgendaReminder
 import com.github.naz013.ui.common.R
+import com.github.naz013.logic.reminder.usecase.RescheduleRemindersUseCase
+import com.github.naz013.logic.reminder.usecase.RestoreReminderStatesUseCase
 import io.mockk.Runs
 import io.mockk.clearMocks
 import io.mockk.coEvery
@@ -55,6 +57,8 @@ import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
 import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.feature.common.viewmodel.UndoEvent
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.LocalDateTime
@@ -86,6 +90,8 @@ class AgendaViewModelTest : BaseTest() {
   private val coordinatorReminderPendingIds = MutableStateFlow<Set<String>>(emptySet())
   private val coordinatorBirthdayPendingIds = MutableStateFlow<Set<String>>(emptySet())
   private val pendingDeleteCoordinator = mockk<PendingDeleteCoordinator>(relaxed = true)
+  private val rescheduleRemindersUseCase = mockk<RescheduleRemindersUseCase>()
+  private val restoreReminderStatesUseCase = mockk<RestoreReminderStatesUseCase>()
 
   private lateinit var viewModel: AgendaViewModel
 
@@ -142,6 +148,8 @@ class AgendaViewModelTest : BaseTest() {
         deleteBirthdayUseCase = deleteBirthdayUseCase,
         reminderPreferences = reminderPreferences,
       pendingDeleteCoordinator = pendingDeleteCoordinator,
+      rescheduleRemindersUseCase = rescheduleRemindersUseCase,
+      restoreReminderStatesUseCase = restoreReminderStatesUseCase,
       )
 
     // Construction above already triggered one eager load via init{}. Clear recorded
@@ -505,6 +513,8 @@ class AgendaViewModelTest : BaseTest() {
       deleteBirthdayUseCase = deleteBirthdayUseCase,
       reminderPreferences = reminderPreferences,
       pendingDeleteCoordinator = pendingDeleteCoordinator,
+      rescheduleRemindersUseCase = rescheduleRemindersUseCase,
+      restoreReminderStatesUseCase = restoreReminderStatesUseCase,
     )
   }
 
@@ -915,4 +925,111 @@ class AgendaViewModelTest : BaseTest() {
       contrastColor = 0,
       dateFormatted = "",
     )
+
+  private fun stubRescheduleTexts() {
+    every { textProvider.getQuantityString(any(), any()) } answers { "q${firstArg<Int>()}:${secondArg<Int>()}" }
+    every { textProvider.getString(any()) } answers { "s${firstArg<Int>()}" }
+    every { textProvider.getString(any(), *anyVararg()) } answers { "f${firstArg<Int>()}" }
+  }
+
+  private fun selectedReminderVm(): AgendaViewModel {
+    val vm = readyViewModelWithReminderAndBirthday()
+    vm.onItemLongClick("r1")
+    return vm
+  }
+
+  private val originalState = RestoreReminderStatesUseCase.State(
+    id = "r1",
+    eventDateTime = LocalDateTime.of(2025, 3, 8, 9, 0),
+    eventCount = 2L,
+    isActive = true,
+  )
+
+  @Test
+  fun `reschedules selected reminders to the requested target and clears the selection`() =
+    runTest {
+      stubRescheduleTexts()
+      val vm = selectedReminderVm()
+      coEvery { restoreReminderStatesUseCase.capture(listOf("r1")) } returns listOf(originalState)
+      coEvery { rescheduleRemindersUseCase(listOf("r1"), RescheduleRemindersUseCase.Target.Tomorrow) } returns
+        RescheduleRemindersUseCase.Summary(moved = 1, skipped = emptyList())
+
+      vm.onRescheduleSelectedTomorrow()
+
+      coVerify(exactly = 1) { rescheduleRemindersUseCase(listOf("r1"), RescheduleRemindersUseCase.Target.Tomorrow) }
+      assertEquals(0, vm.agendaScreenState.first().selectedCount)
+      val event = vm.navigationEvent.value!!.peekContent() as AgendaViewModel.NavigationEvent.ShowRescheduleResult
+      assertTrue(event.canUndo)
+    }
+
+  @Test
+  fun `passes the picked date time as reschedule target`() =
+    runTest {
+      stubRescheduleTexts()
+      val vm = selectedReminderVm()
+      val picked = LocalDateTime.of(2025, 4, 1, 10, 30)
+      coEvery { restoreReminderStatesUseCase.capture(any()) } returns listOf(originalState)
+      coEvery { rescheduleRemindersUseCase(any(), any()) } returns
+        RescheduleRemindersUseCase.Summary(moved = 1, skipped = emptyList())
+
+      vm.onRescheduleSelectedPicked(picked)
+
+      coVerify { rescheduleRemindersUseCase(listOf("r1"), RescheduleRemindersUseCase.Target.Picked(picked)) }
+    }
+
+  @Test
+  fun `reports skipped reminders without offering undo when nothing moved`() =
+    runTest {
+      stubRescheduleTexts()
+      val vm = selectedReminderVm()
+      coEvery { restoreReminderStatesUseCase.capture(any()) } returns listOf(originalState)
+      coEvery { rescheduleRemindersUseCase(any(), any()) } returns
+        RescheduleRemindersUseCase.Summary(
+          moved = 0,
+          skipped = listOf(
+            RescheduleRemindersUseCase.Skipped("r1", RescheduleRemindersUseCase.SkipReason.UNSUPPORTED_TYPE),
+          ),
+        )
+
+      vm.onRescheduleSelectedToday()
+
+      val event = vm.navigationEvent.value!!.peekContent() as AgendaViewModel.NavigationEvent.ShowRescheduleResult
+      assertFalse(event.canUndo)
+    }
+
+  @Test
+  fun `undo restores only the reminders that were moved`() =
+    runTest {
+      stubRescheduleTexts()
+      val vm = selectedReminderVm()
+      coEvery { restoreReminderStatesUseCase.capture(any()) } returns listOf(originalState)
+      coEvery { rescheduleRemindersUseCase(any(), any()) } returns
+        RescheduleRemindersUseCase.Summary(moved = 1, skipped = emptyList())
+      coEvery { restoreReminderStatesUseCase(any()) } just Runs
+      vm.onRescheduleSelectedToday()
+
+      vm.onRescheduleUndoClicked()
+
+      coVerify(exactly = 1) { restoreReminderStatesUseCase(listOf(originalState)) }
+    }
+
+  @Test
+  fun `undo does nothing when the reminder was skipped`() =
+    runTest {
+      stubRescheduleTexts()
+      val vm = selectedReminderVm()
+      coEvery { restoreReminderStatesUseCase.capture(any()) } returns listOf(originalState)
+      coEvery { rescheduleRemindersUseCase(any(), any()) } returns
+        RescheduleRemindersUseCase.Summary(
+          moved = 0,
+          skipped = listOf(
+            RescheduleRemindersUseCase.Skipped("r1", RescheduleRemindersUseCase.SkipReason.NOTHING_TO_MOVE),
+          ),
+        )
+      vm.onRescheduleSelectedToday()
+
+      vm.onRescheduleUndoClicked()
+
+      coVerify(exactly = 0) { restoreReminderStatesUseCase(any()) }
+    }
 }

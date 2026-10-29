@@ -3,11 +3,13 @@ package com.github.naz013.feature.agenda
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
@@ -20,6 +22,8 @@ import com.github.naz013.common.Permissions
 import com.github.naz013.feature.common.viewmodel.PendingEntity
 import com.github.naz013.ui.common.compose.foundation.snackbar.PendingDeleteHost
 import com.github.naz013.ui.common.compose.foundation.snackbar.UndoDeleteHost
+import com.github.naz013.ui.common.compose.foundation.snackbar.rememberUndoSnackbarDispatcher
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -82,6 +86,9 @@ private fun AgendaEntry(
   val viewModel = koinViewModel<AgendaViewModel>()
   val permissionRequester = rememberPermissionRequesterRationale()
   val snackbarHostState = remember { SnackbarHostState() }
+  val undoSnackbarDispatcher = rememberUndoSnackbarDispatcher(snackbarHostState)
+  val snackbarScope = rememberCoroutineScope()
+  val undoLabel = stringResource(R.string.undo)
   UndoDeleteHost(controller = viewModel.undoDelete, snackbarHostState = snackbarHostState)
   PendingDeleteHost(
     coordinator = viewModel.pendingDeleteCoordinator,
@@ -138,6 +145,22 @@ private fun AgendaEntry(
         onOpenTags()
       }
 
+      is AgendaViewModel.NavigationEvent.ShowRescheduleResult -> {
+        if (event.canUndo) {
+          undoSnackbarDispatcher.showUndoSnackbar(
+            message = event.message,
+            actionLabel = undoLabel,
+            onUndo = { viewModel.onRescheduleUndoClicked() },
+            onTimeout = {},
+          )
+        } else {
+          snackbarScope.launch {
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar(message = event.message, duration = SnackbarDuration.Short)
+          }
+        }
+      }
+
       is AgendaViewModel.NavigationEvent.RequestGpsPermission -> {
         permissionRequester.request(
           listOf(Permissions.FOREGROUND_SERVICE, Permissions.FOREGROUND_SERVICE_LOCATION),
@@ -171,6 +194,9 @@ private fun AgendaEntry(
     onSelectionCancel = viewModel::onSelectionCancel,
     onDeleteSelectedClick = viewModel::onDeleteSelectedClick,
     onArchiveSelectedClick = viewModel::onArchiveSelectedClick,
+    onRescheduleTodayClick = viewModel::onRescheduleSelectedToday,
+    onRescheduleTomorrowClick = viewModel::onRescheduleSelectedTomorrow,
+    onReschedulePicked = viewModel::onRescheduleSelectedPicked,
     onViewModeToggle = viewModel::onViewModeToggle,
   )
 }
