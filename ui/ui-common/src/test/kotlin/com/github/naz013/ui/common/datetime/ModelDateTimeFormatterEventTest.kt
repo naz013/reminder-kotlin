@@ -111,6 +111,21 @@ class ModelDateTimeFormatterEventTest {
     assertNull(result)
   }
 
+  @Test
+  fun `returns null age for anniversary and other when year is ignored`() {
+    assertNull(formatter.getEventAgeFormatted(birthday(BirthdayEventType.ANNIVERSARY, ignoreYear = true)))
+    assertNull(formatter.getEventAgeFormatted(birthday(BirthdayEventType.OTHER, label = "x", ignoreYear = true)))
+  }
+
+  @Test
+  fun `returns null age when the formatted age is blank`() {
+    every { textProvider.getQuantityString(R.plurals.x_year_anniversary, 26) } returns ""
+    every { textProvider.getText(R.string.x_years, "26") } returns ""
+
+    assertNull(formatter.getEventAgeFormatted(birthday(BirthdayEventType.ANNIVERSARY)))
+    assertNull(formatter.getEventAgeFormatted(birthday(BirthdayEventType.BIRTHDAY)))
+  }
+
   private fun birthday(
     type: BirthdayEventType,
     label: String? = null,

@@ -295,9 +295,9 @@ private fun SmartListChipRow(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun EventTypeChipRow(
+  modifier: Modifier = Modifier,
   selected: BirthdayEventType?,
   onSelect: (BirthdayEventType?) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   FlowRow(
     modifier = modifier,

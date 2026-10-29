@@ -135,7 +135,7 @@ class ModelDateTimeFormatter(
     nowDate: LocalDate = nowDateTimeProvider.nowDate(),
   ): String? {
     if (birthday.ignoreYear) return null
-    return when (birthday.eventType) {
+    val formatted = when (birthday.eventType) {
       BirthdayEventType.ANNIVERSARY ->
         textProvider.getQuantityString(
           R.plurals.x_year_anniversary,
@@ -147,6 +147,7 @@ class ModelDateTimeFormatter(
       BirthdayEventType.OTHER,
       -> getAgeFormatted(birthday.date, nowDate)
     }
+    return formatted.takeIf { it.isNotBlank() }
   }
 
   fun getEventLabel(birthday: Birthday): String? =

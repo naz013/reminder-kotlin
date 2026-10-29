@@ -278,10 +278,10 @@ internal fun EditBirthdayScreen(
 
 @Composable
 private fun EventTypeSelector(
+  modifier: Modifier = Modifier,
   selected: BirthdayEventType,
   enabled: Boolean,
   onSelected: (BirthdayEventType) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   Row(
     horizontalArrangement = Arrangement.spacedBy(8.dp),
