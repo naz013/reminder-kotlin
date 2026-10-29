@@ -34,6 +34,17 @@ data class Birthday(
   val ignoreYear: Boolean = false,
   @SerializedName("versionId")
   var version: Long = 0L,
+  @SerializedName("eventType")
+  val eventType: BirthdayEventType = BirthdayEventType.BIRTHDAY,
+  @SerializedName("customLabel")
+  val customLabel: String? = null,
   @Transient
   val syncState: SyncState,
 )
+
+enum class BirthdayEventType {
+  BIRTHDAY,
+  ANNIVERSARY,
+  MEMORIAL,
+  OTHER
+}

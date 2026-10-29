@@ -1,8 +1,10 @@
 package com.github.naz013.repository.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.BirthdayEventType
 import com.github.naz013.domain.sync.SyncState
 import com.google.gson.annotations.SerializedName
 import java.util.Random
@@ -40,7 +42,12 @@ internal data class BirthdayEntity(
   @SerializedName("version")
   val version: Long = 0L,
   @SerializedName("syncState")
-  val syncState: String
+  val syncState: String,
+  @SerializedName("eventType")
+  @ColumnInfo(defaultValue = "'BIRTHDAY'")
+  val eventType: String = BirthdayEventType.BIRTHDAY.name,
+  @SerializedName("customLabel")
+  val customLabel: String? = null
 ) {
 
   constructor(birthday: Birthday) : this(
@@ -58,7 +65,9 @@ internal data class BirthdayEntity(
     updatedAt = birthday.updatedAt,
     ignoreYear = birthday.ignoreYear,
     version = birthday.version,
-    syncState = birthday.syncState.name
+    syncState = birthday.syncState.name,
+    eventType = birthday.eventType.name,
+    customLabel = birthday.customLabel
   )
 
   fun toDomain(): Birthday {
@@ -77,6 +86,9 @@ internal data class BirthdayEntity(
       updatedAt = updatedAt,
       ignoreYear = ignoreYear,
       version = version,
+      eventType = BirthdayEventType.entries.firstOrNull { it.name == eventType }
+        ?: BirthdayEventType.BIRTHDAY,
+      customLabel = customLabel,
       syncState = SyncState.valueOf(syncState)
     )
   }

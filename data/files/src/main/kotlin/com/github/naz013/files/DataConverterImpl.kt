@@ -4,6 +4,7 @@ import android.util.Base64
 import android.util.Base64InputStream
 import android.util.Base64OutputStream
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.BirthdayEventType
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.RecurPreset
 import com.github.naz013.domain.Reminder
@@ -223,11 +224,18 @@ internal fun Any.toDomain(): Any {
     // type. Reassigning it here is the same fix-up TagJson/WorkflowRuleJson/WorkflowTemplateJson
     // already apply for their own syncState field, just done post-deserialization since these two
     // types have no *Json wrapper to do it in.
-    is Birthday -> this.copy(syncState = SyncState.WaitingForUpload)
+    is Birthday -> this.withBirthdayDefaults()
     is Place -> this.copy(syncState = SyncState.WaitingForUpload)
     else -> this
   }
 }
+
+/** Old backups lack eventType; Gson bypasses Kotlin defaults and leaves it null. */
+@Suppress("USELESS_ELVIS")
+private fun Birthday.withBirthdayDefaults(): Birthday = copy(
+  syncState = SyncState.WaitingForUpload,
+  eventType = eventType ?: BirthdayEventType.BIRTHDAY
+)
 
 private fun GroupV2Json.toDomain(): GroupV2 = GroupV2(
   uuId = uuId,

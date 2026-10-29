@@ -1,6 +1,7 @@
 package com.github.naz013.files
 
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.BirthdayEventType
 import com.github.naz013.domain.Place
 import com.github.naz013.domain.reminder.v2.NotificationSettingsOverride
 import com.github.naz013.domain.reminder.v2.ReminderPriority
@@ -14,6 +15,7 @@ import com.github.naz013.domain.workflow.WorkflowScopeType
 import com.github.naz013.domain.workflow.WorkflowTemplate
 import com.github.naz013.domain.workflow.WorkflowTemplateCategory
 import com.github.naz013.domain.workflow.WorkflowTrigger
+import com.google.gson.Gson
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.threeten.bp.LocalDateTime
@@ -296,5 +298,31 @@ class DataConverterImplTest {
 
     assertEquals(SyncState.WaitingForUpload, result.syncState)
     assertEquals(place.copy(syncState = SyncState.WaitingForUpload), result)
+  }
+
+  @Test
+  fun `keeps eventType and customLabel on a Birthday`() {
+    val birthday = Birthday(
+      name = "Alex",
+      eventType = BirthdayEventType.ANNIVERSARY,
+      customLabel = "Wedding",
+      syncState = SyncState.Synced
+    )
+
+    val result = birthday.toDomain() as Birthday
+
+    assertEquals(BirthdayEventType.ANNIVERSARY, result.eventType)
+    assertEquals("Wedding", result.customLabel)
+  }
+
+  @Test
+  fun `defaults a Birthday from an old backup without eventType to BIRTHDAY`() {
+    val oldJson = """{"name":"Alex","date":"2000-01-01","number":"","key":"","dayMonth":"","uuId":"u-1"}"""
+    val decoded = Gson().fromJson(oldJson, Birthday::class.java)
+
+    val result = decoded.toDomain() as Birthday
+
+    assertEquals(BirthdayEventType.BIRTHDAY, result.eventType)
+    assertEquals(null, result.customLabel)
   }
 }
