@@ -20,12 +20,9 @@ internal class UiBirthdayWidgetListAdapter(
       birthdayDate = birthdayDate,
       birthday = birthday
     )
-    val ageAndBirthdayDate = if (birthday.ignoreYear) {
-      birthDate
-    } else {
-      val ageFormatted = modelDateTimeFormatter.getAgeFormatted(birthday.date)
-      "$ageFormatted ($birthDate)"
-    }
+    val ageAndBirthdayDate = modelDateTimeFormatter.getEventSubtitle(birthday)
+      ?.let { "$it ($birthDate)" }
+      ?: birthDate
 
     return UiBirthdayWidgetList(
       uuId = birthday.uuId,

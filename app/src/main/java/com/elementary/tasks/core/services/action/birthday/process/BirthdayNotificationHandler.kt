@@ -72,7 +72,7 @@ class BirthdayNotificationHandler(
   override fun contentTitle(data: Birthday): String = data.name
 
   override fun contentText(data: Birthday): String? =
-    if (!data.ignoreYear) modelDateTimeFormatter.getAgeFormatted(data.date) else null
+    modelDateTimeFormatter.getEventSubtitle(data)
 
   override fun domainIcon(data: Birthday): Int = R.drawable.ic_fluent_food_cake
 

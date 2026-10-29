@@ -1342,4 +1342,16 @@
     <string name="time_zone_fixed_to_current">Fixé sur le fuseau horaire actuel</string>
     <string name="pro_trial_extend">Ajouter 24 heures</string>
     <string name="pro_trial_limit_reached">Durée maximale d’essai de 5 jours atteinte</string>
+    <string name="birthday_event_type_birthday">Anniversaire</string>
+    <string name="birthday_event_type_anniversary">Date anniversaire</string>
+    <string name="birthday_event_type_memorial">Commémoration</string>
+    <string name="birthday_event_type_other">Autre</string>
+    <string name="birthday_event_type">Type d\'événement</string>
+    <string name="birthday_event_custom_label">Libellé</string>
+    <string name="birthday_event_type_all">Tous les types</string>
+    <plurals name="x_year_anniversary">
+        <item quantity="one">Anniversaire de %d an</item>
+        <item quantity="many">Anniversaire de %d ans</item>
+        <item quantity="other">Anniversaire de %d ans</item>
+    </plurals>
 </resources>

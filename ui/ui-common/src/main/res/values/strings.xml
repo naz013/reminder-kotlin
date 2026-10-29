@@ -1355,4 +1355,15 @@
     <string name="time_zone_fixed_to_current">Fixed to the current time zone</string>
     <string name="pro_trial_extend">Add 24 hours</string>
     <string name="pro_trial_limit_reached">Maximum trial time of 5 days reached</string>
+    <string name="birthday_event_type_birthday">Birthday</string>
+    <string name="birthday_event_type_anniversary">Anniversary</string>
+    <string name="birthday_event_type_memorial">Memorial</string>
+    <string name="birthday_event_type_other">Other</string>
+    <string name="birthday_event_type">Event type</string>
+    <string name="birthday_event_custom_label">Label</string>
+    <string name="birthday_event_type_all">All types</string>
+    <plurals name="x_year_anniversary">
+        <item quantity="one">%d-year anniversary</item>
+        <item quantity="other">%d-year anniversary</item>
+    </plurals>
 </resources>

@@ -34,11 +34,10 @@ class UiBirthdayListAdapter(
         birthday = birthday,
       )
     val ageFormatted =
-      modelDateTimeFormatter
-        .getAgeFormatted(
-          date = birthday.date,
-          nowDate = nowDateTime.toLocalDate(),
-        ).takeIf { !birthday.ignoreYear } ?: ""
+      modelDateTimeFormatter.getEventSubtitle(
+        birthday = birthday,
+        nowDate = nowDateTime.toLocalDate(),
+      ) ?: ""
     val nextBirthdayDateTime = dateTimeManager.getFullDateTime(futureBirthdayDateTime)
     val remainingTime =
       modelDateTimeFormatter.getBirthdayRemaining(

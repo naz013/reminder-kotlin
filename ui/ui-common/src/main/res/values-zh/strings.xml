@@ -1332,4 +1332,14 @@
     <string name="time_zone_fixed_to_current">固定为当前时区</string>
     <string name="pro_trial_extend">增加 24 小时</string>
     <string name="pro_trial_limit_reached">已达到 5 天的试用时长上限</string>
+    <string name="birthday_event_type_birthday">生日</string>
+    <string name="birthday_event_type_anniversary">纪念日</string>
+    <string name="birthday_event_type_memorial">缅怀</string>
+    <string name="birthday_event_type_other">其他</string>
+    <string name="birthday_event_type">事件类型</string>
+    <string name="birthday_event_custom_label">标签</string>
+    <string name="birthday_event_type_all">所有类型</string>
+    <plurals name="x_year_anniversary">
+        <item quantity="other">%d周年纪念</item>
+    </plurals>
 </resources>

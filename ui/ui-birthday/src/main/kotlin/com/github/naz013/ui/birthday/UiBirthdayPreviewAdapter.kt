@@ -42,10 +42,7 @@ class UiBirthdayPreviewAdapter(
       contactName = contactId?.let { contactsReader.getNameFromNumber(birthday.number) },
       dateOfBirth = dateOfBirthFormatted,
       nextBirthdayDate = nextBirthdayDate,
-      ageFormatted =
-        modelDateTimeFormatter
-          .getAgeFormatted(birthday.date)
-          .takeIf { !birthday.ignoreYear },
+      ageFormatted = modelDateTimeFormatter.getEventSubtitle(birthday),
       hasBirthdayToday = dateOfBirth?.let { dateTimeManager.isSameDay(it) } ?: false,
     )
   }

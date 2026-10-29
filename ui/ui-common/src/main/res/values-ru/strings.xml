@@ -1344,4 +1344,17 @@
     <string name="time_zone_fixed_to_current">Фиксированный текущий часовой пояс</string>
     <string name="pro_trial_extend">Добавить 24 часа</string>
     <string name="pro_trial_limit_reached">Достигнут максимум пробного периода — 5 дней</string>
+    <string name="birthday_event_type_birthday">День рождения</string>
+    <string name="birthday_event_type_anniversary">Годовщина</string>
+    <string name="birthday_event_type_memorial">Память</string>
+    <string name="birthday_event_type_other">Другое</string>
+    <string name="birthday_event_type">Тип события</string>
+    <string name="birthday_event_custom_label">Метка</string>
+    <string name="birthday_event_type_all">Все типы</string>
+    <plurals name="x_year_anniversary">
+        <item quantity="one">Годовщина: %d год</item>
+        <item quantity="few">Годовщина: %d года</item>
+        <item quantity="many">Годовщина: %d лет</item>
+        <item quantity="other">Годовщина: %d года</item>
+    </plurals>
 </resources>

@@ -159,7 +159,7 @@ class BirthdayActionProcessor(
       alertId = birthday.uuId,
       domain = InAppAlertDomain.BIRTHDAY,
       title = birthday.name,
-      text = if (!birthday.ignoreYear) modelDateTimeFormatter.getAgeFormatted(birthday.date) else null,
+      text = modelDateTimeFormatter.getEventSubtitle(birthday),
       iconRes = DrawableCatalog.Fluent.FoodCake,
       actions = actions,
     )

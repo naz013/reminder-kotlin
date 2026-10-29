@@ -89,6 +89,7 @@ object DrawableCatalog {
     val CalendarSync = R.drawable.ic_fluent_calendar_sync
     val CalendarWeekStart = R.drawable.ic_fluent_calendar_week_start
     val CalendarWorkWeek = R.drawable.ic_fluent_calendar_work_week
+    val Candle = R.drawable.ic_fluent_candle
     val Cart = R.drawable.ic_fluent_cart
     val ChannelNotifications = R.drawable.ic_fluent_channel_notifications
     val Chat = R.drawable.ic_fluent_chat

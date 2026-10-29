@@ -89,12 +89,7 @@ internal class CreateBirthdayActionScreenStateUseCase(
         dateTimeManager.formatBirthdayDateForUi(it, birthday.ignoreYear)
       } ?: ""
 
-    val ageFormatted =
-      if (birthday.ignoreYear) {
-        null
-      } else {
-        modelDateTimeFormatter.getAgeFormatted(birthday.date).takeIf { it.isNotEmpty() }
-      }
+    val ageFormatted = modelDateTimeFormatter.getEventSubtitle(birthday)
 
     return BirthdayActionScreenHeader(
       text = birthday.name,

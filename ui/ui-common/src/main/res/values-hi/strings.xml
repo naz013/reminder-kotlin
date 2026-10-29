@@ -1335,4 +1335,15 @@
     <string name="time_zone_fixed_to_current">वर्तमान समय क्षेत्र पर स्थिर</string>
     <string name="pro_trial_extend">24 घंटे जोड़ें</string>
     <string name="pro_trial_limit_reached">ट्रायल की अधिकतम अवधि 5 दिन तक पहुँच गई है</string>
+    <string name="birthday_event_type_birthday">जन्मदिन</string>
+    <string name="birthday_event_type_anniversary">वर्षगांठ</string>
+    <string name="birthday_event_type_memorial">स्मृति दिवस</string>
+    <string name="birthday_event_type_other">अन्य</string>
+    <string name="birthday_event_type">इवेंट प्रकार</string>
+    <string name="birthday_event_custom_label">लेबल</string>
+    <string name="birthday_event_type_all">सभी प्रकार</string>
+    <plurals name="x_year_anniversary">
+        <item quantity="one">%d साल की सालगिरह</item>
+        <item quantity="other">%d साल की सालगिरह</item>
+    </plurals>
 </resources>

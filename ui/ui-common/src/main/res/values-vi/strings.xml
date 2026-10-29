@@ -1334,4 +1334,14 @@
     <string name="time_zone_fixed_to_current">Cố định theo múi giờ hiện tại</string>
     <string name="pro_trial_extend">Thêm 24 giờ</string>
     <string name="pro_trial_limit_reached">Đã đạt thời gian dùng thử tối đa 5 ngày</string>
+    <string name="birthday_event_type_birthday">Sinh nhật</string>
+    <string name="birthday_event_type_anniversary">Kỷ niệm</string>
+    <string name="birthday_event_type_memorial">Tưởng niệm</string>
+    <string name="birthday_event_type_other">Khác</string>
+    <string name="birthday_event_type">Loại sự kiện</string>
+    <string name="birthday_event_custom_label">Nhãn</string>
+    <string name="birthday_event_type_all">Tất cả loại</string>
+    <plurals name="x_year_anniversary">
+        <item quantity="other">Kỷ niệm %d năm</item>
+    </plurals>
 </resources>

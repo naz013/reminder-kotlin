@@ -456,11 +456,8 @@ class Notifier(
       dateTimeManager.parseBirthdayDate(birthday.date)?.let {
         dateTimeManager.formatBirthdayDateForUi(it, birthday.ignoreYear)
       }
-    return if (birthday.ignoreYear) {
-      date + " | " + birthday.name
-    } else {
-      date + " | " + birthday.name + " | " + modelDateTimeFormatter.getAgeFormatted(birthday.date)
-    }
+    return listOfNotNull(date, birthday.name, modelDateTimeFormatter.getEventSubtitle(birthday))
+      .joinToString(separator = " | ")
   }
 
   companion object {

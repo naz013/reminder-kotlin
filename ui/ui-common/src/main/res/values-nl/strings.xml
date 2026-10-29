@@ -1337,4 +1337,15 @@
     <string name="time_zone_fixed_to_current">Vast op de huidige tijdzone</string>
     <string name="pro_trial_extend">24 uur toevoegen</string>
     <string name="pro_trial_limit_reached">Maximale proefperiode van 5 dagen bereikt</string>
+    <string name="birthday_event_type_birthday">Verjaardag</string>
+    <string name="birthday_event_type_anniversary">Jubileum</string>
+    <string name="birthday_event_type_memorial">Herdenking</string>
+    <string name="birthday_event_type_other">Overig</string>
+    <string name="birthday_event_type">Type gebeurtenis</string>
+    <string name="birthday_event_custom_label">Label</string>
+    <string name="birthday_event_type_all">Alle typen</string>
+    <plurals name="x_year_anniversary">
+        <item quantity="one">%d-jarig jubileum</item>
+        <item quantity="other">%d-jarig jubileum</item>
+    </plurals>
 </resources>

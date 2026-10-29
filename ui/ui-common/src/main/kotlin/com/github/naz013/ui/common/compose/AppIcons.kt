@@ -36,6 +36,7 @@ object AppIcons {
     val CalendarSync: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.CalendarSync)
     val CalendarWeekStart: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.CalendarWeekStart)
     val CalendarWorkWeek: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.CalendarWorkWeek)
+    val Candle: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Candle)
     val Cart: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Cart)
     val ChannelNotifications: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.ChannelNotifications)
     val Chat: Painter @Composable get() = painterResource(DrawableCatalog.Fluent.Chat)

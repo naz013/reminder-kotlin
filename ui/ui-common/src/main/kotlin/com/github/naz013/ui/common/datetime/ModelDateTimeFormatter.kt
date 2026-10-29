@@ -6,6 +6,7 @@ import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.datecalc.DateTimePreferences
 import com.github.naz013.datecalc.NowDateTimeProvider
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.BirthdayEventType
 import com.github.naz013.ui.common.R
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -128,6 +129,38 @@ class ModelDateTimeFormatter(
       showedYear = birthday.showedYear,
       nowDateTime = nowDateTime,
     )
+
+  fun getEventAgeFormatted(
+    birthday: Birthday,
+    nowDate: LocalDate = nowDateTimeProvider.nowDate(),
+  ): String? {
+    if (birthday.ignoreYear) return null
+    return when (birthday.eventType) {
+      BirthdayEventType.ANNIVERSARY ->
+        textProvider.getQuantityString(
+          R.plurals.x_year_anniversary,
+          getAge(birthday.date, nowDate),
+        )
+
+      BirthdayEventType.BIRTHDAY,
+      BirthdayEventType.MEMORIAL,
+      BirthdayEventType.OTHER,
+      -> getAgeFormatted(birthday.date, nowDate)
+    }
+  }
+
+  fun getEventLabel(birthday: Birthday): String? =
+    birthday.customLabel
+      ?.trim()
+      ?.takeIf { birthday.eventType == BirthdayEventType.OTHER && it.isNotEmpty() }
+
+  fun getEventSubtitle(
+    birthday: Birthday,
+    nowDate: LocalDate = nowDateTimeProvider.nowDate(),
+  ): String? =
+    listOfNotNull(getEventLabel(birthday), getEventAgeFormatted(birthday, nowDate))
+      .takeIf { it.isNotEmpty() }
+      ?.joinToString(separator = " | ")
 
   fun getAgeFormatted(
     date: String?,

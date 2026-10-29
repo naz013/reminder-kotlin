@@ -1337,4 +1337,15 @@
     <string name="time_zone_fixed_to_current">Fast till nuvarande tidszon</string>
     <string name="pro_trial_extend">Lägg till 24 timmar</string>
     <string name="pro_trial_limit_reached">Maximal provtid på 5 dagar har nåtts</string>
+    <string name="birthday_event_type_birthday">Födelsedag</string>
+    <string name="birthday_event_type_anniversary">Årsdag</string>
+    <string name="birthday_event_type_memorial">Minnesdag</string>
+    <string name="birthday_event_type_other">Annat</string>
+    <string name="birthday_event_type">Händelsetyp</string>
+    <string name="birthday_event_custom_label">Etikett</string>
+    <string name="birthday_event_type_all">Alla typer</string>
+    <plurals name="x_year_anniversary">
+        <item quantity="one">%d-årsjubileum</item>
+        <item quantity="other">%d-årsjubileum</item>
+    </plurals>
 </resources>

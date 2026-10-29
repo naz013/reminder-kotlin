@@ -1330,4 +1330,14 @@
     <string name="time_zone_fixed_to_current">ตรึงกับเขตเวลาปัจจุบัน</string>
     <string name="pro_trial_extend">เพิ่ม 24 ชั่วโมง</string>
     <string name="pro_trial_limit_reached">ถึงระยะเวลาทดลองใช้สูงสุด 5 วันแล้ว</string>
+    <string name="birthday_event_type_birthday">วันเกิด</string>
+    <string name="birthday_event_type_anniversary">วันครบรอบ</string>
+    <string name="birthday_event_type_memorial">วันรำลึก</string>
+    <string name="birthday_event_type_other">อื่น ๆ</string>
+    <string name="birthday_event_type">ประเภทเหตุการณ์</string>
+    <string name="birthday_event_custom_label">ป้ายกำกับ</string>
+    <string name="birthday_event_type_all">ทุกประเภท</string>
+    <plurals name="x_year_anniversary">
+        <item quantity="other">ครบรอบ %d ปี</item>
+    </plurals>
 </resources>

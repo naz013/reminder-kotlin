@@ -1342,4 +1342,16 @@
     <string name="time_zone_fixed_to_current">Fix pe fusul orar curent</string>
     <string name="pro_trial_extend">Adaugă 24 de ore</string>
     <string name="pro_trial_limit_reached">A fost atinsă durata maximă a perioadei de probă de 5 zile</string>
+    <string name="birthday_event_type_birthday">Zi de naștere</string>
+    <string name="birthday_event_type_anniversary">Aniversare</string>
+    <string name="birthday_event_type_memorial">Comemorare</string>
+    <string name="birthday_event_type_other">Altele</string>
+    <string name="birthday_event_type">Tip eveniment</string>
+    <string name="birthday_event_custom_label">Etichetă</string>
+    <string name="birthday_event_type_all">Toate tipurile</string>
+    <plurals name="x_year_anniversary">
+        <item quantity="one">Aniversare de %d an</item>
+        <item quantity="few">Aniversare de %d ani</item>
+        <item quantity="other">Aniversare de %d de ani</item>
+    </plurals>
 </resources>

@@ -1332,4 +1332,14 @@
     <string name="time_zone_fixed_to_current">現在のタイムゾーンに固定</string>
     <string name="pro_trial_extend">24時間追加</string>
     <string name="pro_trial_limit_reached">お試し期間の上限（5日）に達しました</string>
+    <string name="birthday_event_type_birthday">誕生日</string>
+    <string name="birthday_event_type_anniversary">記念日</string>
+    <string name="birthday_event_type_memorial">追悼</string>
+    <string name="birthday_event_type_other">その他</string>
+    <string name="birthday_event_type">イベントの種類</string>
+    <string name="birthday_event_custom_label">ラベル</string>
+    <string name="birthday_event_type_all">すべての種類</string>
+    <plurals name="x_year_anniversary">
+        <item quantity="other">%d周年</item>
+    </plurals>
 </resources>

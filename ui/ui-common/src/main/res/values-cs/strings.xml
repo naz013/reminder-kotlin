@@ -1345,4 +1345,17 @@
     <string name="time_zone_fixed_to_current">Pevně nastavené na aktuální časové pásmo</string>
     <string name="pro_trial_extend">Přidat 24 hodin</string>
     <string name="pro_trial_limit_reached">Dosaženo maximální délky zkušební doby 5 dnů</string>
+    <string name="birthday_event_type_birthday">Narozeniny</string>
+    <string name="birthday_event_type_anniversary">Výročí</string>
+    <string name="birthday_event_type_memorial">Vzpomínka</string>
+    <string name="birthday_event_type_other">Jiné</string>
+    <string name="birthday_event_type">Typ události</string>
+    <string name="birthday_event_custom_label">Štítek</string>
+    <string name="birthday_event_type_all">Všechny typy</string>
+    <plurals name="x_year_anniversary">
+        <item quantity="one">%d. výročí</item>
+        <item quantity="few">%d. výročí</item>
+        <item quantity="many">%d. výročí</item>
+        <item quantity="other">%d. výročí</item>
+    </plurals>
 </resources>

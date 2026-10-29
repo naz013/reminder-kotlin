@@ -1349,4 +1349,19 @@
     <string name="time_zone_fixed_to_current">ثابتة على المنطقة الزمنية الحالية</string>
     <string name="pro_trial_extend">أضف 24 ساعة</string>
     <string name="pro_trial_limit_reached">تم الوصول إلى الحد الأقصى للفترة التجريبية وهو 5 أيام</string>
+    <string name="birthday_event_type_birthday">عيد ميلاد</string>
+    <string name="birthday_event_type_anniversary">ذكرى سنوية</string>
+    <string name="birthday_event_type_memorial">إحياء الذكرى</string>
+    <string name="birthday_event_type_other">أخرى</string>
+    <string name="birthday_event_type">نوع الحدث</string>
+    <string name="birthday_event_custom_label">التسمية</string>
+    <string name="birthday_event_type_all">كل الأنواع</string>
+    <plurals name="x_year_anniversary">
+        <item quantity="zero">ذكرى سنوية: %d سنة</item>
+        <item quantity="one">ذكرى سنوية: %d سنة</item>
+        <item quantity="two">ذكرى سنوية: %d سنة</item>
+        <item quantity="few">ذكرى سنوية: %d سنوات</item>
+        <item quantity="many">ذكرى سنوية: %d سنة</item>
+        <item quantity="other">ذكرى سنوية: %d سنة</item>
+    </plurals>
 </resources>
