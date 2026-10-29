@@ -1353,4 +1353,24 @@
     <string name="shortcut_quick_add">Hızlı ekle</string>
     <string name="shortcut_start_focus">Odaklanmayı başlat</string>
     <string name="shortcut_start_routine">%1$s başlat</string>
+    <string name="reschedule_all">Tümünü yeniden planla</string>
+    <string name="reschedule_action">Yeniden planla</string>
+    <string name="reschedule_sheet_title">Şuna yeniden planla</string>
+    <string name="reschedule_pick_date">Tarih ve saat seç</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Taşınan: %d</item>
+        <item quantity="other">Taşınan: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Atlanan: %d</item>
+        <item quantity="other">Atlanan: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Hiçbir şey taşınmadı</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Konum ve geri sayım hatırlatıcıları taşınamaz</string>
+    <string name="reschedule_skip_not_found">Hatırlatıcı artık yok</string>
+    <string name="reschedule_skip_nothing_to_move">Zaten gelecekte planlanmış</string>
+    <string name="reschedule_skip_still_overdue">İleri atlandıktan sonra hâlâ gecikmiş</string>
+    <string name="reschedule_skip_target_in_past">Bu saat zaten geçti</string>
+    <string name="reschedule_skip_not_activated">Etkinleştirilemedi</string>
 </resources>

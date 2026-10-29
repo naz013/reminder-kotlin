@@ -1360,4 +1360,28 @@
     <string name="shortcut_quick_add">Быстрое добавление</string>
     <string name="shortcut_start_focus">Начать фокус</string>
     <string name="shortcut_start_routine">Начать %1$s</string>
+    <string name="reschedule_all">Перенести все</string>
+    <string name="reschedule_action">Перенести</string>
+    <string name="reschedule_sheet_title">Перенести на</string>
+    <string name="reschedule_pick_date">Выбрать дату и время</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Перенесено: %d</item>
+        <item quantity="few">Перенесено: %d</item>
+        <item quantity="many">Перенесено: %d</item>
+        <item quantity="other">Перенесено: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Пропущено: %d</item>
+        <item quantity="few">Пропущено: %d</item>
+        <item quantity="many">Пропущено: %d</item>
+        <item quantity="other">Пропущено: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Ничего не перенесено</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Напоминания по местоположению и обратного отсчёта нельзя переносить</string>
+    <string name="reschedule_skip_not_found">Напоминание больше не существует</string>
+    <string name="reschedule_skip_nothing_to_move">Уже запланировано на будущее</string>
+    <string name="reschedule_skip_still_overdue">Всё ещё просрочено после пропуска вперёд</string>
+    <string name="reschedule_skip_target_in_past">Это время уже прошло</string>
+    <string name="reschedule_skip_not_activated">Не удалось активировать</string>
 </resources>

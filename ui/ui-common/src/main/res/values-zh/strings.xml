@@ -1345,4 +1345,22 @@
     <string name="shortcut_quick_add">快速添加</string>
     <string name="shortcut_start_focus">开始专注</string>
     <string name="shortcut_start_routine">开始 %1$s</string>
+    <string name="reschedule_all">全部重新安排</string>
+    <string name="reschedule_action">重新安排</string>
+    <string name="reschedule_sheet_title">重新安排到</string>
+    <string name="reschedule_pick_date">选择日期和时间</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="other">已移动：%d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="other">已跳过：%d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">没有移动任何内容</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">位置和倒计时提醒无法移动</string>
+    <string name="reschedule_skip_not_found">该提醒已不存在</string>
+    <string name="reschedule_skip_nothing_to_move">已安排在未来</string>
+    <string name="reschedule_skip_still_overdue">向前跳过后仍然逾期</string>
+    <string name="reschedule_skip_target_in_past">该时间已过</string>
+    <string name="reschedule_skip_not_activated">无法激活</string>
 </resources>

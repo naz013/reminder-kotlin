@@ -1357,4 +1357,26 @@
     <string name="shortcut_quick_add">Adição rápida</string>
     <string name="shortcut_start_focus">Iniciar foco</string>
     <string name="shortcut_start_routine">Iniciar %1$s</string>
+    <string name="reschedule_all">Reagendar tudo</string>
+    <string name="reschedule_action">Reagendar</string>
+    <string name="reschedule_sheet_title">Reagendar para</string>
+    <string name="reschedule_pick_date">Escolher data e hora</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Reagendados: %d</item>
+        <item quantity="many">Reagendados: %d</item>
+        <item quantity="other">Reagendados: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Ignorados: %d</item>
+        <item quantity="many">Ignorados: %d</item>
+        <item quantity="other">Ignorados: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Nada foi movido</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Lembretes de local e contagem regressiva não podem ser movidos</string>
+    <string name="reschedule_skip_not_found">O lembrete não existe mais</string>
+    <string name="reschedule_skip_nothing_to_move">Já agendado para o futuro</string>
+    <string name="reschedule_skip_still_overdue">Ainda atrasado após avançar</string>
+    <string name="reschedule_skip_target_in_past">Esse horário já passou</string>
+    <string name="reschedule_skip_not_activated">Não foi possível ativar</string>
 </resources>

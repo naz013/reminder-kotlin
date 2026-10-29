@@ -1349,4 +1349,24 @@
     <string name="shortcut_quick_add">त्वरित जोड़ें</string>
     <string name="shortcut_start_focus">फ़ोकस शुरू करें</string>
     <string name="shortcut_start_routine">%1$s शुरू करें</string>
+    <string name="reschedule_all">सभी को पुनर्निर्धारित करें</string>
+    <string name="reschedule_action">पुनर्निर्धारित करें</string>
+    <string name="reschedule_sheet_title">इस पर पुनर्निर्धारित करें</string>
+    <string name="reschedule_pick_date">तारीख और समय चुनें</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">स्थानांतरित: %d</item>
+        <item quantity="other">स्थानांतरित: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">छोड़े गए: %d</item>
+        <item quantity="other">छोड़े गए: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">कुछ भी स्थानांतरित नहीं हुआ</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">स्थान और काउंटडाउन रिमाइंडर स्थानांतरित नहीं किए जा सकते</string>
+    <string name="reschedule_skip_not_found">रिमाइंडर अब मौजूद नहीं है</string>
+    <string name="reschedule_skip_nothing_to_move">पहले से भविष्य के लिए निर्धारित</string>
+    <string name="reschedule_skip_still_overdue">आगे बढ़ाने के बाद भी विलंबित</string>
+    <string name="reschedule_skip_target_in_past">वह समय पहले ही बीत चुका है</string>
+    <string name="reschedule_skip_not_activated">सक्रिय नहीं किया जा सका</string>
 </resources>

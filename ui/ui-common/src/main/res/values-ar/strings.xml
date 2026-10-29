@@ -1367,4 +1367,32 @@
     <string name="shortcut_quick_add">إضافة سريعة</string>
     <string name="shortcut_start_focus">بدء التركيز</string>
     <string name="shortcut_start_routine">بدء %1$s</string>
+    <string name="reschedule_all">إعادة جدولة الكل</string>
+    <string name="reschedule_action">إعادة جدولة</string>
+    <string name="reschedule_sheet_title">إعادة الجدولة إلى</string>
+    <string name="reschedule_pick_date">اختر التاريخ والوقت</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="zero">تم النقل: %d</item>
+        <item quantity="one">تم النقل: %d</item>
+        <item quantity="two">تم النقل: %d</item>
+        <item quantity="few">تم النقل: %d</item>
+        <item quantity="many">تم النقل: %d</item>
+        <item quantity="other">تم النقل: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="zero">تم التخطي: %d</item>
+        <item quantity="one">تم التخطي: %d</item>
+        <item quantity="two">تم التخطي: %d</item>
+        <item quantity="few">تم التخطي: %d</item>
+        <item quantity="many">تم التخطي: %d</item>
+        <item quantity="other">تم التخطي: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">لم يتم نقل أي شيء</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">لا يمكن نقل تذكيرات الموقع والعد التنازلي</string>
+    <string name="reschedule_skip_not_found">لم يعد التذكير موجودًا</string>
+    <string name="reschedule_skip_nothing_to_move">مجدول بالفعل في المستقبل</string>
+    <string name="reschedule_skip_still_overdue">لا يزال متأخرًا بعد التخطي للأمام</string>
+    <string name="reschedule_skip_target_in_past">هذا الوقت قد مضى بالفعل</string>
+    <string name="reschedule_skip_not_activated">تعذر التفعيل</string>
 </resources>

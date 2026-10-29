@@ -1345,4 +1345,22 @@
     <string name="shortcut_quick_add">クイック追加</string>
     <string name="shortcut_start_focus">集中を開始</string>
     <string name="shortcut_start_routine">%1$s を開始</string>
+    <string name="reschedule_all">すべて再設定</string>
+    <string name="reschedule_action">再設定</string>
+    <string name="reschedule_sheet_title">再設定先</string>
+    <string name="reschedule_pick_date">日付と時刻を選択</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="other">移動: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="other">スキップ: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">移動したものはありません</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">場所とカウントダウンのリマインダーは移動できません</string>
+    <string name="reschedule_skip_not_found">リマインダーは存在しません</string>
+    <string name="reschedule_skip_nothing_to_move">すでに未来に設定されています</string>
+    <string name="reschedule_skip_still_overdue">先送り後も期限切れです</string>
+    <string name="reschedule_skip_target_in_past">その時刻はすでに過ぎています</string>
+    <string name="reschedule_skip_not_activated">有効にできませんでした</string>
 </resources>

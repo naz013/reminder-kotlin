@@ -157,7 +157,10 @@ class RescheduleRemindersUseCase(
   data class Summary(
     val moved: Int,
     val skipped: List<Skipped>,
-  )
+  ) {
+    val mostCommonSkipReason: SkipReason?
+      get() = skipped.groupingBy { it.reason }.eachCount().maxByOrNull { it.value }?.key
+  }
 
   companion object {
     private const val TAG = "RescheduleRemindersUseCase"

@@ -1347,4 +1347,22 @@
     <string name="shortcut_quick_add">Tambah cepat</string>
     <string name="shortcut_start_focus">Mulai fokus</string>
     <string name="shortcut_start_routine">Mulai %1$s</string>
+    <string name="reschedule_all">Jadwalkan ulang semua</string>
+    <string name="reschedule_action">Jadwalkan ulang</string>
+    <string name="reschedule_sheet_title">Jadwalkan ulang ke</string>
+    <string name="reschedule_pick_date">Pilih tanggal dan waktu</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="other">Dipindahkan: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="other">Dilewati: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Tidak ada yang dipindahkan</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Pengingat lokasi dan hitung mundur tidak dapat dipindahkan</string>
+    <string name="reschedule_skip_not_found">Pengingat sudah tidak ada</string>
+    <string name="reschedule_skip_nothing_to_move">Sudah dijadwalkan di masa depan</string>
+    <string name="reschedule_skip_still_overdue">Masih terlambat setelah melompat maju</string>
+    <string name="reschedule_skip_target_in_past">Waktu itu sudah lewat</string>
+    <string name="reschedule_skip_not_activated">Tidak dapat diaktifkan</string>
 </resources>

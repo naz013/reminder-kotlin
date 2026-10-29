@@ -1361,4 +1361,28 @@
     <string name="shortcut_quick_add">Szybkie dodawanie</string>
     <string name="shortcut_start_focus">Rozpocznij skupienie</string>
     <string name="shortcut_start_routine">Rozpocznij %1$s</string>
+    <string name="reschedule_all">Przełóż wszystkie</string>
+    <string name="reschedule_action">Przełóż</string>
+    <string name="reschedule_sheet_title">Przełóż na</string>
+    <string name="reschedule_pick_date">Wybierz datę i godzinę</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Przełożone: %d</item>
+        <item quantity="few">Przełożone: %d</item>
+        <item quantity="many">Przełożone: %d</item>
+        <item quantity="other">Przełożone: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Pominięte: %d</item>
+        <item quantity="few">Pominięte: %d</item>
+        <item quantity="many">Pominięte: %d</item>
+        <item quantity="other">Pominięte: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Nic nie zostało przełożone</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Przypomnień lokalizacyjnych i odliczających nie można przełożyć</string>
+    <string name="reschedule_skip_not_found">Przypomnienie już nie istnieje</string>
+    <string name="reschedule_skip_nothing_to_move">Już zaplanowane na przyszłość</string>
+    <string name="reschedule_skip_still_overdue">Nadal zaległe po przeskoczeniu</string>
+    <string name="reschedule_skip_target_in_past">Ta godzina już minęła</string>
+    <string name="reschedule_skip_not_activated">Nie udało się aktywować</string>
 </resources>

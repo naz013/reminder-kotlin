@@ -1351,4 +1351,24 @@
     <string name="shortcut_quick_add">Snabbtillägg</string>
     <string name="shortcut_start_focus">Starta fokus</string>
     <string name="shortcut_start_routine">Starta %1$s</string>
+    <string name="reschedule_all">Flytta alla</string>
+    <string name="reschedule_action">Flytta</string>
+    <string name="reschedule_sheet_title">Flytta till</string>
+    <string name="reschedule_pick_date">Välj datum och tid</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Flyttade: %d</item>
+        <item quantity="other">Flyttade: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Hoppade över: %d</item>
+        <item quantity="other">Hoppade över: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Inget flyttades</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Plats- och nedräkningspåminnelser kan inte flyttas</string>
+    <string name="reschedule_skip_not_found">Påminnelsen finns inte längre</string>
+    <string name="reschedule_skip_nothing_to_move">Redan planerad i framtiden</string>
+    <string name="reschedule_skip_still_overdue">Fortfarande försenad efter att ha hoppat framåt</string>
+    <string name="reschedule_skip_target_in_past">Den tiden har redan passerat</string>
+    <string name="reschedule_skip_not_activated">Kunde inte aktiveras</string>
 </resources>

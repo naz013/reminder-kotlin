@@ -1369,4 +1369,24 @@
     <string name="shortcut_quick_add">Quick add</string>
     <string name="shortcut_start_focus">Start focus</string>
     <string name="shortcut_start_routine">Start %1$s</string>
+    <string name="reschedule_all">Reschedule all</string>
+    <string name="reschedule_action">Reschedule</string>
+    <string name="reschedule_sheet_title">Reschedule to</string>
+    <string name="reschedule_pick_date">Pick date and time</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Moved %d</item>
+        <item quantity="other">Moved %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Skipped %d</item>
+        <item quantity="other">Skipped %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Nothing was moved</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Location and countdown reminders can\'t be moved</string>
+    <string name="reschedule_skip_not_found">Reminder no longer exists</string>
+    <string name="reschedule_skip_nothing_to_move">Already scheduled in the future</string>
+    <string name="reschedule_skip_still_overdue">Still overdue after skipping ahead</string>
+    <string name="reschedule_skip_target_in_past">That time is already in the past</string>
+    <string name="reschedule_skip_not_activated">Could not be activated</string>
 </resources>

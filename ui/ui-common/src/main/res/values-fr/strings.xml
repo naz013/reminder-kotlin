@@ -1357,4 +1357,26 @@
     <string name="shortcut_quick_add">Ajout rapide</string>
     <string name="shortcut_start_focus">Démarrer la concentration</string>
     <string name="shortcut_start_routine">Démarrer %1$s</string>
+    <string name="reschedule_all">Tout reporter</string>
+    <string name="reschedule_action">Reporter</string>
+    <string name="reschedule_sheet_title">Reporter à</string>
+    <string name="reschedule_pick_date">Choisir la date et l\'heure</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Reportés : %d</item>
+        <item quantity="many">Reportés : %d</item>
+        <item quantity="other">Reportés : %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Ignorés : %d</item>
+        <item quantity="many">Ignorés : %d</item>
+        <item quantity="other">Ignorés : %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Rien n\'a été reporté</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Les rappels de lieu et de compte à rebours ne peuvent pas être reportés</string>
+    <string name="reschedule_skip_not_found">Le rappel n\'existe plus</string>
+    <string name="reschedule_skip_nothing_to_move">Déjà prévu dans le futur</string>
+    <string name="reschedule_skip_still_overdue">Toujours en retard après le saut en avant</string>
+    <string name="reschedule_skip_target_in_past">Cette heure est déjà passée</string>
+    <string name="reschedule_skip_not_activated">Impossible à activer</string>
 </resources>

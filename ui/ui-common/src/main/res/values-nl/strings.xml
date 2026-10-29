@@ -1351,4 +1351,24 @@
     <string name="shortcut_quick_add">Snel toevoegen</string>
     <string name="shortcut_start_focus">Focus starten</string>
     <string name="shortcut_start_routine">%1$s starten</string>
+    <string name="reschedule_all">Alles verplaatsen</string>
+    <string name="reschedule_action">Verplaatsen</string>
+    <string name="reschedule_sheet_title">Verplaatsen naar</string>
+    <string name="reschedule_pick_date">Kies datum en tijd</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Verplaatst: %d</item>
+        <item quantity="other">Verplaatst: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Overgeslagen: %d</item>
+        <item quantity="other">Overgeslagen: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Er is niets verplaatst</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Locatie- en aftelherinneringen kunnen niet worden verplaatst</string>
+    <string name="reschedule_skip_not_found">Herinnering bestaat niet meer</string>
+    <string name="reschedule_skip_nothing_to_move">Al gepland in de toekomst</string>
+    <string name="reschedule_skip_still_overdue">Nog steeds te laat na vooruitspringen</string>
+    <string name="reschedule_skip_target_in_past">Dat tijdstip is al voorbij</string>
+    <string name="reschedule_skip_not_activated">Kon niet worden geactiveerd</string>
 </resources>

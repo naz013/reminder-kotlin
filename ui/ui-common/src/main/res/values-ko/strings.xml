@@ -1345,4 +1345,22 @@
     <string name="shortcut_quick_add">빠른 추가</string>
     <string name="shortcut_start_focus">집중 시작</string>
     <string name="shortcut_start_routine">%1$s 시작</string>
+    <string name="reschedule_all">모두 일정 변경</string>
+    <string name="reschedule_action">일정 변경</string>
+    <string name="reschedule_sheet_title">일정 변경 대상</string>
+    <string name="reschedule_pick_date">날짜 및 시간 선택</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="other">이동됨: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="other">건너뜀: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">이동된 항목이 없습니다</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">위치 및 카운트다운 알림은 이동할 수 없습니다</string>
+    <string name="reschedule_skip_not_found">알림이 더 이상 존재하지 않습니다</string>
+    <string name="reschedule_skip_nothing_to_move">이미 미래로 예약되어 있습니다</string>
+    <string name="reschedule_skip_still_overdue">앞으로 건너뛴 후에도 기한이 지났습니다</string>
+    <string name="reschedule_skip_target_in_past">해당 시간은 이미 지났습니다</string>
+    <string name="reschedule_skip_not_activated">활성화할 수 없습니다</string>
 </resources>

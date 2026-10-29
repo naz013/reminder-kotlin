@@ -1357,4 +1357,26 @@
     <string name="shortcut_quick_add">Añadir rápido</string>
     <string name="shortcut_start_focus">Iniciar enfoque</string>
     <string name="shortcut_start_routine">Iniciar %1$s</string>
+    <string name="reschedule_all">Reprogramar todo</string>
+    <string name="reschedule_action">Reprogramar</string>
+    <string name="reschedule_sheet_title">Reprogramar para</string>
+    <string name="reschedule_pick_date">Elegir fecha y hora</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Reprogramados: %d</item>
+        <item quantity="many">Reprogramados: %d</item>
+        <item quantity="other">Reprogramados: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Omitidos: %d</item>
+        <item quantity="many">Omitidos: %d</item>
+        <item quantity="other">Omitidos: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">No se movió nada</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Los recordatorios de ubicación y cuenta atrás no se pueden mover</string>
+    <string name="reschedule_skip_not_found">El recordatorio ya no existe</string>
+    <string name="reschedule_skip_nothing_to_move">Ya está programado a futuro</string>
+    <string name="reschedule_skip_still_overdue">Sigue vencido tras avanzar</string>
+    <string name="reschedule_skip_target_in_past">Esa hora ya pasó</string>
+    <string name="reschedule_skip_not_activated">No se pudo activar</string>
 </resources>

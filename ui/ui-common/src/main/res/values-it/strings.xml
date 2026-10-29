@@ -1357,4 +1357,26 @@
     <string name="shortcut_quick_add">Aggiunta rapida</string>
     <string name="shortcut_start_focus">Avvia concentrazione</string>
     <string name="shortcut_start_routine">Avvia %1$s</string>
+    <string name="reschedule_all">Riprogramma tutto</string>
+    <string name="reschedule_action">Riprogramma</string>
+    <string name="reschedule_sheet_title">Riprogramma a</string>
+    <string name="reschedule_pick_date">Scegli data e ora</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Spostati: %d</item>
+        <item quantity="many">Spostati: %d</item>
+        <item quantity="other">Spostati: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Saltati: %d</item>
+        <item quantity="many">Saltati: %d</item>
+        <item quantity="other">Saltati: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Nulla è stato spostato</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">I promemoria di posizione e conto alla rovescia non possono essere spostati</string>
+    <string name="reschedule_skip_not_found">Il promemoria non esiste più</string>
+    <string name="reschedule_skip_nothing_to_move">Già pianificato nel futuro</string>
+    <string name="reschedule_skip_still_overdue">Ancora scaduto dopo l\'avanzamento</string>
+    <string name="reschedule_skip_target_in_past">Quell\'orario è già passato</string>
+    <string name="reschedule_skip_not_activated">Impossibile attivarlo</string>
 </resources>

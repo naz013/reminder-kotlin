@@ -1349,4 +1349,24 @@
     <string name="shortcut_quick_add">Schnell hinzufügen</string>
     <string name="shortcut_start_focus">Fokus starten</string>
     <string name="shortcut_start_routine">%1$s starten</string>
+    <string name="reschedule_all">Alle verschieben</string>
+    <string name="reschedule_action">Verschieben</string>
+    <string name="reschedule_sheet_title">Verschieben auf</string>
+    <string name="reschedule_pick_date">Datum und Uhrzeit wählen</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Verschoben: %d</item>
+        <item quantity="other">Verschoben: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Übersprungen: %d</item>
+        <item quantity="other">Übersprungen: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Es wurde nichts verschoben</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Standort- und Countdown-Erinnerungen können nicht verschoben werden</string>
+    <string name="reschedule_skip_not_found">Erinnerung existiert nicht mehr</string>
+    <string name="reschedule_skip_nothing_to_move">Bereits für die Zukunft geplant</string>
+    <string name="reschedule_skip_still_overdue">Nach dem Vorspringen immer noch überfällig</string>
+    <string name="reschedule_skip_target_in_past">Dieser Zeitpunkt liegt bereits in der Vergangenheit</string>
+    <string name="reschedule_skip_not_activated">Konnte nicht aktiviert werden</string>
 </resources>

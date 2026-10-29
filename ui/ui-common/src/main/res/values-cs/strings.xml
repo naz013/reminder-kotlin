@@ -1361,4 +1361,28 @@
     <string name="shortcut_quick_add">Rychlé přidání</string>
     <string name="shortcut_start_focus">Začít soustředění</string>
     <string name="shortcut_start_routine">Spustit %1$s</string>
+    <string name="reschedule_all">Přesunout vše</string>
+    <string name="reschedule_action">Přesunout</string>
+    <string name="reschedule_sheet_title">Přesunout na</string>
+    <string name="reschedule_pick_date">Vybrat datum a čas</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Přesunuto: %d</item>
+        <item quantity="few">Přesunuto: %d</item>
+        <item quantity="many">Přesunuto: %d</item>
+        <item quantity="other">Přesunuto: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Přeskočeno: %d</item>
+        <item quantity="few">Přeskočeno: %d</item>
+        <item quantity="many">Přeskočeno: %d</item>
+        <item quantity="other">Přeskočeno: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Nic nebylo přesunuto</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Připomínky podle polohy a odpočtu nelze přesunout</string>
+    <string name="reschedule_skip_not_found">Připomínka již neexistuje</string>
+    <string name="reschedule_skip_nothing_to_move">Již naplánováno do budoucna</string>
+    <string name="reschedule_skip_still_overdue">Po posunu vpřed stále po termínu</string>
+    <string name="reschedule_skip_target_in_past">Tento čas již minul</string>
+    <string name="reschedule_skip_not_activated">Nepodařilo se aktivovat</string>
 </resources>

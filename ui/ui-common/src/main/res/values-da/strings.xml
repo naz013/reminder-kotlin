@@ -1351,4 +1351,24 @@
     <string name="shortcut_quick_add">Hurtig tilføjelse</string>
     <string name="shortcut_start_focus">Start fokus</string>
     <string name="shortcut_start_routine">Start %1$s</string>
+    <string name="reschedule_all">Flyt alle</string>
+    <string name="reschedule_action">Flyt</string>
+    <string name="reschedule_sheet_title">Flyt til</string>
+    <string name="reschedule_pick_date">Vælg dato og tid</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Flyttet: %d</item>
+        <item quantity="other">Flyttet: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Sprunget over: %d</item>
+        <item quantity="other">Sprunget over: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Intet blev flyttet</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Lokations- og nedtællingspåmindelser kan ikke flyttes</string>
+    <string name="reschedule_skip_not_found">Påmindelsen findes ikke længere</string>
+    <string name="reschedule_skip_nothing_to_move">Allerede planlagt i fremtiden</string>
+    <string name="reschedule_skip_still_overdue">Stadig forfalden efter spring frem</string>
+    <string name="reschedule_skip_target_in_past">Det tidspunkt er allerede passeret</string>
+    <string name="reschedule_skip_not_activated">Kunne ikke aktiveres</string>
 </resources>

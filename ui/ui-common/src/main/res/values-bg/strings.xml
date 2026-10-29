@@ -1353,4 +1353,24 @@
     <string name="shortcut_quick_add">Бързо добавяне</string>
     <string name="shortcut_start_focus">Започни фокус</string>
     <string name="shortcut_start_routine">Старт на %1$s</string>
+    <string name="reschedule_all">Пренасрочи всички</string>
+    <string name="reschedule_action">Пренасрочи</string>
+    <string name="reschedule_sheet_title">Пренасрочи за</string>
+    <string name="reschedule_pick_date">Избери дата и час</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Преместени: %d</item>
+        <item quantity="other">Преместени: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Пропуснати: %d</item>
+        <item quantity="other">Пропуснати: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Нищо не беше преместено</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Напомнянията по местоположение и обратно броене не могат да се местят</string>
+    <string name="reschedule_skip_not_found">Напомнянето вече не съществува</string>
+    <string name="reschedule_skip_nothing_to_move">Вече е планирано за бъдещето</string>
+    <string name="reschedule_skip_still_overdue">Все още просрочено след прескачане напред</string>
+    <string name="reschedule_skip_target_in_past">Това време вече е минало</string>
+    <string name="reschedule_skip_not_activated">Не можа да се активира</string>
 </resources>

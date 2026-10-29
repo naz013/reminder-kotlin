@@ -1357,4 +1357,26 @@
     <string name="shortcut_quick_add">Adăugare rapidă</string>
     <string name="shortcut_start_focus">Începe concentrarea</string>
     <string name="shortcut_start_routine">Începe %1$s</string>
+    <string name="reschedule_all">Reprogramează tot</string>
+    <string name="reschedule_action">Reprogramează</string>
+    <string name="reschedule_sheet_title">Reprogramează la</string>
+    <string name="reschedule_pick_date">Alege data și ora</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Mutate: %d</item>
+        <item quantity="few">Mutate: %d</item>
+        <item quantity="other">Mutate: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Omise: %d</item>
+        <item quantity="few">Omise: %d</item>
+        <item quantity="other">Omise: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Nimic nu a fost mutat</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Mementourile de locație și de numărătoare inversă nu pot fi mutate</string>
+    <string name="reschedule_skip_not_found">Mementoul nu mai există</string>
+    <string name="reschedule_skip_nothing_to_move">Deja programat în viitor</string>
+    <string name="reschedule_skip_still_overdue">Încă întârziat după avansare</string>
+    <string name="reschedule_skip_target_in_past">Ora respectivă a trecut deja</string>
+    <string name="reschedule_skip_not_activated">Nu a putut fi activat</string>
 </resources>

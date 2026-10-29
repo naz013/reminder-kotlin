@@ -1343,4 +1343,22 @@
     <string name="shortcut_quick_add">เพิ่มด่วน</string>
     <string name="shortcut_start_focus">เริ่มโฟกัส</string>
     <string name="shortcut_start_routine">เริ่ม %1$s</string>
+    <string name="reschedule_all">เลื่อนทั้งหมด</string>
+    <string name="reschedule_action">เลื่อนเวลา</string>
+    <string name="reschedule_sheet_title">เลื่อนไปเป็น</string>
+    <string name="reschedule_pick_date">เลือกวันที่และเวลา</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="other">เลื่อนแล้ว: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="other">ข้าม: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">ไม่มีรายการที่ถูกเลื่อน</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">ไม่สามารถเลื่อนการแจ้งเตือนตามสถานที่และนับถอยหลังได้</string>
+    <string name="reschedule_skip_not_found">ไม่มีการแจ้งเตือนนี้แล้ว</string>
+    <string name="reschedule_skip_nothing_to_move">ตั้งเวลาไว้ในอนาคตแล้ว</string>
+    <string name="reschedule_skip_still_overdue">ยังเลยกำหนดหลังข้ามไปข้างหน้า</string>
+    <string name="reschedule_skip_target_in_past">เวลานั้นผ่านไปแล้ว</string>
+    <string name="reschedule_skip_not_activated">ไม่สามารถเปิดใช้งานได้</string>
 </resources>

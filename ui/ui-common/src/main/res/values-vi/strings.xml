@@ -1347,4 +1347,22 @@
     <string name="shortcut_quick_add">Thêm nhanh</string>
     <string name="shortcut_start_focus">Bắt đầu tập trung</string>
     <string name="shortcut_start_routine">Bắt đầu %1$s</string>
+    <string name="reschedule_all">Dời lịch tất cả</string>
+    <string name="reschedule_action">Dời lịch</string>
+    <string name="reschedule_sheet_title">Dời lịch sang</string>
+    <string name="reschedule_pick_date">Chọn ngày và giờ</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="other">Đã dời: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="other">Đã bỏ qua: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Không có gì được dời</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Không thể dời lời nhắc theo vị trí và đếm ngược</string>
+    <string name="reschedule_skip_not_found">Lời nhắc không còn tồn tại</string>
+    <string name="reschedule_skip_nothing_to_move">Đã được lên lịch trong tương lai</string>
+    <string name="reschedule_skip_still_overdue">Vẫn quá hạn sau khi nhảy tiếp</string>
+    <string name="reschedule_skip_target_in_past">Thời gian đó đã qua</string>
+    <string name="reschedule_skip_not_activated">Không thể kích hoạt</string>
 </resources>

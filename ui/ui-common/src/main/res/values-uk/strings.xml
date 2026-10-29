@@ -1361,4 +1361,28 @@
     <string name="shortcut_quick_add">Швидке додавання</string>
     <string name="shortcut_start_focus">Почати фокус</string>
     <string name="shortcut_start_routine">Почати %1$s</string>
+    <string name="reschedule_all">Перенести всі</string>
+    <string name="reschedule_action">Перенести</string>
+    <string name="reschedule_sheet_title">Перенести на</string>
+    <string name="reschedule_pick_date">Обрати дату й час</string>
+    <plurals name="reschedule_summary_moved">
+        <item quantity="one">Перенесено: %d</item>
+        <item quantity="few">Перенесено: %d</item>
+        <item quantity="many">Перенесено: %d</item>
+        <item quantity="other">Перенесено: %d</item>
+    </plurals>
+    <plurals name="reschedule_summary_skipped">
+        <item quantity="one">Пропущено: %d</item>
+        <item quantity="few">Пропущено: %d</item>
+        <item quantity="many">Пропущено: %d</item>
+        <item quantity="other">Пропущено: %d</item>
+    </plurals>
+    <string name="reschedule_summary_nothing_moved">Нічого не перенесено</string>
+    <string name="reschedule_summary_with_reason">%1$s (%2$s)</string>
+    <string name="reschedule_skip_unsupported_type">Нагадування за місцем і зворотного відліку не можна переносити</string>
+    <string name="reschedule_skip_not_found">Нагадування більше не існує</string>
+    <string name="reschedule_skip_nothing_to_move">Вже заплановано на майбутнє</string>
+    <string name="reschedule_skip_still_overdue">Усе ще прострочено після пропуску вперед</string>
+    <string name="reschedule_skip_target_in_past">Цей час уже минув</string>
+    <string name="reschedule_skip_not_activated">Не вдалося активувати</string>
 </resources>
