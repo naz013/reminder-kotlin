@@ -143,7 +143,7 @@ class RescheduleRemindersUseCaseTest {
       assertEquals(1, summary.moved)
       coVerify(exactly = 1) { activateReminderUseCase(any(), any(), any()) }
       assertEquals(LocalDateTime.of(2025, 3, 11, 9, 0), activated.captured.schedule.eventDateTime)
-      assertEquals(1L, activated.captured.eventCount)
+      assertEquals(0L, activated.captured.eventCount)
     }
 
   @Test

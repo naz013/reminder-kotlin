@@ -70,7 +70,7 @@ class RescheduleRemindersUseCase(
     val newUtc = dateTimeManager.reminderLocalToUtc(reminder, newLocal)
     if (!newLocal.isAfter(now)) return SkipReason.TARGET_IN_PAST
     if (newUtc == reminder.schedule.eventDateTime) return SkipReason.NOTHING_TO_MOVE
-    return activateAt(reminder, newUtc, countEvent = false)
+    return activateAt(reminder, newUtc)
   }
 
   private fun resolveTarget(
@@ -111,7 +111,7 @@ class RescheduleRemindersUseCase(
     repeat(MAX_SKIPS) {
       val next = strategy.calculateNextOccurrence(reminder, from) ?: return SkipReason.NOTHING_TO_MOVE
       if (next.isAfter(now)) {
-        return activateAt(reminder, dateTimeManager.reminderLocalToUtc(reminder, next), countEvent = true)
+        return activateAt(reminder, dateTimeManager.reminderLocalToUtc(reminder, next))
       }
       from = next.plusSeconds(1)
     }
@@ -121,12 +121,8 @@ class RescheduleRemindersUseCase(
   private suspend fun activateAt(
     reminder: ReminderV2,
     eventUtc: LocalDateTime,
-    countEvent: Boolean,
   ): SkipReason? {
-    val updated = reminder.copy(
-      schedule = reminder.schedule.copy(eventDateTime = eventUtc),
-      eventCount = if (countEvent) reminder.eventCount + 1 else reminder.eventCount,
-    )
+    val updated = reminder.copy(schedule = reminder.schedule.copy(eventDateTime = eventUtc))
     val result = activateReminderUseCase(updated)
     return if (result.isActive && result.schedule.eventDateTime == eventUtc) null else SkipReason.NOT_ACTIVATED
   }
