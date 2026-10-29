@@ -10,6 +10,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
@@ -27,8 +28,11 @@ import com.github.naz013.group.GroupsNavKey
 import com.elementary.tasks.navigation.nav3.AppNavGraph
 import com.github.naz013.feature.note.NotesNavKey
 import com.github.naz013.feature.places.PlacesNavKey
+import com.github.naz013.feature.pomodoro.PomodoroNavKey
 import com.github.naz013.feature.reminder.build.BuildReminderNavKey
 import com.github.naz013.feature.reminder.preview.ReminderPreviewNavKey
+import com.github.naz013.feature.reminder.quickadd.QuickAddNavKey
+import com.github.naz013.feature.routine.RoutineNavKey
 import com.github.naz013.feature.settings.SettingsNavKey
 import com.github.naz013.feature.settings.export.work.BackupSettingsTask
 import com.elementary.tasks.splash.ShortcutDestination
@@ -49,18 +53,15 @@ import com.github.naz013.navigation.ViewGoogleTaskScreen
 import com.github.naz013.navigation.ViewHabitScreen
 import com.github.naz013.navigation.ViewNoteScreen
 import com.github.naz013.navigation.ViewReminderScreen
+import com.github.naz013.platform.BuildInfo
 import com.github.naz013.ui.common.compose.BaseAuthActivity
 import com.github.naz013.ui.common.compose.composeView
 import com.github.naz013.ui.common.compose.foundation.InAppAlertBanner
+import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.workapi.NetworkRequirement
 import com.github.naz013.workapi.WorkRequest
 import com.github.naz013.workapi.WorkScheduler
-import com.github.naz013.feature.pomodoro.PomodoroNavKey
-import com.github.naz013.feature.reminder.quickadd.QuickAddNavKey
-import com.github.naz013.feature.routine.RoutineNavKey
-import com.github.naz013.platform.BuildInfo
-import com.github.naz013.ui.common.icon.DrawableCatalog
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -72,6 +73,10 @@ class BottomNavActivity : BaseAuthActivity() {
   private val inAppAlertViewModel by viewModel<InAppAlertViewModel>()
   private val shortcutsViewModel by viewModel<AppShortcutsViewModel>()
   private val buildInfo by inject<BuildInfo>()
+
+  private val shortcutRoutineId: String? by lazy {
+    ShortcutDestination.getRoutineId(intent.extras)
+  }
 
   private val adsProvider = AdsProvider()
 
@@ -88,6 +93,9 @@ class BottomNavActivity : BaseAuthActivity() {
     composeView {
       val initState by initViewModel.state.collectAsStateWithLifecycle()
       val readyState = initState as? BottomNavInitState.Ready
+      val routineExists by produceState<Boolean?>(initialValue = if (shortcutRoutineId == null) true else null) {
+        shortcutRoutineId?.let { value = shortcutsViewModel.isRoutineKnown(it) }
+      }
 
       if (readyState?.requiresLogin == true) {
         LaunchedEffect(Unit) {
@@ -98,14 +106,14 @@ class BottomNavActivity : BaseAuthActivity() {
 
       // Keeps the animated splash on screen through Loading and the brief requiresLogin ->
       // finish() window, then crossfades into AppNavGraph once home is actually ready to show.
-      Crossfade(targetState = readyState != null && !readyState.requiresLogin, label = "bottomNavSplash") { showHome ->
+      Crossfade(targetState = readyState != null && !readyState.requiresLogin && routineExists != null, label = "bottomNavSplash") { showHome ->
         if (showHome) {
           LaunchedEffect(Unit) {
             enableShortcuts()
           }
           Box {
             AppNavGraph(
-              initialKeys = resolveInitialNavKeys(),
+              initialKeys = resolveInitialNavKeys(routineExists == true),
               shouldShowOnboarding = readyState?.shouldShowOnboarding == true,
             )
             val alertState by inAppAlertViewModel.state.collectAsStateWithLifecycle()
@@ -186,7 +194,7 @@ class BottomNavActivity : BaseAuthActivity() {
    * [AppNavGraph]'s initial backstack. Every [com.github.naz013.navigation.DeepLinkDestination] and [com.elementary.tasks.splash.ShortcutDestination] now
    * resolves to a typed `NavKey` here - there is no longer a legacy Fragment graph to fall back to.
    */
-  private fun resolveInitialNavKeys(): List<NavKey> {
+  private fun resolveInitialNavKeys(routineExists: Boolean): List<NavKey> {
     if (intent.action == Intent.ACTION_VIEW) {
       intent.setExtrasClassLoader(DeepLinkDestination::class.java.classLoader)
       val deepLinkDestination =
@@ -285,21 +293,12 @@ class BottomNavActivity : BaseAuthActivity() {
         else -> return emptyList()
       }
     } else if (ShortcutDestination.hasShortcut(intent.extras)) {
-      when (ShortcutDestination.getShortcut(intent.extras)) {
-        ShortcutDestination.Shortcut.Note -> return listOf(NotesNavKey.List, NotesNavKey.Edit())
-        ShortcutDestination.Shortcut.GoogleTask -> return listOf(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit())
-        ShortcutDestination.Shortcut.Reminder -> return listOf(BuildReminderNavKey.Main())
-        ShortcutDestination.Shortcut.QuickAdd -> return listOf(QuickAddNavKey.Sheet)
-        ShortcutDestination.Shortcut.StartFocus ->
-          return listOf(if (buildInfo.isPro) PomodoroNavKey.Timer() else SettingsNavKey.ProVersion)
-        ShortcutDestination.Shortcut.Routine -> {
-          val routineId = ShortcutDestination.getRoutineId(intent.extras)
-          if (routineId != null && shortcutsViewModel.isRoutineKnown(routineId)) {
-            return listOf(RoutineNavKey.List, RoutineNavKey.Execute(routineId))
-          }
-        }
-        null -> Unit
-      }
+      return ShortcutRouteResolver.resolve(
+        shortcut = ShortcutDestination.getShortcut(intent.extras),
+        routineId = shortcutRoutineId,
+        isPro = buildInfo.isPro,
+        routineExists = routineExists,
+      )
     }
     return emptyList()
   }
