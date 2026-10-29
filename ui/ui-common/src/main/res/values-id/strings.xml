@@ -1344,4 +1344,7 @@
     <plurals name="x_year_anniversary">
         <item quantity="other">Peringatan %d tahun</item>
     </plurals>
+    <string name="shortcut_quick_add">Tambah cepat</string>
+    <string name="shortcut_start_focus">Mulai fokus</string>
+    <string name="shortcut_start_routine">Mulai %1$s</string>
 </resources>

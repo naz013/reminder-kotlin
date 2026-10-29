@@ -1358,4 +1358,7 @@
         <item quantity="many">Річниця: %d років</item>
         <item quantity="other">Річниця: %d року</item>
     </plurals>
+    <string name="shortcut_quick_add">Швидке додавання</string>
+    <string name="shortcut_start_focus">Почати фокус</string>
+    <string name="shortcut_start_routine">Почати %1$s</string>
 </resources>

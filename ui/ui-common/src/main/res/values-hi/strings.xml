@@ -1346,4 +1346,7 @@
         <item quantity="one">%d साल की सालगिरह</item>
         <item quantity="other">%d साल की सालगिरह</item>
     </plurals>
+    <string name="shortcut_quick_add">त्वरित जोड़ें</string>
+    <string name="shortcut_start_focus">फ़ोकस शुरू करें</string>
+    <string name="shortcut_start_routine">%1$s शुरू करें</string>
 </resources>

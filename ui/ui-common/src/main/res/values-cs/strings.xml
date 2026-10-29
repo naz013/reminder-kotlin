@@ -1358,4 +1358,7 @@
         <item quantity="many">%d. výročí</item>
         <item quantity="other">%d. výročí</item>
     </plurals>
+    <string name="shortcut_quick_add">Rychlé přidání</string>
+    <string name="shortcut_start_focus">Začít soustředění</string>
+    <string name="shortcut_start_routine">Spustit %1$s</string>
 </resources>

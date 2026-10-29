@@ -1350,4 +1350,7 @@
         <item quantity="one">%d. yıl dönümü</item>
         <item quantity="other">%d. yıl dönümü</item>
     </plurals>
+    <string name="shortcut_quick_add">Hızlı ekle</string>
+    <string name="shortcut_start_focus">Odaklanmayı başlat</string>
+    <string name="shortcut_start_routine">%1$s başlat</string>
 </resources>

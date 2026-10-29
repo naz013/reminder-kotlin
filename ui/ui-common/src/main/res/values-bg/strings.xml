@@ -1350,4 +1350,7 @@
         <item quantity="one">%d-годишнина</item>
         <item quantity="other">%d-годишнина</item>
     </plurals>
+    <string name="shortcut_quick_add">Бързо добавяне</string>
+    <string name="shortcut_start_focus">Започни фокус</string>
+    <string name="shortcut_start_routine">Старт на %1$s</string>
 </resources>

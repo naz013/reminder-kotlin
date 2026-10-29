@@ -21,6 +21,7 @@ import com.elementary.tasks.core.services.event.BirthdayPermanentEventTask
 import com.elementary.tasks.core.utils.io.CacheUtil
 import com.elementary.tasks.core.utils.params.Prefs
 import com.elementary.tasks.core.utils.params.RemotePrefs
+import com.elementary.tasks.navigation.AppShortcutsViewModel
 import com.elementary.tasks.navigation.BottomNavInitViewModel
 import com.elementary.tasks.navigation.InAppAlertViewModel
 import com.github.naz013.cloudapi.CloudKeysStorage
@@ -51,6 +52,7 @@ import org.koin.dsl.module
 val viewModelModule = module {
   viewModelOf(::BottomNavInitViewModel)
   viewModelOf(::InAppAlertViewModel)
+  viewModelOf(::AppShortcutsViewModel)
 }
 
 val storageModule = module {

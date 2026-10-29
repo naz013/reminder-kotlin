@@ -10,6 +10,15 @@ object DrawableCatalog {
   val RocketWhatsNew = R.drawable.ic_rocket_whats_new
   val QsTileIcon = R.drawable.qs_tile_icon
 
+  object Shortcut {
+    val AddReminder = R.drawable.add_reminder_shortcut
+    val AddNote = R.drawable.add_note_shortcut
+    val AddGoogleTask = R.drawable.add_google_shortcut
+    val QuickAdd = R.drawable.quick_add_shortcut
+    val StartFocus = R.drawable.start_focus_shortcut
+    val Routine = R.drawable.routine_shortcut
+  }
+
   object Builder {
     val AddApp = R.drawable.ic_builder_add_app
     val AddCall = R.drawable.ic_builder_add_call

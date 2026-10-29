@@ -1348,4 +1348,7 @@
         <item quantity="one">%d-års jubilæum</item>
         <item quantity="other">%d-års jubilæum</item>
     </plurals>
+    <string name="shortcut_quick_add">Hurtig tilføjelse</string>
+    <string name="shortcut_start_focus">Start fokus</string>
+    <string name="shortcut_start_routine">Start %1$s</string>
 </resources>

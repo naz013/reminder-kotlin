@@ -1364,4 +1364,7 @@
         <item quantity="many">ذكرى سنوية: %d سنة</item>
         <item quantity="other">ذكرى سنوية: %d سنة</item>
     </plurals>
+    <string name="shortcut_quick_add">إضافة سريعة</string>
+    <string name="shortcut_start_focus">بدء التركيز</string>
+    <string name="shortcut_start_routine">بدء %1$s</string>
 </resources>

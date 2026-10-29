@@ -1357,4 +1357,7 @@
         <item quantity="many">Годовщина: %d лет</item>
         <item quantity="other">Годовщина: %d года</item>
     </plurals>
+    <string name="shortcut_quick_add">Быстрое добавление</string>
+    <string name="shortcut_start_focus">Начать фокус</string>
+    <string name="shortcut_start_routine">Начать %1$s</string>
 </resources>

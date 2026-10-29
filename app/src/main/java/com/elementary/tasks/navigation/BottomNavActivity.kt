@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavKey
 import com.elementary.tasks.AdsProvider
@@ -55,6 +56,12 @@ import com.github.naz013.ui.common.login.LoginApi
 import com.github.naz013.workapi.NetworkRequirement
 import com.github.naz013.workapi.WorkRequest
 import com.github.naz013.workapi.WorkScheduler
+import com.github.naz013.feature.pomodoro.PomodoroNavKey
+import com.github.naz013.feature.reminder.quickadd.QuickAddNavKey
+import com.github.naz013.feature.routine.RoutineNavKey
+import com.github.naz013.platform.BuildInfo
+import com.github.naz013.ui.common.icon.DrawableCatalog
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -63,6 +70,8 @@ class BottomNavActivity : BaseAuthActivity() {
   private val contextSwitcher by inject<ContextSwitcher>()
   private val initViewModel by viewModel<BottomNavInitViewModel>()
   private val inAppAlertViewModel by viewModel<InAppAlertViewModel>()
+  private val shortcutsViewModel by viewModel<AppShortcutsViewModel>()
+  private val buildInfo by inject<BuildInfo>()
 
   private val adsProvider = AdsProvider()
 
@@ -115,72 +124,62 @@ class BottomNavActivity : BaseAuthActivity() {
   }
 
   private fun enableShortcuts() {
-    val shortcutManager = getSystemService(ShortcutManager::class.java)
-    if (shortcutManager != null) {
-      val shortcut =
-        run {
-          val bundle =
-            ShortcutDestination.createBundle(
-              shortcut = ShortcutDestination.Shortcut.Reminder,
-            )
-          ShortcutInfo
-            .Builder(this, "id.reminder")
-            .setShortLabel(getString(R.string.add_reminder_menu))
-            .setLongLabel(getString(R.string.add_reminder_menu))
-            .setIcon(Icon.createWithResource(this, R.drawable.add_reminder_shortcut))
-            .setIntents(
-              arrayOf(
-                Intent(Intent.ACTION_MAIN)
-                  .setClass(this, BottomNavActivity::class.java)
-                  .putExtras(bundle),
-              ),
-            ).build()
+    val shortcutManager = getSystemService(ShortcutManager::class.java) ?: return
+    lifecycleScope.launch {
+      shortcutsViewModel
+        .observeShortcuts(shortcutManager.maxShortcutCountPerActivity)
+        .collect { specs ->
+          runCatching {
+            shortcutManager.dynamicShortcuts = specs.map { createShortcutInfo(it) }
+          }.onFailure { Logger.e(TAG, "Failed to set shortcuts", it) }
         }
-
-      val shortcut2 =
-        run {
-          val bundle =
-            ShortcutDestination.createBundle(
-              shortcut = ShortcutDestination.Shortcut.Note,
-            )
-          ShortcutInfo
-            .Builder(this, "id.note")
-            .setShortLabel(getString(R.string.add_note))
-            .setLongLabel(getString(R.string.add_note))
-            .setIcon(Icon.createWithResource(this, R.drawable.add_note_shortcut))
-            .setIntents(
-              arrayOf(
-                Intent(Intent.ACTION_MAIN)
-                  .setClass(this, BottomNavActivity::class.java)
-                  .putExtras(bundle),
-              ),
-            ).build()
-        }
-
-      if (initViewModel.isGoogleTasksEnabled) {
-        val bundle =
-          ShortcutDestination.createBundle(
-            shortcut = ShortcutDestination.Shortcut.GoogleTask,
-          )
-        val shortcut3 =
-          ShortcutInfo
-            .Builder(this, "id.google.tasks")
-            .setShortLabel(getString(R.string.add_google_task))
-            .setLongLabel(getString(R.string.add_google_task))
-            .setIcon(Icon.createWithResource(this, R.drawable.add_google_shortcut))
-            .setIntents(
-              arrayOf(
-                Intent(Intent.ACTION_MAIN)
-                  .setClass(this, BottomNavActivity::class.java)
-                  .putExtras(bundle),
-              ),
-            ).build()
-        shortcutManager.dynamicShortcuts = listOf(shortcut, shortcut2, shortcut3)
-      } else {
-        shortcutManager.dynamicShortcuts = listOf(shortcut, shortcut2)
-      }
     }
   }
+
+  private fun createShortcutInfo(spec: AppShortcutSpec): ShortcutInfo {
+    val bundle =
+      if (spec.routineId != null) {
+        ShortcutDestination.createRoutineBundle(spec.routineId)
+      } else {
+        ShortcutDestination.createBundle(shortcut = spec.type)
+      }
+    val (shortLabel, longLabel) = shortcutLabels(spec)
+    return ShortcutInfo
+      .Builder(this, spec.id)
+      .setShortLabel(shortLabel)
+      .setLongLabel(longLabel)
+      .setIcon(Icon.createWithResource(this, shortcutIcon(spec.type)))
+      .setIntents(
+        arrayOf(
+          Intent(Intent.ACTION_MAIN)
+            .setClass(this, BottomNavActivity::class.java)
+            .putExtras(bundle),
+        ),
+      ).build()
+  }
+
+  private fun shortcutLabels(spec: AppShortcutSpec): Pair<String, String> =
+    when (spec.type) {
+      ShortcutDestination.Shortcut.Reminder -> getString(R.string.add_reminder_menu).let { it to it }
+      ShortcutDestination.Shortcut.Note -> getString(R.string.add_note).let { it to it }
+      ShortcutDestination.Shortcut.GoogleTask -> getString(R.string.add_google_task).let { it to it }
+      ShortcutDestination.Shortcut.QuickAdd -> getString(R.string.shortcut_quick_add).let { it to it }
+      ShortcutDestination.Shortcut.StartFocus -> getString(R.string.shortcut_start_focus).let { it to it }
+      ShortcutDestination.Shortcut.Routine -> {
+        val title = spec.routineTitle.orEmpty()
+        title to getString(R.string.shortcut_start_routine, title)
+      }
+    }
+
+  private fun shortcutIcon(type: ShortcutDestination.Shortcut): Int =
+    when (type) {
+      ShortcutDestination.Shortcut.Reminder -> DrawableCatalog.Shortcut.AddReminder
+      ShortcutDestination.Shortcut.Note -> DrawableCatalog.Shortcut.AddNote
+      ShortcutDestination.Shortcut.GoogleTask -> DrawableCatalog.Shortcut.AddGoogleTask
+      ShortcutDestination.Shortcut.QuickAdd -> DrawableCatalog.Shortcut.QuickAdd
+      ShortcutDestination.Shortcut.StartFocus -> DrawableCatalog.Shortcut.StartFocus
+      ShortcutDestination.Shortcut.Routine -> DrawableCatalog.Shortcut.Routine
+    }
 
   /**
    * Resolves an incoming deep link / app shortcut to typed Nav3 keys, seeded straight into
@@ -290,7 +289,16 @@ class BottomNavActivity : BaseAuthActivity() {
         ShortcutDestination.Shortcut.Note -> return listOf(NotesNavKey.List, NotesNavKey.Edit())
         ShortcutDestination.Shortcut.GoogleTask -> return listOf(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit())
         ShortcutDestination.Shortcut.Reminder -> return listOf(BuildReminderNavKey.Main())
-        else -> Unit
+        ShortcutDestination.Shortcut.QuickAdd -> return listOf(QuickAddNavKey.Sheet)
+        ShortcutDestination.Shortcut.StartFocus ->
+          return listOf(if (buildInfo.isPro) PomodoroNavKey.Timer() else SettingsNavKey.ProVersion)
+        ShortcutDestination.Shortcut.Routine -> {
+          val routineId = ShortcutDestination.getRoutineId(intent.extras)
+          if (routineId != null && shortcutsViewModel.isRoutineKnown(routineId)) {
+            return listOf(RoutineNavKey.List, RoutineNavKey.Execute(routineId))
+          }
+        }
+        null -> Unit
       }
     }
     return emptyList()

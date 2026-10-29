@@ -1358,4 +1358,7 @@
         <item quantity="many">Rocznica: %d lat</item>
         <item quantity="other">Rocznica: %d roku</item>
     </plurals>
+    <string name="shortcut_quick_add">Szybkie dodawanie</string>
+    <string name="shortcut_start_focus">Rozpocznij skupienie</string>
+    <string name="shortcut_start_routine">Rozpocznij %1$s</string>
 </resources>

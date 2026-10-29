@@ -1354,4 +1354,7 @@
         <item quantity="many">Aniversario de %d años</item>
         <item quantity="other">Aniversario de %d años</item>
     </plurals>
+    <string name="shortcut_quick_add">Añadir rápido</string>
+    <string name="shortcut_start_focus">Iniciar enfoque</string>
+    <string name="shortcut_start_routine">Iniciar %1$s</string>
 </resources>

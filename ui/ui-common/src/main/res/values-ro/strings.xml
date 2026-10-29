@@ -1354,4 +1354,7 @@
         <item quantity="few">Aniversare de %d ani</item>
         <item quantity="other">Aniversare de %d de ani</item>
     </plurals>
+    <string name="shortcut_quick_add">Adăugare rapidă</string>
+    <string name="shortcut_start_focus">Începe concentrarea</string>
+    <string name="shortcut_start_routine">Începe %1$s</string>
 </resources>

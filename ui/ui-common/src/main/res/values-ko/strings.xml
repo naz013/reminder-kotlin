@@ -1342,4 +1342,7 @@
     <plurals name="x_year_anniversary">
         <item quantity="other">%d주년</item>
     </plurals>
+    <string name="shortcut_quick_add">빠른 추가</string>
+    <string name="shortcut_start_focus">집중 시작</string>
+    <string name="shortcut_start_routine">%1$s 시작</string>
 </resources>

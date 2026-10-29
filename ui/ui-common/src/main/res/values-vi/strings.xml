@@ -1344,4 +1344,7 @@
     <plurals name="x_year_anniversary">
         <item quantity="other">Kỷ niệm %d năm</item>
     </plurals>
+    <string name="shortcut_quick_add">Thêm nhanh</string>
+    <string name="shortcut_start_focus">Bắt đầu tập trung</string>
+    <string name="shortcut_start_routine">Bắt đầu %1$s</string>
 </resources>
