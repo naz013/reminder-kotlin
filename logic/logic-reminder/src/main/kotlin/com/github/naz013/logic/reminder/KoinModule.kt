@@ -19,6 +19,7 @@ import com.github.naz013.logic.reminder.usecase.HandleZoneChangeUseCase
 import com.github.naz013.logic.reminder.usecase.MoveReminderToArchiveUseCase
 import com.github.naz013.logic.reminder.usecase.RescheduleRemindersUseCase
 import com.github.naz013.logic.reminder.usecase.ResolveWaitingTitlesUseCase
+import com.github.naz013.logic.reminder.usecase.RestoreReminderStatesUseCase
 import com.github.naz013.logic.reminder.usecase.PauseReminderUseCase
 import com.github.naz013.logic.reminder.usecase.ResumeReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SaveOneTimeReminderUseCaseImpl
@@ -77,6 +78,7 @@ val logicReminderModule = module {
   factoryOf(::CompleteReminderUseCase)
   factoryOf(::SkipReminderUseCase)
   factoryOf(::RescheduleRemindersUseCase)
+  factoryOf(::RestoreReminderStatesUseCase)
   factoryOf(::ToggleReminderStateUseCase)
   factoryOf(::TogglePinnedReminderUseCase)
   factoryOf(::SyncReminderToCloudUseCase)
