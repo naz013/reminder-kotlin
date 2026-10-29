@@ -1,6 +1,7 @@
 package com.github.naz013.feature.birthday.create
 
 import android.graphics.Bitmap
+import com.github.naz013.domain.BirthdayEventType
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.tag.TagChipState
 import org.threeten.bp.LocalDate
@@ -12,6 +13,8 @@ internal data class EditBirthdayState(
   val nameError: Boolean = false,
   val dateText: String = "",
   val ignoreYear: Boolean = false,
+  val eventType: BirthdayEventType = BirthdayEventType.BIRTHDAY,
+  val customLabel: String = "",
   val number: String = "",
   val contactName: String? = null,
   val contactPhoto: Bitmap? = null,

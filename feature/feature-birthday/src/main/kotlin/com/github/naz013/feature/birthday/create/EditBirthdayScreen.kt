@@ -3,6 +3,8 @@ package com.github.naz013.feature.birthday.create
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +18,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -29,11 +32,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.naz013.domain.BirthdayEventType
 import com.github.naz013.ui.common.R
 import com.github.naz013.ui.common.compose.AppIcons
 import com.github.naz013.ui.common.compose.AppTheme
@@ -44,6 +49,8 @@ import com.github.naz013.ui.common.compose.foundation.component.FormItem
 import com.github.naz013.ui.common.compose.foundation.component.FormSwitchItem
 import com.github.naz013.ui.common.compose.foundation.component.PhoneNumberVisualTransformation
 import com.github.naz013.ui.common.compose.foundation.component.SettingsSectionHeader
+import com.github.naz013.ui.common.datetime.iconRes
+import com.github.naz013.ui.common.datetime.labelRes
 import com.github.naz013.ui.tag.TagChipPicker
 import com.github.naz013.ui.tag.TagChipState
 
@@ -59,6 +66,8 @@ internal fun EditBirthdayScreen(
   onSaveClick: () -> Unit,
   onDeleteMenuClick: () -> Unit,
   onNameChange: (String) -> Unit,
+  onEventTypeChange: (BirthdayEventType) -> Unit,
+  onCustomLabelChange: (String) -> Unit,
   onYearCheckChanged: (Boolean) -> Unit,
   onDateFieldClick: () -> Unit,
   onNumberChange: (String) -> Unit,
@@ -126,6 +135,28 @@ internal fun EditBirthdayScreen(
         enabled = !state.isLoading,
         modifier = Modifier.fillMaxWidth(),
       )
+
+      EventTypeSelector(
+        selected = state.eventType,
+        enabled = !state.isLoading,
+        onSelected = onEventTypeChange,
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(top = 16.dp),
+      )
+
+      if (state.eventType == BirthdayEventType.OTHER) {
+        OutlinedTextField(
+          value = state.customLabel,
+          onValueChange = onCustomLabelChange,
+          label = { Text(stringResource(R.string.birthday_event_custom_label)) },
+          singleLine = true,
+          enabled = !state.isLoading,
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp),
+        )
+      }
 
       Card(
         modifier = Modifier
@@ -245,6 +276,35 @@ internal fun EditBirthdayScreen(
   }
 }
 
+@Composable
+private fun EventTypeSelector(
+  selected: BirthdayEventType,
+  enabled: Boolean,
+  onSelected: (BirthdayEventType) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  Row(
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+    modifier = modifier.horizontalScroll(rememberScrollState()),
+  ) {
+    BirthdayEventType.entries.forEach { type ->
+      FilterChip(
+        selected = type == selected,
+        enabled = enabled,
+        onClick = { onSelected(type) },
+        label = { Text(stringResource(type.labelRes())) },
+        leadingIcon = {
+          Icon(
+            painter = painterResource(type.iconRes()),
+            contentDescription = null,
+            modifier = Modifier.size(18.dp),
+          )
+        },
+      )
+    }
+  }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun EditBirthdayScreenPreview() {
@@ -260,6 +320,8 @@ private fun EditBirthdayScreenPreview() {
       onSaveClick = {},
       onDeleteMenuClick = {},
       onNameChange = {},
+      onEventTypeChange = {},
+      onCustomLabelChange = {},
       onYearCheckChanged = {},
       onDateFieldClick = {},
       onNumberChange = {},

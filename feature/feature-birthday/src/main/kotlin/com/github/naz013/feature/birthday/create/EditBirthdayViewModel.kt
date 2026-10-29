@@ -19,6 +19,7 @@ import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.BirthdayEventType
 import com.github.naz013.domain.Tag
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.sync.SyncState
@@ -169,6 +170,14 @@ internal class EditBirthdayViewModel(
     onDateChanged(_state.value.selectedDate)
   }
 
+  fun onEventTypeChanged(eventType: BirthdayEventType) {
+    _state.update { it.copy(eventType = eventType) }
+  }
+
+  fun onCustomLabelChanged(text: String) {
+    _state.update { it.copy(customLabel = text) }
+  }
+
   fun onSaveClick() {
     val name = _state.value.name.trim()
     if (name.isEmpty()) {
@@ -254,6 +263,8 @@ internal class EditBirthdayViewModel(
       val contactId = contactsReader.getIdFromNumber(number)
       val formattedDate = dateTimeManager.formatBirthdayDate(state.selectedDate)
       val ignoreYear = state.ignoreYear
+      val eventType = state.eventType
+      val customLabel = state.customLabel.trim().takeIf { eventType == BirthdayEventType.OTHER && it.isNotEmpty() }
       val oldBirthday = birthdayRepository.getById(state.id)
       val birthday = oldBirthday?.copy(
           name = name,
@@ -266,6 +277,8 @@ internal class EditBirthdayViewModel(
           uuId = oldBirthday.uuId.takeIf { !newId } ?: UUID.randomUUID().toString(),
           updatedAt = dateTimeManager.getNowGmtDateTime(),
           ignoreYear = ignoreYear,
+          eventType = eventType,
+          customLabel = customLabel,
         ) ?: Birthday(
           uuId = state.id,
           name = name,
@@ -277,6 +290,8 @@ internal class EditBirthdayViewModel(
           dayMonth = "${state.selectedDate.dayOfMonth}|${state.selectedDate.monthValue - 1}",
           updatedAt = dateTimeManager.getNowGmtDateTime(),
           ignoreYear = ignoreYear,
+          eventType = eventType,
+          customLabel = customLabel,
           syncState = SyncState.WaitingForUpload,
           version = 0,
         )
@@ -304,6 +319,8 @@ internal class EditBirthdayViewModel(
           name = uiBirthday.name,
           number = uiBirthday.number,
           ignoreYear = uiBirthday.isYearIgnored,
+          eventType = birthday.eventType,
+          customLabel = birthday.customLabel.orEmpty(),
           canDelete = !_state.value.isFromFile,
         )
       }

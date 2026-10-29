@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.BirthdayEventType
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.common.livedata.Event
@@ -68,6 +69,7 @@ internal class BirthdaysViewModel(
   private val searchQuery = MutableStateFlow("")
   private val selectedSmartList = MutableStateFlow<SmartListFilter?>(null)
   private val selectedTagId = MutableStateFlow<String?>(null)
+  private val selectedEventType = MutableStateFlow<BirthdayEventType?>(null)
   val undoDelete = UndoDeleteController(viewModelScope, dispatcherProvider.io())
 
   init {
@@ -92,6 +94,9 @@ internal class BirthdaysViewModel(
             val ids = tagAssignmentRepository.getItemIdsForTag(tagId, TaggedItemType.BIRTHDAY).toSet()
             birthdays.filter { it.uuId in ids }
           }
+        }
+        .combine(selectedEventType) { birthdays, eventType ->
+          if (eventType == null) birthdays else birthdays.filter { it.eventType == eventType }
         }
         .combine(undoDelete.pendingIds) { birthdays, pendingIds ->
           birthdays.filterNot { it.uuId in pendingIds }
@@ -122,7 +127,8 @@ internal class BirthdaysViewModel(
     _state.update {
       it.copy(
         listState = if (items.isEmpty()) ListState.Empty else ListState.Ready(items),
-        hasAnyItems = list.isNotEmpty() || it.searchQuery.isNotEmpty() || it.selectedSmartList != null || it.selectedTagId != null,
+        hasAnyItems = list.isNotEmpty() || it.searchQuery.isNotEmpty() || it.selectedSmartList != null || it.selectedTagId != null ||
+          it.selectedEventType != null,
       )
     }
   }
@@ -142,6 +148,12 @@ internal class BirthdaysViewModel(
     val updated = if (tagId != null && tagId == selectedTagId.value) null else tagId
     selectedTagId.value = updated
     _state.update { it.copy(selectedTagId = updated) }
+  }
+
+  fun onEventTypeFilterSelected(eventType: BirthdayEventType?) {
+    val updated = if (eventType != null && eventType == selectedEventType.value) null else eventType
+    selectedEventType.value = updated
+    _state.update { it.copy(selectedEventType = updated) }
   }
 
   fun onSelectedItemIdChanged(id: String?) {

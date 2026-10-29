@@ -2,6 +2,7 @@ package com.github.naz013.feature.birthday.list
 
 import com.github.naz013.common.TextProvider
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.BirthdayEventType
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logic.birthday.BirthdaySmartListPredicate
@@ -75,7 +76,8 @@ class BirthdaysViewModelTest : BaseTest() {
   private fun birthday(
     id: String = "1",
     name: String = "Alice",
-  ) = Birthday(uuId = id, name = name, syncState = SyncState.Synced)
+    eventType: BirthdayEventType = BirthdayEventType.BIRTHDAY,
+  ) = Birthday(uuId = id, name = name, eventType = eventType, syncState = SyncState.Synced)
 
   private fun uiBirthday(id: String = "1") =
     UiAgendaBirthday(
@@ -180,6 +182,32 @@ class BirthdaysViewModelTest : BaseTest() {
 
       val ready = vm.state.first().listState as ListState.Ready
       assertEquals(listOf("1"), ready.items.map { it.id })
+    }
+
+  @Test
+  fun `onEventTypeFilterSelected filters birthdays down to that event type`() =
+    runTest {
+      val birthday = birthday(id = "1")
+      val anniversary = birthday(id = "2", eventType = BirthdayEventType.ANNIVERSARY)
+      every { birthdayRepository.observeAll() } returns flowOf(listOf(birthday, anniversary))
+      every { uiAgendaItemAdapter.convertBirthday(birthday) } returns uiBirthday(id = "1")
+      every { uiAgendaItemAdapter.convertBirthday(anniversary) } returns uiBirthday(id = "2")
+      val vm = createViewModel()
+
+      vm.onEventTypeFilterSelected(BirthdayEventType.ANNIVERSARY)
+
+      val state = vm.state.first()
+      assertEquals(listOf("2"), (state.listState as ListState.Ready).items.map { it.id })
+      assertEquals(BirthdayEventType.ANNIVERSARY, state.selectedEventType)
+    }
+
+  @Test
+  fun `onEventTypeFilterSelected twice with the same type clears it`() =
+    runTest {
+      viewModel.onEventTypeFilterSelected(BirthdayEventType.MEMORIAL)
+      viewModel.onEventTypeFilterSelected(BirthdayEventType.MEMORIAL)
+
+      assertEquals(null, viewModel.state.first().selectedEventType)
     }
 
   @Test

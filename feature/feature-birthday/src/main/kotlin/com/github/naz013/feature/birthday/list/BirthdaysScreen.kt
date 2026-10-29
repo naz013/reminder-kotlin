@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -22,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -39,10 +41,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.github.naz013.domain.BirthdayEventType
 import com.github.naz013.logic.reminder.smartlist.SmartListFilter
 import com.github.naz013.ui.agenda.AgendaMenuAction
 import com.github.naz013.ui.agenda.BirthdayAgendaRow
@@ -57,6 +61,8 @@ import com.github.naz013.ui.common.compose.foundation.component.BottomSheetHeade
 import com.github.naz013.ui.common.compose.foundation.component.EmptyState
 import com.github.naz013.ui.common.compose.foundation.component.PopupMenuItem
 import com.github.naz013.ui.common.compose.foundation.component.SearchBar
+import com.github.naz013.ui.common.datetime.iconRes
+import com.github.naz013.ui.common.datetime.labelRes
 import com.github.naz013.ui.common.icon.DrawableCatalog
 import com.github.naz013.ui.tag.TagFilterRow
 
@@ -71,6 +77,7 @@ internal fun BirthdaysScreen(
   onSearchQueryChange: (String) -> Unit,
   onSmartListSelected: (SmartListFilter?) -> Unit,
   onTagFilterSelected: (String?) -> Unit,
+  onEventTypeFilterSelected: (BirthdayEventType?) -> Unit,
   onAddClick: () -> Unit,
   onItemClick: (UiAgendaBirthday) -> Unit,
   onItemLongClick: (String) -> Unit,
@@ -90,7 +97,8 @@ internal fun BirthdaysScreen(
     label = "birthdaysHeaderContainerColor",
   )
   var showFilterSheet by remember { mutableStateOf(false) }
-  val hasActiveFilters = state.selectedSmartList != null || state.selectedTagId != null
+  val hasActiveFilters =
+    state.selectedSmartList != null || state.selectedTagId != null || state.selectedEventType != null
   val isSelectionMode = state.selectedCount > 0
 
   BackHandler(enabled = isSelectionMode) { onSelectionCancel() }
@@ -190,6 +198,7 @@ internal fun BirthdaysScreen(
       onDismissRequest = { showFilterSheet = false },
       onSmartListSelected = onSmartListSelected,
       onTagFilterSelected = onTagFilterSelected,
+      onEventTypeFilterSelected = onEventTypeFilterSelected,
     )
   }
 }
@@ -202,6 +211,7 @@ private fun BirthdaysFilterBottomSheet(
   onDismissRequest: () -> Unit,
   onSmartListSelected: (SmartListFilter?) -> Unit,
   onTagFilterSelected: (String?) -> Unit,
+  onEventTypeFilterSelected: (BirthdayEventType?) -> Unit,
 ) {
   AppModalBottomSheet(
     onDismissRequest = onDismissRequest,
@@ -227,11 +237,16 @@ private fun BirthdaysFilterBottomSheet(
         }
       }
 
+      FilterSection(title = stringResource(R.string.birthday_event_type)) {
+        EventTypeChipRow(selected = state.selectedEventType, onSelect = onEventTypeFilterSelected)
+      }
+
       if (hasActiveFilters) {
         Button(
           onClick = {
             onSmartListSelected(null)
             onTagFilterSelected(null)
+            onEventTypeFilterSelected(null)
           },
           modifier = Modifier.padding(horizontal = 16.dp),
         ) {
@@ -272,6 +287,39 @@ private fun SmartListChipRow(
         selected = filter == selected,
         onClick = { onSelect(filter) },
         label = { Text(stringResource(filter.titleRes())) },
+      )
+    }
+  }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun EventTypeChipRow(
+  selected: BirthdayEventType?,
+  onSelect: (BirthdayEventType?) -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  FlowRow(
+    modifier = modifier,
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+  ) {
+    FilterChip(
+      selected = selected == null,
+      onClick = { onSelect(null) },
+      label = { Text(stringResource(R.string.birthday_event_type_all)) },
+    )
+    BirthdayEventType.entries.forEach { type ->
+      FilterChip(
+        selected = type == selected,
+        onClick = { onSelect(type) },
+        label = { Text(stringResource(type.labelRes())) },
+        leadingIcon = {
+          Icon(
+            painter = painterResource(type.iconRes()),
+            contentDescription = null,
+            modifier = Modifier.size(18.dp),
+          )
+        },
       )
     }
   }
@@ -362,6 +410,7 @@ private fun BirthdaysScreenEmptyPreview() {
       onSearchQueryChange = {},
       onSmartListSelected = {},
       onTagFilterSelected = {},
+      onEventTypeFilterSelected = {},
       onAddClick = {},
       onItemClick = {},
       onItemLongClick = {},

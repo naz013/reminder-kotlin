@@ -14,6 +14,7 @@ import com.github.naz013.common.contacts.ContactsReader
 import com.github.naz013.datecalc.DateTimeManager
 import com.github.naz013.common.intent.IntentKeys
 import com.github.naz013.domain.Birthday
+import com.github.naz013.domain.BirthdayEventType
 import com.github.naz013.domain.sync.SyncState
 import com.github.naz013.logic.tag.ToggleTagAssignmentUseCase
 import com.github.naz013.navigation.intent.IntentDataReader
@@ -333,5 +334,60 @@ class EditBirthdayViewModelTest : BaseTest() {
       val state = viewModel.state.first()
       assertEquals(true, state.ignoreYear)
       assertEquals("no-year", state.dateText)
+    }
+
+  @Test
+  fun `loads event type and custom label of an existing birthday`() =
+    runTest {
+      val birthday =
+        Birthday(
+          uuId = "42",
+          name = "Alice",
+          date = "1999-10-01",
+          eventType = BirthdayEventType.OTHER,
+          customLabel = "Moved in",
+          syncState = SyncState.Synced,
+        )
+      coEvery { birthdayRepository.getById("42") } returns birthday
+      every { dateTimeManager.parseBirthdayDate("1999-10-01") } returns LocalDate.of(1999, 10, 1)
+
+      val state = createViewModel(id = "42").state.first()
+
+      assertEquals(BirthdayEventType.OTHER, state.eventType)
+      assertEquals("Moved in", state.customLabel)
+    }
+
+  @Test
+  fun `onSaveClick saves the selected event type and trimmed custom label for other`() =
+    runTest {
+      coEvery { birthdayRepository.getById(any()) } returns null
+      val saved = slot<Birthday>()
+      coEvery { saveBirthdayUseCase(capture(saved)) } returns Unit
+      val viewModel = createViewModel()
+      viewModel.onNameChanged("Charlie")
+      viewModel.onEventTypeChanged(BirthdayEventType.OTHER)
+      viewModel.onCustomLabelChanged("  Moved in ")
+
+      viewModel.onSaveClick()
+
+      assertEquals(BirthdayEventType.OTHER, saved.captured.eventType)
+      assertEquals("Moved in", saved.captured.customLabel)
+    }
+
+  @Test
+  fun `onSaveClick drops the custom label when the type is not other`() =
+    runTest {
+      coEvery { birthdayRepository.getById(any()) } returns null
+      val saved = slot<Birthday>()
+      coEvery { saveBirthdayUseCase(capture(saved)) } returns Unit
+      val viewModel = createViewModel()
+      viewModel.onNameChanged("Charlie")
+      viewModel.onCustomLabelChanged("Leftover")
+      viewModel.onEventTypeChanged(BirthdayEventType.ANNIVERSARY)
+
+      viewModel.onSaveClick()
+
+      assertEquals(BirthdayEventType.ANNIVERSARY, saved.captured.eventType)
+      assertNull(saved.captured.customLabel)
     }
 }
