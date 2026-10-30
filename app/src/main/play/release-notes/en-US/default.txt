@@ -1,4 +1,9 @@
-- Added Habits
+- Added Habits with daily reminders
+- Added time zone support for reminders
+- Birthdays can now be anniversaries, memorials and other yearly events
+- Reschedule all overdue reminders at once, with Undo
+- Added app shortcuts for quick add, focus timer and pinned routines
+- Undo for deleting items from preview and edit screens
 - Added single Todo reminder widget
-- Added PRO Trial (Free only)
+- Added PRO Trial (Free only), extend it by 24 hours with a rewarded ad
 - Bug fixes and improvements

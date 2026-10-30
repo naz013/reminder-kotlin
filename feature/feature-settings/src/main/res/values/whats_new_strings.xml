@@ -2,9 +2,14 @@
 <resources>
     <string name="whats_new_version_and_date" translatable="false">%s\n%s</string>
     <string name="whats_new_text" translatable="false">
-        ✅ Added Habits;\n
+        ✅ Added Habits with daily reminders;\n
+        ✅ Added time zone support for reminders;\n
+        ✅ Birthdays can now be anniversaries, memorials and other yearly events;\n
+        ✅ Reschedule all overdue reminders at once, with Undo;\n
+        ✅ Added app shortcuts for quick add, focus timer and pinned routines;\n
+        ✅ Undo for deleting items from preview and edit screens;\n
         ✅ Added single Todo reminder widget;\n
-        ✅ Added PRO Trial (Free only);\n
+        ✅ Added PRO Trial (Free only), extend it by 24 hours with a rewarded ad;\n
         🐞 Bug fixes and improvements.
     </string>
     <string name="whats_new_emoji_set" translatable="false">
