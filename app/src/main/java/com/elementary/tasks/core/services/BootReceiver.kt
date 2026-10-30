@@ -22,12 +22,11 @@ class BootReceiver : BaseBroadcast() {
     intent: Intent,
   ) {
     Logger.i(TAG, "Received ${intent.action}")
-    if (intent.action in HABIT_RESCHEDULE_ACTIONS) {
-      rescheduleHabitNudges()
-    }
-    if (intent.action in REMINDER_REACTIVATE_ACTIONS) {
-      handleZoneAndReactivateReminders(isBoot = intent.action == Intent.ACTION_BOOT_COMPLETED)
-    }
+    runAsyncWork(
+      rescheduleHabits = intent.action in HABIT_RESCHEDULE_ACTIONS,
+      reactivateReminders = intent.action in REMINDER_REACTIVATE_ACTIONS,
+      isBoot = intent.action == Intent.ACTION_BOOT_COMPLETED,
+    )
     if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
       if (prefs.isBirthdayReminderEnabled) {
         jobScheduler.scheduleDailyBirthday()
@@ -46,32 +45,49 @@ class BootReceiver : BaseBroadcast() {
     }
   }
 
-  private fun rescheduleHabitNudges() {
+  // goAsync() hands out the PendingResult only once per onReceive; a second call returns null.
+  private fun runAsyncWork(
+    rescheduleHabits: Boolean,
+    reactivateReminders: Boolean,
+    isBoot: Boolean,
+  ) {
+    if (!rescheduleHabits && !reactivateReminders) return
     val pendingResult = goAsync()
     CoroutineScope(get<DispatcherProvider>().io()).launch {
       try {
-        get<RescheduleHabitNudgesUseCase>()()
+        if (rescheduleHabits) {
+          runSafely("Failed to reschedule habit nudges") {
+            get<RescheduleHabitNudgesUseCase>()()
+          }
+        }
+        if (reactivateReminders) {
+          runSafely("Failed to handle zone change") {
+            handleZoneAndReactivateReminders(isBoot)
+          }
+        }
       } finally {
-        pendingResult.finish()
+        pendingResult?.finish()
       }
     }
   }
 
-  private fun handleZoneAndReactivateReminders(isBoot: Boolean) {
-    val pendingResult = goAsync()
-    CoroutineScope(get<DispatcherProvider>().io()).launch {
-      try {
-        val zoneChanged = get<HandleZoneChangeUseCase>()()
-        if (shouldActivateReminders(isBoot, zoneChanged)) {
-          get<ActivateAllActiveRemindersUseCase>()()
-        }
-      } catch (e: CancellationException) {
-        throw e
-      } catch (e: Exception) {
-        Logger.e(TAG, "Failed to handle zone change", e)
-      } finally {
-        pendingResult.finish()
-      }
+  private suspend fun handleZoneAndReactivateReminders(isBoot: Boolean) {
+    val zoneChanged = get<HandleZoneChangeUseCase>()()
+    if (shouldActivateReminders(isBoot, zoneChanged)) {
+      get<ActivateAllActiveRemindersUseCase>()()
+    }
+  }
+
+  private suspend fun runSafely(
+    errorMessage: String,
+    block: suspend () -> Unit,
+  ) {
+    try {
+      block()
+    } catch (e: CancellationException) {
+      throw e
+    } catch (e: Exception) {
+      Logger.e(TAG, errorMessage, e)
     }
   }
 
