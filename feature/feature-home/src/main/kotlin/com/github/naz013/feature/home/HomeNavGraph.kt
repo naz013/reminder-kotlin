@@ -35,6 +35,7 @@ fun EntryProviderScope<NavKey>.homeEntries(
   onOpenReminderPreview: (id: String) -> Unit,
   onOpenBirthdayPreview: (id: String) -> Unit,
   onOpenSettings: () -> Unit,
+  onOpenSearch: () -> Unit,
   onOpenHeaderItemsSettings: () -> Unit,
   onOpenCreateReminder: () -> Unit,
   onOpenCreateBirthday: () -> Unit,
@@ -69,6 +70,7 @@ fun EntryProviderScope<NavKey>.homeEntries(
       onOpenReminderPreview = onOpenReminderPreview,
       onOpenBirthdayPreview = onOpenBirthdayPreview,
       onOpenSettings = onOpenSettings,
+      onOpenSearch = onOpenSearch,
       onOpenHeaderItemsSettings = onOpenHeaderItemsSettings,
       onOpenCreateReminder = onOpenCreateReminder,
       onOpenCreateBirthday = onOpenCreateBirthday,
@@ -102,6 +104,7 @@ private fun HomeEntry(
   onOpenReminderPreview: (id: String) -> Unit,
   onOpenBirthdayPreview: (id: String) -> Unit,
   onOpenSettings: () -> Unit,
+  onOpenSearch: () -> Unit,
   onOpenHeaderItemsSettings: () -> Unit,
   onOpenCreateReminder: () -> Unit,
   onOpenCreateBirthday: () -> Unit,
@@ -148,6 +151,10 @@ private fun HomeEntry(
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenSettings -> {
         onOpenSettings()
+      }
+
+      is ScheduleHomeViewModel.ViewModelEvent.OpenSearch -> {
+        onOpenSearch()
       }
 
       is ScheduleHomeViewModel.ViewModelEvent.OpenHeaderItemsSettings -> {
@@ -282,6 +289,7 @@ private fun HomeEntry(
           .fillMaxSize()
           .statusBarsPadding(),
         onSettingsClick = { viewModel.onSettingsClicked() },
+        onSearchClick = { viewModel.onSearchClicked() },
         onHeaderNavigationItemClick = { viewModel.onHeaderNavigationItemClicked(it) },
         onHeaderNavigationItemLongClick = { viewModel.onHeaderNavigationItemLongClicked() },
         onEventClick = { viewModel.onEventClicked(it) },

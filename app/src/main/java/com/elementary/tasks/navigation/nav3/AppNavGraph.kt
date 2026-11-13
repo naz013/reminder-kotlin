@@ -45,6 +45,10 @@ import com.github.naz013.feature.habit.HabitNavKey
 import com.github.naz013.feature.habit.habitEntries
 import com.github.naz013.feature.home.HomeNavKey
 import com.github.naz013.feature.home.homeEntries
+import com.github.naz013.feature.search.SearchNavKey
+import com.github.naz013.feature.search.searchEntries
+import com.github.naz013.logic.search.SearchResult
+import com.github.naz013.logic.search.SearchResultType
 import com.elementary.tasks.navigation.BottomNavActivity
 import com.github.naz013.feature.places.PlacesNavKey
 import com.github.naz013.feature.places.placesEntries
@@ -213,6 +217,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
       backStack.lastOrNull() == key &&
       backStack.getOrNull(backStack.lastIndex - 1).let {
         it == HomeNavKey.Main ||
+          it == SearchNavKey.Main ||
           it == AgendaNavKey.List ||
           it == RemindersArchiveNavKey.List ||
           it == BirthdaysNavKey.List ||
@@ -304,6 +309,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
             onOpenReminderPreview = { id -> backStack.navigateToDetailPane(ReminderPreviewNavKey.Preview(id)) },
             onOpenBirthdayPreview = { id -> backStack.navigateToDetailPane(BirthdaysNavKey.Preview(id)) },
             onOpenSettings = { backStack.add(SettingsNavKey.Hub) },
+            onOpenSearch = { backStack.add(SearchNavKey.Main) },
             onOpenHeaderItemsSettings = { backStack.add(SettingsNavKey.HeaderItems) },
             onOpenCreateReminder = { backStack.add(BuildReminderNavKey.Main()) },
             onOpenCreateBirthday = { backStack.add(BirthdaysNavKey.Edit()) },
@@ -333,6 +339,10 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
             },
             onOpenCreateTodo = { backStack.add(TodoEditNavKey.Main()) },
             onEventAction = { action -> eventActionDispatcher.dispatch(action) },
+          )
+          searchEntries(
+            backStack = backStack,
+            onOpenResult = { result -> backStack.openSearchResult(result) },
           )
           notesEntries(
             backStack = backStack,
@@ -684,6 +694,20 @@ private fun MutableList<NavKey>.navigateToDetailPane(key: NavKey) {
     removeLastOrNull()
   }
   add(key)
+}
+
+private fun MutableList<NavKey>.openSearchResult(result: SearchResult) {
+  val id = result.id
+  when (result.type) {
+    SearchResultType.REMINDER -> navigateToDetailPane(ReminderPreviewNavKey.Preview(id))
+    SearchResultType.BIRTHDAY -> navigateToDetailPane(BirthdaysNavKey.Preview(id))
+    SearchResultType.NOTE -> addAll(listOf(NotesNavKey.List, NotesNavKey.Preview(id)))
+    SearchResultType.GOOGLE_TASK -> addAll(listOf(GoogleTasksNavKey.List, GoogleTasksNavKey.TaskEdit(id = id)))
+    SearchResultType.GROUP -> addAll(listOf(GroupsNavKey.List, GroupsNavKey.Details(id)))
+    SearchResultType.PLACE -> addAll(listOf(PlacesNavKey.List, PlacesNavKey.Edit(id)))
+    SearchResultType.ROUTINE -> addAll(listOf(RoutineNavKey.List, RoutineNavKey.Preview(id)))
+    SearchResultType.HABIT -> addAll(listOf(HabitNavKey.List, HabitNavKey.Preview(id)))
+  }
 }
 
 /**

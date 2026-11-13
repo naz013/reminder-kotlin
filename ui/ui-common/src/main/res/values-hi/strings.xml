@@ -1396,4 +1396,8 @@
     <string name="widget_pomodoro_today_minutes">आज %1$d मिनट फ़ोकस</string>
     <string name="widget_pomodoro_ends_at">%1$s बजे समाप्त</string>
     <string name="widget_pomodoro_paused_remaining">रुका हुआ · %1$s शेष</string>
+    <string name="search_global_hint">रिमाइंडर, नोट्स, जन्मदिन खोजें…</string>
+    <string name="search_recent_title">हाल की खोजें</string>
+    <string name="search_no_results">\"%1$s\" के लिए कोई परिणाम नहीं</string>
+    <string name="search_start_prompt">अपने रिमाइंडर, नोट्स, जन्मदिन और अन्य में खोजें</string>
 </resources>

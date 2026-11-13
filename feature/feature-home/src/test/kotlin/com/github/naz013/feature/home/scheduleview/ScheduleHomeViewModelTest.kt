@@ -634,6 +634,13 @@ class ScheduleHomeViewModelTest : BaseTest() {
   }
 
   @Test
+  fun `onSearchClicked posts OpenSearch`() {
+    viewModel.onSearchClicked()
+
+    assertEquals(ScheduleHomeViewModel.ViewModelEvent.OpenSearch, viewModel.event.value?.peekContent())
+  }
+
+  @Test
   fun `onEventClicked on a reminder posts OpenReminderDetails`() {
     val event =
       HomeEvent(

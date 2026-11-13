@@ -1390,4 +1390,8 @@
     <string name="widget_pomodoro_today_minutes">今天已专注 %1$d 分钟</string>
     <string name="widget_pomodoro_ends_at">%1$s 结束</string>
     <string name="widget_pomodoro_paused_remaining">已暂停 · 剩余 %1$s</string>
+    <string name="search_global_hint">搜索提醒、笔记、生日…</string>
+    <string name="search_recent_title">最近搜索</string>
+    <string name="search_no_results">未找到\"%1$s\"的结果</string>
+    <string name="search_start_prompt">搜索您的提醒、笔记、生日等</string>
 </resources>
