@@ -1365,4 +1365,12 @@
     <string name="reschedule_skip_still_overdue">Masih terlambat setelah melompat maju</string>
     <string name="reschedule_skip_target_in_past">Waktu itu sudah lewat</string>
     <string name="reschedule_skip_not_activated">Tidak dapat diaktifkan</string>
+    <string name="snooze_presets">Preset tunda</string>
+    <string name="snooze_preset_15_minutes">15 menit</string>
+    <string name="snooze_preset_1_hour">1 jam</string>
+    <string name="snooze_preset_3_hours">3 jam</string>
+    <string name="snooze_preset_this_evening">Malam ini</string>
+    <string name="snooze_preset_tomorrow_morning">Besok pagi</string>
+    <string name="snooze_evening_time">Waktu tunda malam</string>
+    <string name="snooze_morning_time">Waktu tunda pagi</string>
 </resources>

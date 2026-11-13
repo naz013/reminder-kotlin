@@ -18,6 +18,7 @@ import com.github.naz013.platform.SystemInfo
 import com.github.naz013.domain.reminder.v2.LockScreenVisibility
 import com.github.naz013.domain.reminder.v2.ReminderNotificationCategory
 import com.github.naz013.logic.reminder.AgendaViewMode
+import com.github.naz013.logic.reminder.snooze.SnoozePresetType
 import com.github.naz013.feature.common.livedata.Event
 import com.github.naz013.feature.common.viewmodel.mutableLiveEventOf
 import com.github.naz013.logic.workflow.WorkflowConfig
@@ -112,6 +113,33 @@ class RemindersSettingsViewModel(
       kind = SeekDialogKind.SNOOZE,
       title = textProvider.getString(R.string.default_reminder_snooze_time),
       value = reminderPreferences.snoozeTime,
+    )
+  }
+
+  fun onSnoozePresetToggle(preset: SnoozePresetType) {
+    val enabled = reminderPreferences.enabledSnoozePresets
+    reminderPreferences.enabledSnoozePresets =
+      if (preset in enabled) {
+        enabled - preset
+      } else {
+        SnoozePresetType.entries.filter { it in enabled || it == preset }
+      }
+    refreshState()
+  }
+
+  fun onSnoozeEveningTimeClick() {
+    showSnoozeTimePicker(
+      target = DndTimeTarget.SNOOZE_EVENING,
+      value = reminderPreferences.snoozeEveningTime,
+      title = textProvider.getString(R.string.snooze_evening_time),
+    )
+  }
+
+  fun onSnoozeMorningTimeClick() {
+    showSnoozeTimePicker(
+      target = DndTimeTarget.SNOOZE_MORNING,
+      value = reminderPreferences.snoozeMorningTime,
+      title = textProvider.getString(R.string.snooze_morning_time),
     )
   }
 
@@ -277,8 +305,25 @@ class RemindersSettingsViewModel(
     when (target) {
       DndTimeTarget.FROM -> reminderPreferences.doNotDisturbFrom = dateTimeManager.to24HourString(time)
       DndTimeTarget.TO -> reminderPreferences.doNotDisturbTo = dateTimeManager.to24HourString(time)
+      DndTimeTarget.SNOOZE_EVENING -> reminderPreferences.snoozeEveningTime = dateTimeManager.to24HourString(time)
+      DndTimeTarget.SNOOZE_MORNING -> reminderPreferences.snoozeMorningTime = dateTimeManager.to24HourString(time)
     }
     refreshState()
+  }
+
+  private fun showSnoozeTimePicker(
+    target: DndTimeTarget,
+    value: String,
+    title: String,
+  ) {
+    navigationEvent.value = Event(
+      RemindersSettingsEvent.ShowTimePicker(
+        target,
+        dateTimeManager.toLocalTime(value) ?: LocalTime.now(),
+        title,
+        reminderPreferences.is24HourFormat,
+      )
+    )
   }
 
   fun onDndActionClick() {
@@ -417,6 +462,9 @@ class RemindersSettingsViewModel(
       isWearChecked = reminderPreferences.isWearEnabled,
       isWearCompanionChecked = reminderPreferences.isWearCompanionEnabled,
       snoozeText = minutesText(reminderPreferences.snoozeTime),
+      enabledSnoozePresets = reminderPreferences.enabledSnoozePresets.toSet(),
+      snoozeEveningTimeText = timeText(reminderPreferences.snoozeEveningTime),
+      snoozeMorningTimeText = timeText(reminderPreferences.snoozeMorningTime),
       isRepeatChecked = isRepeatChecked,
       repeatIntervalText = minutesText(reminderPreferences.notificationRepeatTime),
       isRepeatIntervalRowEnabled = isRepeatChecked,
@@ -468,6 +516,9 @@ class RemindersSettingsViewModel(
       SeekDialogKind.SNOOZE, SeekDialogKind.REPEAT_INTERVAL -> minutesText(value)
       SeekDialogKind.MAX_REPEAT_COUNT, SeekDialogKind.ESCALATE_AFTER_REPEATS -> repeatsText(value)
     }
+
+  private fun timeText(value: String): String =
+    dateTimeManager.getTime(dateTimeManager.toLocalTime(value) ?: LocalTime.now())
 
   private fun minutesText(minutes: Int): String =
     textProvider.getString(R.string.x_minutes, minutes.toString())

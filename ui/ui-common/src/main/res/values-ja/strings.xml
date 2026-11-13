@@ -1363,4 +1363,12 @@
     <string name="reschedule_skip_still_overdue">先送り後も期限切れです</string>
     <string name="reschedule_skip_target_in_past">その時刻はすでに過ぎています</string>
     <string name="reschedule_skip_not_activated">有効にできませんでした</string>
+    <string name="snooze_presets">スヌーズのプリセット</string>
+    <string name="snooze_preset_15_minutes">15分</string>
+    <string name="snooze_preset_1_hour">1時間</string>
+    <string name="snooze_preset_3_hours">3時間</string>
+    <string name="snooze_preset_this_evening">今夜</string>
+    <string name="snooze_preset_tomorrow_morning">明日の朝</string>
+    <string name="snooze_evening_time">夜のスヌーズ時刻</string>
+    <string name="snooze_morning_time">朝のスヌーズ時刻</string>
 </resources>

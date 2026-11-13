@@ -1361,4 +1361,12 @@
     <string name="reschedule_skip_still_overdue">ยังเลยกำหนดหลังข้ามไปข้างหน้า</string>
     <string name="reschedule_skip_target_in_past">เวลานั้นผ่านไปแล้ว</string>
     <string name="reschedule_skip_not_activated">ไม่สามารถเปิดใช้งานได้</string>
+    <string name="snooze_presets">ค่าที่ตั้งไว้สำหรับเลื่อนเตือน</string>
+    <string name="snooze_preset_15_minutes">15 นาที</string>
+    <string name="snooze_preset_1_hour">1 ชั่วโมง</string>
+    <string name="snooze_preset_3_hours">3 ชั่วโมง</string>
+    <string name="snooze_preset_this_evening">คืนนี้</string>
+    <string name="snooze_preset_tomorrow_morning">พรุ่งนี้เช้า</string>
+    <string name="snooze_evening_time">เวลาเลื่อนเตือนตอนเย็น</string>
+    <string name="snooze_morning_time">เวลาเลื่อนเตือนตอนเช้า</string>
 </resources>

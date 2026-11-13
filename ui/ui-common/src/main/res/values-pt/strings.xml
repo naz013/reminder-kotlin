@@ -1379,4 +1379,12 @@
     <string name="reschedule_skip_still_overdue">Ainda atrasado após avançar</string>
     <string name="reschedule_skip_target_in_past">Esse horário já passou</string>
     <string name="reschedule_skip_not_activated">Não foi possível ativar</string>
+    <string name="snooze_presets">Predefinições de adiamento</string>
+    <string name="snooze_preset_15_minutes">15 minutos</string>
+    <string name="snooze_preset_1_hour">1 hora</string>
+    <string name="snooze_preset_3_hours">3 horas</string>
+    <string name="snooze_preset_this_evening">Esta noite</string>
+    <string name="snooze_preset_tomorrow_morning">Amanhã de manhã</string>
+    <string name="snooze_evening_time">Hora de adiamento da noite</string>
+    <string name="snooze_morning_time">Hora de adiamento da manhã</string>
 </resources>

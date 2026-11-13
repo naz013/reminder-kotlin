@@ -1369,4 +1369,12 @@
     <string name="reschedule_skip_still_overdue">Nach dem Vorspringen immer noch überfällig</string>
     <string name="reschedule_skip_target_in_past">Dieser Zeitpunkt liegt bereits in der Vergangenheit</string>
     <string name="reschedule_skip_not_activated">Konnte nicht aktiviert werden</string>
+    <string name="snooze_presets">Schlummer-Voreinstellungen</string>
+    <string name="snooze_preset_15_minutes">15 Minuten</string>
+    <string name="snooze_preset_1_hour">1 Stunde</string>
+    <string name="snooze_preset_3_hours">3 Stunden</string>
+    <string name="snooze_preset_this_evening">Heute Abend</string>
+    <string name="snooze_preset_tomorrow_morning">Morgen früh</string>
+    <string name="snooze_evening_time">Schlummerzeit am Abend</string>
+    <string name="snooze_morning_time">Schlummerzeit am Morgen</string>
 </resources>
