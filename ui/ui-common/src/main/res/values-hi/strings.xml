@@ -1382,4 +1382,12 @@
     <string name="snooze_pick_time">समय चुनें</string>
     <string name="widget_habits_description">होम स्क्रीन से आज की आदतें दर्ज करें</string>
     <string name="widget_habits_unlock">आदतें PRO सुविधा हैं। ऐप खोलने के लिए टैप करें।</string>
+    <string name="widget_routine_description">होम स्क्रीन से रूटीन शुरू करें या फिर से जारी रखें</string>
+    <string name="widget_routine_unavailable">रूटीन उपलब्ध नहीं हैं। ऐप खोलने के लिए टैप करें।</string>
+    <string name="widget_routine_resume">जारी रखें</string>
+    <string name="widget_routine_next_scheduled">अगला निर्धारित रूटीन</string>
+    <string name="widget_routine_status_not_started">शुरू नहीं हुआ</string>
+    <string name="widget_routine_status_in_progress">जारी है</string>
+    <string name="widget_routine_status_done">आज पूरा हुआ</string>
+    <string name="widget_routine_status_progress">%2$d में से %1$d चरण पूरे</string>
 </resources>

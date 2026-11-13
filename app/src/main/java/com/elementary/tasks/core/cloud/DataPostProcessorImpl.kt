@@ -9,6 +9,7 @@ import com.github.naz013.domain.habit.Habit
 import com.github.naz013.domain.TagAssignment
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.reminder.v2.ReminderV2
+import com.github.naz013.domain.routine.Routine
 import com.github.naz013.logging.Logger
 import com.github.naz013.repository.GroupV2Repository
 import com.github.naz013.repository.TagAssignmentRepository
@@ -37,6 +38,10 @@ class DataPostProcessorImpl(
       is Habit -> {
         scheduleHabitNudgeUseCase(any)
         appWidgetUpdater.updateHabitsWidget()
+      }
+
+      is Routine -> {
+        appWidgetUpdater.updateRoutineWidget()
       }
 
       is SettingsModel -> {

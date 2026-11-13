@@ -1386,4 +1386,12 @@
     <string name="snooze_pick_time">Избери час</string>
     <string name="widget_habits_description">Отбелязвайте днешните навици от началния екран</string>
     <string name="widget_habits_unlock">Навиците са функция на PRO. Докоснете, за да отворите приложението.</string>
+    <string name="widget_routine_description">Стартирайте или продължете рутина от началния екран</string>
+    <string name="widget_routine_unavailable">Рутините не са налични. Докоснете, за да отворите приложението.</string>
+    <string name="widget_routine_resume">Продължи</string>
+    <string name="widget_routine_next_scheduled">Следваща планирана рутина</string>
+    <string name="widget_routine_status_not_started">Не е започната</string>
+    <string name="widget_routine_status_in_progress">В процес</string>
+    <string name="widget_routine_status_done">Готово днес</string>
+    <string name="widget_routine_status_progress">%1$d от %2$d стъпки завършени</string>
 </resources>

@@ -5,6 +5,7 @@ import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.domain.TagAssignment
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.habit.Habit
+import com.github.naz013.domain.routine.Routine
 import com.github.naz013.files.DataType
 import com.github.naz013.files.model.TagAssignmentRowJson
 import com.github.naz013.files.model.TagAssignmentsSnapshotJson
@@ -60,6 +61,16 @@ class DataPostProcessorImplTest {
     processor.process(DataType.Habits, habit)
 
     coVerify(exactly = 1) { appWidgetUpdater.updateHabitsWidget(any()) }
+  }
+
+  @Test
+  fun `process with a routine refreshes the routine widget`() = runTest {
+    val stamp = LocalDateTime.of(2026, 10, 1, 8, 0)
+    val routine = Routine(id = "r-1", createdAt = stamp, updatedAt = stamp)
+
+    processor.process(DataType.Routines, routine)
+
+    coVerify(exactly = 1) { appWidgetUpdater.updateRoutineWidget(any()) }
   }
 
   @Test

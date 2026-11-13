@@ -1376,4 +1376,12 @@
     <string name="snooze_pick_time">時刻を選択</string>
     <string name="widget_habits_description">ホーム画面から今日の習慣をチェックイン</string>
     <string name="widget_habits_unlock">習慣はPRO機能です。タップしてアプリを開きます。</string>
+    <string name="widget_routine_description">ホーム画面からルーティンを開始または再開</string>
+    <string name="widget_routine_unavailable">ルーティンは利用できません。タップしてアプリを開きます。</string>
+    <string name="widget_routine_resume">再開</string>
+    <string name="widget_routine_next_scheduled">次の予定のルーティン</string>
+    <string name="widget_routine_status_not_started">未開始</string>
+    <string name="widget_routine_status_in_progress">実行中</string>
+    <string name="widget_routine_status_done">今日は完了</string>
+    <string name="widget_routine_status_progress">%2$d ステップ中 %1$d 完了</string>
 </resources>

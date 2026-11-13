@@ -1386,4 +1386,12 @@
     <string name="snooze_pick_time">Saat seç</string>
     <string name="widget_habits_description">Bugünkü alışkanlıkları ana ekrandan işaretleyin</string>
     <string name="widget_habits_unlock">Alışkanlıklar bir PRO özelliğidir. Uygulamayı açmak için dokunun.</string>
+    <string name="widget_routine_description">Ana ekrandan bir rutini başlatın veya sürdürün</string>
+    <string name="widget_routine_unavailable">Rutinler kullanılamıyor. Uygulamayı açmak için dokunun.</string>
+    <string name="widget_routine_resume">Devam et</string>
+    <string name="widget_routine_next_scheduled">Sonraki planlı rutin</string>
+    <string name="widget_routine_status_not_started">Başlamadı</string>
+    <string name="widget_routine_status_in_progress">Devam ediyor</string>
+    <string name="widget_routine_status_done">Bugün tamamlandı</string>
+    <string name="widget_routine_status_progress">%2$d adımın %1$d tanesi tamamlandı</string>
 </resources>

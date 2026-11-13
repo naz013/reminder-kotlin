@@ -17,7 +17,7 @@ val routineModule = module {
     RoutineRecurrenceResetTask(get(), get())
   }
 
-  single<RoutineRunEngine> { RoutineRunEngineImpl(get(), get(), get(), get(), get()) }
+  single<RoutineRunEngine> { RoutineRunEngineImpl(get(), get(), get(), get(), get(), get()) }
 
   viewModelOf(::RoutinesListViewModel)
 

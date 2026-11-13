@@ -230,7 +230,8 @@ enum class Widget(val value: String) {
   SINGLE_NOTE("single_note"),
   NEXT_REMINDER("next_reminder"),
   TODO("todo"),
-  HABITS("habits")
+  HABITS("habits"),
+  ROUTINE("routine")
 }
 
 enum class Event(val value: String) {

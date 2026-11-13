@@ -1398,4 +1398,12 @@
     <string name="snooze_pick_time">Vybrat čas</string>
     <string name="widget_habits_description">Odškrtávejte dnešní návyky přímo z domovské obrazovky</string>
     <string name="widget_habits_unlock">Návyky jsou funkce PRO. Klepnutím otevřete aplikaci.</string>
+    <string name="widget_routine_description">Spusťte nebo obnovte rutinu z domovské obrazovky</string>
+    <string name="widget_routine_unavailable">Rutiny nejsou k dispozici. Klepnutím otevřete aplikaci.</string>
+    <string name="widget_routine_resume">Pokračovat</string>
+    <string name="widget_routine_next_scheduled">Další plánovaná rutina</string>
+    <string name="widget_routine_status_not_started">Nezahájeno</string>
+    <string name="widget_routine_status_in_progress">Probíhá</string>
+    <string name="widget_routine_status_done">Dnes hotovo</string>
+    <string name="widget_routine_status_progress">Hotovo %1$d z %2$d kroků</string>
 </resources>

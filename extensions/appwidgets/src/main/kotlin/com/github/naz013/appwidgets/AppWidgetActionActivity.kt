@@ -13,6 +13,7 @@ import com.github.naz013.navigation.ActivityDestination
 import com.github.naz013.navigation.DeepLinkDestination
 import com.github.naz013.navigation.DestinationScreen
 import com.github.naz013.navigation.Navigator
+import com.github.naz013.navigation.StartRoutineScreen
 import com.github.naz013.navigation.ViewHabitScreen
 import com.github.naz013.ui.common.activity.LightThemedActivity
 import com.github.naz013.ui.common.context.intentForClass
@@ -133,6 +134,18 @@ internal class AppWidgetActionActivity : LightThemedActivity() {
       }
       Direction.HABIT_PREVIEW -> {
         bundle.putParcelable(DeepLinkDestination.KEY, ViewHabitScreen(id))
+        navigator.navigate(
+          ActivityDestination(
+            screen = DestinationScreen.Main,
+            extras = bundle,
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK,
+            isLoggedIn = true,
+            action = Intent.ACTION_VIEW
+          )
+        )
+      }
+      Direction.ROUTINE_START -> {
+        bundle.putParcelable(DeepLinkDestination.KEY, StartRoutineScreen(id))
         navigator.navigate(
           ActivityDestination(
             screen = DestinationScreen.Main,
