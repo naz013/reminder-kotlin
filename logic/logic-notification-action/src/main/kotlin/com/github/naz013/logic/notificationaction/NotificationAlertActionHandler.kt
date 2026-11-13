@@ -60,7 +60,10 @@ abstract class NotificationAlertActionHandler<T>(
     )
     builder.setDeleteIntent(dismissPendingIntent)
     extraActions(data).forEach { action ->
-      builder.addAction(action.icon, action.label, actionPendingIntent(data, action.actionKey))
+      val pendingIntent =
+        action.activityIntent?.let { activityPendingIntent(data, it) }
+          ?: actionPendingIntent(data, action.actionKey)
+      builder.addAction(action.icon, action.label, pendingIntent)
     }
 
     val isWear = wearPreferences.isWearEnabled
@@ -77,6 +80,17 @@ abstract class NotificationAlertActionHandler<T>(
       wearNotification.show(-uniqueId(data), contentTitle(data), appName(data), groupKey)
     }
   }
+
+  private fun activityPendingIntent(
+    data: T,
+    intent: Intent,
+  ): PendingIntent =
+    PendingIntentWrapper.getActivity(
+      contextProvider.context,
+      uniqueId(data),
+      intent,
+      PendingIntent.FLAG_CANCEL_CURRENT,
+    )
 
   private fun actionPendingIntent(
     data: T,

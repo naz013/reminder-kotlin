@@ -1393,4 +1393,7 @@
     <string name="snooze_preset_tomorrow_morning">Jutro rano</string>
     <string name="snooze_evening_time">Godzina drzemki na wieczór</string>
     <string name="snooze_morning_time">Godzina drzemki na rano</string>
+    <string name="action_snooze_picker">Drzemka…</string>
+    <string name="snooze_picker_title">Drzemka do</string>
+    <string name="snooze_pick_time">Wybierz czas</string>
 </resources>

@@ -1371,4 +1371,7 @@
     <string name="snooze_preset_tomorrow_morning">내일 아침</string>
     <string name="snooze_evening_time">저녁 다시 알림 시간</string>
     <string name="snooze_morning_time">아침 다시 알림 시간</string>
+    <string name="action_snooze_picker">다시 알림…</string>
+    <string name="snooze_picker_title">다시 알림 시각</string>
+    <string name="snooze_pick_time">시간 선택</string>
 </resources>

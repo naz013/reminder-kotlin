@@ -74,9 +74,7 @@ internal class ReminderActionActivityViewModel(
     when (action) {
       ReminderAction.Complete -> onOkClicked()
       ReminderAction.Snooze -> onDefaultSnoozeClicked()
-      ReminderAction.SnoozeCustom -> {
-        event.emit(ViewModelEvent.ShowSnoozeDialog)
-      }
+      ReminderAction.SnoozeCustom -> event.emit(ViewModelEvent.OpenSnoozePicker(id))
       ReminderAction.Dismiss -> onCancelClicked()
       ReminderAction.MakeCall -> onActionButtonClick()
       ReminderAction.SendSms -> onActionButtonClick()
@@ -121,18 +119,6 @@ internal class ReminderActionActivityViewModel(
         _state.value = screenState
       }
     }
-  }
-
-  /**
-   * Handles custom snooze time selection from the UI.
-   *
-   * Snoozes the reminder for the specified number of minutes.
-   *
-   * @param timeInMinutes The number of minutes to snooze the reminder
-   */
-  fun onCustomSnooze(timeInMinutes: Int) {
-    Logger.i(TAG, "Custom snooze selected: $timeInMinutes minutes for reminder id=$id")
-    onSnoozeClicked(timeInMinutes)
   }
 
   private fun onOkClicked() {
@@ -291,7 +277,9 @@ internal class ReminderActionActivityViewModel(
       val message: String,
     ) : ViewModelEvent
 
-    data object ShowSnoozeDialog : ViewModelEvent
+    data class OpenSnoozePicker(
+      val id: String,
+    ) : ViewModelEvent
   }
 
   companion object {

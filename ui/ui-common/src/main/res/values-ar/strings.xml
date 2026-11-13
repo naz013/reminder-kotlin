@@ -1403,4 +1403,7 @@
     <string name="snooze_preset_tomorrow_morning">صباح الغد</string>
     <string name="snooze_evening_time">وقت غفوة المساء</string>
     <string name="snooze_morning_time">وقت غفوة الصباح</string>
+    <string name="action_snooze_picker">غفوة…</string>
+    <string name="snooze_picker_title">غفوة حتى</string>
+    <string name="snooze_pick_time">اختر الوقت</string>
 </resources>

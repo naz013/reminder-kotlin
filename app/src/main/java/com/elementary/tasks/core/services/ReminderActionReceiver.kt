@@ -23,6 +23,7 @@ class ReminderActionReceiver : BaseBroadcast() {
         when {
           action.matches(ACTION_HIDE.toRegex()) -> reminderActionProcessor.complete(id)
           action.matches(ACTION_SNOOZE.toRegex()) -> reminderActionProcessor.snooze(id)
+          action.matches(ACTION_SNOOZE_PICKER.toRegex()) -> reminderActionProcessor.openSnoozePicker(id)
         }
       }
     }
@@ -32,5 +33,6 @@ class ReminderActionReceiver : BaseBroadcast() {
     private const val TAG = "ReminderActionReceiver"
     const val ACTION_HIDE = Actions.Reminder.ACTION_HIDE_SIMPLE
     const val ACTION_SNOOZE = Actions.Reminder.ACTION_SNOOZE
+    const val ACTION_SNOOZE_PICKER = Actions.Reminder.ACTION_SNOOZE_PICKER
   }
 }
