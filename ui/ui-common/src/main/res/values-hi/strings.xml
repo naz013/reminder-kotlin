@@ -1390,4 +1390,10 @@
     <string name="widget_routine_status_in_progress">जारी है</string>
     <string name="widget_routine_status_done">आज पूरा हुआ</string>
     <string name="widget_routine_status_progress">%2$d में से %1$d चरण पूरे</string>
+    <string name="widget_pomodoro_description">होम स्क्रीन से फ़ोकस सत्र शुरू, रोकें या बंद करें</string>
+    <string name="widget_pomodoro_unavailable">फ़ोकस टाइमर एक PRO सुविधा है। ऐप खोलने के लिए टैप करें।</string>
+    <string name="widget_pomodoro_start_focus">फ़ोकस शुरू करें</string>
+    <string name="widget_pomodoro_today_minutes">आज %1$d मिनट फ़ोकस</string>
+    <string name="widget_pomodoro_ends_at">%1$s बजे समाप्त</string>
+    <string name="widget_pomodoro_paused_remaining">रुका हुआ · %1$s शेष</string>
 </resources>

@@ -1382,4 +1382,10 @@
     <string name="widget_routine_status_in_progress">กำลังดำเนินการ</string>
     <string name="widget_routine_status_done">เสร็จสิ้นวันนี้</string>
     <string name="widget_routine_status_progress">เสร็จแล้ว %1$d จาก %2$d ขั้นตอน</string>
+    <string name="widget_pomodoro_description">เริ่ม หยุดชั่วคราว หรือหยุดเซสชันโฟกัสจากหน้าจอหลัก</string>
+    <string name="widget_pomodoro_unavailable">ตัวจับเวลาโฟกัสเป็นฟีเจอร์ PRO แตะเพื่อเปิดแอป</string>
+    <string name="widget_pomodoro_start_focus">เริ่มโฟกัส</string>
+    <string name="widget_pomodoro_today_minutes">โฟกัสวันนี้ %1$d นาที</string>
+    <string name="widget_pomodoro_ends_at">สิ้นสุดเวลา %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">หยุดชั่วคราว · เหลือ %1$s</string>
 </resources>

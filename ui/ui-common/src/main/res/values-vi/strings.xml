@@ -1386,4 +1386,10 @@
     <string name="widget_routine_status_in_progress">Đang thực hiện</string>
     <string name="widget_routine_status_done">Đã xong hôm nay</string>
     <string name="widget_routine_status_progress">Đã hoàn thành %1$d/%2$d bước</string>
+    <string name="widget_pomodoro_description">Bắt đầu, tạm dừng hoặc dừng phiên tập trung từ Màn hình chính</string>
+    <string name="widget_pomodoro_unavailable">Bộ hẹn giờ tập trung là tính năng PRO. Nhấn để mở ứng dụng.</string>
+    <string name="widget_pomodoro_start_focus">Bắt đầu tập trung</string>
+    <string name="widget_pomodoro_today_minutes">Hôm nay đã tập trung %1$d phút</string>
+    <string name="widget_pomodoro_ends_at">Kết thúc lúc %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">Đã tạm dừng · còn %1$s</string>
 </resources>

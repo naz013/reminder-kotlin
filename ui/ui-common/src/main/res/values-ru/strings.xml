@@ -1405,4 +1405,10 @@
     <string name="widget_routine_status_in_progress">Выполняется</string>
     <string name="widget_routine_status_done">Выполнено сегодня</string>
     <string name="widget_routine_status_progress">Выполнено шагов: %1$d из %2$d</string>
+    <string name="widget_pomodoro_description">Запускайте, приостанавливайте или останавливайте сеанс фокусировки с главного экрана</string>
+    <string name="widget_pomodoro_unavailable">Таймер фокусировки доступен в PRO. Нажмите, чтобы открыть приложение.</string>
+    <string name="widget_pomodoro_start_focus">Начать фокус</string>
+    <string name="widget_pomodoro_today_minutes">Сегодня в фокусе: %1$d мин</string>
+    <string name="widget_pomodoro_ends_at">Закончится в %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">Пауза · осталось %1$s</string>
 </resources>

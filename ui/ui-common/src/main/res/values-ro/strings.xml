@@ -1400,4 +1400,10 @@
     <string name="widget_routine_status_in_progress">În curs</string>
     <string name="widget_routine_status_done">Finalizat azi</string>
     <string name="widget_routine_status_progress">%1$d din %2$d pași finalizați</string>
+    <string name="widget_pomodoro_description">Pornește, pune pe pauză sau oprește o sesiune de concentrare de pe ecranul principal</string>
+    <string name="widget_pomodoro_unavailable">Temporizatorul de concentrare este o funcție PRO. Atinge pentru a deschide aplicația.</string>
+    <string name="widget_pomodoro_start_focus">Pornește concentrarea</string>
+    <string name="widget_pomodoro_today_minutes">%1$d min de concentrare azi</string>
+    <string name="widget_pomodoro_ends_at">Se termină la %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">În pauză · mai sunt %1$s</string>
 </resources>

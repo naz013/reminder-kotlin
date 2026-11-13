@@ -1392,4 +1392,10 @@
     <string name="widget_routine_status_in_progress">Pågår</string>
     <string name="widget_routine_status_done">Klar i dag</string>
     <string name="widget_routine_status_progress">%1$d av %2$d steg klara</string>
+    <string name="widget_pomodoro_description">Starta, pausa eller avsluta en fokussession från startskärmen</string>
+    <string name="widget_pomodoro_unavailable">Fokustimern är en PRO-funktion. Tryck för att öppna appen.</string>
+    <string name="widget_pomodoro_start_focus">Starta fokus</string>
+    <string name="widget_pomodoro_today_minutes">%1$d min fokus idag</string>
+    <string name="widget_pomodoro_ends_at">Slutar kl. %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">Pausad · %1$s kvar</string>
 </resources>

@@ -12,6 +12,7 @@ import com.github.naz013.appwidgets.googletasks.GoogleTasksGlanceAppWidget
 import com.github.naz013.appwidgets.habit.HabitGlanceAppWidget
 import com.github.naz013.appwidgets.nextreminder.NextReminderGlanceAppWidget
 import com.github.naz013.appwidgets.notes.NotesGlanceAppWidget
+import com.github.naz013.appwidgets.pomodoro.PomodoroGlanceAppWidget
 import com.github.naz013.appwidgets.routine.RoutineGlanceAppWidget
 import com.github.naz013.appwidgets.singlenote.SingleNoteGlanceAppWidget
 import com.github.naz013.appwidgets.todo.TodoGlanceAppWidget
@@ -32,6 +33,7 @@ internal class AppWidgetUpdaterImpl(
     invokeSuspend { updateGlanceWidget(TodoGlanceAppWidget(), WidgetId.NO_ID) }
     invokeSuspend { updateHabitsWidget() }
     invokeSuspend { updateRoutineWidget() }
+    invokeSuspend { updatePomodoroWidget() }
   }
 
   override suspend fun updateEventsWidget(widgetId: Int) {
@@ -57,6 +59,11 @@ internal class AppWidgetUpdaterImpl(
   override suspend fun updateRoutineWidget(widgetId: Int) {
     updateGlanceWidget(RoutineGlanceAppWidget(), widgetId)
     appWidgetPreviewUpdater.updateRoutineWidgetPreview()
+  }
+
+  override suspend fun updatePomodoroWidget(widgetId: Int) {
+    updateGlanceWidget(PomodoroGlanceAppWidget(), widgetId)
+    appWidgetPreviewUpdater.updatePomodoroWidgetPreview()
   }
 
   private suspend fun updateGlanceWidget(widget: GlanceAppWidget, widgetId: Int) {

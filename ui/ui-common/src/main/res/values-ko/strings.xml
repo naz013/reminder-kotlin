@@ -1384,4 +1384,10 @@
     <string name="widget_routine_status_in_progress">진행 중</string>
     <string name="widget_routine_status_done">오늘 완료</string>
     <string name="widget_routine_status_progress">%2$d단계 중 %1$d단계 완료</string>
+    <string name="widget_pomodoro_description">홈 화면에서 집중 세션을 시작, 일시정지 또는 중지</string>
+    <string name="widget_pomodoro_unavailable">집중 타이머는 PRO 기능입니다. 탭하여 앱을 엽니다.</string>
+    <string name="widget_pomodoro_start_focus">집중 시작</string>
+    <string name="widget_pomodoro_today_minutes">오늘 %1$d분 집중</string>
+    <string name="widget_pomodoro_ends_at">%1$s에 종료</string>
+    <string name="widget_pomodoro_paused_remaining">일시정지됨 · %1$s 남음</string>
 </resources>

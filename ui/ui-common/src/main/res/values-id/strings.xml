@@ -1386,4 +1386,10 @@
     <string name="widget_routine_status_in_progress">Sedang berjalan</string>
     <string name="widget_routine_status_done">Selesai hari ini</string>
     <string name="widget_routine_status_progress">%1$d dari %2$d langkah selesai</string>
+    <string name="widget_pomodoro_description">Mulai, jeda, atau hentikan sesi fokus dari layar utama</string>
+    <string name="widget_pomodoro_unavailable">Timer fokus adalah fitur PRO. Ketuk untuk membuka aplikasi.</string>
+    <string name="widget_pomodoro_start_focus">Mulai fokus</string>
+    <string name="widget_pomodoro_today_minutes">Fokus %1$d mnt hari ini</string>
+    <string name="widget_pomodoro_ends_at">Berakhir pukul %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">Dijeda · sisa %1$s</string>
 </resources>
