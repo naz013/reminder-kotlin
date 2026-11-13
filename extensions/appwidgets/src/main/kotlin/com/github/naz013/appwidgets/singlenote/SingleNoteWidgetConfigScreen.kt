@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Slider
@@ -77,6 +78,9 @@ internal fun SingleNoteWidgetConfigScreen(
           contentDescription = null,
           modifier = Modifier.size(156.dp),
         )
+      }
+      if (state.isPreviewLoading) {
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary)
       }
     }
 

@@ -17,6 +17,7 @@ internal data class SingleNoteWidgetConfigState(
   val overlayColorIndex: Int = ThemeProvider.AppColorIndex.WHITE,
   val overlayColorOpacity: Float = 0f,
   val previewBitmap: Bitmap? = null,
+  val isPreviewLoading: Boolean = false,
   val hapticFeedbackEnabled: Boolean = true,
   val palette: List<Color> = emptyList(),
 )
