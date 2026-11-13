@@ -1398,4 +1398,8 @@
     <string name="widget_pomodoro_today_minutes">Vandaag %1$d min gefocust</string>
     <string name="widget_pomodoro_ends_at">Eindigt om %1$s</string>
     <string name="widget_pomodoro_paused_remaining">Gepauzeerd · nog %1$s</string>
+    <string name="search_global_hint">Zoek herinneringen, notities, verjaardagen…</string>
+    <string name="search_recent_title">Recente zoekopdrachten</string>
+    <string name="search_no_results">Geen resultaten voor \"%1$s\"</string>
+    <string name="search_start_prompt">Zoek in je herinneringen, notities, verjaardagen en meer</string>
 </resources>

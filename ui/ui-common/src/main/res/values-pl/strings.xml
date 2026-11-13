@@ -1412,4 +1412,8 @@
     <string name="widget_pomodoro_today_minutes">Dziś skupienie: %1$d min</string>
     <string name="widget_pomodoro_ends_at">Kończy się o %1$s</string>
     <string name="widget_pomodoro_paused_remaining">Wstrzymano · pozostało %1$s</string>
+    <string name="search_global_hint">Szukaj przypomnień, notatek, urodzin…</string>
+    <string name="search_recent_title">Ostatnie wyszukiwania</string>
+    <string name="search_no_results">Brak wyników dla \"%1$s\"</string>
+    <string name="search_start_prompt">Przeszukuj przypomnienia, notatki, urodziny i więcej</string>
 </resources>

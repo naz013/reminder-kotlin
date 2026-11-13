@@ -184,6 +184,11 @@ class ScheduleHomeViewModel internal constructor(
     event.emit(ViewModelEvent.OpenSettings)
   }
 
+  fun onSearchClicked() {
+    Logger.i(TAG, "On search clicked")
+    event.emit(ViewModelEvent.OpenSearch)
+  }
+
   fun onEventClicked(homeEvent: HomeEvent) {
     Logger.i(TAG, "On event clicked: id=${homeEvent.id}")
     when (homeEvent.type) {
@@ -485,6 +490,8 @@ class ScheduleHomeViewModel internal constructor(
     ) : ViewModelEvent
 
     data object OpenSettings : ViewModelEvent
+
+    data object OpenSearch : ViewModelEvent
 
     data object OpenHeaderItemsSettings : ViewModelEvent
 

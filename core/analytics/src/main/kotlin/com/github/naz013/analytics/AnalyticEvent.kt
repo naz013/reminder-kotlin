@@ -191,7 +191,8 @@ enum class Feature(val value: String) {
   AI_DIGEST("ai_digest"),
   POMODORO("pomodoro"),
   QUICK_ADD("quick_add"),
-  WORKFLOWS("workflows")
+  WORKFLOWS("workflows"),
+  GLOBAL_SEARCH("global_search")
 }
 
 enum class Screen(val value: String) {
@@ -217,7 +218,8 @@ enum class Screen(val value: String) {
   NOTE_SETTINGS("note_settings"),
   LOCATION_SETTINGS("location_settings"),
   OTHER_SETTINGS("other_settings"),
-  AI_DIGEST_SETTINGS("ai_digest_settings")
+  AI_DIGEST_SETTINGS("ai_digest_settings"),
+  SEARCH("search")
 }
 
 enum class Widget(val value: String) {
