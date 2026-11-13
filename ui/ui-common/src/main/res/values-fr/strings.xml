@@ -1387,4 +1387,7 @@
     <string name="snooze_preset_tomorrow_morning">Demain matin</string>
     <string name="snooze_evening_time">Heure de report du soir</string>
     <string name="snooze_morning_time">Heure de report du matin</string>
+    <string name="action_snooze_picker">Reporter…</string>
+    <string name="snooze_picker_title">Reporter jusqu’à</string>
+    <string name="snooze_pick_time">Choisir l’heure</string>
 </resources>

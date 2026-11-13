@@ -1387,4 +1387,7 @@
     <string name="snooze_preset_tomorrow_morning">Mañana por la mañana</string>
     <string name="snooze_evening_time">Hora de posposición de la tarde</string>
     <string name="snooze_morning_time">Hora de posposición de la mañana</string>
+    <string name="action_snooze_picker">Posponer…</string>
+    <string name="snooze_picker_title">Posponer hasta</string>
+    <string name="snooze_pick_time">Elegir hora</string>
 </resources>

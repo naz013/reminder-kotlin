@@ -20,6 +20,7 @@ import com.github.naz013.logic.notificationaction.InAppAlertBus
 import com.github.naz013.logic.notificationaction.InAppAlertDomain
 import com.github.naz013.logic.notificationaction.InAppAlertPreferences
 import com.github.naz013.logic.notificationaction.PhoneCallStateProvider
+import com.github.naz013.logic.notificationaction.SnoozePickerLauncher
 import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.logic.reminder.query.ResolveReminderV2NotificationSettingsUseCase
 import com.github.naz013.logic.workflow.WorkflowTriggerRunner
@@ -50,6 +51,7 @@ class ReminderActionProcessor(
   private val inAppAlertPreferences: InAppAlertPreferences,
   private val textProvider: TextProvider,
   private val reminderPreferences: ReminderPreferences,
+  private val snoozePickerLauncher: SnoozePickerLauncher,
 ) {
   private val scope = CoroutineScope(dispatcherProvider.default())
 
@@ -61,6 +63,11 @@ class ReminderActionProcessor(
         completeSnoozeFactory.createSnooze().handle(reminder)
       }
     }
+  }
+
+  fun openSnoozePicker(id: String) {
+    Logger.i(TAG, "Opening snooze picker for reminder: $id")
+    snoozePickerLauncher.launch(id)
   }
 
   fun complete(id: String) {
@@ -177,6 +184,12 @@ class ReminderActionProcessor(
           iconRes = DrawableCatalog.Fluent.Snooze,
           label = textProvider.getText(R.string.acc_button_snooze),
           onClick = { snooze(reminder.uuId) },
+        )
+      actions +=
+        InAppAlertAction(
+          iconRes = DrawableCatalog.Fluent.AlertSnooze,
+          label = textProvider.getText(R.string.action_snooze_picker),
+          onClick = { openSnoozePicker(reminder.uuId) },
         )
     }
     return InAppAlert(

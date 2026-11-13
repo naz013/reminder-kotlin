@@ -1371,4 +1371,7 @@
     <string name="snooze_preset_tomorrow_morning">明日の朝</string>
     <string name="snooze_evening_time">夜のスヌーズ時刻</string>
     <string name="snooze_morning_time">朝のスヌーズ時刻</string>
+    <string name="action_snooze_picker">スヌーズ…</string>
+    <string name="snooze_picker_title">スヌーズ先</string>
+    <string name="snooze_pick_time">時刻を選択</string>
 </resources>

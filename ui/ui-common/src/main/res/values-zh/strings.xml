@@ -1371,4 +1371,7 @@
     <string name="snooze_preset_tomorrow_morning">明天早上</string>
     <string name="snooze_evening_time">晚间贪睡时间</string>
     <string name="snooze_morning_time">早晨贪睡时间</string>
+    <string name="action_snooze_picker">稍后提醒…</string>
+    <string name="snooze_picker_title">稍后提醒至</string>
+    <string name="snooze_pick_time">选择时间</string>
 </resources>

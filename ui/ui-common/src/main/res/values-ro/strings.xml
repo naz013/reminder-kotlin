@@ -1387,4 +1387,7 @@
     <string name="snooze_preset_tomorrow_morning">Mâine dimineață</string>
     <string name="snooze_evening_time">Ora de amânare pentru seară</string>
     <string name="snooze_morning_time">Ora de amânare pentru dimineață</string>
+    <string name="action_snooze_picker">Amână…</string>
+    <string name="snooze_picker_title">Amână până la</string>
+    <string name="snooze_pick_time">Alege ora</string>
 </resources>

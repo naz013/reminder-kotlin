@@ -1381,4 +1381,7 @@
     <string name="snooze_preset_tomorrow_morning">Yarın sabah</string>
     <string name="snooze_evening_time">Akşam erteleme saati</string>
     <string name="snooze_morning_time">Sabah erteleme saati</string>
+    <string name="action_snooze_picker">Ertele…</string>
+    <string name="snooze_picker_title">Şu zamana ertele</string>
+    <string name="snooze_pick_time">Saat seç</string>
 </resources>

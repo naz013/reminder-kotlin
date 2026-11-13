@@ -143,7 +143,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
     }
 
   @Test
-  fun `onActionClick SnoozeCustom shows the snooze dialog without snoozing`() =
+  fun `onActionClick SnoozeCustom opens the snooze picker without snoozing`() =
     runTest {
       coEvery { reminderV2Repository.getById("42") } returns reminder()
       val viewModel = createViewModel()
@@ -152,7 +152,7 @@ class ReminderActionActivityViewModelTest : BaseTest() {
 
       coVerify(exactly = 0) { snoozeReminderUseCase(any(), any()) }
       assertEquals(
-        ReminderActionActivityViewModel.ViewModelEvent.ShowSnoozeDialog,
+        ReminderActionActivityViewModel.ViewModelEvent.OpenSnoozePicker("42"),
         viewModel.event.value?.peekContent(),
       )
     }
@@ -184,18 +184,6 @@ class ReminderActionActivityViewModelTest : BaseTest() {
       viewModel.onActionClick(ReminderAction.Snooze)
 
       coVerify(exactly = 1) { snoozeReminderUseCase(match { it.uuId == r.uuId }, 30) }
-    }
-
-  @Test
-  fun `onCustomSnooze snoozes for the given number of minutes`() =
-    runTest {
-      val r = reminder()
-      coEvery { reminderV2Repository.getById("42") } returns r
-      val viewModel = createViewModel()
-
-      viewModel.onCustomSnooze(45)
-
-      coVerify(exactly = 1) { snoozeReminderUseCase(match { it.uuId == r.uuId }, 45) }
     }
 
   @Test
