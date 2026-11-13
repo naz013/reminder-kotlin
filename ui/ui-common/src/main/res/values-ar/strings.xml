@@ -1416,4 +1416,10 @@
     <string name="widget_routine_status_in_progress">قيد التنفيذ</string>
     <string name="widget_routine_status_done">تم اليوم</string>
     <string name="widget_routine_status_progress">%1$d من %2$d خطوات مكتملة</string>
+    <string name="widget_pomodoro_description">ابدأ جلسة تركيز أو أوقفها مؤقتًا أو أنهِها من الشاشة الرئيسية</string>
+    <string name="widget_pomodoro_unavailable">مؤقت التركيز ميزة PRO. اضغط لفتح التطبيق.</string>
+    <string name="widget_pomodoro_start_focus">ابدأ التركيز</string>
+    <string name="widget_pomodoro_today_minutes">%1$d دقيقة تركيز اليوم</string>
+    <string name="widget_pomodoro_ends_at">ينتهي في %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">متوقف مؤقتًا · متبقي %1$s</string>
 </resources>

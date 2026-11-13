@@ -1384,4 +1384,10 @@
     <string name="widget_routine_status_in_progress">进行中</string>
     <string name="widget_routine_status_done">今日已完成</string>
     <string name="widget_routine_status_progress">已完成 %1$d/%2$d 步</string>
+    <string name="widget_pomodoro_description">在主屏幕上开始、暂停或停止专注</string>
+    <string name="widget_pomodoro_unavailable">专注计时器是 PRO 功能。点按以打开应用。</string>
+    <string name="widget_pomodoro_start_focus">开始专注</string>
+    <string name="widget_pomodoro_today_minutes">今天已专注 %1$d 分钟</string>
+    <string name="widget_pomodoro_ends_at">%1$s 结束</string>
+    <string name="widget_pomodoro_paused_remaining">已暂停 · 剩余 %1$s</string>
 </resources>

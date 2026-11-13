@@ -1,5 +1,6 @@
 package com.github.naz013.feature.pomodoro.engine
 
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.feature.pomodoro.PomodoroForegroundNotifier
 import com.github.naz013.feature.pomodoro.PomodoroPreferences
 import com.github.naz013.feature.pomodoro.usecase.RecordPomodoroSessionUseCase
@@ -19,6 +20,7 @@ class PomodoroTimerEngineImplTest {
   private val pomodoroPreferences = mockk<PomodoroPreferences>()
   private val pomodoroForegroundNotifier = mockk<PomodoroForegroundNotifier>(relaxed = true)
   private val recordPomodoroSessionUseCase = mockk<RecordPomodoroSessionUseCase>(relaxed = true)
+  private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
 
   private lateinit var engine: PomodoroTimerEngineImpl
 
@@ -36,6 +38,7 @@ class PomodoroTimerEngineImplTest {
       pomodoroPreferences = pomodoroPreferences,
       pomodoroForegroundNotifier = pomodoroForegroundNotifier,
       recordPomodoroSessionUseCase = recordPomodoroSessionUseCase,
+      appWidgetUpdater = appWidgetUpdater,
     )
   }
 
@@ -56,6 +59,21 @@ class PomodoroTimerEngineImplTest {
     engine.start(linkedReminderId = null)
 
     coVerify { pomodoroForegroundNotifier.start() }
+  }
+
+  @Test
+  fun `starting a session refreshes the pomodoro widget`() {
+    engine.start(linkedReminderId = null)
+
+    coVerify { appWidgetUpdater.updatePomodoroWidget(any()) }
+  }
+
+  @Test
+  fun `pausing a session refreshes the pomodoro widget`() {
+    engine.start(linkedReminderId = null)
+    engine.pause()
+
+    coVerify(atLeast = 2) { appWidgetUpdater.updatePomodoroWidget(any()) }
   }
 
   @Test

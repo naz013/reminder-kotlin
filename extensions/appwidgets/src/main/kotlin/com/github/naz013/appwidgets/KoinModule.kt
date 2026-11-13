@@ -24,6 +24,9 @@ import com.github.naz013.appwidgets.habit.HabitCheckInHandler
 import com.github.naz013.appwidgets.habit.HabitWidgetConfigViewModel
 import com.github.naz013.appwidgets.habit.HabitWidgetPrefsProvider
 import com.github.naz013.appwidgets.nextreminder.NextReminderAppWidgetViewModel
+import com.github.naz013.appwidgets.pomodoro.PomodoroAppWidgetViewModel
+import com.github.naz013.appwidgets.pomodoro.PomodoroWidgetActionHandler
+import com.github.naz013.appwidgets.pomodoro.PomodoroWidgetTimeFormatter
 import com.github.naz013.appwidgets.routine.RoutineAppWidgetViewModel
 import com.github.naz013.appwidgets.routine.RoutineWidgetConfigViewModel
 import com.github.naz013.appwidgets.routine.RoutineWidgetPrefsProvider
@@ -186,4 +189,8 @@ val appWidgetsModule = module {
       get()
     )
   }
+
+  factoryOf(::PomodoroWidgetTimeFormatter)
+  factoryOf(::PomodoroWidgetActionHandler)
+  factory { PomodoroAppWidgetViewModel(get(), get(), get(), get(), get()) }
 }

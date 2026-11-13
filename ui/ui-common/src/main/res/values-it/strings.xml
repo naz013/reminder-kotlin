@@ -1400,4 +1400,10 @@
     <string name="widget_routine_status_in_progress">In corso</string>
     <string name="widget_routine_status_done">Completata oggi</string>
     <string name="widget_routine_status_progress">%1$d di %2$d passaggi completati</string>
+    <string name="widget_pomodoro_description">Avvia, metti in pausa o interrompi una sessione di concentrazione dalla schermata Home</string>
+    <string name="widget_pomodoro_unavailable">Il timer di concentrazione è una funzione PRO. Tocca per aprire l\'app.</string>
+    <string name="widget_pomodoro_start_focus">Avvia concentrazione</string>
+    <string name="widget_pomodoro_today_minutes">%1$d min di concentrazione oggi</string>
+    <string name="widget_pomodoro_ends_at">Termina alle %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">In pausa · restano %1$s</string>
 </resources>
