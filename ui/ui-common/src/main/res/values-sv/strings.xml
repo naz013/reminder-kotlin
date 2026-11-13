@@ -1382,4 +1382,6 @@
     <string name="action_snooze_picker">Snooza…</string>
     <string name="snooze_picker_title">Snooza till</string>
     <string name="snooze_pick_time">Välj tid</string>
+    <string name="widget_habits_description">Bocka av dagens vanor direkt från startskärmen</string>
+    <string name="widget_habits_unlock">Vanor är en PRO-funktion. Tryck för att öppna appen.</string>
 </resources>

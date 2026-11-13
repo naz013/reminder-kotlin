@@ -1374,4 +1374,6 @@
     <string name="action_snooze_picker">稍后提醒…</string>
     <string name="snooze_picker_title">稍后提醒至</string>
     <string name="snooze_pick_time">选择时间</string>
+    <string name="widget_habits_description">在主屏幕上为今天的习惯打卡</string>
+    <string name="widget_habits_unlock">习惯是 PRO 功能。点按以打开应用。</string>
 </resources>

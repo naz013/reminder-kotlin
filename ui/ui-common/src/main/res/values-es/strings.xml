@@ -1390,4 +1390,6 @@
     <string name="action_snooze_picker">Posponer…</string>
     <string name="snooze_picker_title">Posponer hasta</string>
     <string name="snooze_pick_time">Elegir hora</string>
+    <string name="widget_habits_description">Registra los hábitos de hoy desde la pantalla de inicio</string>
+    <string name="widget_habits_unlock">Los hábitos son una función PRO. Toca para abrir la aplicación.</string>
 </resources>

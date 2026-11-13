@@ -1374,4 +1374,6 @@
     <string name="action_snooze_picker">スヌーズ…</string>
     <string name="snooze_picker_title">スヌーズ先</string>
     <string name="snooze_pick_time">時刻を選択</string>
+    <string name="widget_habits_description">ホーム画面から今日の習慣をチェックイン</string>
+    <string name="widget_habits_unlock">習慣はPRO機能です。タップしてアプリを開きます。</string>
 </resources>

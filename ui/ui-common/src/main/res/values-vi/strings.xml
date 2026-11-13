@@ -1376,4 +1376,6 @@
     <string name="action_snooze_picker">Báo lại…</string>
     <string name="snooze_picker_title">Báo lại đến</string>
     <string name="snooze_pick_time">Chọn giờ</string>
+    <string name="widget_habits_description">Điểm danh thói quen hôm nay ngay từ Màn hình chính</string>
+    <string name="widget_habits_unlock">Thói quen là tính năng PRO. Chạm để mở ứng dụng.</string>
 </resources>

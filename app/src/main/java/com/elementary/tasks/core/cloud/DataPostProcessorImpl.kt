@@ -2,6 +2,7 @@ package com.elementary.tasks.core.cloud
 
 import androidx.core.content.edit
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.logic.habit.nudge.ScheduleHabitNudgeUseCase
 import com.github.naz013.logic.reminder.usecase.ActivateReminderUseCase
 import com.github.naz013.domain.habit.Habit
@@ -22,6 +23,7 @@ class DataPostProcessorImpl(
   private val activateReminderUseCase: ActivateReminderUseCase,
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val scheduleHabitNudgeUseCase: ScheduleHabitNudgeUseCase,
+  private val appWidgetUpdater: AppWidgetUpdater,
 ) : DataPostProcessor {
   override suspend fun process(
     dataType: DataType,
@@ -34,6 +36,7 @@ class DataPostProcessorImpl(
 
       is Habit -> {
         scheduleHabitNudgeUseCase(any)
+        appWidgetUpdater.updateHabitsWidget()
       }
 
       is SettingsModel -> {

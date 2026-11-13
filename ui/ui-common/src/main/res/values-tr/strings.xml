@@ -1384,4 +1384,6 @@
     <string name="action_snooze_picker">Ertele…</string>
     <string name="snooze_picker_title">Şu zamana ertele</string>
     <string name="snooze_pick_time">Saat seç</string>
+    <string name="widget_habits_description">Bugünkü alışkanlıkları ana ekrandan işaretleyin</string>
+    <string name="widget_habits_unlock">Alışkanlıklar bir PRO özelliğidir. Uygulamayı açmak için dokunun.</string>
 </resources>
