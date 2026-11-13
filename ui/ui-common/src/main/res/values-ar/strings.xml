@@ -1408,4 +1408,12 @@
     <string name="snooze_pick_time">اختر الوقت</string>
     <string name="widget_habits_description">سجّل عاداتك اليومية من الشاشة الرئيسية</string>
     <string name="widget_habits_unlock">العادات ميزة PRO. اضغط لفتح التطبيق.</string>
+    <string name="widget_routine_description">ابدأ روتينًا أو استأنفه من الشاشة الرئيسية</string>
+    <string name="widget_routine_unavailable">الروتينات غير متاحة. المس لفتح التطبيق.</string>
+    <string name="widget_routine_resume">استئناف</string>
+    <string name="widget_routine_next_scheduled">الروتين المجدول التالي</string>
+    <string name="widget_routine_status_not_started">لم يبدأ</string>
+    <string name="widget_routine_status_in_progress">قيد التنفيذ</string>
+    <string name="widget_routine_status_done">تم اليوم</string>
+    <string name="widget_routine_status_progress">%1$d من %2$d خطوات مكتملة</string>
 </resources>

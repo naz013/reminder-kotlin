@@ -11,6 +11,7 @@ dependencies {
   implementation(project(":data:repository-api"))
   implementation(project(":data:files-api"))
   implementation(project(":data:sync"))
+  implementation(project(":extensions:appwidgets-api"))
   implementation(project(":logic:logic-schedule"))
 
   implementation(libs.threetenbp)

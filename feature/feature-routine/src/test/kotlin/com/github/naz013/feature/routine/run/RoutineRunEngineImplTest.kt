@@ -1,5 +1,6 @@
 package com.github.naz013.feature.routine.run
 
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.domain.routine.Routine
 import com.github.naz013.domain.routine.RoutineStep
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -35,6 +36,7 @@ class RoutineRunEngineImplTest : BaseTest() {
   private val appPreferences = mockk<AppPreferences>()
   private val foregroundNotifier = mockk<RoutineRunForegroundNotifier>(relaxed = true)
   private val tonePlayer = mockk<StepTonePlayer>(relaxed = true)
+  private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
 
   private fun TestScope.createEngine(
     steps: List<RoutineStep>,
@@ -68,6 +70,7 @@ class RoutineRunEngineImplTest : BaseTest() {
       recordRoutineExecutionUseCase = recordUseCase,
       appPreferences = appPreferences,
       foregroundNotifier = foregroundNotifier,
+      appWidgetUpdater = appWidgetUpdater,
       tonePlayer = tonePlayer,
       currentTimeMillis = { testScheduler.currentTime },
     )
@@ -238,6 +241,27 @@ class RoutineRunEngineImplTest : BaseTest() {
     engine.completeStep()
 
     verify { foregroundNotifier.stop() }
+  }
+
+  @Test
+  fun `starting a run refreshes the routine widget and finishing refreshes it again`() = runTest {
+    val engine = startedEngine(listOf(step("a", 60, 0)))
+    coVerify(exactly = 1) { appWidgetUpdater.updateRoutineWidget(any()) }
+
+    engine.completeStep()
+    runCurrent()
+
+    coVerify(exactly = 2) { appWidgetUpdater.updateRoutineWidget(any()) }
+  }
+
+  @Test
+  fun `stopping a run refreshes the routine widget`() = runTest {
+    val engine = startedEngine(listOf(step("a", 60, 0)))
+
+    engine.stop()
+    runCurrent()
+
+    coVerify(exactly = 2) { appWidgetUpdater.updateRoutineWidget(any()) }
   }
 
   @Test

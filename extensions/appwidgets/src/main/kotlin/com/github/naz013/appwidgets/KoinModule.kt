@@ -24,6 +24,9 @@ import com.github.naz013.appwidgets.habit.HabitCheckInHandler
 import com.github.naz013.appwidgets.habit.HabitWidgetConfigViewModel
 import com.github.naz013.appwidgets.habit.HabitWidgetPrefsProvider
 import com.github.naz013.appwidgets.nextreminder.NextReminderAppWidgetViewModel
+import com.github.naz013.appwidgets.routine.RoutineAppWidgetViewModel
+import com.github.naz013.appwidgets.routine.RoutineWidgetConfigViewModel
+import com.github.naz013.appwidgets.routine.RoutineWidgetPrefsProvider
 import com.github.naz013.appwidgets.nextreminder.NextReminderWidgetConfigViewModel
 import com.github.naz013.appwidgets.nextreminder.NextReminderWidgetPrefsProvider
 import com.github.naz013.appwidgets.notes.NotesAppWidgetViewModel
@@ -165,6 +168,20 @@ val appWidgetsModule = module {
       get(),
       HabitWidgetPrefsProvider(get(), widgetId),
       get(),
+      get(),
+      get()
+    )
+  }
+
+  factory { (prefs: RoutineWidgetPrefsProvider) ->
+    RoutineAppWidgetViewModel(prefs, get(), get(), get(), get(), get())
+  }
+
+  viewModel { (widgetId: Int) ->
+    RoutineWidgetConfigViewModel(
+      get(),
+      get(),
+      RoutineWidgetPrefsProvider(get(), widgetId),
       get(),
       get()
     )

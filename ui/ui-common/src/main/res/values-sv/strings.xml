@@ -1384,4 +1384,12 @@
     <string name="snooze_pick_time">Välj tid</string>
     <string name="widget_habits_description">Bocka av dagens vanor direkt från startskärmen</string>
     <string name="widget_habits_unlock">Vanor är en PRO-funktion. Tryck för att öppna appen.</string>
+    <string name="widget_routine_description">Starta eller återuppta en rutin från startskärmen</string>
+    <string name="widget_routine_unavailable">Rutiner är inte tillgängliga. Tryck för att öppna appen.</string>
+    <string name="widget_routine_resume">Återuppta</string>
+    <string name="widget_routine_next_scheduled">Nästa schemalagda rutin</string>
+    <string name="widget_routine_status_not_started">Inte påbörjad</string>
+    <string name="widget_routine_status_in_progress">Pågår</string>
+    <string name="widget_routine_status_done">Klar i dag</string>
+    <string name="widget_routine_status_progress">%1$d av %2$d steg klara</string>
 </resources>

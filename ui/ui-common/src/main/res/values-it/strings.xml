@@ -1392,4 +1392,12 @@
     <string name="snooze_pick_time">Scegli l’ora</string>
     <string name="widget_habits_description">Segna le abitudini di oggi dalla schermata Home</string>
     <string name="widget_habits_unlock">Le abitudini sono una funzione PRO. Tocca per aprire l\'app.</string>
+    <string name="widget_routine_description">Avvia o riprendi una routine dalla schermata Home</string>
+    <string name="widget_routine_unavailable">Le routine non sono disponibili. Tocca per aprire l\'app.</string>
+    <string name="widget_routine_resume">Riprendi</string>
+    <string name="widget_routine_next_scheduled">Prossima routine pianificata</string>
+    <string name="widget_routine_status_not_started">Non iniziata</string>
+    <string name="widget_routine_status_in_progress">In corso</string>
+    <string name="widget_routine_status_done">Completata oggi</string>
+    <string name="widget_routine_status_progress">%1$d di %2$d passaggi completati</string>
 </resources>

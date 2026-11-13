@@ -1392,4 +1392,12 @@
     <string name="snooze_pick_time">Escolher hora</string>
     <string name="widget_habits_description">Registre os hábitos de hoje a partir do ecrã inicial</string>
     <string name="widget_habits_unlock">Os hábitos são uma função PRO. Toque para abrir a aplicação.</string>
+    <string name="widget_routine_description">Inicie ou retome uma rotina a partir do ecrã inicial</string>
+    <string name="widget_routine_unavailable">As rotinas não estão disponíveis. Toque para abrir a aplicação.</string>
+    <string name="widget_routine_resume">Retomar</string>
+    <string name="widget_routine_next_scheduled">Próxima rotina agendada</string>
+    <string name="widget_routine_status_not_started">Não iniciada</string>
+    <string name="widget_routine_status_in_progress">Em curso</string>
+    <string name="widget_routine_status_done">Concluída hoje</string>
+    <string name="widget_routine_status_progress">%1$d de %2$d passos concluídos</string>
 </resources>
