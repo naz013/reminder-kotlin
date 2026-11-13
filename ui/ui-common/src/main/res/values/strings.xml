@@ -1389,4 +1389,12 @@
     <string name="reschedule_skip_still_overdue">Still overdue after skipping ahead</string>
     <string name="reschedule_skip_target_in_past">That time is already in the past</string>
     <string name="reschedule_skip_not_activated">Could not be activated</string>
+    <string name="snooze_presets">Snooze presets</string>
+    <string name="snooze_preset_15_minutes">15 minutes</string>
+    <string name="snooze_preset_1_hour">1 hour</string>
+    <string name="snooze_preset_3_hours">3 hours</string>
+    <string name="snooze_preset_this_evening">This evening</string>
+    <string name="snooze_preset_tomorrow_morning">Tomorrow morning</string>
+    <string name="snooze_evening_time">Evening snooze time</string>
+    <string name="snooze_morning_time">Morning snooze time</string>
 </resources>

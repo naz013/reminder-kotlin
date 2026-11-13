@@ -1395,4 +1395,12 @@
     <string name="reschedule_skip_still_overdue">لا يزال متأخرًا بعد التخطي للأمام</string>
     <string name="reschedule_skip_target_in_past">هذا الوقت قد مضى بالفعل</string>
     <string name="reschedule_skip_not_activated">تعذر التفعيل</string>
+    <string name="snooze_presets">إعدادات الغفوة المسبقة</string>
+    <string name="snooze_preset_15_minutes">15 دقيقة</string>
+    <string name="snooze_preset_1_hour">ساعة واحدة</string>
+    <string name="snooze_preset_3_hours">3 ساعات</string>
+    <string name="snooze_preset_this_evening">هذا المساء</string>
+    <string name="snooze_preset_tomorrow_morning">صباح الغد</string>
+    <string name="snooze_evening_time">وقت غفوة المساء</string>
+    <string name="snooze_morning_time">وقت غفوة الصباح</string>
 </resources>

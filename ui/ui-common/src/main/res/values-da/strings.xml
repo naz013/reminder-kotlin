@@ -1371,4 +1371,12 @@
     <string name="reschedule_skip_still_overdue">Stadig forfalden efter spring frem</string>
     <string name="reschedule_skip_target_in_past">Det tidspunkt er allerede passeret</string>
     <string name="reschedule_skip_not_activated">Kunne ikke aktiveres</string>
+    <string name="snooze_presets">Udsættelsesforvalg</string>
+    <string name="snooze_preset_15_minutes">15 minutter</string>
+    <string name="snooze_preset_1_hour">1 time</string>
+    <string name="snooze_preset_3_hours">3 timer</string>
+    <string name="snooze_preset_this_evening">I aften</string>
+    <string name="snooze_preset_tomorrow_morning">I morgen tidlig</string>
+    <string name="snooze_evening_time">Tidspunkt for udsættelse til aften</string>
+    <string name="snooze_morning_time">Tidspunkt for udsættelse til morgen</string>
 </resources>

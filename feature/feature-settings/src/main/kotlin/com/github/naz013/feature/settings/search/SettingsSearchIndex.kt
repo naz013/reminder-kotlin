@@ -272,6 +272,30 @@ internal object SettingsSearchIndex {
     )
     add(
       SettingsSearchEntry(
+        titleRes = R.string.snooze_presets,
+        path = remindersPath,
+        keywordRes = listOf(R.string.settings_search_keyword_postpone),
+        highlightItemId = SettingsSearchItemKeys.REMINDERS_SNOOZE_PRESETS,
+      ),
+    )
+    add(
+      SettingsSearchEntry(
+        titleRes = R.string.snooze_evening_time,
+        path = remindersPath,
+        keywordRes = listOf(R.string.settings_search_keyword_postpone),
+        highlightItemId = SettingsSearchItemKeys.REMINDERS_SNOOZE_EVENING_TIME,
+      ),
+    )
+    add(
+      SettingsSearchEntry(
+        titleRes = R.string.snooze_morning_time,
+        path = remindersPath,
+        keywordRes = listOf(R.string.settings_search_keyword_postpone),
+        highlightItemId = SettingsSearchItemKeys.REMINDERS_SNOOZE_MORNING_TIME,
+      ),
+    )
+    add(
+      SettingsSearchEntry(
         titleRes = R.string.reminder_notification_repeat_interval,
         path = remindersPath,
         highlightItemId = SettingsSearchItemKeys.REMINDERS_REPEAT_INTERVAL,

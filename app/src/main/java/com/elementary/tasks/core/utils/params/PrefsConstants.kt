@@ -14,6 +14,9 @@ object PrefsConstants {
   const val START_DAY = "start_day"
   const val DAYS_TO_BIRTHDAY = "days_to"
   const val DELAY_TIME = "delay_time"
+  const val SNOOZE_PRESETS = "snooze_presets"
+  const val SNOOZE_EVENING_TIME = "snooze_evening_time"
+  const val SNOOZE_MORNING_TIME = "snooze_morning_time"
   const val EVENT_DURATION = "event_duration"
   const val EXPORT_TO_CALENDAR = "export_to_calendar"
 

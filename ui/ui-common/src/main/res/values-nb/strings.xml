@@ -1371,4 +1371,12 @@
     <string name="reschedule_skip_still_overdue">Fortsatt forfalt etter hopp fremover</string>
     <string name="reschedule_skip_target_in_past">Det tidspunktet har allerede passert</string>
     <string name="reschedule_skip_not_activated">Kunne ikke aktiveres</string>
+    <string name="snooze_presets">Utsettelsesforvalg</string>
+    <string name="snooze_preset_15_minutes">15 minutter</string>
+    <string name="snooze_preset_1_hour">1 time</string>
+    <string name="snooze_preset_3_hours">3 timer</string>
+    <string name="snooze_preset_this_evening">I kveld</string>
+    <string name="snooze_preset_tomorrow_morning">I morgen tidlig</string>
+    <string name="snooze_evening_time">Tidspunkt for utsettelse til kveld</string>
+    <string name="snooze_morning_time">Tidspunkt for utsettelse til morgen</string>
 </resources>

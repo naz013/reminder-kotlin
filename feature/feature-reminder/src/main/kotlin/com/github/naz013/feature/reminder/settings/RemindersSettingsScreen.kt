@@ -1,5 +1,6 @@
 package com.github.naz013.feature.reminder.settings
 
+import com.github.naz013.logic.reminder.snooze.SnoozePresetType
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,6 +36,9 @@ fun RemindersSettingsScreen(
   onWearToggle: () -> Unit,
   onWearCompanionToggle: () -> Unit,
   onSnoozeClick: () -> Unit,
+  onSnoozePresetToggle: (SnoozePresetType) -> Unit,
+  onSnoozeEveningTimeClick: () -> Unit,
+  onSnoozeMorningTimeClick: () -> Unit,
   onRepeatToggle: () -> Unit,
   onRepeatIntervalClick: () -> Unit,
   onMaxRepeatCountClick: () -> Unit,
@@ -165,6 +169,36 @@ fun RemindersSettingsScreen(
       itemKey = SettingsSearchItemKeys.REMINDERS_SNOOZE_TIME,
       dividerBottom = true,
       onClick = onSnoozeClick,
+    )
+    SnoozePresetType.entries.forEach { preset ->
+      SettingsSwitchItem(
+        title = stringResource(preset.titleRes()),
+        checked = preset in state.enabledSnoozePresets,
+        onCheckedChange = { onSnoozePresetToggle(preset) },
+        icon = AppIcons.Fluent.AlertSnooze,
+        itemKey = if (preset == SnoozePresetType.entries.first()) SettingsSearchItemKeys.REMINDERS_SNOOZE_PRESETS else null,
+        dividerBottom = true,
+      )
+    }
+    SettingsItem(
+      title = stringResource(R.string.snooze_evening_time),
+      icon = AppIcons.Builder.Timer,
+      itemKey = SettingsSearchItemKeys.REMINDERS_SNOOZE_EVENING_TIME,
+      dividerBottom = true,
+      onClick = onSnoozeEveningTimeClick,
+      trailing = {
+        Text(text = state.snoozeEveningTimeText, style = MaterialTheme.typography.titleLarge)
+      },
+    )
+    SettingsItem(
+      title = stringResource(R.string.snooze_morning_time),
+      icon = AppIcons.Builder.Timer,
+      itemKey = SettingsSearchItemKeys.REMINDERS_SNOOZE_MORNING_TIME,
+      dividerBottom = true,
+      onClick = onSnoozeMorningTimeClick,
+      trailing = {
+        Text(text = state.snoozeMorningTimeText, style = MaterialTheme.typography.titleLarge)
+      },
     )
     SettingsSwitchItem(
       title = stringResource(R.string.reminder_notification_repeating),
@@ -415,3 +449,12 @@ fun RemindersSettingsScreen(
     null -> Unit
   }
 }
+
+private fun SnoozePresetType.titleRes(): Int =
+  when (this) {
+    SnoozePresetType.MINUTES_15 -> R.string.snooze_preset_15_minutes
+    SnoozePresetType.HOUR_1 -> R.string.snooze_preset_1_hour
+    SnoozePresetType.HOURS_3 -> R.string.snooze_preset_3_hours
+    SnoozePresetType.THIS_EVENING -> R.string.snooze_preset_this_evening
+    SnoozePresetType.TOMORROW_MORNING -> R.string.snooze_preset_tomorrow_morning
+  }

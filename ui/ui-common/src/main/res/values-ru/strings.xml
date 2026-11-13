@@ -1384,4 +1384,12 @@
     <string name="reschedule_skip_still_overdue">Всё ещё просрочено после пропуска вперёд</string>
     <string name="reschedule_skip_target_in_past">Это время уже прошло</string>
     <string name="reschedule_skip_not_activated">Не удалось активировать</string>
+    <string name="snooze_presets">Варианты отложения</string>
+    <string name="snooze_preset_15_minutes">15 минут</string>
+    <string name="snooze_preset_1_hour">1 час</string>
+    <string name="snooze_preset_3_hours">3 часа</string>
+    <string name="snooze_preset_this_evening">Сегодня вечером</string>
+    <string name="snooze_preset_tomorrow_morning">Завтра утром</string>
+    <string name="snooze_evening_time">Время отложения на вечер</string>
+    <string name="snooze_morning_time">Время отложения на утро</string>
 </resources>

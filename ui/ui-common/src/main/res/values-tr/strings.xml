@@ -1373,4 +1373,12 @@
     <string name="reschedule_skip_still_overdue">İleri atlandıktan sonra hâlâ gecikmiş</string>
     <string name="reschedule_skip_target_in_past">Bu saat zaten geçti</string>
     <string name="reschedule_skip_not_activated">Etkinleştirilemedi</string>
+    <string name="snooze_presets">Erteleme ön ayarları</string>
+    <string name="snooze_preset_15_minutes">15 dakika</string>
+    <string name="snooze_preset_1_hour">1 saat</string>
+    <string name="snooze_preset_3_hours">3 saat</string>
+    <string name="snooze_preset_this_evening">Bu akşam</string>
+    <string name="snooze_preset_tomorrow_morning">Yarın sabah</string>
+    <string name="snooze_evening_time">Akşam erteleme saati</string>
+    <string name="snooze_morning_time">Sabah erteleme saati</string>
 </resources>
