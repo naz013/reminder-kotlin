@@ -1382,4 +1382,6 @@
     <string name="action_snooze_picker">Utsett…</string>
     <string name="snooze_picker_title">Utsett til</string>
     <string name="snooze_pick_time">Velg tid</string>
+    <string name="widget_habits_description">Merk av dagens vaner direkte fra startskjermen</string>
+    <string name="widget_habits_unlock">Vaner er en PRO-funksjon. Trykk for å åpne appen.</string>
 </resources>

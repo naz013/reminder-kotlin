@@ -1372,4 +1372,6 @@
     <string name="action_snooze_picker">เลื่อนเตือน…</string>
     <string name="snooze_picker_title">เลื่อนเตือนไปที่</string>
     <string name="snooze_pick_time">เลือกเวลา</string>
+    <string name="widget_habits_description">เช็กอินนิสัยของวันนี้จากหน้าจอหลัก</string>
+    <string name="widget_habits_unlock">นิสัยเป็นฟีเจอร์ PRO แตะเพื่อเปิดแอป</string>
 </resources>

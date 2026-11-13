@@ -1,5 +1,6 @@
 package com.github.naz013.logic.habit.usecase
 
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.datecalc.NowDateTimeProvider
 import com.github.naz013.domain.habit.Habit
 import com.github.naz013.domain.habit.HabitCheckIn
@@ -39,6 +40,7 @@ class HabitUseCasesTest {
   private val schedule = mockk<ScheduleBackgroundWorkUseCase>(relaxed = true)
   private val scheduleNudge = mockk<ScheduleHabitNudgeUseCase>(relaxed = true)
   private val jobScheduler = mockk<JobSchedulerApi>(relaxed = true)
+  private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
   private val nowProvider = mockk<NowDateTimeProvider> {
     every { nowDate() } returns today
     every { nowDateTime() } returns now
@@ -64,7 +66,7 @@ class HabitUseCasesTest {
     coEvery { habitRepository.getById("h-1") } returns habit(target = 1)
     coEvery { checkInRepository.get("h-1", today) } returns null
 
-    IncrementHabitCheckInUseCase(habitRepository, checkInRepository, nowProvider)("h-1")
+    IncrementHabitCheckInUseCase(habitRepository, checkInRepository, nowProvider, appWidgetUpdater)("h-1")
 
     coVerify {
       checkInRepository.save(
@@ -78,7 +80,7 @@ class HabitUseCasesTest {
     coEvery { habitRepository.getById("h-1") } returns habit(target = 3)
     coEvery { checkInRepository.get("h-1", today) } returns checkIn(1)
 
-    IncrementHabitCheckInUseCase(habitRepository, checkInRepository, nowProvider)("h-1")
+    IncrementHabitCheckInUseCase(habitRepository, checkInRepository, nowProvider, appWidgetUpdater)("h-1")
 
     coVerify {
       checkInRepository.save(
@@ -98,7 +100,7 @@ class HabitUseCasesTest {
   fun `increment does nothing for an unknown habit`() = runTest {
     coEvery { habitRepository.getById("missing") } returns null
 
-    IncrementHabitCheckInUseCase(habitRepository, checkInRepository, nowProvider)("missing")
+    IncrementHabitCheckInUseCase(habitRepository, checkInRepository, nowProvider, appWidgetUpdater)("missing")
 
     coVerify(exactly = 0) { checkInRepository.save(any()) }
   }
@@ -108,7 +110,7 @@ class HabitUseCasesTest {
     coEvery { habitRepository.getById("h-1") } returns habit(target = 3)
     coEvery { checkInRepository.get("h-1", today) } returns null
 
-    ToggleHabitCheckInUseCase(habitRepository, checkInRepository, nowProvider)("h-1")
+    ToggleHabitCheckInUseCase(habitRepository, checkInRepository, nowProvider, appWidgetUpdater)("h-1")
 
     coVerify {
       checkInRepository.save(
@@ -122,10 +124,32 @@ class HabitUseCasesTest {
     coEvery { habitRepository.getById("h-1") } returns habit()
     coEvery { checkInRepository.get("h-1", today) } returns checkIn(1)
 
-    ToggleHabitCheckInUseCase(habitRepository, checkInRepository, nowProvider)("h-1")
+    ToggleHabitCheckInUseCase(habitRepository, checkInRepository, nowProvider, appWidgetUpdater)("h-1")
 
     coVerify { checkInRepository.delete("h-1", today) }
     coVerify(exactly = 0) { checkInRepository.save(any()) }
+  }
+
+  @Test
+  fun `increment refreshes the habits widget`() = runTest {
+    coEvery { habitRepository.getById("h-1") } returns habit(target = 3)
+    coEvery { checkInRepository.get("h-1", today) } returns null
+
+    IncrementHabitCheckInUseCase(habitRepository, checkInRepository, nowProvider, appWidgetUpdater)("h-1")
+
+    coVerify(exactly = 1) { appWidgetUpdater.updateHabitsWidget(any()) }
+  }
+
+  @Test
+  fun `toggle refreshes the habits widget after completing and after clearing`() = runTest {
+    coEvery { habitRepository.getById("h-1") } returns habit()
+    coEvery { checkInRepository.get("h-1", today) } returnsMany listOf(null, checkIn(1))
+    val useCase = ToggleHabitCheckInUseCase(habitRepository, checkInRepository, nowProvider, appWidgetUpdater)
+
+    useCase("h-1")
+    useCase("h-1")
+
+    coVerify(exactly = 2) { appWidgetUpdater.updateHabitsWidget(any()) }
   }
 
   @Test

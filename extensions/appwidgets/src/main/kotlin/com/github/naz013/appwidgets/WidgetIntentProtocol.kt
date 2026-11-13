@@ -14,5 +14,6 @@ internal enum class Direction : Serializable {
   NOTE_PREVIEW,
   ADD_NOTE,
   GOOGLE_TASK,
+  HABIT_PREVIEW,
   HOME
 }
