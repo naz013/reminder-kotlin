@@ -90,6 +90,7 @@ include(":logic:logic-quickadd")
 include(":logic:logic-reminder")
 include(":logic:logic-routine")
 include(":logic:logic-schedule")
+include(":logic:logic-search")
 include(":logic:logic-tag")
 include(":logic:logic-workflow")
 

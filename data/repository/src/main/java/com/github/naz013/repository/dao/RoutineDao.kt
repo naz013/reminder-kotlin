@@ -42,4 +42,13 @@ internal interface RoutineDao {
 
   @Query("SELECT id FROM Routine")
   fun getAllIds(): List<String>
+
+  @Query(
+    """
+        SELECT * FROM Routine
+        WHERE LOWER(title) LIKE '%' || :query || '%'
+        OR LOWER(steps) LIKE '%' || :query || '%'
+        ORDER BY isPinned DESC, createdAt DESC"""
+  )
+  fun search(query: String): List<RoutineEntity>
 }
