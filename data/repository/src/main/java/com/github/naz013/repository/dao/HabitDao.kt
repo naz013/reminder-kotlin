@@ -44,6 +44,14 @@ internal abstract class HabitDao {
   @Query("SELECT id FROM Habit")
   abstract fun getAllIds(): List<String>
 
+  @Query(
+    """
+        SELECT * FROM Habit
+        WHERE LOWER(name) LIKE '%' || :query || '%'
+        ORDER BY isPinned DESC, createdAt DESC"""
+  )
+  abstract fun search(query: String): List<HabitEntity>
+
   @Query("DELETE FROM HabitCheckIn WHERE habitId=:habitId")
   abstract fun deleteCheckInsOf(habitId: String)
 

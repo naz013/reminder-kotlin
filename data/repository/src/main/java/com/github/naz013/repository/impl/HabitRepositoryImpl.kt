@@ -73,6 +73,13 @@ internal class HabitRepositoryImpl(
     return habitDao.getAllIds()
   }
 
+  override suspend fun search(query: String): List<Habit> {
+    Logger.d(TAG, "Search habits by query: $query")
+    val normalized = query.trim().lowercase()
+    if (normalized.isEmpty()) return emptyList()
+    return habitDao.search(normalized).map { it.toDomain() }
+  }
+
   companion object {
     private const val TAG = "HabitRepository"
   }
