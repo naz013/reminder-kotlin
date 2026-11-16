@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.github.naz013.ui.common.R
@@ -55,7 +56,7 @@ fun SearchBar(
     onValueChange = onQueryChange,
     modifier = modifier,
     placeholder = if (placeholder.isNotEmpty()) {
-      { Text(text = placeholder) }
+      { Text(text = placeholder, maxLines = 1, overflow = TextOverflow.Ellipsis) }
     } else {
       null
     },
