@@ -31,6 +31,9 @@ import com.github.naz013.feature.reminder.settings.ManagePresetsScreen
 import com.github.naz013.feature.reminder.settings.RemindersSettingsEvent
 import com.github.naz013.feature.reminder.settings.RemindersSettingsScreen
 import com.github.naz013.feature.reminder.settings.RemindersSettingsViewModel
+import com.github.naz013.feature.reminder.settings.snooze.SnoozePresetsSettingsEvent
+import com.github.naz013.feature.reminder.settings.snooze.SnoozePresetsSettingsScreen
+import com.github.naz013.feature.reminder.settings.snooze.SnoozePresetsSettingsViewModel
 import com.github.naz013.feature.settings.SettingsNavKey
 import com.github.naz013.feature.settings.SettingsScaffold
 import com.github.naz013.feature.settings.location.LocationNavKey
@@ -82,6 +85,7 @@ fun RemindersCrossFeatureEntry(
   viewModel.navigationEvent.ObserveEvent { event ->
     when (event) {
       RemindersSettingsEvent.OpenPresets -> backStack.add(SettingsNavKey.ManagePresets)
+      RemindersSettingsEvent.OpenSnoozePresets -> backStack.add(SettingsNavKey.SnoozePresets)
       RemindersSettingsEvent.OpenLocationSettings -> backStack.add(LocationNavKey.Location)
       RemindersSettingsEvent.OpenWorkflowRules -> backStack.add(WorkflowNavKey.Gallery)
       RemindersSettingsEvent.OpenProVersion -> backStack.add(SettingsNavKey.ProVersion)
@@ -140,9 +144,7 @@ fun RemindersCrossFeatureEntry(
         onWearToggle = viewModel::onWearToggle,
         onWearCompanionToggle = viewModel::onWearCompanionToggle,
         onSnoozeClick = viewModel::onSnoozeClick,
-        onSnoozePresetToggle = viewModel::onSnoozePresetToggle,
-        onSnoozeEveningTimeClick = viewModel::onSnoozeEveningTimeClick,
-        onSnoozeMorningTimeClick = viewModel::onSnoozeMorningTimeClick,
+        onSnoozePresetsClick = viewModel::onSnoozePresetsClick,
         onRepeatToggle = viewModel::onRepeatToggle,
         onRepeatIntervalClick = viewModel::onRepeatIntervalClick,
         onMaxRepeatCountClick = viewModel::onMaxRepeatCountClick,
@@ -246,6 +248,41 @@ fun BirthdayCrossFeatureEntry(
         },
         onAutoScanToggle = viewModel::onAutoScanToggle,
         onDialogDismiss = viewModel::onDialogDismiss,
+        modifier = Modifier.padding(padding),
+      )
+    }
+  }
+}
+
+@Composable
+fun SnoozePresetsCrossFeatureEntry(backStack: MutableList<NavKey>) {
+  val viewModel = koinViewModel<SnoozePresetsSettingsViewModel>()
+  val dateTimePicker = rememberDateTimePicker()
+  val state by viewModel.state.collectAsState()
+
+  viewModel.events.ObserveEvent { event ->
+    when (event) {
+      is SnoozePresetsSettingsEvent.ShowTimePicker -> {
+        dateTimePicker.showTimePicker(
+          time = event.time,
+          title = event.title,
+          is24Hour = event.is24Hour,
+          onTimeSelected = { viewModel.onTimeSelected(event.target, it) },
+        )
+      }
+    }
+  }
+
+  SettingsScaffold(
+    title = stringResource(R.string.snooze_presets),
+    onBackClick = { if (backStack.size > 1) backStack.removeLastOrNull() },
+  ) { padding ->
+    SettingsHighlightScope {
+      SnoozePresetsSettingsScreen(
+        state = state,
+        onPresetToggle = viewModel::onPresetToggle,
+        onEveningTimeClick = viewModel::onEveningTimeClick,
+        onMorningTimeClick = viewModel::onMorningTimeClick,
         modifier = Modifier.padding(padding),
       )
     }
