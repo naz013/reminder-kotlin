@@ -9,7 +9,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val featurePomodoroModule = module {
-  single<PomodoroTimerEngine> { PomodoroTimerEngineImpl(get(), get(), get(), get()) }
+  single<PomodoroTimerEngine> { PomodoroTimerEngineImpl(get(), get(), get(), get(), get()) }
   factoryOf(::RecordPomodoroSessionUseCase)
   viewModel { (linkedReminderId: String?) ->
     PomodoroTimerViewModel(

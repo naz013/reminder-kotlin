@@ -1394,4 +1394,10 @@
     <string name="widget_routine_status_in_progress">В процес</string>
     <string name="widget_routine_status_done">Готово днес</string>
     <string name="widget_routine_status_progress">%1$d от %2$d стъпки завършени</string>
+    <string name="widget_pomodoro_description">Стартирайте, поставете на пауза или спрете сесия на фокус от началния екран</string>
+    <string name="widget_pomodoro_unavailable">Таймерът за фокус е PRO функция. Докоснете, за да отворите приложението.</string>
+    <string name="widget_pomodoro_start_focus">Старт на фокус</string>
+    <string name="widget_pomodoro_today_minutes">%1$d мин фокус днес</string>
+    <string name="widget_pomodoro_ends_at">Приключва в %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">На пауза · остават %1$s</string>
 </resources>

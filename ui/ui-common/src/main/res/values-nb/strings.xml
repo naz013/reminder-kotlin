@@ -1392,4 +1392,10 @@
     <string name="widget_routine_status_in_progress">Pågår</string>
     <string name="widget_routine_status_done">Ferdig i dag</string>
     <string name="widget_routine_status_progress">%1$d av %2$d trinn fullført</string>
+    <string name="widget_pomodoro_description">Start, pause eller stopp en fokaløkt fra startskjermen</string>
+    <string name="widget_pomodoro_unavailable">Fokustimeren er en PRO-funksjon. Trykk for å åpne appen.</string>
+    <string name="widget_pomodoro_start_focus">Start fokus</string>
+    <string name="widget_pomodoro_today_minutes">%1$d min fokus i dag</string>
+    <string name="widget_pomodoro_ends_at">Slutter kl. %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">Pauset · %1$s igjen</string>
 </resources>

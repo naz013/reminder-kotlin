@@ -1400,4 +1400,10 @@
     <string name="widget_routine_status_in_progress">En curso</string>
     <string name="widget_routine_status_done">Hecha hoy</string>
     <string name="widget_routine_status_progress">%1$d de %2$d pasos completados</string>
+    <string name="widget_pomodoro_description">Inicia, pausa o detén una sesión de enfoque desde la pantalla de inicio</string>
+    <string name="widget_pomodoro_unavailable">El temporizador de enfoque es una función PRO. Toca para abrir la app.</string>
+    <string name="widget_pomodoro_start_focus">Iniciar enfoque</string>
+    <string name="widget_pomodoro_today_minutes">%1$d min de enfoque hoy</string>
+    <string name="widget_pomodoro_ends_at">Termina a las %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">En pausa · quedan %1$s</string>
 </resources>

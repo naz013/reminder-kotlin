@@ -12,4 +12,5 @@ interface AppWidgetUpdater {
   suspend fun updateNextReminderWidget(widgetId: Int = -1)
   suspend fun updateHabitsWidget(widgetId: Int = -1)
   suspend fun updateRoutineWidget(widgetId: Int = -1)
+  suspend fun updatePomodoroWidget(widgetId: Int = -1)
 }

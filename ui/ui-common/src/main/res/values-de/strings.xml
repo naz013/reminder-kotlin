@@ -1390,4 +1390,10 @@
     <string name="widget_routine_status_in_progress">In Bearbeitung</string>
     <string name="widget_routine_status_done">Heute erledigt</string>
     <string name="widget_routine_status_progress">%1$d von %2$d Schritten erledigt</string>
+    <string name="widget_pomodoro_description">Eine Fokussitzung direkt vom Startbildschirm starten, pausieren oder beenden</string>
+    <string name="widget_pomodoro_unavailable">Der Fokus-Timer ist eine PRO-Funktion. Tippen, um die App zu öffnen.</string>
+    <string name="widget_pomodoro_start_focus">Fokus starten</string>
+    <string name="widget_pomodoro_today_minutes">Heute %1$d Min. fokussiert</string>
+    <string name="widget_pomodoro_ends_at">Endet um %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">Pausiert · noch %1$s</string>
 </resources>

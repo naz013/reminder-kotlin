@@ -1410,4 +1410,10 @@
     <string name="widget_routine_status_in_progress">In progress</string>
     <string name="widget_routine_status_done">Done today</string>
     <string name="widget_routine_status_progress">%1$d of %2$d steps done</string>
+    <string name="widget_pomodoro_description">Start, pause or stop a focus session from the Home Screen</string>
+    <string name="widget_pomodoro_unavailable">The focus timer is a PRO feature. Tap to open the app.</string>
+    <string name="widget_pomodoro_start_focus">Start focus</string>
+    <string name="widget_pomodoro_today_minutes">%1$d min focused today</string>
+    <string name="widget_pomodoro_ends_at">Ends at %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">Paused · %1$s left</string>
 </resources>

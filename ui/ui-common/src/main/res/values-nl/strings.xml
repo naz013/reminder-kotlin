@@ -1392,4 +1392,10 @@
     <string name="widget_routine_status_in_progress">Bezig</string>
     <string name="widget_routine_status_done">Vandaag klaar</string>
     <string name="widget_routine_status_progress">%1$d van %2$d stappen voltooid</string>
+    <string name="widget_pomodoro_description">Start, pauzeer of stop een focussessie vanaf het startscherm</string>
+    <string name="widget_pomodoro_unavailable">De focustimer is een PRO-functie. Tik om de app te openen.</string>
+    <string name="widget_pomodoro_start_focus">Focus starten</string>
+    <string name="widget_pomodoro_today_minutes">Vandaag %1$d min gefocust</string>
+    <string name="widget_pomodoro_ends_at">Eindigt om %1$s</string>
+    <string name="widget_pomodoro_paused_remaining">Gepauzeerd · nog %1$s</string>
 </resources>

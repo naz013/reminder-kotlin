@@ -11,6 +11,7 @@ import com.github.naz013.appwidgets.googletasks.GoogleTasksGlanceAppWidgetReceiv
 import com.github.naz013.appwidgets.habit.HabitGlanceAppWidgetReceiver
 import com.github.naz013.appwidgets.nextreminder.NextReminderGlanceAppWidgetReceiver
 import com.github.naz013.appwidgets.notes.NotesGlanceAppWidgetReceiver
+import com.github.naz013.appwidgets.pomodoro.PomodoroGlanceAppWidgetReceiver
 import com.github.naz013.appwidgets.routine.RoutineGlanceAppWidgetReceiver
 import com.github.naz013.appwidgets.singlenote.SingleNoteGlanceAppWidgetReceiver
 import com.github.naz013.common.system.Module
@@ -59,6 +60,10 @@ internal class AppWidgetPreviewUpdaterImpl(
 
   override suspend fun updateRoutineWidgetPreview() {
     updatePreview(RoutineGlanceAppWidgetReceiver::class, "Routine")
+  }
+
+  override suspend fun updatePomodoroWidgetPreview() {
+    updatePreview(PomodoroGlanceAppWidgetReceiver::class, "Pomodoro")
   }
 
   private suspend fun updatePreview(

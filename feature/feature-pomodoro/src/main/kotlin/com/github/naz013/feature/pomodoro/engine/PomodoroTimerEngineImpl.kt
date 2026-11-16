@@ -1,5 +1,6 @@
 package com.github.naz013.feature.pomodoro.engine
 
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
 import com.github.naz013.feature.pomodoro.PomodoroForegroundNotifier
 import com.github.naz013.feature.pomodoro.PomodoroPreferences
@@ -21,6 +22,7 @@ internal class PomodoroTimerEngineImpl(
   private val pomodoroPreferences: PomodoroPreferences,
   private val pomodoroForegroundNotifier: PomodoroForegroundNotifier,
   private val recordPomodoroSessionUseCase: RecordPomodoroSessionUseCase,
+  private val appWidgetUpdater: AppWidgetUpdater,
 ) : PomodoroTimerEngine {
 
   private val engineScope = CoroutineScope(SupervisorJob() + dispatcherProvider.default())
@@ -47,6 +49,7 @@ internal class PomodoroTimerEngineImpl(
     if (!current.isRunning || current.isPaused) return
     pausedRemainingMillis = remainingMillis()
     publish(isPaused = true)
+    refreshWidget()
   }
 
   override fun resume() {
@@ -56,6 +59,7 @@ internal class PomodoroTimerEngineImpl(
     deadlineAtMillis = System.currentTimeMillis() + remaining
     pausedRemainingMillis = null
     publish(isPaused = false)
+    refreshWidget()
   }
 
   override fun skipToBreak() {
@@ -75,6 +79,7 @@ internal class PomodoroTimerEngineImpl(
     workStartedAt = null
     _state.value = PomodoroEngineState(completedWorkSessionsToday = completedWorkSessionsToday)
     pomodoroForegroundNotifier.stop()
+    refreshWidget()
   }
 
   private fun beginWork(linkedReminderId: String?) {
@@ -92,6 +97,7 @@ internal class PomodoroTimerEngineImpl(
       completedWorkSessionsToday = completedWorkSessionsToday,
     )
     pomodoroForegroundNotifier.start()
+    refreshWidget()
   }
 
   private fun beginBreak() {
@@ -120,6 +126,7 @@ internal class PomodoroTimerEngineImpl(
     } else {
       pomodoroForegroundNotifier.stop()
     }
+    refreshWidget()
   }
 
   private fun finishWork(wasCompleted: Boolean) {
@@ -136,8 +143,16 @@ internal class PomodoroTimerEngineImpl(
         actualFocusSeconds = actualSeconds,
         wasCompleted = wasCompleted,
       )
+      refreshWidget()
     }
     workStartedAt = null
+  }
+
+  private fun refreshWidget() {
+    engineScope.launch(dispatcherProvider.io()) {
+      runCatching { appWidgetUpdater.updatePomodoroWidget() }
+        .onFailure { Logger.w(TAG, "Pomodoro widget refresh failed: ${it.message}") }
+    }
   }
 
   private fun remainingMillis(): Long =

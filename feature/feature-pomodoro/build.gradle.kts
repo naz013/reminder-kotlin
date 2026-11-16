@@ -14,6 +14,7 @@ dependencies {
   implementation(project(":core:feature-common"))
   implementation(project(":core:platform-common"))
   implementation(project(":data:repository-api"))
+  implementation(project(":extensions:appwidgets-api"))
   implementation(project(":ui:ui-common"))
 
   implementation(libs.koin.android)
