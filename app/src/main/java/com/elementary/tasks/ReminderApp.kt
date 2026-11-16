@@ -67,6 +67,7 @@ import com.github.naz013.logic.notificationaction.logicNotificationActionModule
 import com.github.naz013.logic.reminder.logicReminderModule
 import com.github.naz013.logic.routine.logicRoutineModule
 import com.github.naz013.logic.schedule.logicScheduleModule
+import com.github.naz013.logic.search.logicSearchModule
 import com.github.naz013.logic.tag.logicTagModule
 import com.github.naz013.logic.workflow.logicWorkflowModule
 import com.github.naz013.navigation.ActivityDestination
@@ -209,6 +210,7 @@ class ReminderApp :
           logicNotificationActionModule,
           logicRoutineModule,
           logicHabitModule,
+          logicSearchModule,
           routineModule,
           habitModule,
           featureReminderModule,

@@ -275,6 +275,7 @@ dependencies {
   implementation(project(":logic:logic-reminder"))
   implementation(project(":logic:logic-routine"))
   implementation(project(":logic:logic-schedule"))
+  implementation(project(":logic:logic-search"))
   implementation(project(":logic:logic-tag"))
   implementation(project(":logic:logic-workflow"))
 

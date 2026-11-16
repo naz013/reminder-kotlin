@@ -26,4 +26,6 @@ interface HabitRepository {
   suspend fun updateSyncState(id: String, state: SyncState)
 
   suspend fun getAllIds(): List<String>
+
+  suspend fun search(query: String): List<Habit>
 }

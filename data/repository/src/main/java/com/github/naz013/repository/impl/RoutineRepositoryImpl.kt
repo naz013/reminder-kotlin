@@ -73,6 +73,18 @@ internal class RoutineRepositoryImpl(
     return dao.getAllIds()
   }
 
+  override suspend fun search(query: String): List<Routine> {
+    Logger.d(TAG, "Search routines by query: $query")
+    val normalized = query.trim().lowercase()
+    if (normalized.isEmpty()) return emptyList()
+    return dao.search(normalized)
+      .map { it.toDomain() }
+      .filter { routine ->
+        routine.title.lowercase().contains(normalized) ||
+          routine.steps.any { it.title.lowercase().contains(normalized) }
+      }
+  }
+
   companion object {
     private const val TAG = "RoutineRepository"
   }
