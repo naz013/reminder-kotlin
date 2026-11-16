@@ -273,7 +273,7 @@ internal object SettingsSearchIndex {
     add(
       SettingsSearchEntry(
         titleRes = R.string.snooze_presets,
-        path = remindersPath,
+        path = listOf(SettingsNavKey.Reminders(), SettingsNavKey.SnoozePresets),
         keywordRes = listOf(R.string.settings_search_keyword_postpone),
         highlightItemId = SettingsSearchItemKeys.REMINDERS_SNOOZE_PRESETS,
       ),
@@ -281,7 +281,7 @@ internal object SettingsSearchIndex {
     add(
       SettingsSearchEntry(
         titleRes = R.string.snooze_evening_time,
-        path = remindersPath,
+        path = listOf(SettingsNavKey.Reminders(), SettingsNavKey.SnoozePresets),
         keywordRes = listOf(R.string.settings_search_keyword_postpone),
         highlightItemId = SettingsSearchItemKeys.REMINDERS_SNOOZE_EVENING_TIME,
       ),
@@ -289,7 +289,7 @@ internal object SettingsSearchIndex {
     add(
       SettingsSearchEntry(
         titleRes = R.string.snooze_morning_time,
-        path = remindersPath,
+        path = listOf(SettingsNavKey.Reminders(), SettingsNavKey.SnoozePresets),
         keywordRes = listOf(R.string.settings_search_keyword_postpone),
         highlightItemId = SettingsSearchItemKeys.REMINDERS_SNOOZE_MORNING_TIME,
       ),

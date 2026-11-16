@@ -105,6 +105,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(
   remindersEntry: @Composable (SettingsNavKey.Reminders, MutableList<NavKey>, Boolean) -> Unit,
   birthdayEntry: @Composable (SettingsNavKey.Birthday, MutableList<NavKey>, Boolean) -> Unit,
   managePresetsEntry: @Composable (MutableList<NavKey>) -> Unit,
+  snoozePresetsEntry: @Composable (MutableList<NavKey>) -> Unit,
   notificationCustomizationHelpEntry: @Composable (onBackClick: () -> Unit) -> Unit,
   onOpenLocalBackupExport: (String) -> Unit,
   onOpenLocalBackupImport: (String) -> Unit,
@@ -154,6 +155,7 @@ fun EntryProviderScope<NavKey>.settingsEntries(
     NoteEntry(key, backStack, renderAsDetailPane)
   }
   entry<SettingsNavKey.ManagePresets>(metadata = SettingsDetailPane) { managePresetsEntry(backStack) }
+  entry<SettingsNavKey.SnoozePresets>(metadata = SettingsDetailPane) { snoozePresetsEntry(backStack) }
   entry<SettingsNavKey.Developer>(metadata = SettingsDetailPane) {
     val renderAsDetailPane = remember { isRenderedAsDetailPane(SettingsNavKey.Developer) }
     DeveloperEntry(backStack, renderAsDetailPane, onOpenReminderActionTest, onOpenBirthdayActionTest)

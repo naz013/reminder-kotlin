@@ -51,6 +51,7 @@ import com.github.naz013.feature.places.placesEntries
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
 import com.elementary.tasks.settings.BirthdayCrossFeatureEntry
 import com.elementary.tasks.settings.ManagePresetsCrossFeatureEntry
+import com.elementary.tasks.settings.SnoozePresetsCrossFeatureEntry
 import com.elementary.tasks.settings.RemindersCrossFeatureEntry
 import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
 import com.github.naz013.ui.common.compose.foundation.share.rememberFileIntentSender
@@ -471,6 +472,7 @@ fun AppNavGraph(initialKeys: List<NavKey> = emptyList(), shouldShowOnboarding: B
               BirthdayCrossFeatureEntry(key, entryBackStack, renderAsDetailPane)
             },
             managePresetsEntry = { entryBackStack -> ManagePresetsCrossFeatureEntry(entryBackStack) },
+            snoozePresetsEntry = { entryBackStack -> SnoozePresetsCrossFeatureEntry(entryBackStack) },
             notificationCustomizationHelpEntry = { onBackClick ->
               NotificationCustomizationHelpScreen(onBackClick = onBackClick)
             },
