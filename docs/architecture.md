@@ -24,7 +24,7 @@ between the actual leaf modules are unchanged from before the reorg.
 | `data/` | `repository(-api)`, `cloud(-api)`, `sync`, `files(-api)`, `work(-api)`, `icalendar(-api)`, `holidays(-api)`, `legal(-api)`, `digest(-api)`, `demo-photo(-api)`, `googlecalendar-api`, `location-api`, `notification-api`, `scheduler-api` | Persistence, cloud, sync, and the thin platform-contract `-api` modules `app` implements directly |
 | `ui/` | `ui-common`, `ui-map`, `ui-note`, `ui-reminder`, `ui-tag`, `ui-googletask`, `ui-group`, `ui-agenda`, `ui-birthday`, `ui-routine`, `ui-notification-settings`, `ui-icons-solar` | Shared Compose building blocks, no navigation/ViewModels |
 | `logic/` | `logic-reminder`, `logic-note`, `logic-tag`, `logic-googletask`, `logic-group`, `logic-birthday`, `logic-schedule`, `logic-search`, `logic-workflow`, `logic-habit`, `logic-routine`, `logic-quickadd`, `logic-notification-action`, `logic-demo-data` | Cross-feature business logic |
-| `feature/` | `feature-home`, `feature-agenda`, `feature-calendar`, `feature-reminder`, `feature-note`, `feature-birthday`, `feature-googletask`, `feature-places`, `feature-group`, `feature-tags`, `feature-insights`, `feature-workflow`, `feature-habit`, `feature-routine`, `feature-pomodoro`, `feature-onboarding`, `feature-settings` | Vertical feature slices; only `app` depends on these |
+| `feature/` | `feature-home`, `feature-search`, `feature-agenda`, `feature-calendar`, `feature-reminder`, `feature-note`, `feature-birthday`, `feature-googletask`, `feature-places`, `feature-group`, `feature-tags`, `feature-insights`, `feature-workflow`, `feature-habit`, `feature-routine`, `feature-pomodoro`, `feature-onboarding`, `feature-settings` | Vertical feature slices; only `app` depends on these |
 | `extensions/` | `appwidgets(-api)`, `appfunctions`, `localbackup`, `wearsync(-api)` | Cross-feature, flavor/runtime-gated additions `app` pulls in as a unit |
 | `admin/` | `cloudtestadmin`, `reviews`, `reviewsadmin` | Debug/internal-only tooling, excluded from release builds and most CI test runs |
 
@@ -90,6 +90,7 @@ Modules added after the table above was written. Each follows the `feature` / `u
 | Module | Purpose |
 |---|---|
 | `feature:feature-home` | Home screen: chronological list, day-overview pane (list-detail on wide screens), header navigation grid. |
+| `feature:feature-search` | Global search screen: debounced query, recent queries, results grouped by type with filter chips; entry point is the search icon on Home. |
 | `feature:feature-agenda` (+ `ui:ui-agenda`) | Reminders and birthdays agenda with Smart List and tag filters. |
 | `feature:feature-calendar` | Month/week calendar with reminders, birthdays, Google Tasks and (flagged) public holidays. |
 | `feature:feature-birthday` (+ `ui:ui-birthday`, `logic:logic-birthday`) | Birthday list, editor, preview and settings. |

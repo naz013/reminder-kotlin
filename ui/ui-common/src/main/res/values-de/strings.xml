@@ -1396,4 +1396,8 @@
     <string name="widget_pomodoro_today_minutes">Heute %1$d Min. fokussiert</string>
     <string name="widget_pomodoro_ends_at">Endet um %1$s</string>
     <string name="widget_pomodoro_paused_remaining">Pausiert · noch %1$s</string>
+    <string name="search_global_hint">Erinnerungen, Notizen, Geburtstage suchen…</string>
+    <string name="search_recent_title">Letzte Suchen</string>
+    <string name="search_no_results">Keine Ergebnisse für \"%1$s\"</string>
+    <string name="search_start_prompt">Durchsuche Erinnerungen, Notizen, Geburtstage und mehr</string>
 </resources>

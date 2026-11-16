@@ -1422,4 +1422,8 @@
     <string name="widget_pomodoro_today_minutes">%1$d دقيقة تركيز اليوم</string>
     <string name="widget_pomodoro_ends_at">ينتهي في %1$s</string>
     <string name="widget_pomodoro_paused_remaining">متوقف مؤقتًا · متبقي %1$s</string>
+    <string name="search_global_hint">ابحث في التذكيرات والملاحظات وأعياد الميلاد…</string>
+    <string name="search_recent_title">عمليات البحث الأخيرة</string>
+    <string name="search_no_results">لا توجد نتائج لـ \"%1$s\"</string>
+    <string name="search_start_prompt">ابحث في التذكيرات والملاحظات وأعياد الميلاد والمزيد</string>
 </resources>

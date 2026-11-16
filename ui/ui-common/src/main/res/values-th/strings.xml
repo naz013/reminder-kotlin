@@ -1388,4 +1388,8 @@
     <string name="widget_pomodoro_today_minutes">โฟกัสวันนี้ %1$d นาที</string>
     <string name="widget_pomodoro_ends_at">สิ้นสุดเวลา %1$s</string>
     <string name="widget_pomodoro_paused_remaining">หยุดชั่วคราว · เหลือ %1$s</string>
+    <string name="search_global_hint">ค้นหาการเตือน บันทึก วันเกิด…</string>
+    <string name="search_recent_title">การค้นหาล่าสุด</string>
+    <string name="search_no_results">ไม่พบผลลัพธ์สำหรับ \"%1$s\"</string>
+    <string name="search_start_prompt">ค้นหาในการเตือน บันทึก วันเกิด และอื่นๆ</string>
 </resources>

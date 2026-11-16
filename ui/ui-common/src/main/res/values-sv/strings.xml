@@ -1398,4 +1398,8 @@
     <string name="widget_pomodoro_today_minutes">%1$d min fokus idag</string>
     <string name="widget_pomodoro_ends_at">Slutar kl. %1$s</string>
     <string name="widget_pomodoro_paused_remaining">Pausad · %1$s kvar</string>
+    <string name="search_global_hint">Sök påminnelser, anteckningar, födelsedagar…</string>
+    <string name="search_recent_title">Senaste sökningar</string>
+    <string name="search_no_results">Inga resultat för \"%1$s\"</string>
+    <string name="search_start_prompt">Sök bland dina påminnelser, anteckningar, födelsedagar och mer</string>
 </resources>

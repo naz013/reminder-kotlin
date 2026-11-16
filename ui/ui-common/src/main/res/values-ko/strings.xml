@@ -1390,4 +1390,8 @@
     <string name="widget_pomodoro_today_minutes">오늘 %1$d분 집중</string>
     <string name="widget_pomodoro_ends_at">%1$s에 종료</string>
     <string name="widget_pomodoro_paused_remaining">일시정지됨 · %1$s 남음</string>
+    <string name="search_global_hint">미리 알림, 메모, 생일 검색…</string>
+    <string name="search_recent_title">최근 검색</string>
+    <string name="search_no_results">\"%1$s\"에 대한 결과 없음</string>
+    <string name="search_start_prompt">미리 알림, 메모, 생일 등을 검색하세요</string>
 </resources>

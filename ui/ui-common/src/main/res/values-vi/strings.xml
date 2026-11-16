@@ -1392,4 +1392,8 @@
     <string name="widget_pomodoro_today_minutes">Hôm nay đã tập trung %1$d phút</string>
     <string name="widget_pomodoro_ends_at">Kết thúc lúc %1$s</string>
     <string name="widget_pomodoro_paused_remaining">Đã tạm dừng · còn %1$s</string>
+    <string name="search_global_hint">Tìm lời nhắc, ghi chú, sinh nhật…</string>
+    <string name="search_recent_title">Tìm kiếm gần đây</string>
+    <string name="search_no_results">Không có kết quả cho \"%1$s\"</string>
+    <string name="search_start_prompt">Tìm trong lời nhắc, ghi chú, sinh nhật và hơn thế nữa</string>
 </resources>

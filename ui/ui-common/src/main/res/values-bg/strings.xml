@@ -1400,4 +1400,8 @@
     <string name="widget_pomodoro_today_minutes">%1$d мин фокус днес</string>
     <string name="widget_pomodoro_ends_at">Приключва в %1$s</string>
     <string name="widget_pomodoro_paused_remaining">На пауза · остават %1$s</string>
+    <string name="search_global_hint">Търсене на напомняния, бележки, рождени дни…</string>
+    <string name="search_recent_title">Скорошни търсения</string>
+    <string name="search_no_results">Няма резултати за \"%1$s\"</string>
+    <string name="search_start_prompt">Търсете в напомнянията, бележките, рождените дни и други</string>
 </resources>

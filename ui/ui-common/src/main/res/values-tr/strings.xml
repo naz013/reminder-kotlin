@@ -1400,4 +1400,8 @@
     <string name="widget_pomodoro_today_minutes">Bugün %1$d dk odaklanıldı</string>
     <string name="widget_pomodoro_ends_at">%1$s saatinde biter</string>
     <string name="widget_pomodoro_paused_remaining">Duraklatıldı · %1$s kaldı</string>
+    <string name="search_global_hint">Hatırlatıcı, not, doğum günü ara…</string>
+    <string name="search_recent_title">Son aramalar</string>
+    <string name="search_no_results">\"%1$s\" için sonuç yok</string>
+    <string name="search_start_prompt">Hatırlatıcılarda, notlarda, doğum günlerinde ve daha fazlasında arayın</string>
 </resources>

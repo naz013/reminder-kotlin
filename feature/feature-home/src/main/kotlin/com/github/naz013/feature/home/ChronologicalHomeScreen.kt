@@ -95,6 +95,7 @@ fun ChronologicalHomeScreen(
   state: HomeScreenState,
   onAddMenuItemClick: (ScheduleHomeViewModel.EventType) -> Unit,
   onSettingsClick: () -> Unit,
+  onSearchClick: () -> Unit,
   onHeaderNavigationItemClick: (HeaderNavigationItem) -> Unit,
   onHeaderNavigationItemLongClick: () -> Unit,
   onEventClick: (HomeEvent) -> Unit,
@@ -138,6 +139,7 @@ fun ChronologicalHomeScreen(
         addMenuItems = state.addMenuItems,
         onAddMenuItemClick = onAddMenuItemClick,
         onSettingsClick = onSettingsClick,
+        onSearchClick = onSearchClick,
         // On Medium+ width, Settings is a rail item (see appRailDestinations in AppNavGraph.kt) -
         // showing this button too would be a redundant second entry point.
         showSettingsButton = showHeaderNavigation,
@@ -445,6 +447,7 @@ private fun Header(
   addMenuItems: List<ScheduleHomeViewModel.EventType>,
   onAddMenuItemClick: (ScheduleHomeViewModel.EventType) -> Unit,
   onSettingsClick: () -> Unit,
+  onSearchClick: () -> Unit,
   summary: String = "",
   showSettingsButton: Boolean = true,
 ) {
@@ -463,6 +466,12 @@ private fun Header(
           addMenuExpanded = false
           onAddMenuItemClick(it)
         },
+      )
+      MenuIconButton(
+        modifier = Modifier.size(56.dp),
+        icon = AppIcons.Fluent.Search,
+        onClick = onSearchClick,
+        contentDescription = stringResource(R.string.search),
       )
       if (showSettingsButton) {
         MenuIconButton(
@@ -1138,6 +1147,7 @@ private fun HeaderPreview() {
       addMenuItems = listOf(ScheduleHomeViewModel.EventType.Reminder, ScheduleHomeViewModel.EventType.Birthday),
       onAddMenuItemClick = { },
       onSettingsClick = { },
+      onSearchClick = { },
     )
   }
 }

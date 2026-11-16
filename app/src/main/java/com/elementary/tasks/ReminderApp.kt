@@ -41,6 +41,7 @@ import com.github.naz013.feature.common.viewmodel.PendingDeleteCoordinator
 import com.github.naz013.feature.googletask.featureGoogleTaskModule
 import com.github.naz013.feature.habit.habitModule
 import com.github.naz013.feature.home.featureHomeModule
+import com.github.naz013.feature.search.featureSearchModule
 import com.github.naz013.feature.note.featureNoteModule
 import com.github.naz013.feature.places.featurePlacesModule
 import com.github.naz013.feature.reminder.featureReminderModule
@@ -172,6 +173,7 @@ class ReminderApp :
           featureCalendarModule,
           featureAgendaModule,
           featureHomeModule,
+          featureSearchModule,
           featureGoogleTaskModule,
           logicGoogleTaskModule,
           servicesModule,

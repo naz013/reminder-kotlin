@@ -1411,4 +1411,8 @@
     <string name="widget_pomodoro_today_minutes">Сегодня в фокусе: %1$d мин</string>
     <string name="widget_pomodoro_ends_at">Закончится в %1$s</string>
     <string name="widget_pomodoro_paused_remaining">Пауза · осталось %1$s</string>
+    <string name="search_global_hint">Поиск напоминаний, заметок, дней рождения…</string>
+    <string name="search_recent_title">Недавние поиски</string>
+    <string name="search_no_results">Нет результатов для \"%1$s\"</string>
+    <string name="search_start_prompt">Ищите по напоминаниям, заметкам, дням рождения и другому</string>
 </resources>
