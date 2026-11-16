@@ -1380,4 +1380,6 @@
     <string name="action_snooze_picker">स्नूज़ करें…</string>
     <string name="snooze_picker_title">इस समय तक स्नूज़ करें</string>
     <string name="snooze_pick_time">समय चुनें</string>
+    <string name="widget_habits_description">होम स्क्रीन से आज की आदतें दर्ज करें</string>
+    <string name="widget_habits_unlock">आदतें PRO सुविधा हैं। ऐप खोलने के लिए टैप करें।</string>
 </resources>

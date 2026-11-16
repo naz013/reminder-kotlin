@@ -1,5 +1,6 @@
 package com.github.naz013.logic.habit.usecase
 
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.datecalc.NowDateTimeProvider
 import com.github.naz013.domain.habit.HabitCheckIn
 import com.github.naz013.logging.Logger
@@ -10,7 +11,8 @@ import org.threeten.bp.LocalDate
 class IncrementHabitCheckInUseCase(
   private val habitRepository: HabitRepository,
   private val habitCheckInRepository: HabitCheckInRepository,
-  private val nowDateTimeProvider: NowDateTimeProvider
+  private val nowDateTimeProvider: NowDateTimeProvider,
+  private val appWidgetUpdater: AppWidgetUpdater
 ) {
   suspend operator fun invoke(habitId: String) {
     invoke(habitId, nowDateTimeProvider.nowDate())
@@ -36,6 +38,7 @@ class IncrementHabitCheckInUseCase(
       )
     )
     Logger.i(TAG, "Incremented check-in for habit $habitId on $date to $count")
+    appWidgetUpdater.updateHabitsWidget()
   }
 
   companion object {

@@ -15,6 +15,7 @@ dependencies {
   implementation(project(":data:files-api"))
   implementation(project(":data:scheduler-api"))
   implementation(project(":data:work-api"))
+  implementation(project(":extensions:appwidgets-api"))
   implementation(project(":logic:logic-schedule"))
   implementation(project(":logic:logic-routine"))
 

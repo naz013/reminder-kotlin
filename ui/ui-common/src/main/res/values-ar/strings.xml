@@ -1406,4 +1406,6 @@
     <string name="action_snooze_picker">غفوة…</string>
     <string name="snooze_picker_title">غفوة حتى</string>
     <string name="snooze_pick_time">اختر الوقت</string>
+    <string name="widget_habits_description">سجّل عاداتك اليومية من الشاشة الرئيسية</string>
+    <string name="widget_habits_unlock">العادات ميزة PRO. اضغط لفتح التطبيق.</string>
 </resources>

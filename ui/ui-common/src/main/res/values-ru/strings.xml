@@ -1395,4 +1395,6 @@
     <string name="action_snooze_picker">Отложить…</string>
     <string name="snooze_picker_title">Отложить до</string>
     <string name="snooze_pick_time">Выбрать время</string>
+    <string name="widget_habits_description">Отмечайте сегодняшние привычки прямо с главного экрана</string>
+    <string name="widget_habits_unlock">Привычки доступны в PRO. Нажмите, чтобы открыть приложение.</string>
 </resources>

@@ -1376,4 +1376,6 @@
     <string name="action_snooze_picker">Tunda…</string>
     <string name="snooze_picker_title">Tunda hingga</string>
     <string name="snooze_pick_time">Pilih waktu</string>
+    <string name="widget_habits_description">Catat kebiasaan hari ini dari Layar Utama</string>
+    <string name="widget_habits_unlock">Kebiasaan adalah fitur PRO. Ketuk untuk membuka aplikasi.</string>
 </resources>

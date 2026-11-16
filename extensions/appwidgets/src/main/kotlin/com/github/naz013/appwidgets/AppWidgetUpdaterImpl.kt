@@ -9,6 +9,7 @@ import com.github.naz013.appwidgets.calendar.CalendarGlanceAppWidget
 import com.github.naz013.appwidgets.combinedbuttons.CombinedButtonsGlanceAppWidget
 import com.github.naz013.appwidgets.events.EventsGlanceAppWidget
 import com.github.naz013.appwidgets.googletasks.GoogleTasksGlanceAppWidget
+import com.github.naz013.appwidgets.habit.HabitGlanceAppWidget
 import com.github.naz013.appwidgets.nextreminder.NextReminderGlanceAppWidget
 import com.github.naz013.appwidgets.notes.NotesGlanceAppWidget
 import com.github.naz013.appwidgets.singlenote.SingleNoteGlanceAppWidget
@@ -28,6 +29,7 @@ internal class AppWidgetUpdaterImpl(
     updateScheduleWidget()
     updateBirthdaysWidget()
     invokeSuspend { updateGlanceWidget(TodoGlanceAppWidget(), WidgetId.NO_ID) }
+    invokeSuspend { updateHabitsWidget() }
   }
 
   override suspend fun updateEventsWidget(widgetId: Int) {
@@ -43,6 +45,11 @@ internal class AppWidgetUpdaterImpl(
   override suspend fun updateCombinedButtonsWidget(widgetId: Int) {
     updateGlanceWidget(CombinedButtonsGlanceAppWidget(), widgetId)
     appWidgetPreviewUpdater.updateCombinedButtonsWidgetPreview()
+  }
+
+  override suspend fun updateHabitsWidget(widgetId: Int) {
+    updateGlanceWidget(HabitGlanceAppWidget(), widgetId)
+    appWidgetPreviewUpdater.updateHabitsWidgetPreview()
   }
 
   private suspend fun updateGlanceWidget(widget: GlanceAppWidget, widgetId: Int) {

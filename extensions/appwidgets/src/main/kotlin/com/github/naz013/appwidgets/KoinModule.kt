@@ -19,6 +19,10 @@ import com.github.naz013.appwidgets.events.UiReminderWidgetListAdapter
 import com.github.naz013.appwidgets.googletasks.GoogleTasksAppWidgetViewModel
 import com.github.naz013.appwidgets.googletasks.GoogleTasksWidgetPrefsProvider
 import com.github.naz013.appwidgets.googletasks.TasksWidgetConfigViewModel
+import com.github.naz013.appwidgets.habit.HabitAppWidgetViewModel
+import com.github.naz013.appwidgets.habit.HabitCheckInHandler
+import com.github.naz013.appwidgets.habit.HabitWidgetConfigViewModel
+import com.github.naz013.appwidgets.habit.HabitWidgetPrefsProvider
 import com.github.naz013.appwidgets.nextreminder.NextReminderAppWidgetViewModel
 import com.github.naz013.appwidgets.nextreminder.NextReminderWidgetConfigViewModel
 import com.github.naz013.appwidgets.nextreminder.NextReminderWidgetPrefsProvider
@@ -147,5 +151,22 @@ val appWidgetsModule = module {
 
   factory { (prefs: NextReminderWidgetPrefsProvider) ->
     NextReminderAppWidgetViewModel(prefs, get(), get())
+  }
+
+  factory { (prefs: HabitWidgetPrefsProvider) ->
+    HabitAppWidgetViewModel(prefs, get(), get(), get())
+  }
+
+  factoryOf(::HabitCheckInHandler)
+
+  viewModel { (widgetId: Int) ->
+    HabitWidgetConfigViewModel(
+      get(),
+      get(),
+      HabitWidgetPrefsProvider(get(), widgetId),
+      get(),
+      get(),
+      get()
+    )
   }
 }

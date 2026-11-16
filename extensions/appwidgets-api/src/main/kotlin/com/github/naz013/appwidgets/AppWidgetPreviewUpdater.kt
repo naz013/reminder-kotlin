@@ -9,4 +9,5 @@ interface AppWidgetPreviewUpdater {
   suspend fun updateScheduleWidgetPreview()
   suspend fun updateBirthdaysWidgetPreview()
   suspend fun updateNextReminderWidgetPreview()
+  suspend fun updateHabitsWidgetPreview()
 }

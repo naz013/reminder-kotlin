@@ -1,5 +1,6 @@
 package com.github.naz013.logic.habit.usecase
 
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.datecalc.NowDateTimeProvider
 import com.github.naz013.domain.habit.HabitCheckIn
 import com.github.naz013.logging.Logger
@@ -11,7 +12,8 @@ import org.threeten.bp.LocalDate
 class ToggleHabitCheckInUseCase(
   private val habitRepository: HabitRepository,
   private val habitCheckInRepository: HabitCheckInRepository,
-  private val nowDateTimeProvider: NowDateTimeProvider
+  private val nowDateTimeProvider: NowDateTimeProvider,
+  private val appWidgetUpdater: AppWidgetUpdater
 ) {
   suspend operator fun invoke(habitId: String) {
     invoke(habitId, nowDateTimeProvider.nowDate())
@@ -27,6 +29,7 @@ class ToggleHabitCheckInUseCase(
     if (existing != null && existing.count > 0) {
       habitCheckInRepository.delete(habitId, date)
       Logger.i(TAG, "Cleared check-in for habit $habitId on $date")
+      appWidgetUpdater.updateHabitsWidget()
       return
     }
     val now = nowDateTimeProvider.nowDateTime()
@@ -41,6 +44,7 @@ class ToggleHabitCheckInUseCase(
       )
     )
     Logger.i(TAG, "Completed check-in for habit $habitId on $date")
+    appWidgetUpdater.updateHabitsWidget()
   }
 
   companion object {

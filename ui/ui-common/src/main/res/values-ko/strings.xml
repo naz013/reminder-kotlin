@@ -1374,4 +1374,6 @@
     <string name="action_snooze_picker">다시 알림…</string>
     <string name="snooze_picker_title">다시 알림 시각</string>
     <string name="snooze_pick_time">시간 선택</string>
+    <string name="widget_habits_description">홈 화면에서 오늘의 습관을 체크하세요</string>
+    <string name="widget_habits_unlock">습관은 PRO 기능입니다. 탭하여 앱을 여세요.</string>
 </resources>

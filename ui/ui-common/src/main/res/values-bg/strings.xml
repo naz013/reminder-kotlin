@@ -1384,4 +1384,6 @@
     <string name="action_snooze_picker">Отлагане…</string>
     <string name="snooze_picker_title">Отложи до</string>
     <string name="snooze_pick_time">Избери час</string>
+    <string name="widget_habits_description">Отбелязвайте днешните навици от началния екран</string>
+    <string name="widget_habits_unlock">Навиците са функция на PRO. Докоснете, за да отворите приложението.</string>
 </resources>

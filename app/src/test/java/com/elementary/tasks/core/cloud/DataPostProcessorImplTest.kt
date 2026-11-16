@@ -1,6 +1,7 @@
 package com.elementary.tasks.core.cloud
 
 import com.elementary.tasks.core.utils.params.Prefs
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.domain.TagAssignment
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.domain.habit.Habit
@@ -26,6 +27,7 @@ class DataPostProcessorImplTest {
   private val activateReminderUseCase = mockk<ActivateReminderUseCase>(relaxed = true)
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
   private val scheduleHabitNudgeUseCase = mockk<ScheduleHabitNudgeUseCase>(relaxed = true)
+  private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
   private lateinit var processor: DataPostProcessorImpl
 
   @Before
@@ -35,7 +37,8 @@ class DataPostProcessorImplTest {
       prefs,
       activateReminderUseCase,
       tagAssignmentRepository,
-      scheduleHabitNudgeUseCase
+      scheduleHabitNudgeUseCase,
+      appWidgetUpdater
     )
   }
 
@@ -47,6 +50,16 @@ class DataPostProcessorImplTest {
     processor.process(DataType.Habits, habit)
 
     verify(exactly = 1) { scheduleHabitNudgeUseCase(habit) }
+  }
+
+  @Test
+  fun `process with a habit refreshes the habits widget`() = runTest {
+    val stamp = LocalDateTime.of(2026, 10, 1, 8, 0)
+    val habit = Habit(id = "h-1", createdAt = stamp, updatedAt = stamp)
+
+    processor.process(DataType.Habits, habit)
+
+    coVerify(exactly = 1) { appWidgetUpdater.updateHabitsWidget(any()) }
   }
 
   @Test

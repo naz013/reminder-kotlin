@@ -1400,4 +1400,6 @@
     <string name="action_snooze_picker">Snooze…</string>
     <string name="snooze_picker_title">Snooze until</string>
     <string name="snooze_pick_time">Pick time</string>
+    <string name="widget_habits_description">Check in on today\'s habits from the Home Screen</string>
+    <string name="widget_habits_unlock">Habits are a PRO feature. Tap to open the app.</string>
 </resources>

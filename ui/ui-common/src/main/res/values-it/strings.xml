@@ -1390,4 +1390,6 @@
     <string name="action_snooze_picker">Posticipa…</string>
     <string name="snooze_picker_title">Posticipa fino a</string>
     <string name="snooze_pick_time">Scegli l’ora</string>
+    <string name="widget_habits_description">Segna le abitudini di oggi dalla schermata Home</string>
+    <string name="widget_habits_unlock">Le abitudini sono una funzione PRO. Tocca per aprire l\'app.</string>
 </resources>

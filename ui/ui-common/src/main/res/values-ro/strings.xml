@@ -1390,4 +1390,6 @@
     <string name="action_snooze_picker">Amână…</string>
     <string name="snooze_picker_title">Amână până la</string>
     <string name="snooze_pick_time">Alege ora</string>
+    <string name="widget_habits_description">Bifează obiceiurile de azi direct din ecranul principal</string>
+    <string name="widget_habits_unlock">Obiceiurile sunt o funcție PRO. Atinge pentru a deschide aplicația.</string>
 </resources>
