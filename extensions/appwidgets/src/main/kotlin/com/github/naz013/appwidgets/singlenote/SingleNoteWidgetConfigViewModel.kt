@@ -155,8 +155,13 @@ internal class SingleNoteWidgetConfigViewModel(
     val s = state.value
     val noteId = s.selectedNoteId ?: return
     previewJob?.cancel()
+    _state.update { it.copy(isPreviewLoading = true) }
     previewJob = viewModelScope.launch(dispatcherProvider.default()) {
-      val noteWithImages = noteRepository.getById(noteId) ?: return@launch
+      val noteWithImages = noteRepository.getById(noteId)
+      if (noteWithImages == null) {
+        _state.update { it.copy(isPreviewLoading = false) }
+        return@launch
+      }
       if (!isActive) return@launch
       val preview = previewAdapter.convertDp(
         noteWithImages = noteWithImages,
@@ -169,7 +174,7 @@ internal class SingleNoteWidgetConfigViewModel(
         textColor = colorForIndex(s.textColorIndex).adjustAlpha(s.textColorOpacity.toInt()),
       )
       if (!isActive) return@launch
-      _state.update { it.copy(previewBitmap = preview.bitmap) }
+      _state.update { it.copy(previewBitmap = preview.bitmap, isPreviewLoading = false) }
     }
   }
 }
