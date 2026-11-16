@@ -1379,4 +1379,12 @@
     <string name="reschedule_skip_still_overdue">Toujours en retard après le saut en avant</string>
     <string name="reschedule_skip_target_in_past">Cette heure est déjà passée</string>
     <string name="reschedule_skip_not_activated">Impossible à activer</string>
+    <string name="snooze_presets">Préréglages de report</string>
+    <string name="snooze_preset_15_minutes">15 minutes</string>
+    <string name="snooze_preset_1_hour">1 heure</string>
+    <string name="snooze_preset_3_hours">3 heures</string>
+    <string name="snooze_preset_this_evening">Ce soir</string>
+    <string name="snooze_preset_tomorrow_morning">Demain matin</string>
+    <string name="snooze_evening_time">Heure de report du soir</string>
+    <string name="snooze_morning_time">Heure de report du matin</string>
 </resources>

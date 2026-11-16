@@ -1371,4 +1371,12 @@
     <string name="reschedule_skip_still_overdue">Nog steeds te laat na vooruitspringen</string>
     <string name="reschedule_skip_target_in_past">Dat tijdstip is al voorbij</string>
     <string name="reschedule_skip_not_activated">Kon niet worden geactiveerd</string>
+    <string name="snooze_presets">Snooze-voorinstellingen</string>
+    <string name="snooze_preset_15_minutes">15 minuten</string>
+    <string name="snooze_preset_1_hour">1 uur</string>
+    <string name="snooze_preset_3_hours">3 uur</string>
+    <string name="snooze_preset_this_evening">Vanavond</string>
+    <string name="snooze_preset_tomorrow_morning">Morgenochtend</string>
+    <string name="snooze_evening_time">Snoozetijd voor de avond</string>
+    <string name="snooze_morning_time">Snoozetijd voor de ochtend</string>
 </resources>

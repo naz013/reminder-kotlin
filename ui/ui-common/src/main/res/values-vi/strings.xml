@@ -1365,4 +1365,12 @@
     <string name="reschedule_skip_still_overdue">Vẫn quá hạn sau khi nhảy tiếp</string>
     <string name="reschedule_skip_target_in_past">Thời gian đó đã qua</string>
     <string name="reschedule_skip_not_activated">Không thể kích hoạt</string>
+    <string name="snooze_presets">Mức báo lại đặt sẵn</string>
+    <string name="snooze_preset_15_minutes">15 phút</string>
+    <string name="snooze_preset_1_hour">1 giờ</string>
+    <string name="snooze_preset_3_hours">3 giờ</string>
+    <string name="snooze_preset_this_evening">Tối nay</string>
+    <string name="snooze_preset_tomorrow_morning">Sáng mai</string>
+    <string name="snooze_evening_time">Giờ báo lại buổi tối</string>
+    <string name="snooze_morning_time">Giờ báo lại buổi sáng</string>
 </resources>

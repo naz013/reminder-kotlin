@@ -25,6 +25,9 @@ import com.github.naz013.logic.reminder.usecase.ResumeReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SaveOneTimeReminderUseCaseImpl
 import com.github.naz013.logic.reminder.usecase.SaveReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SkipReminderUseCase
+import com.github.naz013.logic.reminder.snooze.SnoozePresetResolver
+import com.github.naz013.logic.reminder.usecase.SnoozeReminderToPresetUseCase
+import com.github.naz013.logic.reminder.usecase.SnoozeReminderToPresetUseCaseImpl
 import com.github.naz013.logic.reminder.usecase.SnoozeReminderUseCase
 import com.github.naz013.logic.reminder.usecase.SnoozeReminderUseCaseImpl
 import com.github.naz013.logic.reminder.usecase.StartLocationTrackingUseCase
@@ -86,4 +89,6 @@ val logicReminderModule = module {
   factoryOf(::GetTodayScheduleUseCase)
 
   factory { SnoozeReminderUseCaseImpl(get(), get(), get(), get(), get(), lazy { get() }) as SnoozeReminderUseCase }
+  factory { SnoozePresetResolver() }
+  factory { SnoozeReminderToPresetUseCaseImpl(get(), get(), get()) as SnoozeReminderToPresetUseCase }
 }

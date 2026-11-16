@@ -1,10 +1,21 @@
 package com.github.naz013.logic.reminder
 
+import com.github.naz013.logic.reminder.snooze.SnoozePresetType
+
 interface ReminderPreferences {
   val numberOfReminderOccurrences: Int
   var isSbNotificationEnabled: Boolean
   val isCalendarEnabled: Boolean
   var snoozeTime: Int
+
+  /** Snooze presets offered on the notification, in display order. */
+  var enabledSnoozePresets: List<SnoozePresetType>
+
+  /** Wall-clock `HH:mm` used by the "this evening" snooze preset. */
+  var snoozeEveningTime: String
+
+  /** Wall-clock `HH:mm` used by the "tomorrow morning" snooze preset. */
+  var snoozeMorningTime: String
   val is24HourFormat: Boolean
   val useMetric: Boolean
   val hapticsEnabled: Boolean

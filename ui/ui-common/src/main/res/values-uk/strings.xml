@@ -1385,4 +1385,12 @@
     <string name="reschedule_skip_still_overdue">Усе ще прострочено після пропуску вперед</string>
     <string name="reschedule_skip_target_in_past">Цей час уже минув</string>
     <string name="reschedule_skip_not_activated">Не вдалося активувати</string>
+    <string name="snooze_presets">Варіанти відкладення</string>
+    <string name="snooze_preset_15_minutes">15 хвилин</string>
+    <string name="snooze_preset_1_hour">1 година</string>
+    <string name="snooze_preset_3_hours">3 години</string>
+    <string name="snooze_preset_this_evening">Сьогодні ввечері</string>
+    <string name="snooze_preset_tomorrow_morning">Завтра вранці</string>
+    <string name="snooze_evening_time">Час відкладення на вечір</string>
+    <string name="snooze_morning_time">Час відкладення на ранок</string>
 </resources>

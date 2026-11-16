@@ -1385,4 +1385,12 @@
     <string name="reschedule_skip_still_overdue">Po posunu vpřed stále po termínu</string>
     <string name="reschedule_skip_target_in_past">Tento čas již minul</string>
     <string name="reschedule_skip_not_activated">Nepodařilo se aktivovat</string>
+    <string name="snooze_presets">Předvolby odložení</string>
+    <string name="snooze_preset_15_minutes">15 minut</string>
+    <string name="snooze_preset_1_hour">1 hodina</string>
+    <string name="snooze_preset_3_hours">3 hodiny</string>
+    <string name="snooze_preset_this_evening">Dnes večer</string>
+    <string name="snooze_preset_tomorrow_morning">Zítra ráno</string>
+    <string name="snooze_evening_time">Čas odložení na večer</string>
+    <string name="snooze_morning_time">Čas odložení na ráno</string>
 </resources>

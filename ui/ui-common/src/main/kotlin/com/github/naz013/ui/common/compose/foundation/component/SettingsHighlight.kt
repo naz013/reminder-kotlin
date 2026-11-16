@@ -78,6 +78,9 @@ object SettingsSearchItemKeys {
 
   const val REMINDERS_DO_NOT_DISTURB = "reminders_do_not_disturb"
   const val REMINDERS_SNOOZE_TIME = "reminders_snooze_time"
+  const val REMINDERS_SNOOZE_PRESETS = "reminders_snooze_presets"
+  const val REMINDERS_SNOOZE_EVENING_TIME = "reminders_snooze_evening_time"
+  const val REMINDERS_SNOOZE_MORNING_TIME = "reminders_snooze_morning_time"
   const val REMINDERS_LED_COLOR = "reminders_led_color"
   const val REMINDERS_VIBRATION_PATTERN = "reminders_vibration_pattern"
   const val REMINDERS_INSIGHTS = "reminders_insights"

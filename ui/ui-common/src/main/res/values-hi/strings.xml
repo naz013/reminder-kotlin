@@ -1369,4 +1369,12 @@
     <string name="reschedule_skip_still_overdue">आगे बढ़ाने के बाद भी विलंबित</string>
     <string name="reschedule_skip_target_in_past">वह समय पहले ही बीत चुका है</string>
     <string name="reschedule_skip_not_activated">सक्रिय नहीं किया जा सका</string>
+    <string name="snooze_presets">स्नूज़ प्रीसेट</string>
+    <string name="snooze_preset_15_minutes">15 मिनट</string>
+    <string name="snooze_preset_1_hour">1 घंटा</string>
+    <string name="snooze_preset_3_hours">3 घंटे</string>
+    <string name="snooze_preset_this_evening">आज शाम</string>
+    <string name="snooze_preset_tomorrow_morning">कल सुबह</string>
+    <string name="snooze_evening_time">शाम का स्नूज़ समय</string>
+    <string name="snooze_morning_time">सुबह का स्नूज़ समय</string>
 </resources>

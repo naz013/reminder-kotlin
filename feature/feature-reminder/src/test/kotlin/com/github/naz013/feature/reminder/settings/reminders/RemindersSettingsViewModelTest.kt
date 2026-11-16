@@ -4,6 +4,7 @@ import com.github.naz013.testing.BaseTest
 import com.github.naz013.ui.notification.settings.VibrationPlayer
 import com.github.naz013.logic.reminder.AgendaViewMode
 import com.github.naz013.logic.reminder.ReminderPreferences
+import com.github.naz013.logic.reminder.snooze.SnoozePresetType
 import com.github.naz013.analytics.AnalyticsEventSender
 import com.github.naz013.analytics.Feature
 import com.github.naz013.analytics.FeatureGateTappedEvent
@@ -49,6 +50,9 @@ class RemindersSettingsViewModelTest : BaseTest() {
     every { reminderPreferences.moveCompleted } returns false
     every { reminderPreferences.isWearEnabled } returns false
     every { reminderPreferences.snoozeTime } returns 10
+    every { reminderPreferences.enabledSnoozePresets } returns listOf(SnoozePresetType.HOUR_1)
+    every { reminderPreferences.snoozeEveningTime } returns "18:00"
+    every { reminderPreferences.snoozeMorningTime } returns "08:00"
     every { reminderPreferences.isNotificationRepeatEnabled } returns false
     every { reminderPreferences.notificationRepeatTime } returns 5
     every { reminderPreferences.isLedEnabled } returns false
@@ -504,6 +508,56 @@ class RemindersSettingsViewModelTest : BaseTest() {
     viewModel.onDoNotDisturbToggle()
 
     verify { reminderPreferences.isDoNotDisturbEnabled = true }
+  }
+
+  @Test
+  fun `state exposes enabled snooze presets and times`() {
+    val state = viewModel.state.value
+
+    assertEquals(setOf(SnoozePresetType.HOUR_1), state.enabledSnoozePresets)
+    assertEquals("10:00 PM", state.snoozeEveningTimeText)
+  }
+
+  @Test
+  fun `onSnoozePresetToggle enables a disabled preset keeping display order`() {
+    every { reminderPreferences.enabledSnoozePresets } returns
+      listOf(SnoozePresetType.HOURS_3, SnoozePresetType.THIS_EVENING)
+
+    viewModel.onSnoozePresetToggle(SnoozePresetType.MINUTES_15)
+
+    verify {
+      reminderPreferences.enabledSnoozePresets =
+        listOf(SnoozePresetType.MINUTES_15, SnoozePresetType.HOURS_3, SnoozePresetType.THIS_EVENING)
+    }
+  }
+
+  @Test
+  fun `onSnoozePresetToggle disables an enabled preset`() {
+    viewModel.onSnoozePresetToggle(SnoozePresetType.HOUR_1)
+
+    verify { reminderPreferences.enabledSnoozePresets = emptyList() }
+  }
+
+  @Test
+  fun `onSnoozeEveningTimeClick shows a time picker for the evening time`() {
+    viewModel.onSnoozeEveningTimeClick()
+
+    val event = viewModel.navigationEvent.value?.peekContent() as? RemindersSettingsEvent.ShowTimePicker
+    assertEquals(DndTimeTarget.SNOOZE_EVENING, event?.target)
+  }
+
+  @Test
+  fun `onTimeSelected persists the snooze morning time`() {
+    viewModel.onTimeSelected(DndTimeTarget.SNOOZE_MORNING, LocalTime.of(7, 30))
+
+    verify { reminderPreferences.snoozeMorningTime = "08:00" }
+  }
+
+  @Test
+  fun `onTimeSelected persists the snooze evening time`() {
+    viewModel.onTimeSelected(DndTimeTarget.SNOOZE_EVENING, LocalTime.of(19, 0))
+
+    verify { reminderPreferences.snoozeEveningTime = "08:00" }
   }
 
   @Test

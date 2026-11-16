@@ -1379,4 +1379,12 @@
     <string name="reschedule_skip_still_overdue">Sigue vencido tras avanzar</string>
     <string name="reschedule_skip_target_in_past">Esa hora ya pasó</string>
     <string name="reschedule_skip_not_activated">No se pudo activar</string>
+    <string name="snooze_presets">Opciones de posposición</string>
+    <string name="snooze_preset_15_minutes">15 minutos</string>
+    <string name="snooze_preset_1_hour">1 hora</string>
+    <string name="snooze_preset_3_hours">3 horas</string>
+    <string name="snooze_preset_this_evening">Esta tarde</string>
+    <string name="snooze_preset_tomorrow_morning">Mañana por la mañana</string>
+    <string name="snooze_evening_time">Hora de posposición de la tarde</string>
+    <string name="snooze_morning_time">Hora de posposición de la mañana</string>
 </resources>

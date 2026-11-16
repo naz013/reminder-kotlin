@@ -1385,4 +1385,12 @@
     <string name="reschedule_skip_still_overdue">Nadal zaległe po przeskoczeniu</string>
     <string name="reschedule_skip_target_in_past">Ta godzina już minęła</string>
     <string name="reschedule_skip_not_activated">Nie udało się aktywować</string>
+    <string name="snooze_presets">Gotowe opcje drzemki</string>
+    <string name="snooze_preset_15_minutes">15 minut</string>
+    <string name="snooze_preset_1_hour">1 godzina</string>
+    <string name="snooze_preset_3_hours">3 godziny</string>
+    <string name="snooze_preset_this_evening">Dziś wieczorem</string>
+    <string name="snooze_preset_tomorrow_morning">Jutro rano</string>
+    <string name="snooze_evening_time">Godzina drzemki na wieczór</string>
+    <string name="snooze_morning_time">Godzina drzemki na rano</string>
 </resources>

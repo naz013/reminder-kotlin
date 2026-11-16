@@ -1379,4 +1379,12 @@
     <string name="reschedule_skip_still_overdue">Încă întârziat după avansare</string>
     <string name="reschedule_skip_target_in_past">Ora respectivă a trecut deja</string>
     <string name="reschedule_skip_not_activated">Nu a putut fi activat</string>
+    <string name="snooze_presets">Presetări de amânare</string>
+    <string name="snooze_preset_15_minutes">15 minute</string>
+    <string name="snooze_preset_1_hour">1 oră</string>
+    <string name="snooze_preset_3_hours">3 ore</string>
+    <string name="snooze_preset_this_evening">Diseară</string>
+    <string name="snooze_preset_tomorrow_morning">Mâine dimineață</string>
+    <string name="snooze_evening_time">Ora de amânare pentru seară</string>
+    <string name="snooze_morning_time">Ora de amânare pentru dimineață</string>
 </resources>

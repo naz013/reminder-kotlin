@@ -3,6 +3,7 @@ package com.elementary.tasks.module.logicreminder
 import com.elementary.tasks.core.utils.params.Prefs
 import com.github.naz013.logic.reminder.AgendaViewMode
 import com.github.naz013.logic.reminder.ReminderPreferences
+import com.github.naz013.logic.reminder.snooze.SnoozePresetType
 
 class ReminderPreferencesImpl(
   private val prefs: Prefs,
@@ -20,6 +21,18 @@ class ReminderPreferencesImpl(
   override var snoozeTime: Int
     get() = prefs.snoozeTime
     set(value) { prefs.snoozeTime = value }
+
+  override var enabledSnoozePresets: List<SnoozePresetType>
+    get() = SnoozePresetType.parseList(prefs.snoozePresets)
+    set(value) { prefs.snoozePresets = SnoozePresetType.serialize(value) }
+
+  override var snoozeEveningTime: String
+    get() = prefs.snoozeEveningTime
+    set(value) { prefs.snoozeEveningTime = value }
+
+  override var snoozeMorningTime: String
+    get() = prefs.snoozeMorningTime
+    set(value) { prefs.snoozeMorningTime = value }
 
   override val is24HourFormat: Boolean
     get() = prefs.is24HourFormat

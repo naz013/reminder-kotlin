@@ -1,5 +1,6 @@
 package com.elementary.tasks.core.utils.params
 
+import com.github.naz013.logic.reminder.snooze.SnoozePresetType
 import android.content.Context
 import android.text.format.DateFormat
 import androidx.appcompat.app.AppCompatDelegate
@@ -365,6 +366,18 @@ class Prefs(
   var snoozeTime: Int
     get() = getInt(PrefsConstants.DELAY_TIME, 5)
     set(value) = putInt(PrefsConstants.DELAY_TIME, value)
+
+  var snoozePresets: String
+    get() = getString(PrefsConstants.SNOOZE_PRESETS, SnoozePresetType.serialize(SnoozePresetType.DEFAULT_ENABLED))
+    set(value) = putString(PrefsConstants.SNOOZE_PRESETS, value)
+
+  var snoozeEveningTime: String
+    get() = getString(PrefsConstants.SNOOZE_EVENING_TIME, "18:00")
+    set(value) = putString(PrefsConstants.SNOOZE_EVENING_TIME, value)
+
+  var snoozeMorningTime: String
+    get() = getString(PrefsConstants.SNOOZE_MORNING_TIME, "08:00")
+    set(value) = putString(PrefsConstants.SNOOZE_MORNING_TIME, value)
 
   var isNotificationRepeatEnabled: Boolean
     get() = getBoolean(PrefsConstants.NOTIFICATION_REPEAT)

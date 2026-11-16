@@ -1373,4 +1373,12 @@
     <string name="reschedule_skip_still_overdue">Все още просрочено след прескачане напред</string>
     <string name="reschedule_skip_target_in_past">Това време вече е минало</string>
     <string name="reschedule_skip_not_activated">Не можа да се активира</string>
+    <string name="snooze_presets">Предварителни настройки за отлагане</string>
+    <string name="snooze_preset_15_minutes">15 минути</string>
+    <string name="snooze_preset_1_hour">1 час</string>
+    <string name="snooze_preset_3_hours">3 часа</string>
+    <string name="snooze_preset_this_evening">Тази вечер</string>
+    <string name="snooze_preset_tomorrow_morning">Утре сутринта</string>
+    <string name="snooze_evening_time">Час за отлагане вечер</string>
+    <string name="snooze_morning_time">Час за отлагане сутрин</string>
 </resources>

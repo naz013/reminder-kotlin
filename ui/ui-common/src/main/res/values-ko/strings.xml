@@ -1363,4 +1363,12 @@
     <string name="reschedule_skip_still_overdue">앞으로 건너뛴 후에도 기한이 지났습니다</string>
     <string name="reschedule_skip_target_in_past">해당 시간은 이미 지났습니다</string>
     <string name="reschedule_skip_not_activated">활성화할 수 없습니다</string>
+    <string name="snooze_presets">다시 알림 프리셋</string>
+    <string name="snooze_preset_15_minutes">15분</string>
+    <string name="snooze_preset_1_hour">1시간</string>
+    <string name="snooze_preset_3_hours">3시간</string>
+    <string name="snooze_preset_this_evening">오늘 저녁</string>
+    <string name="snooze_preset_tomorrow_morning">내일 아침</string>
+    <string name="snooze_evening_time">저녁 다시 알림 시간</string>
+    <string name="snooze_morning_time">아침 다시 알림 시간</string>
 </resources>

@@ -1371,4 +1371,12 @@
     <string name="reschedule_skip_still_overdue">Fortfarande försenad efter att ha hoppat framåt</string>
     <string name="reschedule_skip_target_in_past">Den tiden har redan passerat</string>
     <string name="reschedule_skip_not_activated">Kunde inte aktiveras</string>
+    <string name="snooze_presets">Förinställningar för snooze</string>
+    <string name="snooze_preset_15_minutes">15 minuter</string>
+    <string name="snooze_preset_1_hour">1 timme</string>
+    <string name="snooze_preset_3_hours">3 timmar</string>
+    <string name="snooze_preset_this_evening">I kväll</string>
+    <string name="snooze_preset_tomorrow_morning">I morgon bitti</string>
+    <string name="snooze_evening_time">Snoozetid för kvällen</string>
+    <string name="snooze_morning_time">Snoozetid för morgonen</string>
 </resources>
