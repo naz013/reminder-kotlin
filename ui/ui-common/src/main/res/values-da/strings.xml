@@ -1384,4 +1384,12 @@
     <string name="snooze_pick_time">Vælg tid</string>
     <string name="widget_habits_description">Check dagens vaner af direkte fra startskærmen</string>
     <string name="widget_habits_unlock">Vaner er en PRO-funktion. Tryk for at åbne appen.</string>
+    <string name="widget_routine_description">Start eller genoptag en rutine fra startskærmen</string>
+    <string name="widget_routine_unavailable">Rutiner er ikke tilgængelige. Tryk for at åbne appen.</string>
+    <string name="widget_routine_resume">Genoptag</string>
+    <string name="widget_routine_next_scheduled">Næste planlagte rutine</string>
+    <string name="widget_routine_status_not_started">Ikke startet</string>
+    <string name="widget_routine_status_in_progress">I gang</string>
+    <string name="widget_routine_status_done">Færdig i dag</string>
+    <string name="widget_routine_status_progress">%1$d af %2$d trin udført</string>
 </resources>

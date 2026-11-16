@@ -1374,4 +1374,12 @@
     <string name="snooze_pick_time">เลือกเวลา</string>
     <string name="widget_habits_description">เช็กอินนิสัยของวันนี้จากหน้าจอหลัก</string>
     <string name="widget_habits_unlock">นิสัยเป็นฟีเจอร์ PRO แตะเพื่อเปิดแอป</string>
+    <string name="widget_routine_description">เริ่มหรือทำกิจวัตรต่อจากหน้าจอหลัก</string>
+    <string name="widget_routine_unavailable">ไม่สามารถใช้กิจวัตรได้ แตะเพื่อเปิดแอป</string>
+    <string name="widget_routine_resume">ทำต่อ</string>
+    <string name="widget_routine_next_scheduled">กิจวัตรที่กำหนดไว้ถัดไป</string>
+    <string name="widget_routine_status_not_started">ยังไม่เริ่ม</string>
+    <string name="widget_routine_status_in_progress">กำลังดำเนินการ</string>
+    <string name="widget_routine_status_done">เสร็จสิ้นวันนี้</string>
+    <string name="widget_routine_status_progress">เสร็จแล้ว %1$d จาก %2$d ขั้นตอน</string>
 </resources>

@@ -1398,4 +1398,12 @@
     <string name="snooze_pick_time">Wybierz czas</string>
     <string name="widget_habits_description">Odhaczaj dzisiejsze nawyki z ekranu głównego</string>
     <string name="widget_habits_unlock">Nawyki to funkcja PRO. Dotknij, aby otworzyć aplikację.</string>
+    <string name="widget_routine_description">Uruchom lub wznów rutynę z ekranu głównego</string>
+    <string name="widget_routine_unavailable">Rutyny są niedostępne. Dotknij, aby otworzyć aplikację.</string>
+    <string name="widget_routine_resume">Wznów</string>
+    <string name="widget_routine_next_scheduled">Następna zaplanowana rutyna</string>
+    <string name="widget_routine_status_not_started">Nie rozpoczęto</string>
+    <string name="widget_routine_status_in_progress">W toku</string>
+    <string name="widget_routine_status_done">Ukończono dzisiaj</string>
+    <string name="widget_routine_status_progress">Ukończono %1$d z %2$d kroków</string>
 </resources>

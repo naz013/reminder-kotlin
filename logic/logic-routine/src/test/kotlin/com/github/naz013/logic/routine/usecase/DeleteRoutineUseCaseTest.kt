@@ -1,5 +1,6 @@
 package com.github.naz013.logic.routine.usecase
 
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.files.DataType
 import com.github.naz013.logic.schedule.ScheduleBackgroundWorkUseCase
@@ -18,6 +19,7 @@ class DeleteRoutineUseCaseTest {
   private val routineExecutionRepository = mockk<RoutineExecutionRepository>(relaxed = true)
   private val tagAssignmentRepository = mockk<TagAssignmentRepository>(relaxed = true)
   private val scheduleBackgroundWorkUseCase = mockk<ScheduleBackgroundWorkUseCase>(relaxed = true)
+  private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
 
   private lateinit var useCase: DeleteRoutineUseCase
 
@@ -27,7 +29,8 @@ class DeleteRoutineUseCaseTest {
       routineRepository = routineRepository,
       routineExecutionRepository = routineExecutionRepository,
       tagAssignmentRepository = tagAssignmentRepository,
-      scheduleBackgroundWorkUseCase = scheduleBackgroundWorkUseCase
+      scheduleBackgroundWorkUseCase = scheduleBackgroundWorkUseCase,
+      appWidgetUpdater = appWidgetUpdater
     )
   }
 
@@ -45,5 +48,12 @@ class DeleteRoutineUseCaseTest {
         id = "id-1"
       )
     }
+  }
+
+  @Test
+  fun `invoke refreshes the routine widget`() = runTest {
+    useCase("id-1")
+
+    coVerify(exactly = 1) { appWidgetUpdater.updateRoutineWidget(any()) }
   }
 }

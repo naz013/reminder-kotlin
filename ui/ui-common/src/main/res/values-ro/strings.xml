@@ -1392,4 +1392,12 @@
     <string name="snooze_pick_time">Alege ora</string>
     <string name="widget_habits_description">Bifează obiceiurile de azi direct din ecranul principal</string>
     <string name="widget_habits_unlock">Obiceiurile sunt o funcție PRO. Atinge pentru a deschide aplicația.</string>
+    <string name="widget_routine_description">Pornește sau reia o rutină de pe ecranul principal</string>
+    <string name="widget_routine_unavailable">Rutinele nu sunt disponibile. Atinge pentru a deschide aplicația.</string>
+    <string name="widget_routine_resume">Reia</string>
+    <string name="widget_routine_next_scheduled">Următoarea rutină programată</string>
+    <string name="widget_routine_status_not_started">Neînceput</string>
+    <string name="widget_routine_status_in_progress">În curs</string>
+    <string name="widget_routine_status_done">Finalizat azi</string>
+    <string name="widget_routine_status_progress">%1$d din %2$d pași finalizați</string>
 </resources>

@@ -1376,4 +1376,12 @@
     <string name="snooze_pick_time">시간 선택</string>
     <string name="widget_habits_description">홈 화면에서 오늘의 습관을 체크하세요</string>
     <string name="widget_habits_unlock">습관은 PRO 기능입니다. 탭하여 앱을 여세요.</string>
+    <string name="widget_routine_description">홈 화면에서 루틴을 시작하거나 이어서 진행</string>
+    <string name="widget_routine_unavailable">루틴을 사용할 수 없습니다. 탭하여 앱을 여세요.</string>
+    <string name="widget_routine_resume">계속</string>
+    <string name="widget_routine_next_scheduled">다음 예정된 루틴</string>
+    <string name="widget_routine_status_not_started">시작 전</string>
+    <string name="widget_routine_status_in_progress">진행 중</string>
+    <string name="widget_routine_status_done">오늘 완료</string>
+    <string name="widget_routine_status_progress">%2$d단계 중 %1$d단계 완료</string>
 </resources>

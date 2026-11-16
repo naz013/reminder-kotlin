@@ -17,6 +17,8 @@ dependencies {
   implementation(project(":core:feature-common"))
   implementation(project(":ui:ui-note"))
   implementation(project(":ui:ui-common"))
+  implementation(project(":ui:ui-routine"))
+  implementation(project(":feature:feature-routine"))
   implementation(project(":core:analytics"))
   implementation(project(":logic:logic-reminder"))
   implementation(project(":logic:logic-habit"))

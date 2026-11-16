@@ -11,4 +11,5 @@ interface AppWidgetUpdater {
   suspend fun updateSingleNoteWidget(widgetId: Int = -1)
   suspend fun updateNextReminderWidget(widgetId: Int = -1)
   suspend fun updateHabitsWidget(widgetId: Int = -1)
+  suspend fun updateRoutineWidget(widgetId: Int = -1)
 }

@@ -50,6 +50,7 @@ import com.github.naz013.navigation.EditReminderScreen
 import com.github.naz013.navigation.SettingsScreen
 import com.github.naz013.navigation.ViewBirthdayScreen
 import com.github.naz013.navigation.ViewGoogleTaskScreen
+import com.github.naz013.navigation.StartRoutineScreen
 import com.github.naz013.navigation.ViewHabitScreen
 import com.github.naz013.navigation.ViewNoteScreen
 import com.github.naz013.navigation.ViewReminderScreen
@@ -278,6 +279,11 @@ class BottomNavActivity : BaseAuthActivity() {
         is ViewHabitScreen -> {
           val id = deepLinkDestination.id
           return if (id != null) listOf(HabitNavKey.List, HabitNavKey.Preview(id)) else listOf(HabitNavKey.List)
+        }
+
+        is StartRoutineScreen -> {
+          val id = deepLinkDestination.id
+          return if (id != null) listOf(RoutineNavKey.List, RoutineNavKey.Execute(id)) else listOf(RoutineNavKey.List)
         }
 
         is DayViewScreen ->

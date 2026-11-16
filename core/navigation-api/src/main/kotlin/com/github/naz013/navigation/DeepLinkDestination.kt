@@ -79,6 +79,11 @@ data class ViewHabitScreen(
 ) : DeepLinkDestination()
 
 @Parcelize
+data class StartRoutineScreen(
+  val id: String? = null
+) : DeepLinkDestination()
+
+@Parcelize
 data class ViewGoogleCalendarEventScreen(
   val id: String? = null
 ) : DeepLinkDestination()

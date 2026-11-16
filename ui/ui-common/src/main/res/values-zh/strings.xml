@@ -1376,4 +1376,12 @@
     <string name="snooze_pick_time">选择时间</string>
     <string name="widget_habits_description">在主屏幕上为今天的习惯打卡</string>
     <string name="widget_habits_unlock">习惯是 PRO 功能。点按以打开应用。</string>
+    <string name="widget_routine_description">从主屏幕开始或继续例程</string>
+    <string name="widget_routine_unavailable">例程不可用。点按以打开应用。</string>
+    <string name="widget_routine_resume">继续</string>
+    <string name="widget_routine_next_scheduled">下一个计划例程</string>
+    <string name="widget_routine_status_not_started">未开始</string>
+    <string name="widget_routine_status_in_progress">进行中</string>
+    <string name="widget_routine_status_done">今日已完成</string>
+    <string name="widget_routine_status_progress">已完成 %1$d/%2$d 步</string>
 </resources>

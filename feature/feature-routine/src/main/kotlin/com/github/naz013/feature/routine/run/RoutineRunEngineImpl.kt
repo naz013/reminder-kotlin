@@ -1,5 +1,6 @@
 package com.github.naz013.feature.routine.run
 
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.domain.routine.Routine
 import com.github.naz013.domain.routine.RoutineStep
 import com.github.naz013.feature.common.coroutine.DispatcherProvider
@@ -32,6 +33,7 @@ internal class RoutineRunEngineImpl(
   private val recordRoutineExecutionUseCase: RecordRoutineExecutionUseCase,
   private val appPreferences: AppPreferences,
   private val foregroundNotifier: RoutineRunForegroundNotifier,
+  private val appWidgetUpdater: AppWidgetUpdater,
   private val tonePlayer: StepTonePlayer = ToneGeneratorStepTonePlayer(),
   private val currentTimeMillis: () -> Long = System::currentTimeMillis,
 ) : RoutineRunEngine {
@@ -83,6 +85,7 @@ internal class RoutineRunEngineImpl(
       startStep(0)
       runCatching { foregroundNotifier.start() }
         .onFailure { Logger.w(TAG, "Foreground notifier failed to start: ${it.message}") }
+      refreshWidget()
       while (isActive) {
         delay(TICK_MS)
         tick()
@@ -148,6 +151,14 @@ internal class RoutineRunEngineImpl(
     resetRun()
     _state.value = RoutineRunState.Idle
     stopForegroundNotifier()
+    refreshWidget()
+  }
+
+  private fun refreshWidget() {
+    scope.launch(dispatcherProvider.io()) {
+      runCatching { appWidgetUpdater.updateRoutineWidget() }
+        .onFailure { Logger.w(TAG, "Routine widget refresh failed: ${it.message}") }
+    }
   }
 
   private fun stopForegroundNotifier() {
@@ -261,6 +272,7 @@ internal class RoutineRunEngineImpl(
     )
     tonePlayer.release()
     stopForegroundNotifier()
+    refreshWidget()
   }
 
   private fun record() {

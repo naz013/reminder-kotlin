@@ -1,5 +1,6 @@
 package com.github.naz013.logic.routine.usecase
 
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.datecalc.NowDateTimeProvider
 import com.github.naz013.domain.routine.Routine
 import com.github.naz013.domain.sync.SyncState
@@ -13,6 +14,7 @@ class SaveRoutineUseCase(
   private val routineRepository: RoutineRepository,
   private val nowDateTimeProvider: NowDateTimeProvider,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
+  private val appWidgetUpdater: AppWidgetUpdater,
 ) {
   suspend operator fun invoke(routine: Routine): Routine {
     val toSave = routine.copy(
@@ -29,6 +31,7 @@ class SaveRoutineUseCase(
       id = toSave.id
     )
     Logger.i(TAG, "Saved routine: ${toSave.id}")
+    appWidgetUpdater.updateRoutineWidget()
     return toSave
   }
 

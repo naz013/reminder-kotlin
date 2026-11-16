@@ -1,5 +1,6 @@
 package com.github.naz013.logic.routine.usecase
 
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.datecalc.NowDateTimeProvider
 import com.github.naz013.domain.reminder.v2.SyncMetadata
 import com.github.naz013.domain.routine.Routine
@@ -21,6 +22,7 @@ class SaveRoutineUseCaseTest {
   private val routineRepository = mockk<RoutineRepository>(relaxed = true)
   private val nowDateTimeProvider = mockk<NowDateTimeProvider>()
   private val scheduleBackgroundWorkUseCase = mockk<ScheduleBackgroundWorkUseCase>(relaxed = true)
+  private val appWidgetUpdater = mockk<AppWidgetUpdater>(relaxed = true)
 
   private lateinit var useCase: SaveRoutineUseCase
 
@@ -29,7 +31,12 @@ class SaveRoutineUseCaseTest {
   @Before
   fun setUp() {
     every { nowDateTimeProvider.nowDateTime() } returns now
-    useCase = SaveRoutineUseCase(routineRepository, nowDateTimeProvider, scheduleBackgroundWorkUseCase)
+    useCase = SaveRoutineUseCase(
+      routineRepository,
+      nowDateTimeProvider,
+      scheduleBackgroundWorkUseCase,
+      appWidgetUpdater
+    )
   }
 
   @Test
@@ -68,5 +75,19 @@ class SaveRoutineUseCaseTest {
         id = "id-2"
       )
     }
+  }
+
+  @Test
+  fun `invoke refreshes the routine widget`() = runTest {
+    val routine = Routine(
+      id = "id-1",
+      title = "Morning routine",
+      createdAt = LocalDateTime.of(2026, 7, 1, 8, 0),
+      updatedAt = LocalDateTime.of(2026, 7, 1, 8, 0)
+    )
+
+    useCase(routine)
+
+    coVerify(exactly = 1) { appWidgetUpdater.updateRoutineWidget(any()) }
   }
 }

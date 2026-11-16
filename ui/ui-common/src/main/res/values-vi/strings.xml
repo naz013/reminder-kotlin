@@ -1378,4 +1378,12 @@
     <string name="snooze_pick_time">Chọn giờ</string>
     <string name="widget_habits_description">Điểm danh thói quen hôm nay ngay từ Màn hình chính</string>
     <string name="widget_habits_unlock">Thói quen là tính năng PRO. Chạm để mở ứng dụng.</string>
+    <string name="widget_routine_description">Bắt đầu hoặc tiếp tục một thói quen từ Màn hình chính</string>
+    <string name="widget_routine_unavailable">Thói quen không khả dụng. Chạm để mở ứng dụng.</string>
+    <string name="widget_routine_resume">Tiếp tục</string>
+    <string name="widget_routine_next_scheduled">Thói quen theo lịch tiếp theo</string>
+    <string name="widget_routine_status_not_started">Chưa bắt đầu</string>
+    <string name="widget_routine_status_in_progress">Đang thực hiện</string>
+    <string name="widget_routine_status_done">Đã xong hôm nay</string>
+    <string name="widget_routine_status_progress">Đã hoàn thành %1$d/%2$d bước</string>
 </resources>

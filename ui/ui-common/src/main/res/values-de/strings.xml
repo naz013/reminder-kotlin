@@ -1382,4 +1382,12 @@
     <string name="snooze_pick_time">Zeit wählen</string>
     <string name="widget_habits_description">Heutige Gewohnheiten direkt auf dem Startbildschirm abhaken</string>
     <string name="widget_habits_unlock">Gewohnheiten sind eine PRO-Funktion. Tippen, um die App zu öffnen.</string>
+    <string name="widget_routine_description">Eine Routine direkt vom Startbildschirm starten oder fortsetzen</string>
+    <string name="widget_routine_unavailable">Routinen sind nicht verfügbar. Tippen, um die App zu öffnen.</string>
+    <string name="widget_routine_resume">Fortsetzen</string>
+    <string name="widget_routine_next_scheduled">Nächste geplante Routine</string>
+    <string name="widget_routine_status_not_started">Nicht gestartet</string>
+    <string name="widget_routine_status_in_progress">In Bearbeitung</string>
+    <string name="widget_routine_status_done">Heute erledigt</string>
+    <string name="widget_routine_status_progress">%1$d von %2$d Schritten erledigt</string>
 </resources>

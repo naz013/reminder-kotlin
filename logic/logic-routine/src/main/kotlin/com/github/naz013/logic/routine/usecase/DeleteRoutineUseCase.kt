@@ -1,5 +1,6 @@
 package com.github.naz013.logic.routine.usecase
 
+import com.github.naz013.appwidgets.AppWidgetUpdater
 import com.github.naz013.domain.TaggedItemType
 import com.github.naz013.files.DataType
 import com.github.naz013.logging.Logger
@@ -14,6 +15,7 @@ class DeleteRoutineUseCase(
   private val routineExecutionRepository: RoutineExecutionRepository,
   private val tagAssignmentRepository: TagAssignmentRepository,
   private val scheduleBackgroundWorkUseCase: ScheduleBackgroundWorkUseCase,
+  private val appWidgetUpdater: AppWidgetUpdater,
 ) {
   suspend operator fun invoke(id: String) {
     routineRepository.delete(id)
@@ -25,6 +27,7 @@ class DeleteRoutineUseCase(
       id = id
     )
     Logger.i(TAG, "Deleted routine with id = $id")
+    appWidgetUpdater.updateRoutineWidget()
   }
 
   companion object {
