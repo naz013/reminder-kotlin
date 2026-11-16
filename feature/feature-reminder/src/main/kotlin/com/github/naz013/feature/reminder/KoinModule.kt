@@ -37,6 +37,7 @@ import com.github.naz013.feature.reminder.build.preset.DefaultPresetsGenerateUse
 import com.github.naz013.feature.reminder.build.preset.ManagePresetsViewModel
 import com.github.naz013.feature.reminder.settings.RemindersSettingsViewModel
 import com.github.naz013.feature.reminder.snooze.SnoozePickerViewModel
+import com.github.naz013.feature.reminder.settings.snooze.SnoozePresetsSettingsViewModel
 import com.github.naz013.feature.reminder.build.preset.PresetInitProcessor
 import com.github.naz013.feature.reminder.build.preset.RecurParamsToBiAdapter
 import com.github.naz013.feature.reminder.build.preset.primitive.PrimitiveProtocol
@@ -97,6 +98,7 @@ val featureReminderModule = module {
   viewModelOf(::RemindersArchiveViewModel)
   viewModelOf(::RemindersSettingsViewModel)
   viewModel { (id: String) -> SnoozePickerViewModel(id, get(), get(), get(), get(), get()) }
+  viewModelOf(::SnoozePresetsSettingsViewModel)
 
   single { QuickAddParser() }
   viewModelOf(::QuickAddViewModel)

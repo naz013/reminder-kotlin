@@ -1,6 +1,5 @@
 package com.github.naz013.feature.reminder.settings
 
-import com.github.naz013.logic.reminder.snooze.SnoozePresetType
 import org.threeten.bp.LocalTime
 
 data class RemindersSettingsState(
@@ -11,9 +10,6 @@ data class RemindersSettingsState(
   val isWearChecked: Boolean = false,
   val isWearCompanionChecked: Boolean = false,
   val snoozeText: String = "",
-  val enabledSnoozePresets: Set<SnoozePresetType> = emptySet(),
-  val snoozeEveningTimeText: String = "",
-  val snoozeMorningTimeText: String = "",
   val isRepeatChecked: Boolean = false,
   val repeatIntervalText: String = "",
   val isRepeatIntervalRowEnabled: Boolean = false,
@@ -53,7 +49,7 @@ enum class ChoiceDialogKind {
 
 enum class SeekDialogKind { SNOOZE, REPEAT_INTERVAL, MAX_REPEAT_COUNT, ESCALATE_AFTER_REPEATS }
 
-enum class DndTimeTarget { FROM, TO, SNOOZE_EVENING, SNOOZE_MORNING }
+enum class DndTimeTarget { FROM, TO }
 
 sealed class RemindersSettingsDialog {
   data class Choice(
@@ -81,6 +77,8 @@ sealed class RemindersSettingsEvent {
   data object OpenWorkflowRules : RemindersSettingsEvent()
 
   data object OpenProVersion : RemindersSettingsEvent()
+
+  data object OpenSnoozePresets : RemindersSettingsEvent()
 
   data class ShowTimePicker(
     val target: DndTimeTarget,
