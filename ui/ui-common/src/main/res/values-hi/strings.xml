@@ -1377,4 +1377,7 @@
     <string name="snooze_preset_tomorrow_morning">कल सुबह</string>
     <string name="snooze_evening_time">शाम का स्नूज़ समय</string>
     <string name="snooze_morning_time">सुबह का स्नूज़ समय</string>
+    <string name="action_snooze_picker">स्नूज़ करें…</string>
+    <string name="snooze_picker_title">इस समय तक स्नूज़ करें</string>
+    <string name="snooze_pick_time">समय चुनें</string>
 </resources>

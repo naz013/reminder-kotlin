@@ -13,7 +13,9 @@ import com.github.naz013.logic.notificationaction.ActionHandler
 import com.github.naz013.logic.notificationaction.DoNotDisturbManager
 import com.github.naz013.logic.notificationaction.DoNotDisturbPreferences
 import com.github.naz013.logic.notificationaction.ForegroundStateTracker
+import com.github.naz013.logic.notificationaction.InAppAlert
 import com.github.naz013.logic.notificationaction.InAppAlertBus
+import com.github.naz013.logic.notificationaction.SnoozePickerLauncher
 import com.github.naz013.logic.notificationaction.InAppAlertPreferences
 import com.github.naz013.logic.notificationaction.PhoneCallStateProvider
 import com.github.naz013.logic.reminder.ReminderPreferences
@@ -26,9 +28,11 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.threeten.bp.LocalDateTime
@@ -50,6 +54,7 @@ class ReminderActionProcessorTest {
   private val inAppAlertPreferences = mockk<InAppAlertPreferences>(relaxed = true)
   private val textProvider = mockk<TextProvider>(relaxed = true)
   private val reminderPreferences = mockk<ReminderPreferences>(relaxed = true)
+  private val snoozePickerLauncher = mockk<SnoozePickerLauncher>(relaxed = true)
   private val handler = mockk<ActionHandler<ReminderV2>>(relaxed = true)
 
   private lateinit var processor: ReminderActionProcessor
@@ -98,6 +103,7 @@ class ReminderActionProcessorTest {
       inAppAlertPreferences = inAppAlertPreferences,
       textProvider = textProvider,
       reminderPreferences = reminderPreferences,
+      snoozePickerLauncher = snoozePickerLauncher,
     )
   }
 
@@ -163,6 +169,30 @@ class ReminderActionProcessorTest {
 
       verify(exactly = 1) { inAppAlertBus.show(any()) }
     }
+
+  @Test
+  fun `in-app alert banner offers a snooze picker action that opens the picker`() =
+    runTest {
+      val settings = notificationSettings()
+      coEvery { resolveReminderV2NotificationSettingsUseCase(reminder) } returns settings
+      every { doNotDisturbManager.applyDoNotDisturb(any(), any()) } returns false
+      every { foregroundStateTracker.isForeground } returns MutableStateFlow(true)
+      val alert = slot<InAppAlert>()
+      every { inAppAlertBus.show(capture(alert)) } returns Unit
+
+      processor.process("1")
+      alert.captured.actions.last().onClick()
+
+      assertEquals(3, alert.captured.actions.size)
+      verify(exactly = 1) { snoozePickerLauncher.launch(reminder.uuId) }
+    }
+
+  @Test
+  fun `openSnoozePicker delegates to the launcher`() {
+    processor.openSnoozePicker("abc")
+
+    verify(exactly = 1) { snoozePickerLauncher.launch("abc") }
+  }
 
   @Test
   fun `process does not emit an in-app alert when the in-app banner setting is disabled`() =

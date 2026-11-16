@@ -10,6 +10,7 @@ object Actions {
     const val ACTION_SB_SHOW = "com.elementary.tasks.pro.SHOW"
 
     const val ACTION_SNOOZE = "com.elementary.tasks.pro.reminder.SNOOZE"
+    const val ACTION_SNOOZE_PICKER = "com.elementary.tasks.pro.reminder.SNOOZE_PICKER"
     const val ACTION_HIDE_SIMPLE = "com.elementary.tasks.pro.reminder.SIMPLE_HIDE"
 
     const val ACTION_EDIT_EVENT = "com.elementary.tasks.pro.reminder.EVENT_EDIT"

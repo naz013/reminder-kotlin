@@ -1379,4 +1379,7 @@
     <string name="snooze_preset_tomorrow_morning">I morgen tidlig</string>
     <string name="snooze_evening_time">Tidspunkt for utsettelse til kveld</string>
     <string name="snooze_morning_time">Tidspunkt for utsettelse til morgen</string>
+    <string name="action_snooze_picker">Utsett…</string>
+    <string name="snooze_picker_title">Utsett til</string>
+    <string name="snooze_pick_time">Velg tid</string>
 </resources>

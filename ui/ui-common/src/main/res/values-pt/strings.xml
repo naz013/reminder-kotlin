@@ -1387,4 +1387,7 @@
     <string name="snooze_preset_tomorrow_morning">Amanhã de manhã</string>
     <string name="snooze_evening_time">Hora de adiamento da noite</string>
     <string name="snooze_morning_time">Hora de adiamento da manhã</string>
+    <string name="action_snooze_picker">Adiar…</string>
+    <string name="snooze_picker_title">Adiar até</string>
+    <string name="snooze_pick_time">Escolher hora</string>
 </resources>

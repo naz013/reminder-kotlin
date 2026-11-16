@@ -1379,4 +1379,7 @@
     <string name="snooze_preset_tomorrow_morning">Morgenochtend</string>
     <string name="snooze_evening_time">Snoozetijd voor de avond</string>
     <string name="snooze_morning_time">Snoozetijd voor de ochtend</string>
+    <string name="action_snooze_picker">Uitstellen…</string>
+    <string name="snooze_picker_title">Uitstellen tot</string>
+    <string name="snooze_pick_time">Tijd kiezen</string>
 </resources>

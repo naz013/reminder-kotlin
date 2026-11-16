@@ -77,6 +77,7 @@ fun ReminderActionScreen(
   modifier: Modifier = Modifier,
   id: String,
   onFinish: () -> Unit,
+  onOpenSnoozePicker: (String) -> Unit,
   onEdit: (String) -> Unit,
   onCallClick: (String) -> Unit,
   onSmsClick: (target: String, message: String) -> Unit,
@@ -86,10 +87,6 @@ fun ReminderActionScreen(
   adsContent: @Composable () -> Unit,
 ) {
   val viewModel: ReminderActionActivityViewModel = koinViewModel { parametersOf(id) }
-
-  var showSnoozeBottomSheet by remember { mutableStateOf(false) }
-  val snoozeSheetState = rememberBottomSheetState(SheetValue.Hidden)
-  val scope = rememberCoroutineScope()
 
   val permissionRequester = rememberPermissionRequesterRationale()
   val toastDispatcher = rememberToastDispatcher()
@@ -132,9 +129,7 @@ fun ReminderActionScreen(
         onFinish()
       }
 
-      is ReminderActionActivityViewModel.ViewModelEvent.ShowSnoozeDialog -> {
-        showSnoozeBottomSheet = true
-      }
+      is ReminderActionActivityViewModel.ViewModelEvent.OpenSnoozePicker -> onOpenSnoozePicker(event.id)
     }
   }
 
@@ -144,31 +139,6 @@ fun ReminderActionScreen(
     modifier = modifier,
     state = state,
     logTag = "ReminderActionScreen",
-    overlayContent = {
-      if (showSnoozeBottomSheet) {
-        AppModalBottomSheet(
-          onDismissRequest = { showSnoozeBottomSheet = false },
-          sheetState = snoozeSheetState,
-          dragHandle = null,
-        ) {
-          SnoozeDialogContent(
-            onDismiss = {
-              scope.launch {
-                snoozeSheetState.hide()
-                showSnoozeBottomSheet = false
-              }
-            },
-            onSnooze = {
-              viewModel.onCustomSnooze(it)
-              scope.launch {
-                snoozeSheetState.hide()
-                showSnoozeBottomSheet = false
-              }
-            },
-          )
-        }
-      }
-    },
     portrait = { screenState ->
       ReminderActionScreenPortrait(
         screenState = screenState,
@@ -287,97 +257,6 @@ private fun ReminderActionScreenLandscape(
         onActionClick = onActionClick,
       )
     }
-  }
-}
-
-@Composable
-private fun SnoozeDialogContent(
-  onDismiss: () -> Unit,
-  onSnooze: (Int) -> Unit,
-) {
-  Column(
-    modifier = Modifier.padding(16.dp),
-  ) {
-    Row(
-      modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.SpaceBetween,
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      PrimaryIconButton(
-        icon = AppIcons.Fluent.Dismiss,
-        contentDescription = stringResource(R.string.cancel),
-        onClick = onDismiss,
-        color = MaterialTheme.colorScheme.errorContainer,
-        iconColor = MaterialTheme.colorScheme.onErrorContainer,
-        enabled = true,
-      )
-      Spacer(modifier = Modifier.width(8.dp))
-      Text(
-        text = stringResource(R.string.action_snooze_custom),
-        style = MaterialTheme.typography.titleLarge,
-        color = MaterialTheme.colorScheme.onSurface,
-        modifier = Modifier.weight(1f),
-        textAlign = TextAlign.Center,
-        maxLines = 2,
-      )
-      Spacer(modifier = Modifier.width(8.dp))
-      PrimaryIconButton(
-        icon = AppIcons.Fluent.Checkmark,
-        contentDescription = stringResource(R.string.action_snooze),
-        onClick = { },
-        enabled = false,
-        color = Color.Transparent,
-        iconColor = Color.Transparent,
-        disabledColor = Color.Transparent,
-        disabledIconColor = Color.Transparent,
-      )
-    }
-
-    HorizontalDivider(
-      modifier = Modifier.padding(vertical = 8.dp),
-      color = MaterialTheme.colorScheme.outlineVariant,
-    )
-
-    BottomSheetList(
-      items = listOf(
-        BottomSheetItem(
-          id = 5,
-          title = stringResource(R.string.x_minutes, "5"),
-        ),
-        BottomSheetItem(
-          id = 10,
-          title = stringResource(R.string.x_minutes, "10"),
-        ),
-        BottomSheetItem(
-          id = 15,
-          title = stringResource(R.string.x_minutes, "15"),
-        ),
-        BottomSheetItem(
-          id = 30,
-          title = stringResource(R.string.x_minutes, "30"),
-        ),
-        BottomSheetItem(
-          id = 60,
-          title = stringResource(R.string.x_hours, "1"),
-        ),
-        BottomSheetItem(
-          id = 120,
-          title = stringResource(R.string.x_hours, "2"),
-        ),
-        BottomSheetItem(
-          id = 180,
-          title = stringResource(R.string.x_hours, "3"),
-        ),
-        BottomSheetItem(
-          id = 1440,
-          title = stringResource(R.string.x_days, "1"),
-        ),
-      ),
-      onItemClick = { minutes ->
-        onSnooze(minutes)
-      },
-      modifier = Modifier.padding(bottom = 16.dp),
-    )
   }
 }
 
@@ -799,21 +678,6 @@ private fun ActionsSectionTwoSecondaryPreview() {
           ),
         ),
         onActionClick = { },
-      )
-    }
-  }
-}
-
-@Preview(showBackground = true, widthDp = 360)
-@Composable
-private fun SnoozeDialogContentPreview() {
-  AppTheme {
-    Surface(
-      color = MaterialTheme.colorScheme.background,
-    ) {
-      SnoozeDialogContent(
-        onDismiss = { },
-        onSnooze = { },
       )
     }
   }

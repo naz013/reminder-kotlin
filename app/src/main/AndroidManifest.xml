@@ -182,6 +182,11 @@
             android:excludeFromRecents="true"
             android:exported="false" />
         <activity
+            android:name=".reminder.dialog.SnoozePickerActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:theme="@style/Theme.Reminder.Translucent" />
+        <activity
             android:name=".birthdays.dialog.BirthdayActionActivity"
             android:excludeFromRecents="true"
             android:exported="false" />

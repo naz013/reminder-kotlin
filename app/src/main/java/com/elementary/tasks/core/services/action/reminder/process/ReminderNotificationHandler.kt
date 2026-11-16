@@ -7,6 +7,7 @@ import com.elementary.tasks.R
 import com.elementary.tasks.core.services.ReminderActionReceiver
 import com.elementary.tasks.core.services.action.reminder.ReminderDataProvider
 import com.elementary.tasks.reminder.dialog.ReminderActionActivity
+import com.elementary.tasks.reminder.dialog.SnoozePickerActivity
 import com.github.naz013.common.ContextProvider
 import com.github.naz013.common.TextProvider
 import com.github.naz013.common.intent.PendingIntentWrapper
@@ -21,6 +22,8 @@ import com.github.naz013.logic.notificationaction.WearNotification
 import com.github.naz013.logic.notificationaction.WearPreferences
 import com.github.naz013.logic.reminder.ReminderPreferences
 import com.github.naz013.notification.NotificationApi
+import com.github.naz013.ui.common.icon.DrawableCatalog
+import com.github.naz013.ui.common.R as UiCommonR
 
 class ReminderNotificationHandler(
   private val reminderDataProvider: ReminderDataProvider,
@@ -65,9 +68,15 @@ class ReminderNotificationHandler(
     if (data.places.isEmpty()) {
       listOf(
         NotificationAction(
-          icon = R.drawable.ic_fluent_snooze,
+          icon = DrawableCatalog.Fluent.Snooze,
           label = textProvider.getText(R.string.acc_button_snooze),
           actionKey = ReminderActionReceiver.ACTION_SNOOZE,
+        ),
+        NotificationAction(
+          icon = DrawableCatalog.Fluent.AlertSnooze,
+          label = textProvider.getText(UiCommonR.string.action_snooze_picker),
+          actionKey = ReminderActionReceiver.ACTION_SNOOZE_PICKER,
+          activityIntent = SnoozePickerActivity.getLaunchIntent(contextProvider.context, data.uuId),
         ),
       )
     } else {

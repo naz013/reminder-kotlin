@@ -2,7 +2,9 @@ package com.elementary.tasks.reminder.dialog
 
 import android.content.Context
 import android.content.Intent
+import android.app.Activity
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,6 +30,11 @@ class ReminderActionActivity : ComposeActivity() {
 
   private val navigator by inject<Navigator>()
 
+  private val snoozePickerLauncher =
+    registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+      if (result.resultCode == Activity.RESULT_OK) finish()
+    }
+
   @Composable
   override fun ActivityContent() {
     val phoneCaller = rememberPhoneCaller()
@@ -38,6 +45,7 @@ class ReminderActionActivity : ComposeActivity() {
     ReminderActionScreen(
       id = getId(),
       onFinish = { finish() },
+      onOpenSnoozePicker = { snoozePickerLauncher.launch(SnoozePickerActivity.getLaunchIntent(this, it)) },
       onEdit = {
         navigator.navigate(
           ActivityDestination(

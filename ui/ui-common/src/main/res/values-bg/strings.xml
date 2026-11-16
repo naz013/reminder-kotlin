@@ -1381,4 +1381,7 @@
     <string name="snooze_preset_tomorrow_morning">Утре сутринта</string>
     <string name="snooze_evening_time">Час за отлагане вечер</string>
     <string name="snooze_morning_time">Час за отлагане сутрин</string>
+    <string name="action_snooze_picker">Отлагане…</string>
+    <string name="snooze_picker_title">Отложи до</string>
+    <string name="snooze_pick_time">Избери час</string>
 </resources>

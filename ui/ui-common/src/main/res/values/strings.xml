@@ -1397,4 +1397,7 @@
     <string name="snooze_preset_tomorrow_morning">Tomorrow morning</string>
     <string name="snooze_evening_time">Evening snooze time</string>
     <string name="snooze_morning_time">Morning snooze time</string>
+    <string name="action_snooze_picker">Snooze…</string>
+    <string name="snooze_picker_title">Snooze until</string>
+    <string name="snooze_pick_time">Pick time</string>
 </resources>

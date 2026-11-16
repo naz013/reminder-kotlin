@@ -1373,4 +1373,7 @@
     <string name="snooze_preset_tomorrow_morning">Sáng mai</string>
     <string name="snooze_evening_time">Giờ báo lại buổi tối</string>
     <string name="snooze_morning_time">Giờ báo lại buổi sáng</string>
+    <string name="action_snooze_picker">Báo lại…</string>
+    <string name="snooze_picker_title">Báo lại đến</string>
+    <string name="snooze_pick_time">Chọn giờ</string>
 </resources>

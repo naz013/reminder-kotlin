@@ -1377,4 +1377,7 @@
     <string name="snooze_preset_tomorrow_morning">Morgen früh</string>
     <string name="snooze_evening_time">Schlummerzeit am Abend</string>
     <string name="snooze_morning_time">Schlummerzeit am Morgen</string>
+    <string name="action_snooze_picker">Schlummern…</string>
+    <string name="snooze_picker_title">Schlummern bis</string>
+    <string name="snooze_pick_time">Zeit wählen</string>
 </resources>

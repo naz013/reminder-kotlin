@@ -46,6 +46,9 @@ sealed interface SettingsNavKey : NavKey {
   data object ManagePresets : SettingsNavKey
 
   @Serializable
+  data object SnoozePresets : SettingsNavKey
+
+  @Serializable
   data object Developer : SettingsNavKey
 
   @Serializable

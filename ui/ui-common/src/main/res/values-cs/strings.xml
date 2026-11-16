@@ -1393,4 +1393,7 @@
     <string name="snooze_preset_tomorrow_morning">Zítra ráno</string>
     <string name="snooze_evening_time">Čas odložení na večer</string>
     <string name="snooze_morning_time">Čas odložení na ráno</string>
+    <string name="action_snooze_picker">Odložit…</string>
+    <string name="snooze_picker_title">Odložit do</string>
+    <string name="snooze_pick_time">Vybrat čas</string>
 </resources>
